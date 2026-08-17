@@ -1,7 +1,7 @@
 # MAPPING ANALYSIS
 
 ## Source
-File: `data/مبنای ارتباط حسابها با یادداشتها سال 1404.xlsx` (Sheet: `Data`)
+File: `data/mappings/مبنای ارتباط حسابها با یادداشتها سال 1404.xlsx` (Sheet: `Data`)
 
 ## Structure
 This file contains mapping rules linking account codes to specific Notes and defining their behavior (Type O, Oe, E).
