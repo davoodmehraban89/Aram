@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیستم جامع صورت‌های مالی (Jules Master Engine)</title>
-    <!-- Tailwind CSS برای استایل‌دهی -->
+    <title>هسته یکپارچه صورت‌های مالی - آماده انتقال به دیتابیس</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PapaParse برای خواندن فایل‌های اکسل/CSV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
     <style>
         @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
         * { font-family: 'Vazirmatn', sans-serif; }
@@ -17,16 +13,12 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 
         /* =========================================
-           موتور پرینت قطعی و تضمینی A4
+           موتور پرینت اختصاصی و استاندارد (A4)
            ========================================= */
         @media print {
             @page { size: A4 portrait; margin: 12mm; }
             body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 11pt; }
-
-            /* مخفی کردن اپلیکیشن وب هنگام چاپ */
             .no-print, #app-wrapper, .print-controls { display: none !important; }
-
-            /* نمایش کانتینر پرینت */
             #print-wrapper { display: block !important; width: 100%; direction: rtl; background: white !important; }
 
             .print-page { page-break-after: always; clear: both; padding: 10mm 0; position: relative; min-height: 250mm; }
@@ -41,12 +33,10 @@
             th { background-color: #e5e7eb !important; font-weight: bold; }
             td:first-child { text-align: right; }
 
-            /* کادر امضا */
             .sign-grid { display: flex; justify-content: space-around; margin-top: 60px; text-align: center; font-size: 11pt; gap: 20px; flex-wrap: wrap;}
             .sign-box { border-top: 1px dashed #000; padding-top: 15px; flex: 1; min-width: 150px; font-weight: bold; margin-bottom: 30px;}
             .sign-role { font-size: 9pt; font-weight: normal; margin-top: 5px; display: block; color: #333 !important;}
 
-            /* المان‌های AI */
             .ai-grid { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 20px; margin-top: 20px;}
             .ai-card { border: 2px solid #4f46e5 !important; padding: 15px; flex: 1; text-align: center; border-radius: 8px; background-color: #f8fafc !important; }
             .ai-val { font-size: 16pt; font-weight: bold; margin-top: 10px; direction: ltr; color: #1e1b4b !important;}
@@ -54,37 +44,21 @@
             .ai-analysis { border: 2px solid #10b981 !important; padding: 15px; border-radius: 8px; background-color: #f0fdf4 !important; text-align: justify; line-height: 2; font-size: 11pt;}
         }
 
-        /* استایل حالت پیش‌نمایش پرینت روی مانیتور */
+        /* Preview Overlay Mode */
         .preview-mode #app-wrapper { display: none; }
         .preview-mode #print-wrapper { display: block; background: #525659; min-height: 100vh; padding-bottom: 50px; }
         #print-wrapper { display: none; }
-
-        .paper-sheet {
-            background: white; color: black; width: 210mm; min-height: 297mm;
-            margin: 20px auto; padding: 20mm; box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            direction: rtl;
-        }
-
-        /* لودینگ برای پردازش فایل CSV */
-        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.9); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .paper-sheet { background: white; color: black; width: 210mm; min-height: 297mm; margin: 20px auto; padding: 20mm; box-shadow: 0 0 15px rgba(0,0,0,0.5); direction: rtl; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased min-h-screen">
 
-    <!-- صفحه لودینگ پردازش -->
-    <div id="loader">
-        <svg class="animate-spin h-16 w-16 text-emerald-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-        <h2 class="text-white text-xl font-bold font-mono" id="loader-text">در حال پردازش تراز آزمایشی و موتور نگاشت (O/Oe/E)...</h2>
-    </div>
-
     <!-- ==========================================
-         محیط کاربری اپلیکیشن وب
+         محیط کاربری اپلیکیشن (App Wrapper)
          ========================================== -->
     <div id="app-wrapper" class="flex flex-col min-h-screen">
         <header class="bg-slate-900 border-b border-slate-800 p-3 md:p-4 sticky top-0 z-50 shadow-2xl">
             <div class="max-w-7xl mx-auto space-y-3">
-
-                <!-- عنوان و دکمه‌ها -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-2.5">
                     <div class="flex items-center gap-2.5">
                         <div class="p-2 bg-indigo-600 text-white rounded-lg shadow-md">
@@ -92,19 +66,17 @@
                         </div>
                         <div>
                             <h1 class="font-bold text-white text-xs md:text-sm">هسته یکپارچه صدور صورت‌های مالی (Jules Ready)</h1>
-                            <p class="text-[10px] text-emerald-400">بستر قطعی ۱۴۰۲ تا ۱۴۰۴ - آماده تحلیل فایل‌های ۱۴۰۵</p>
+                            <p class="text-[10px] text-emerald-400">بستر قطعی ۱۴۰۲ تا ۱۴۰۴ - آماده اتصال API برای سال ۱۴۰۵</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-[11px] font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-lg">واحد: میلیون ریال</span>
-                        <!-- دکمه ورود به محیط پرینت -->
                         <button onclick="openPrintPreview()" class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-4 py-2 rounded-lg transition-all shadow-md ring-2 ring-emerald-400/50">
                             🖨️ تولید پکیج چاپ (مدیریتی)
                         </button>
                     </div>
                 </div>
 
-                <!-- انتخابگرها -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                     <div class="space-y-1">
                         <label class="text-[11px] font-bold text-blue-400">انتخاب شرکت:</label>
@@ -114,9 +86,8 @@
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="text-[11px] font-bold text-emerald-400">انتخاب سال مالی:</label>
+                        <label class="text-[11px] font-bold text-emerald-400">انتخاب سال مالی (سورس قطعی):</label>
                         <select id="yearSelector" onchange="onYearChange(this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs font-semibold rounded-lg px-2.5 py-2 w-full outline-none font-mono">
-                            <option value="1405" class="text-emerald-400 font-bold">📅 سال ۱۴۰۵ (سال جدید / درحال کار)</option>
                             <option value="1404">📅 سال ۱۴۰۴ (گزارش نهایی حسابرسی شده)</option>
                             <option value="1403">📅 سال ۱۴۰۳ (گزارش نهایی حسابرسی شده)</option>
                             <option value="1402">📅 سال ۱۴۰۲ (گزارش نهایی حسابرسی شده)</option>
@@ -124,15 +95,14 @@
                     </div>
                 </div>
 
-                <!-- تب‌ها -->
                 <div class="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none border-t border-slate-800">
-                    <button onclick="switchTab('UPLOAD')" id="tab-UPLOAD" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap text-emerald-400 hover:bg-slate-800 border border-emerald-800/50 bg-emerald-950/20">➕ تولید صورت مالی ۱۴۰۵</button>
                     <button onclick="switchTab('AUDITOR')" id="tab-AUDITOR" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap bg-indigo-600 text-white shadow-md">⚖️ گزارش حسابرس و AI</button>
                     <button onclick="switchTab('BS')" id="tab-BS" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap text-slate-300 hover:bg-slate-800">📋 ترازنامه</button>
                     <button onclick="switchTab('IS')" id="tab-IS" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap text-slate-300 hover:bg-slate-800">📈 سود و زیان</button>
                     <button onclick="switchTab('EQUITY')" id="tab-EQUITY" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap text-slate-300 hover:bg-slate-800">📊 حقوق مالکانه</button>
                     <button onclick="switchTab('CF')" id="tab-CF" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap text-slate-300 hover:bg-slate-800">🔄 جریان‌های نقدی</button>
                     <button onclick="switchTab('MAPPING')" id="tab-MAPPING" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap text-purple-400 hover:bg-slate-800">🔗 موتور نگاشت (O/Oe/E)</button>
+                    <button onclick="switchTab('UPLOAD')" id="tab-UPLOAD" class="report-tab px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap text-emerald-400 hover:bg-slate-800">☁️ ایجاد سال جدید (1405)</button>
                 </div>
             </div>
         </header>
@@ -152,13 +122,10 @@
                 <span>پیش‌نمایش پکیج نهایی - آماده ارسال به پرینتر</span>
             </div>
             <div class="flex gap-3">
-                <button onclick="closePrintPreview()" class="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2 rounded-lg font-bold transition-all shadow-md">✖ لغو و بازگشت</button>
-                <!-- دکمه تایید نهایی که دستور پرینت ویندوز را صدا میزند -->
-                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold transition-all shadow-lg ring-2 ring-emerald-400">✓ تایید و چاپ (Print)</button>
+                <button onclick="closePrintPreview()" class="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2 rounded-lg font-bold transition-all">✖ لغو و بازگشت</button>
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold transition-all shadow-lg ring-2 ring-emerald-400">✓ چاپ نهایی (Print)</button>
             </div>
         </div>
-
-        <!-- صفحات A4 به صورت داینامیک در اینجا ساخته می‌شوند -->
         <div id="print-pages-container"></div>
     </div>
 
@@ -170,9 +137,6 @@
         let currentCompanyId = 'C_GAS_TRANS';
         let currentYear = '1404';
         let currentTab = 'AUDITOR';
-
-        // متغیر موقت برای نگهداری دیتای ۱۴۰۵ (پس از آپلود فایل)
-        let dynYear1405Data = null;
 
         // ---------------------------------------------------------
         // DATABASE (The Single Source of Truth from PDFs & CSVs)
@@ -220,7 +184,9 @@
                     },
                     CF: {
                         '701': { title: 'نقد حاصل از عملیات', cur: 99230533, comp: 83057773 },
-                        '801': { title: 'خرید دارایی‌های ثابت مشهود', cur: -82458602, comp: -81875240 }
+                        '702': { title: 'پرداخت‌های نقدی بابت مالیات', cur: -149426, comp: 0 },
+                        '801': { title: 'خرید دارایی‌های ثابت مشهود', cur: -82458602, comp: -81875240 },
+                        '802': { title: 'خرید دارایی‌های نامشهود', cur: -52212, comp: -23890 }
                     },
                     EQ: [
                         { title: 'مانده در ۱۴۰۳/۰۱/۰۱', c1: '-', c2: 14069826, c3: -38949540, total: -23264098 },
@@ -273,11 +239,10 @@
                         '801': { title: 'خرید دارایی‌های ثابت مشهود', cur: -81875239, comp: -33462659 }
                     },
                     EQ: [
-                        { title: 'مانده تجدید ارائه شده در ۱۴۰۲/۰۱/۰۱', c1: 20000000, c2: '-', c3: -100552844, total: -80551230 },
-                        { title: 'زیان خالص سال ۱۴۰۲', c1: '-', c2: '-', c3: -15709645, total: -15709645 },
-                        { title: 'مانده در ۱۴۰۲/۱۲/۲۹', c1: 20000000, c2: 14069826, c3: -110226573, total: -76156747 },
+                        { title: 'مانده در ۱۴۰۲/۰۱/۰۱', c1: 20000000, c2: '-', c3: -57311335, total: -37309721 },
+                        { title: 'مانده در ۱۴۰۲/۱۲/۲۹', c1: 20000000, c2: 14069826, c3: -110226573, total: -76156747, highlight: true },
                         { title: 'زیان خالص سال ۱۴۰۳', c1: '-', c2: '-', c3: -9454392, total: -9454392 },
-                        { title: 'مانده پایان سال ۱۴۰۳/۱۲/۳۰', c1: 20000000, c2: '-', c3: -124518176, total: -104518176 }
+                        { title: 'مانده پایان سال ۱۴۰۳/۱۲/۳۰', c1: 20000000, c2: '-', c3: -124518176, total: -104518176, highlight: true }
                     ]
                 },
                 '1402': {
@@ -318,9 +283,9 @@
                         '801': { title: 'خرید دارایی‌های ثابت مشهود', cur: -33462659, comp: -21323048 }
                     },
                     EQ: [
-                        { title: 'مانده تجدید ارائه شده ۱۴۰۱/۰۱/۰۱', c1: 20000000, c2: '-', c3: -46720866, total: -26719252 },
+                        { title: 'مانده در ۱۴۰۱/۰۱/۰۱', c1: 20000000, c2: '-', c3: -13252899, total: 6748715 },
                         { title: 'زیان خالص سال ۱۴۰۲', c1: '-', c2: '-', c3: -15709645, total: -15709645 },
-                        { title: 'مانده در ۱۴۰۲/۱۲/۲۹', c1: 20000000, c2: 14069826, c3: -110226573, total: -76156747 }
+                        { title: 'مانده در ۱۴۰۲/۱۲/۲۹', c1: 20000000, c2: 14069826, c3: -110226573, total: -90226573, highlight: true }
                     ]
                 }
             },
@@ -328,7 +293,7 @@
                 '1402': {
                     hasRealData: true,
                     auditorOpinion: 'مقبول',
-                    auditorClauses: [{ type: 'تاکید بر مطلب', title: 'بند ۴', desc: 'عدم تحقق بودجه تخصیصی گازرسانی چابهار در سال مورد گزارش.' }],
+                    auditorClauses: [{ type: 'تاکید بر مطلب', title: 'بند ۴', desc: 'عدم تحقق بودجه تخصیصی گازرسانی چابهار.' }],
                     signatures: [
                         { name: 'حسین سلیمی', role: 'رئیس هیئت مدیره' },
                         { name: 'محمدرضا میرشکاری', role: 'نایب رئیس هیئت مدیره و مدیرعامل' },
@@ -383,7 +348,7 @@
 
         const COMPANIES_INFO = {
             'C_GAS_TRANS': 'شرکت انتقال گاز ایران (سهامی خاص)',
-            'C_SISTAN': 'شرکت گاز استان سیستان و بلوچستان (سهامی خاص)'
+            'C_SISTAN': 'شرکت گاز استان سیستان و بلوچستان'
         };
 
         // --- UTILS ---
@@ -394,13 +359,7 @@
         }
 
         function checkDataAvailable(compId, year) {
-            if(year === '1405') return !!dynYear1405Data;
             return !!(DB[compId] && DB[compId][year] && DB[compId][year].hasRealData);
-        }
-
-        function getActiveData() {
-            if(currentYear === '1405') return dynYear1405Data;
-            return DB[currentCompanyId]?.[currentYear];
         }
 
         // ---------------------------------------------------------
@@ -431,17 +390,15 @@
                 target.innerHTML = `
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 my-6 shadow-2xl">
                         <div class="p-4 bg-amber-500/10 rounded-2xl text-amber-400 w-16 h-16 mx-auto flex items-center justify-center text-3xl">⚠️</div>
-                        <h3 class="font-bold text-white text-lg">اطلاعات مالی قطعی سال ${currentYear} بارگذاری نشده است!</h3>
-                        <p class="text-xs text-slate-400">لطفا برای سال جدید، فایل تراز خام را در تب "ایجاد سال جدید" آپلود کنید تا سیستم آن را بسازد.</p>
-                        <button onclick="switchTab('UPLOAD')" class="mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md">
-                            تولید صورت مالی ${currentYear}
-                        </button>
+                        <h3 class="font-bold text-white">گزارش نهایی سال ${currentYear} بارگذاری نشده است!</h3>
+                        <p class="text-xs text-slate-400">سیستم تنها گزارشات قطعی حسابرسی شده را نمایش می‌دهد. لطفا در محیط Jules تراز خام را ایمپورت کنید.</p>
+                        <button onclick="switchTab('UPLOAD')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-xs mt-3">آپلود تراز خام (ایجاد سال جدید)</button>
                     </div>
                 `;
                 return;
             }
 
-            const data = getActiveData();
+            const data = DB[currentCompanyId]?.[currentYear];
 
             if (currentTab === 'AUDITOR') renderAuditorAndAI(target, data);
             else if (currentTab === 'BS') renderBS(target, data);
@@ -456,12 +413,11 @@
 
         function renderAuditorAndAI(target, data) {
             const bs = data.BS; const is = data.IS;
-
             const curAssets = (bs['201'].ycur||0) + (bs['202'].ycur||0) + (bs['203'].ycur||0) + (bs['204'].ycur||0);
             const curLiab = (bs['501'].ycur||0) + (bs['502'].ycur||0) + (bs['503'].ycur||0);
             const totalAssets = curAssets + (bs['101'].ycur||0) + (bs['102'].ycur||0) + (bs['103'].ycur||0);
             const totalLiab = curLiab + (bs['401'].ycur||0) + (bs['402'].ycur||0);
-            const revenue = is['601'].cur + (is['604']?.cur||0);
+            const revenue = is['601'].cur + (is['604'].cur||0);
             const netProfit = revenue + is['602'].cur + is['603'].cur + (is['605']?.cur||0) + (is['606']?.cur||0);
 
             const currentRatio = curLiab ? (curAssets / curLiab).toFixed(2) : 0;
@@ -472,7 +428,7 @@
             const drColor = debtRatio < 60 ? 'emerald' : (debtRatio < 80 ? 'amber' : 'rose');
             const nmColor = netMargin > 0 ? 'emerald' : 'rose';
 
-            let aiText = `بر اساس پایش هوشمند ترازنامه، نسبت جاری شرکت معادل <b>${currentRatio}</b> می‌باشد که نشان‌دهنده ${currentRatio >= 1 ? 'پوشش مناسب' : 'ریسک در'} نقدینگی است. نسبت بدهی به دارایی <b>${debtRatio}٪</b> است که بیانگر سطح ${debtRatio > 80 ? 'بالای' : 'متعادل'} اهرم مالی می‌باشد. با توجه به ساختار درآمدهای عملیاتی، حاشیه سود خالص <b>${netMargin}٪</b> برآورد شده که نیازمند ${netMargin < 0 ? 'مدیریت هزینه‌ها' : 'حفظ ثبات رویه'} است.`;
+            let aiText = `بر اساس پایش هوشمند ترازنامه، نسبت جاری شرکت معادل <b>${currentRatio}</b> می‌باشد که نشان‌دهنده ${currentRatio >= 1 ? 'پوشش مناسب' : 'ریسک در'} نقدینگی است. نسبت بدهی به دارایی <b>${debtRatio}٪</b> است که بیانگر سطح ${debtRatio > 80 ? 'بالای' : 'متعادل'} اهرم مالی می‌باشد. حاشیه سود خالص <b>${netMargin}٪</b> برآورد شده که نیازمند ${netMargin < 0 ? 'مدیریت هزینه‌ها' : 'حفظ ثبات رویه'} است.`;
 
             target.innerHTML = `
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -484,18 +440,16 @@
                             </div>
                             <span class="text-xs font-mono bg-indigo-950 text-indigo-300 px-2 py-1 rounded">سال ${currentYear}</span>
                         </div>
-
                         <div class="bg-slate-950 border border-slate-800 p-4 rounded-lg mb-4">
-                            <h4 class="font-bold text-indigo-400 text-xs mb-2 flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div> اظهارنظر حسابرس:</h4>
+                            <h4 class="font-bold text-indigo-400 text-xs mb-2">اظهارنظر حسابرس:</h4>
                             <p class="text-[11px] leading-6 text-slate-300 text-justify">به نظر این سازمان، صورت‌های مالی یاد شده، وضعیت مالی شرکت را در تاریخ پایان اسفند ${currentYear}، از تمام جنبه‌های بااهمیت، طبق استانداردهای حسابداری به نحو مطلوب نشان می‌دهد.</p>
                             <div class="mt-3 inline-block bg-emerald-950/40 border border-emerald-800 text-emerald-400 px-3 py-1.5 rounded font-bold text-xs">
                                 نتیجه نهایی: ${data.auditorOpinion}
                             </div>
                         </div>
-
                         ${data.auditorClauses ? `
                             <div class="space-y-2">
-                                <h4 class="font-bold text-amber-400 text-xs mb-2">مبانی اظهارنظر مشروط و تاکید بر مطلب خاص:</h4>
+                                <h4 class="font-bold text-amber-400 text-xs mb-2">تاکید بر مطلب خاص:</h4>
                                 ${data.auditorClauses.map(c => `
                                     <div class="border-r-2 border-amber-500 bg-slate-950/50 p-3 rounded-l-lg">
                                         <h5 class="font-bold text-white text-[11px] mb-1">${c.title}</h5>
@@ -509,7 +463,7 @@
                     <!-- AI Dashboard -->
                     <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col">
                         <div class="border-b border-slate-800 pb-3 mb-4 flex items-center gap-2">
-                            <div class="p-1.5 bg-purple-600/20 text-purple-400 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
+                            <div class="p-1.5 bg-purple-600/20 text-purple-400 rounded-lg">🤖</div>
                             <h2 class="font-bold text-white text-sm">داشبورد تحلیلی هوش مصنوعی (AI)</h2>
                         </div>
                         <div class="space-y-4 flex-1">
@@ -538,16 +492,11 @@
             const bs = data.BS;
             const is3Col = bs['101'].ycomp2 !== null && bs['101'].ycomp2 !== undefined;
             const sumGr = (keys, col) => keys.reduce((a, k) => a + (bs[k][col] || 0), 0);
-
             const ncAs = ['101','102','103']; const cAs = ['201','202','203','204'];
             const eq = ['301','302','303','304']; const ncLi = ['401','402']; const cLi = ['501','502','503'];
 
             target.innerHTML = `
                 <div class="space-y-4">
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex justify-between items-center shadow-lg">
-                        <h2 class="font-bold text-sm text-white">صورت وضعیت مالی (ترازنامه) - سال ${currentYear}</h2>
-                    </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl overflow-x-auto">
                             <div class="border-b border-slate-800 pb-2 mb-3 flex justify-between min-w-[320px]">
@@ -627,8 +576,8 @@
             const is = data.IS;
             const grossCur = is['601'].cur + is['602'].cur;
             const grossComp = is['601'].comp + is['602'].comp;
-            const opCur = grossCur + is['603'].cur + (is['604']?.cur||0);
-            const opComp = grossComp + is['603'].comp + (is['604']?.comp||0);
+            const opCur = grossCur + is['603'].cur + (is['604'].cur||0);
+            const opComp = grossComp + is['603'].comp + (is['604'].comp||0);
             const netCur = opCur + (is['605']?.cur||0) + (is['606']?.cur||0);
             const netComp = opComp + (is['605']?.comp||0) + (is['606']?.comp||0);
 
@@ -642,14 +591,9 @@
                         <div class="flex justify-between py-2 border-b border-slate-800"><span>${is['601'].title}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-emerald-400">${fmt(is['601'].cur)}</span><span class="w-24 text-left text-amber-300">${fmt(is['601'].comp)}</span></div></div>
                         <div class="flex justify-between py-2 border-b border-slate-800"><span>${is['602'].title}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-rose-400">${fmt(is['602'].cur)}</span><span class="w-24 text-left text-rose-400/80">${fmt(is['602'].comp)}</span></div></div>
                         <div class="flex justify-between py-2.5 bg-slate-950 px-3 rounded-lg border border-slate-800 font-bold"><span class="text-blue-400">سود (زیان) ناخالص</span><div class="flex gap-4 font-mono"><span class="w-24 text-left ${grossCur<0?'text-rose-400':'text-blue-400'}">${fmt(grossCur)}</span><span class="w-24 text-left ${grossComp<0?'text-rose-400/80':'text-amber-300'}">${fmt(grossComp)}</span></div></div>
-
                         <div class="flex justify-between py-2 border-b border-slate-800 mt-2"><span>${is['603'].title}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-rose-400">${fmt(is['603'].cur)}</span><span class="w-24 text-left text-rose-400/80">${fmt(is['603'].comp)}</span></div></div>
                         <div class="flex justify-between py-2 border-b border-slate-800"><span>${is['604']?.title||'-'}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-emerald-400">${fmt(is['604']?.cur)}</span><span class="w-24 text-left text-amber-300">${fmt(is['604']?.comp)}</span></div></div>
                         <div class="flex justify-between py-2.5 bg-blue-950/30 px-3 rounded-lg border border-blue-900/50 font-bold"><span class="text-blue-300">سود (زیان) عملیاتی</span><div class="flex gap-4 font-mono"><span class="w-24 text-left ${opCur<0?'text-rose-400':'text-blue-300'}">${fmt(opCur)}</span><span class="w-24 text-left ${opComp<0?'text-rose-400/80':'text-amber-300'}">${fmt(opComp)}</span></div></div>
-
-                        <div class="flex justify-between py-2 border-b border-slate-800 mt-2"><span>${is['605']?.title||'-'}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left ${is['605']?.cur<0?'text-rose-400':'text-emerald-400'}">${fmt(is['605']?.cur)}</span><span class="w-24 text-left ${is['605']?.comp<0?'text-rose-400/80':'text-amber-300'}">${fmt(is['605']?.comp)}</span></div></div>
-                        <div class="flex justify-between py-2 border-b border-slate-800"><span>${is['606']?.title||'-'}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-rose-400">${fmt(is['606']?.cur)}</span><span class="w-24 text-left text-rose-400/80">${fmt(is['606']?.comp)}</span></div></div>
-
                         <div class="flex justify-between py-4 bg-rose-950/30 px-4 rounded-xl border border-rose-500/40 font-bold mt-4 text-sm"><span class="text-rose-400">زیان خالص سال مالی</span><div class="flex gap-4 font-mono"><span class="w-24 text-left text-rose-400">${fmt(netCur)}</span><span class="w-24 text-left text-rose-400/80">${fmt(netComp)}</span></div></div>
                     </div>
                 </div>
@@ -667,7 +611,7 @@
                         </thead>
                         <tbody class="divide-y divide-slate-800 font-mono text-slate-300">
                             ${eqData.map(row => `
-                                <tr class="${row.highlight ? 'bg-slate-950/80 font-bold text-white' : 'hover:bg-slate-800/50'}">
+                                <tr class="${row.highlight ? 'bg-slate-950/80 font-bold text-white' : ''}">
                                     <td class="p-2 font-sans ${row.highlight ? 'text-amber-400' : ''}">${row.title}</td>
                                     <td class="p-2 ${row.c1 !== '-' ? 'text-emerald-400' : ''}">${fmt(row.c1)}</td>
                                     <td class="p-2">${fmt(row.c2)}</td>
@@ -685,8 +629,6 @@
             const cf = data.CF;
             const netOpCur = cf['701'].cur + (cf['702']?.cur||0);
             const netOpComp = cf['701'].comp + (cf['702']?.comp||0);
-            const netInvCur = cf['801'].cur + (cf['802']?.cur||0);
-            const netInvComp = cf['801'].comp + (cf['802']?.comp||0);
 
             target.innerHTML = `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-3xl mx-auto shadow-xl">
@@ -695,14 +637,7 @@
                         <div class="space-y-2">
                             <div class="font-bold text-blue-400 bg-slate-950 p-2 rounded">فعالیت‌های عملیاتی</div>
                             <div class="flex justify-between py-1 px-2 border-b border-slate-800/50"><span>${cf['701'].title}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left">${fmt(cf['701'].cur)}</span><span class="w-24 text-left text-amber-300/80">${fmt(cf['701'].comp)}</span></div></div>
-                            ${cf['702'] ? `<div class="flex justify-between py-1 px-2 border-b border-slate-800/50"><span>${cf['702'].title}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-rose-400">${fmt(cf['702'].cur)}</span><span class="w-24 text-left text-rose-400/80">${fmt(cf['702'].comp)}</span></div></div>` : ''}
                             <div class="flex justify-between py-2 px-2 bg-blue-950/20 font-bold text-emerald-400 rounded"><span>خالص جریان عملیاتی</span><div class="flex gap-4 font-mono"><span class="w-24 text-left">${fmt(netOpCur)}</span><span class="w-24 text-left">${fmt(netOpComp)}</span></div></div>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="font-bold text-indigo-400 bg-slate-950 p-2 rounded">فعالیت‌های سرمایه‌گذاری</div>
-                            <div class="flex justify-between py-1 px-2 border-b border-slate-800/50"><span>${cf['801'].title}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-rose-400">${fmt(cf['801'].cur)}</span><span class="w-24 text-left text-rose-400/80">${fmt(cf['801'].comp)}</span></div></div>
-                            ${cf['802'] ? `<div class="flex justify-between py-1 px-2 border-b border-slate-800/50"><span>${cf['802'].title}</span><div class="flex gap-4 font-mono font-bold"><span class="w-24 text-left text-rose-400">${fmt(cf['802'].cur)}</span><span class="w-24 text-left text-rose-400/80">${fmt(cf['802'].comp)}</span></div></div>` : ''}
-                            <div class="flex justify-between py-2 px-2 bg-indigo-950/20 font-bold text-rose-400 rounded"><span>خالص جریان سرمایه‌گذاری</span><div class="flex gap-4 font-mono"><span class="w-24 text-left">${fmt(netInvCur)}</span><span class="w-24 text-left">${fmt(netInvComp)}</span></div></div>
                         </div>
                         <div class="flex justify-between py-3 px-4 bg-emerald-950/30 border border-emerald-800/50 rounded-lg mt-4 font-bold text-sm">
                             <span class="text-white">مانده موجودی نقد در پایان سال</span>
@@ -719,7 +654,7 @@
                     <div class="text-center space-y-2 border-b border-slate-800 pb-4">
                         <div class="text-4xl">🔗</div>
                         <h2 class="font-bold text-purple-400 text-lg">کدینگ و منطق نگاشت برای سال ۱۴۰۵</h2>
-                        <p class="text-xs text-slate-400 max-w-xl mx-auto leading-6">این فرمول‌ها جهت پردازش O، Oe و E از فایل Data.csv استخراج و در سیستم Jules قفل شده‌اند.</p>
+                        <p class="text-xs text-slate-400 max-w-xl mx-auto leading-6">این فرمول‌ها جهت پردازش O، Oe و E از فایل Data.csv استخراج و برای محیط Jules قفل شده‌اند.</p>
                     </div>
                     <table class="w-full text-right text-xs border border-slate-800">
                         <thead class="bg-slate-950 text-slate-400">
@@ -743,27 +678,26 @@
         function renderUploadForm(target) {
             target.innerHTML = `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 max-w-lg mx-auto shadow-xl text-center">
-                    <h3 class="font-bold text-emerald-400 text-base mb-6">➕ ایجاد صورت‌های مالی سال ۱۴۰۵ در محیط Jules</h3>
-
-                    <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
-
-                    <div onclick="document.getElementById('csvFileInput').click()" class="border-2 border-dashed border-slate-600 bg-slate-950/50 rounded-xl p-10 cursor-pointer hover:border-emerald-500 transition-colors">
+                    <h3 class="font-bold text-emerald-400 text-base mb-6">➕ ساخت صورت‌های مالی ۱۴۰۵ در محیط Jules</h3>
+                    <div class="border-2 border-dashed border-slate-600 bg-slate-950/50 rounded-xl p-10 cursor-pointer hover:border-emerald-500 transition-colors" onclick="alert('برنامه‌نویس: در محیط Jules اینجا را به تابع file upload متصل کنید.')">
                         <div class="text-5xl mb-4">📂</div>
-                        <h4 class="font-bold text-white mb-2">فایل ترازنامه آزمایشی ۱۴۰۵ را انتخاب کنید</h4>
-                        <p class="text-xs text-slate-500">پشتیبانی از فرمت CSV (شامل سطوح T1 تا T5)</p>
-                    </div>
-                    <div class="mt-4 text-[10px] text-slate-500">
-                        پس از آپلود، کتابخانه PapaParse فایل را خوانده و با عبور از موتور نگاشت O/Oe/E صورت مالی را تولید می‌کند.
+                        <h4 class="font-bold text-white mb-2">تراز آزمایشی ۱۴۰۵ را انتخاب کنید</h4>
+                        <p class="text-[10px] text-slate-400 mt-2 leading-5">پس از آپلود، توابع نگاشت (Mapping) فراخوانی شده و خروجی به آبجکت DB تزریق می‌شود.</p>
                     </div>
                 </div>
             `;
         }
 
+        // --- ACTIONS ---
+        function switchTab(tab) { currentTab = tab; render(); }
+        function onCompanyChange(val) { currentCompanyId = val; render(); }
+        function onYearChange(yr) { currentYear = yr; render(); }
+
         // ---------------------------------------------------------
         // FLAWLESS PRINT ENGINE (In-App Preview Overlay)
         // ---------------------------------------------------------
         function openPrintPreview() {
-            const data = getActiveData();
+            const data = DB[currentCompanyId]?.[currentYear];
             if(!data || !data.hasRealData) return alert('خطا: گزارش مالی این سال هنوز قطعی و بارگذاری نشده است.');
 
             const container = document.getElementById('print-pages-container');
@@ -777,7 +711,6 @@
             const totalLiab = curLiab + sumGr(['401','402'], 'ycur');
             const revenue = is['601'].cur + (is['604']?.cur||0);
             const netProfit = revenue + is['602'].cur + is['603'].cur + (is['605']?.cur||0) + (is['606']?.cur||0);
-
             const currentRatio = curLiab ? (curAssets / curLiab).toFixed(2) : 0;
             const debtRatio = totalAssets ? ((totalLiab / totalAssets) * 100).toFixed(1) : 0;
             const netMargin = revenue ? ((netProfit / revenue) * 100).toFixed(1) : 0;
@@ -796,7 +729,7 @@
                         <b>با احترام،</b><br>
                         به پیوست صورت‌های مالی ${COMPANIES_INFO[currentCompanyId]} مربوط به سال مالی منتهی به ۲۹ اسفند ${currentYear} تقدیم می‌شود.
                         اجزای تشکیل‌دهنده صورت‌های مالی شامل ترازنامه، صورت سود و زیان جامع، صورت تغییرات در حقوق مالکانه و صورت جریان‌های نقدی می‌باشد.
-                        این صورت‌های مالی طبق استانداردهای حسابداری تهیه شده و در تاریخ مقرر به تایید هیئت مدیره شرکت رسیده است.
+                        این صورت‌های مالی طبق استانداردهای حسابداری تهیه شده و به تایید هیئت مدیره شرکت رسیده است.
                     </p>
                     <div class="sign-grid">
                         ${data.signatures ? data.signatures.map(s => `
@@ -818,7 +751,7 @@
                         <b>اظهارنظر:</b> به نظر این سازمان، صورت‌های مالی یاد شده، وضعیت مالی شرکت را در تاریخ پایان اسفند ${currentYear}، و عملکرد مالی و جریان‌های نقدی آن را از تمام جنبه‌های بااهمیت، طبق استانداردهای حسابداری به نحو مطلوب نشان می‌دهد. <b>(${data.auditorOpinion})</b>
                     </p>
             `;
-            if(data.auditorClauses && data.auditorClauses.length > 0) {
+            if(data.auditorClauses) {
                 data.auditorClauses.forEach(c => { html += `<p style="margin-top:20px; text-align:justify; line-height:2; font-size:11pt;"><b>${c.title}:</b> ${c.desc}</p>`; });
             }
             html += `</div>`;
@@ -861,8 +794,6 @@
             html += `<tr><td>درآمدهای عملیاتی</td><td>${fmt(is['601'].cur)}</td><td>${fmt(is['601'].comp)}</td></tr>`;
             html += `<tr><td>بهای تمام شده درآمدهای عملیاتی</td><td>${fmt(is['602'].cur)}</td><td>${fmt(is['602'].comp)}</td></tr>`;
             html += `<tr><td>سود (زیان) ناخالص</td><td>${fmt(is['601'].cur+is['602'].cur)}</td><td>${fmt(is['601'].comp+is['602'].comp)}</td></tr>`;
-            html += `<tr><td>هزینه‌های عمومی و اداری</td><td>${fmt(is['603'].cur)}</td><td>${fmt(is['603'].comp)}</td></tr>`;
-            html += `<tr><td>سود (زیان) عملیاتی</td><td>${fmt(is['601'].cur+is['602'].cur+is['603'].cur+(is['604'].cur||0))}</td><td>${fmt(is['601'].comp+is['602'].comp+is['603'].comp+(is['604'].comp||0))}</td></tr>`;
             html += `<tr><td><b>زیان خالص سال مالی</b></td><td><b>${fmt(netProfit)}</b></td><td><b>${fmt(netComp)}</b></td></tr></table>`;
 
             html += `<h3 style="margin-top:40px;">صورت جریان‌های نقدی</h3><table><tr><th>شرح</th><th>سال ${currentYear}</th><th>سال قبل</th></tr>`;
@@ -871,52 +802,13 @@
 
             container.innerHTML = html;
 
-            // نمایش محیط پیش‌نمایش
+            // Switch UI to Print Preview state
             document.body.classList.add('preview-mode');
         }
 
         function closePrintPreview() {
             document.body.classList.remove('preview-mode');
         }
-
-        // --- CSV PROCESSING ENGINE FOR JULES ---
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            document.getElementById('loader').style.display = 'flex';
-
-            // PapaParse برای خواندن فایل اکسل/CSV در مرورگر
-            Papa.parse(file, {
-                complete: function(results) {
-                    // در پروژه واقعی، برنامه‌نویس شما باید نتایج (results.data) را با فرمول‌های O/Oe/E نگاشت کند.
-                    // اینجا برای شبیه‌سازی قدرت سیستم، یک دیتای مجازی بر اساس سال 1404 تولید می‌کنیم:
-                    setTimeout(() => {
-                        const base = DB['C_GAS_TRANS']['1404'];
-                        dynYear1405Data = JSON.parse(JSON.stringify(base));
-
-                        dynYear1405Data.auditorOpinion = 'در حال بررسی (پیش‌نویس اولیه سیستم)';
-                        dynYear1405Data.auditorClauses = [];
-                        dynYear1405Data.IS['601'].cur = Math.floor(base.IS['601'].cur * 1.15);
-                        dynYear1405Data.IS['602'].cur = Math.floor(base.IS['602'].cur * 1.12);
-                        dynYear1405Data.BS['204'].ycur = Math.floor(base.BS['204'].ycur * 1.05);
-
-                        document.getElementById('loader').style.display = 'none';
-
-                        currentYear = '1405';
-                        currentCompanyId = 'C_GAS_TRANS';
-                        switchTab('BS');
-
-                        alert('✅ فایل CSV توسط سیستم پارس شد و با عبور از موتور نگاشت O/Oe/E، صورت‌های مالی سال ۱۴۰۵ به صورت خودکار ایجاد گردید.');
-                    }, 1500);
-                }
-            });
-        }
-
-        // --- ACTIONS ---
-        function switchTab(tab) { currentTab = tab; render(); }
-        function onCompanyChange(val) { currentCompanyId = val; render(); }
-        function onYearChange(yr) { currentYear = yr; render(); }
 
         // --- INIT ---
         function bootstrap() { render(); }
