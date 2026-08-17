@@ -9,7 +9,7 @@ According to V2 Directive:
 
 ## Data Gap
 - The file `مبنای ارتباط حسابها با یادداشتها سال 1404.xlsx` provides mapping from Account Code to Note (`O, Oe, E` logic).
-- However, the raw trial balance rows with their actual amounts for 1402, 1403, and 1404 that feed into this mapping are **not present** as raw datasets.
+- **Update**: The raw trial balance rows for 1403 are now **present** in `سورس تهیه صورت مالی سال 1403.xlsx` (Sheet: `Source`). This file includes `AccountId`, `T1` through `T4` codes and names, and opening/closing balances. It also maps directly to Notes (`یادداشت کل`, `یادداشت جزء`).
 - The current financial numbers are baked into the Note sheets and Statement sheets.
 
-*Action*: Request the user to provide the Raw Trial Balance CSV/Excel files for 1402, 1403, 1404 to establish full 7-layer traceability. Otherwise, lineage ends at the "Note Row" layer.
+*Action*: We must parse the `سورس تهیه صورت مالی سال 1403.xlsx` into the database. We still need similar raw source files for 1402 and 1404 to complete full traceability across all years. The 1403 source validates that the 7-layer drill-down architecture is viable.
