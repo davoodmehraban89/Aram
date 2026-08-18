@@ -32,6 +32,7 @@
 
 ### financial_1404.xlsx
 - **Path**: data/official_statements/financial_1404.xlsx
+- **Signature Verification**: SOURCE CONFIRMED — NO SIGNATURE/APPROVAL WORKSHEET PRESENT
 - **Fiscal Year**: 1404
 - **File Size**: 930495 bytes
 - **Sheet Count**: 37
@@ -48,105 +49,105 @@
 
 | Fiscal Year | Sheet Order | Sheet Name | Note Number | Exact Visible Title | Rows | Columns | Status |
 |-------------|-------------|------------|-------------|---------------------|------|---------|--------|
-| 1402 | 6 | 6 | 6 | كليه دارایي‌ها و بدهي‌هاي اين شركت در شروع فعاليت، به ارزش دفتري از طرف شركت ملي گاز ايران و بر اساس مصوبه يك هزار و سيصد و سيزدهمين جلسه هيأت مديره شركت ملي گاز مورخ 1386/12/26 انتقال يافته و در حسابها ثبت گرديده است. | 51 | 24 | IDENTIFIED |
-| 1402 | 7 | 7 | 7 | اهم رویه های حسابداری | 30 | 22 | IDENTIFIED |
-| 1402 | 8 | 8 | 8 | -3-5 | 37 | 12 | IDENTIFIED |
-| 1402 | 9 | 9 | 9 | سال مالي منتهی به 29 اسفند 1402 | 47 | 9 | IDENTIFIED |
-| 1402 | 10 | 10 | 10 | درآمدهاي عملياتي | 102 | 21 | IDENTIFIED |
-| 1402 | 11 | 11 | 11 | 5-1-1- | 59 | 27 | IDENTIFIED |
-| 1402 | 12 | 12 | 12 | بهای تمام شده درآمدهای عملیاتی: | 47 | 30 | IDENTIFIED |
-| 1402 | 13 | 13 | 13 | هزینه‌های فروش، اداری و عمومی | 64 | 24 | IDENTIFIED |
-| 1402 | 14 | 14 | 14 | سال مالي منتهی به 29 اسفند 1402 | 42 | 78 | IDENTIFIED |
-| 1402 | 15 | 15 | 15 | بیمه | 36 | 26 | IDENTIFIED |
-| 1402 | 16 | 16 | 16 | 6ـ16ـ صورت ريز پروژه هاي طرح بهينه سازي خطوط و ايستگاههاي در حال بهره برداري به شرح ذيل قابل تفكيك مي باشد . | 82 | 65 | IDENTIFIED |
-| 1402 | 17 | 17 | 17 | 10-13- | 44 | 16383 | IDENTIFIED |
-| 1402 | 18 | 18 | 18 | 10-15- اقلام سرمايه‌اي در انبار : | 32 | 13 | IDENTIFIED |
-| 1402 | 19 | 19 | 19 | دارایی‌های نامشهود | 34 | 23 | IDENTIFIED |
-| 1402 | 20 | 20 | 20 | دریافتنی‌های تجاری و سایر دریافتنی‌ها | 103 | 16 | IDENTIFIED |
-| 1402 | 21 | 21 | 21 | 12-1-2-1- | 33 | 15 | IDENTIFIED |
-| 1402 | 22 | 22 | 22 | پیش‌پرداخت‌ها | 52 | 19 | IDENTIFIED |
-| 1402 | 23 | 23 | 23 | موجودي نقد | 36 | 24 | IDENTIFIED |
-| 1402 | 24 | 24 | 24 | پرداختنی‌هاي تجاري و ساير پرداختني‌ها | 38 | 18 | IDENTIFIED |
-| 1402 | 25 | 25 | 25 | 19-1-2- | 42 | 15 | IDENTIFIED |
-| 1402 | 26 | 26 | 26 | 19-1-3- | 56 | 15 | IDENTIFIED |
-| 1402 | 27 | 27 | 27 | #REF! | 62 | 19 | IDENTIFIED |
-| 1402 | 28 | 28 | 28 | ماليات پرداختني | 81 | 25 | IDENTIFIED |
-| 1402 | 29 | 29 | 29 | سال مالي منتهی به 29 اسفند 1402 | 85 | 21 | IDENTIFIED |
-| 1402 | 30 | 30 | 30 | معاملات غیرنقدی | 37 | 19 | IDENTIFIED |
-| 1402 | 31 | 31 | 31 | 26-4- مدیریت ریسک اعتباری | 54 | 17 | IDENTIFIED |
-| 1402 | 32 | 32 | 32 | 26-5- مدیریت ریسک نقدینگی | 44 | 21 | IDENTIFIED |
-| 1402 | 33 | 33 | 33 | 28 - معاملات با اشخاص وابسته | 58 | 22 | IDENTIFIED |
-| 1402 | 34 | 34 | 34 | (مبالغ به میلیون ریال) | 68 | 20 | IDENTIFIED |
-| 1402 | 35 | 35 | 35 | 29-2-شرکت در تاریخ صورت وضعیت مالی فاقد تعهدات موضوع ماده 235 قانون تجارت است. | 45 | 18 | IDENTIFIED |
-| 1402 | 36 | 36 | 36 | شركت انتقال گاز ايران (سهامي خاص) | 56 | 16 | IDENTIFIED |
-| 1402 | 37 | 37 | 37 | سایر اطلاعات مالی | 66 | 16 | IDENTIFIED |
-| 1402 | 38 | 38 | 38 | سایر اطلاعات مالی | 64 | 18 | IDENTIFIED |
-| 1403 | 6 | 6 | 6 | كليه دارایي‌ها و بدهي‌هاي اين شركت در شروع فعاليت، به ارزش دفتري از طرف شركت ملي گاز ايران و بر اساس مصوبه يك هزار و سيصد و سيزدهمين جلسه هيأت مديره شركت ملي گاز مورخ 1386/12/26 انتقال يافته و در حسابها ثبت گرديده است. | 50 | 24 | IDENTIFIED |
-| 1403 | 7 | 7 | 7 | اهم رویه های حسابداری | 30 | 22 | IDENTIFIED |
-| 1403 | 8 | 8 | 8 | -3-5 | 38 | 10 | IDENTIFIED |
-| 1403 | 9 | 9 | 9 | 3-7- | 47 | 9 | IDENTIFIED |
-| 1403 | 10 | 10 | 10 | درآمدهاي عملياتي | 102 | 22 | IDENTIFIED |
-| 1403 | 11 | 11 | 11 | 5-1-1- | 59 | 29 | IDENTIFIED |
-| 1403 | 12 | 12 | 12 | بهای تمام شده درآمدهای عملیاتی: | 47 | 31 | IDENTIFIED |
-| 1403 | 13 | 13 | 13 | هزینه‌های فروش، اداری و عمومی | 66 | 24 | IDENTIFIED |
-| 1403 | 14 | 14 | 14 | سال مالي منتهی به 30 اسفند 1403 | 42 | 78 | IDENTIFIED |
-| 1403 | 15 | 15 | 15 | 10-2- نقل و انتقالات در زمین به مبلغ 14.183.100 میلیون ریال عمدتا بابت زمین ساختمان جدید ستاد انتقال گاز به مبلغ 14.150.000 میلیون ریال است. | 38 | 26 | IDENTIFIED |
-| 1403 | 16 | 16 | 16 | 6ـ16ـ صورت ريز پروژه هاي طرح بهينه سازي خطوط و ايستگاههاي در حال بهره برداري به شرح ذيل قابل تفكيك مي باشد . | 83 | 43 | IDENTIFIED |
-| 1403 | 17 | 17 | 17 | 10-13- | 41 | 16384 | IDENTIFIED |
-| 1403 | 18 | 18 | 18 | 10-15- اقلام سرمايه‌اي در انبار : | 32 | 13 | IDENTIFIED |
-| 1403 | 19 | 19 | 19 | دارایی‌های نامشهود | 34 | 23 | IDENTIFIED |
-| 1403 | 20 | 20 | 20 | دریافتنی‌های تجاری و سایر دریافتنی‌ها | 103 | 19 | IDENTIFIED |
-| 1403 | 21 | 21 | 21 | مبلغ 4,200,521 میلیون ریال مانده سپرده‌های موقت عمدتاً شامل مبلغ 3,040,000 میلیون ریال ودیعه ساختمان مرکزی شرکت انتقال گاز ایران (به مالکیت خانواده رزازیان) می‌باشد، که تا تاریخ تهیه صورتهای مالی مبلغ 2.950.000 میلیون ریال آن وصول گردیده است. همچنین مبلغ 700.000 میلیون ریال طلب از شرکت آرمان سیر مشهد بابت سپرده استفاده کارکنان از خدمات رفاهی اقامتی مشهد، کیش، دریاکنار و چادگان و مبلغ 227.369 میلیون ریال طلب از آقای عبدالله مهاجر دارابي بابت ودیعه ساختمان اداری منطقه 9 می باشد. | 33 | 15 | IDENTIFIED |
-| 1403 | 22 | 22 | 22 | پیش‌پرداخت‌ها | 58 | 19 | IDENTIFIED |
-| 1403 | 23 | 23 | 23 | موجودي نقد | 36 | 24 | IDENTIFIED |
-| 1403 | 24 | 24 | 24 | پرداختنی‌هاي تجاري و ساير پرداختني‌ها | 38 | 18 | IDENTIFIED |
-| 1403 | 25 | 25 | 25 | 18-1-2- | 40 | 15 | IDENTIFIED |
-| 1403 | 26 | 26 | 26 | 18-1-3- | 54 | 15 | IDENTIFIED |
-| 1403 | 27 | 27 | 27 | #REF! | 62 | 19 | IDENTIFIED |
-| 1403 | 28 | 28 | 28 | ماليات پرداختني | 82 | 25 | IDENTIFIED |
-| 1403 | 29 | 29 | 29 | 21- سود سهام پرداختنی | 85 | 22 | IDENTIFIED |
-| 1403 | 30 | 30 | 30 | سال مالي منتهی به 30 اسفند 1403 | 37 | 19 | IDENTIFIED |
-| 1403 | 31 | 31 | 31 | 24-4- مدیریت ریسک اعتباری | 53 | 17 | IDENTIFIED |
-| 1403 | 32 | 32 | 32 | 24-5- مدیریت ریسک نقدینگی | 44 | 21 | IDENTIFIED |
-| 1403 | 33 | 33 | 33 | 26 - معاملات با اشخاص وابسته | 58 | 13 | IDENTIFIED |
-| 1403 | 34 | 34 | 34 | (مبالغ به میلیون ریال) | 67 | 22 | IDENTIFIED |
-| 1403 | 35 | 35 | 35 | 27-1-2-طبق برگ های مطالبه سال های 1400 و 1401 جمعا مبلغ 1,301,180 میلیون ریال بابت جرایم ماده 169 قانون مالیاتهای مستقیم و همچنین بابت جرائم مالیات ارزش افزوده برای سال 1401 جمعا مبلغ 10,766,350 میلیون ریال مطالبه شده است که به دلیل اعتراض شرکت ذخیره ای در دفاتر اعمال نشده است. | 46 | 18 | IDENTIFIED |
-| 1403 | 36 | 36-37 | 36-37 | شركت انتقال گاز ايران (سهامي خاص) | 139 | 22 | IDENTIFIED |
-| 1403 | 37 | 38 | 38 | سایر اطلاعات مالی | 66 | 16 | IDENTIFIED |
-| 1403 | 38 | 39 | 39 | سایر اطلاعات مالی | 64 | 18 | IDENTIFIED |
-| 1404 | 5 | 6 | 6 | كليه دارایي‌ها و بدهي‌هاي اين شركت در شروع فعاليت، به ارزش دفتري از طرف شركت ملي گاز ايران و بر اساس مصوبه يك هزار و سيصد و سيزدهمين جلسه هيأت مديره شركت ملي گاز به تاریخ 1386/12/26 انتقال يافته و در حسابها ثبت گرديده است. | 50 | 24 | IDENTIFIED |
-| 1404 | 6 | 7 | 7 | 2-2- | 37 | 22 | IDENTIFIED |
-| 1404 | 7 | 8 | 8 | -3-5 | 41 | 10 | IDENTIFIED |
-| 1404 | 8 | 9 | 9 | سال مالي منتهی به 29 اسفند 1404 | 40 | 9 | IDENTIFIED |
-| 1404 | 9 | 10 | 10 | درآمدهاي عملياتي | 102 | 22 | IDENTIFIED |
-| 1404 | 10 | 11 | 11 | 5-1-1- | 68 | 31 | IDENTIFIED |
-| 1404 | 11 | 12 | 12 | بهای تمام شده درآمدهای عملیاتی: | 47 | 31 | IDENTIFIED |
-| 1404 | 12 | 13 | 13 | هزینه‌های فروش، اداری و عمومی | 64 | 24 | IDENTIFIED |
-| 1404 | 13 | 14 | 14 | سال مالي منتهی به 29 اسفند 1404 | 42 | 78 | IDENTIFIED |
+| 1402 | 6 | 6 | 6 | يادداشتهاي توضيحي صورت‌هاي مالي | 51 | 24 | PARTIALLY_IDENTIFIED |
+| 1402 | 7 | 7 | 7 | اهم رویه های حسابداری | 30 | 22 | PARTIALLY_IDENTIFIED |
+| 1402 | 8 | 8 | 8 | دارایی‌های ثابت مشهود | 37 | 12 | PARTIALLY_IDENTIFIED |
+| 1402 | 9 | 9 | 9 | دارایی‌هاي نامشهود | 47 | 9 | PARTIALLY_IDENTIFIED |
+| 1402 | 10 | 10 | 10 | درآمدهاي عملياتي | 102 | 21 | PARTIALLY_IDENTIFIED |
+| 1402 | 11 | 11 | 11 | حق العمل‌کاری به شرکت‌های استانی به تفکیک به شرح زیر می‌باشد: | 59 | 27 | PARTIALLY_IDENTIFIED |
+| 1402 | 12 | 12 | 12 | بهای تمام شده درآمدهای عملیاتی: | 47 | 30 | PARTIALLY_IDENTIFIED |
+| 1402 | 13 | 13 | 13 | هزینه‌های فروش، اداری و عمومی | 64 | 24 | PARTIALLY_IDENTIFIED |
+| 1402 | 14 | 14 | 14 | سال مالی منتهی به 29 اسفند 1398 | 42 | 78 | PARTIALLY_IDENTIFIED |
+| 1402 | 15 | 15 | 15 | بیمه | 36 | 26 | PARTIALLY_IDENTIFIED |
+| 1402 | 16 | 16 | 16 | درصد تكميل | 82 | 65 | PARTIALLY_IDENTIFIED |
+| 1402 | 17 | 17 | 17 | شرح دارایی ها | 44 | 16383 | PARTIALLY_IDENTIFIED |
+| 1402 | 18 | 18 | 18 | 10-15- اقلام سرمايه‌اي در انبار : | 32 | 13 | PARTIALLY_IDENTIFIED |
+| 1402 | 19 | 19 | 19 | دارایی‌های نامشهود | 34 | 23 | PARTIALLY_IDENTIFIED |
+| 1402 | 20 | 20 | 20 | دریافتنی‌های تجاری و سایر دریافتنی‌ها | 103 | 16 | PARTIALLY_IDENTIFIED |
+| 1402 | 21 | 21 | 21 | دریافتنی‌های بلندمدت: | 33 | 15 | PARTIALLY_IDENTIFIED |
+| 1402 | 22 | 22 | 22 | پیش‌پرداخت‌ها | 52 | 19 | PARTIALLY_IDENTIFIED |
+| 1402 | 23 | 23 | 23 | موجودي نقد | 36 | 24 | PARTIALLY_IDENTIFIED |
+| 1402 | 24 | 24 | 24 | پرداختنی‌هاي تجاري و ساير پرداختني‌ها | 38 | 18 | PARTIALLY_IDENTIFIED |
+| 1402 | 25 | 25 | 25 | یادداشت | 42 | 15 | PARTIALLY_IDENTIFIED |
+| 1402 | 26 | 26 | 26 | ساير شركتها به شرح زير قابل تفكيك است: | 56 | 15 | PARTIALLY_IDENTIFIED |
+| 1402 | 27 | 27 | 27 | پرداختني‌هاي بلند مدت: | 62 | 19 | PARTIALLY_IDENTIFIED |
+| 1402 | 28 | 28 | 28 | ماليات پرداختني | 81 | 25 | PARTIALLY_IDENTIFIED |
+| 1402 | 29 | 29 | 29 | 21- سود سهام پرداختنی | 85 | 21 | PARTIALLY_IDENTIFIED |
+| 1402 | 30 | 30 | 30 | معاملات غیرنقدی | 37 | 19 | PARTIALLY_IDENTIFIED |
+| 1402 | 31 | 31 | 31 | 26-4- مدیریت ریسک اعتباری | 54 | 17 | PARTIALLY_IDENTIFIED |
+| 1402 | 32 | 32 | 32 | 26-5- مدیریت ریسک نقدینگی | 44 | 21 | PARTIALLY_IDENTIFIED |
+| 1402 | 33 | 33 | 33 | 28 - معاملات با اشخاص وابسته | 58 | 22 | PARTIALLY_IDENTIFIED |
+| 1402 | 34 | 34 | 34 | (مبالغ به ریال) | 68 | 20 | PARTIALLY_IDENTIFIED |
+| 1402 | 35 | 35 | 35 | 29- تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | 45 | 18 | PARTIALLY_IDENTIFIED |
+| 1402 | 36 | 36 | 36 | سایر اطلاعات مالی | 56 | 16 | PARTIALLY_IDENTIFIED |
+| 1402 | 37 | 37 | 37 | سایر اطلاعات مالی | 66 | 16 | PARTIALLY_IDENTIFIED |
+| 1402 | 38 | 38 | 38 | سایر اطلاعات مالی | 64 | 18 | PARTIALLY_IDENTIFIED |
+| 1403 | 6 | 6 | 6 | يادداشتهاي توضيحي صورت‌هاي مالي | 50 | 24 | PARTIALLY_IDENTIFIED |
+| 1403 | 7 | 7 | 7 | اهم رویه های حسابداری | 30 | 22 | PARTIALLY_IDENTIFIED |
+| 1403 | 8 | 8 | 8 | دارایی‌های ثابت مشهود | 38 | 10 | PARTIALLY_IDENTIFIED |
+| 1403 | 9 | 9 | 9 | دارایی‌هاي نامشهود | 47 | 9 | PARTIALLY_IDENTIFIED |
+| 1403 | 10 | 10 | 10 | درآمدهاي عملياتي | 102 | 22 | PARTIALLY_IDENTIFIED |
+| 1403 | 11 | 11 | 11 | حق العمل‌کاری به شرکت‌های استانی به تفکیک به شرح زیر می‌باشد: | 59 | 29 | PARTIALLY_IDENTIFIED |
+| 1403 | 12 | 12 | 12 | بهای تمام شده درآمدهای عملیاتی: | 47 | 31 | PARTIALLY_IDENTIFIED |
+| 1403 | 13 | 13 | 13 | هزینه‌های فروش، اداری و عمومی | 66 | 24 | PARTIALLY_IDENTIFIED |
+| 1403 | 14 | 14 | 14 | سال مالی منتهی به 29 اسفند 1398 | 42 | 78 | PARTIALLY_IDENTIFIED |
+| 1403 | 15 | 15 | 15 | بیمه | 38 | 26 | PARTIALLY_IDENTIFIED |
+| 1403 | 16 | 16 | 16 | درصد تكميل | 83 | 43 | PARTIALLY_IDENTIFIED |
+| 1403 | 17 | 17 | 17 | شرح دارایی ها | 41 | 16384 | PARTIALLY_IDENTIFIED |
+| 1403 | 18 | 18 | 18 | 10-15- اقلام سرمايه‌اي در انبار : | 32 | 13 | PARTIALLY_IDENTIFIED |
+| 1403 | 19 | 19 | 19 | دارایی‌های نامشهود | 34 | 23 | PARTIALLY_IDENTIFIED |
+| 1403 | 20 | 20 | 20 | دریافتنی‌های تجاری و سایر دریافتنی‌ها | 103 | 19 | PARTIALLY_IDENTIFIED |
+| 1403 | 21 | 21 | 21 | دریافتنی‌های بلندمدت | 33 | 15 | PARTIALLY_IDENTIFIED |
+| 1403 | 22 | 22 | 22 | پیش‌پرداخت‌ها | 58 | 19 | PARTIALLY_IDENTIFIED |
+| 1403 | 23 | 23 | 23 | موجودي نقد | 36 | 24 | PARTIALLY_IDENTIFIED |
+| 1403 | 24 | 24 | 24 | پرداختنی‌هاي تجاري و ساير پرداختني‌ها | 38 | 18 | PARTIALLY_IDENTIFIED |
+| 1403 | 25 | 25 | 25 | یادداشت | 40 | 15 | PARTIALLY_IDENTIFIED |
+| 1403 | 26 | 26 | 26 | ساير شركتها به شرح زير قابل تفكيك است: | 54 | 15 | PARTIALLY_IDENTIFIED |
+| 1403 | 27 | 27 | 27 | پرداختني‌هاي بلند مدت: | 62 | 19 | PARTIALLY_IDENTIFIED |
+| 1403 | 28 | 28 | 28 | ماليات پرداختني | 82 | 25 | PARTIALLY_IDENTIFIED |
+| 1403 | 29 | 29 | 29 | 21- سود سهام پرداختنی | 85 | 22 | PARTIALLY_IDENTIFIED |
+| 1403 | 30 | 30 | 30 | معاملات غیرنقدی | 37 | 19 | PARTIALLY_IDENTIFIED |
+| 1403 | 31 | 31 | 31 | 24-4- مدیریت ریسک اعتباری | 53 | 17 | PARTIALLY_IDENTIFIED |
+| 1403 | 32 | 32 | 32 | 24-5- مدیریت ریسک نقدینگی | 44 | 21 | PARTIALLY_IDENTIFIED |
+| 1403 | 33 | 33 | 33 | 26 - معاملات با اشخاص وابسته | 58 | 13 | PARTIALLY_IDENTIFIED |
+| 1403 | 34 | 34 | 34 | (مبالغ به ریال) | 67 | 22 | PARTIALLY_IDENTIFIED |
+| 1403 | 35 | 35 | 35 | 27- تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | 46 | 18 | PARTIALLY_IDENTIFIED |
+| 1403 | 36 | 36-37 | 36-37 | سایر اطلاعات مالی | 139 | 22 | PARTIALLY_IDENTIFIED |
+| 1403 | 37 | 38 | 38 | سایر اطلاعات مالی | 66 | 16 | PARTIALLY_IDENTIFIED |
+| 1403 | 38 | 39 | 39 | سایر اطلاعات مالی | 64 | 18 | PARTIALLY_IDENTIFIED |
+| 1404 | 5 | 6 | 6 | يادداشتهاي توضيحي صورت‌هاي مالي | 50 | 24 | PARTIALLY_IDENTIFIED |
+| 1404 | 6 | 7 | 7 | استاندارد حسابداری 15 «حسابداری سرمایه گذاری ها »(تجدیدنظر شده): | 37 | 22 | PARTIALLY_IDENTIFIED |
+| 1404 | 7 | 8 | 8 | دارایی‌های ثابت مشهود | 41 | 10 | PARTIALLY_IDENTIFIED |
+| 1404 | 8 | 9 | 9 | موجودی مواد وکالا | 40 | 9 | PARTIALLY_IDENTIFIED |
+| 1404 | 9 | 10 | 10 | درآمدهاي عملياتي | 102 | 22 | PARTIALLY_IDENTIFIED |
+| 1404 | 10 | 11 | 11 | حق العمل‌کاری به شرکت‌های استانی به تفکیک به شرح زیر می‌باشد: | 68 | 31 | PARTIALLY_IDENTIFIED |
+| 1404 | 11 | 12 | 12 | بهای تمام شده درآمدهای عملیاتی: | 47 | 31 | PARTIALLY_IDENTIFIED |
+| 1404 | 12 | 13 | 13 | هزینه‌های فروش، اداری و عمومی | 64 | 24 | PARTIALLY_IDENTIFIED |
+| 1404 | 13 | 14 | 14 | سال مالی منتهی به 29 اسفند 1398 | 42 | 78 | PARTIALLY_IDENTIFIED |
 | 1404 | 14 | 15 | 15 | 10-5-  نقل و انتقالات در سرفصل سیستم ها و تجهیزات کنترل مخابراتی و اندازه گیری به مبلغ 585.685 میلیون ریال عمدتا شامل ايستگاه اندازه گيري آستارا به مبلغ 213.077 میلیون ریال, تجهیزات تاسيسات اندازه گيري گاز صادراتي نفت شهر به مبلغ 131.733 میلیون ریال و مبلغ 69.476 ریال مربوط به ادامه هزينه سيستمهاي مخابراتي تبريز و مبلغ 55.445 میلیون ریال مربوط به مركز تلفن ساختمان مخابرات مجتمع باقري و مبلغ 46.169 میلیون ریال بابت تجهيزات اندازه گیری مخابرات منطقه  هشت و مبلغ 22.400 میلیون ریال بابت ادامه هزينه ايستگاه اندازه گيري صادرات گاز نوردوز و مبلغ 15.792 میلیون ریال بابت ايستگاه اندازه گيري گاز بازرگان منطقه هشت می باشد. | 39 | 26 | IDENTIFIED |
-| 1404 | 15 | 16 | 16 | 6ـ16ـ صورت ريز پروژه هاي طرح بهينه سازي خطوط و ايستگاههاي در حال بهره برداري به شرح ذيل قابل تفكيك مي باشد . | 83 | 43 | IDENTIFIED |
-| 1404 | 16 | 17 | 17 | 10-11- | 42 | 16384 | IDENTIFIED |
-| 1404 | 17 | 18 | 18 | 10-13- اقلام سرمايه‌اي در انبار : | 32 | 13 | IDENTIFIED |
-| 1404 | 18 | 19 | 19 | دارایی‌های نامشهود | 34 | 23 | IDENTIFIED |
-| 1404 | 19 | 20 | 20 | دریافتنی‌های تجاری و سایر دریافتنی‌ها | 104 | 19 | IDENTIFIED |
-| 1404 | 20 | 21 | 21 | 12-1-3- | 32 | 15 | IDENTIFIED |
-| 1404 | 21 | 22 | 22 | پیش‌پرداخت‌ها | 58 | 19 | IDENTIFIED |
-| 1404 | 22 | 23 | 23 | موجودي نقد | 35 | 24 | IDENTIFIED |
-| 1404 | 23 | 24 | 24 | پرداختنی‌هاي تجاري و ساير پرداختني‌ها | 38 | 18 | IDENTIFIED |
-| 1404 | 24 | 25 | 25 | 18-1-2- | 39 | 15 | IDENTIFIED |
-| 1404 | 25 | 26 | 26 | 18-1-3- | 55 | 15 | IDENTIFIED |
-| 1404 | 26 | 27 | 27 | #REF! | 62 | 19 | IDENTIFIED |
-| 1404 | 27 | 28 | 28 | ماليات پرداختني | 86 | 25 | IDENTIFIED |
-| 1404 | 28 | 29 | 29 | سال مالي منتهی به 29 اسفند 1404 | 86 | 22 | IDENTIFIED |
-| 1404 | 29 | 30 | 30 | نقد حاصل از عملیات | 57 | 19 | IDENTIFIED |
-| 1404 | 30 | 31 | 31 | 25-4- مدیریت ریسک اعتباری | 53 | 17 | IDENTIFIED |
-| 1404 | 31 | 32 | 32 | 25-5- مدیریت ریسک نقدینگی | 44 | 21 | IDENTIFIED |
-| 1404 | 32 | 33 | 33 | 27 - معاملات با اشخاص وابسته | 58 | 13 | IDENTIFIED |
-| 1404 | 33 | 34 | 34 | (مبالغ به میلیون ریال) | 67 | 22 | IDENTIFIED |
-| 1404 | 34 | 35 | 35 | 28- تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | 54 | 20 | IDENTIFIED |
-| 1404 | 35 | 36-37 | 36-37 | شركت انتقال گاز ايران (سهامي خاص) | 146 | 22 | IDENTIFIED |
-| 1404 | 36 | 38 | 38 | سایر اطلاعات مالی | 64 | 16 | IDENTIFIED |
-| 1404 | 37 | 39 | 39 | سایر اطلاعات مالی | 64 | 18 | IDENTIFIED |
+| 1404 | 15 | 16 | 16 | درصد تكميل | 83 | 43 | PARTIALLY_IDENTIFIED |
+| 1404 | 16 | 17 | 17 | شرح دارایی ها | 42 | 16384 | PARTIALLY_IDENTIFIED |
+| 1404 | 17 | 18 | 18 | 10-13- اقلام سرمايه‌اي در انبار : | 32 | 13 | PARTIALLY_IDENTIFIED |
+| 1404 | 18 | 19 | 19 | دارایی‌های نامشهود | 34 | 23 | PARTIALLY_IDENTIFIED |
+| 1404 | 19 | 20 | 20 | دریافتنی‌های تجاری و سایر دریافتنی‌ها | 104 | 19 | PARTIALLY_IDENTIFIED |
+| 1404 | 20 | 21 | 21 | دریافتنی‌های بلندمدت | 32 | 15 | PARTIALLY_IDENTIFIED |
+| 1404 | 21 | 22 | 22 | پیش‌پرداخت‌ها | 58 | 19 | PARTIALLY_IDENTIFIED |
+| 1404 | 22 | 23 | 23 | موجودي نقد | 35 | 24 | PARTIALLY_IDENTIFIED |
+| 1404 | 23 | 24 | 24 | پرداختنی‌هاي تجاري و ساير پرداختني‌ها | 38 | 18 | PARTIALLY_IDENTIFIED |
+| 1404 | 24 | 25 | 25 | یادداشت | 39 | 15 | PARTIALLY_IDENTIFIED |
+| 1404 | 25 | 26 | 26 | ساير شركتها به شرح زير قابل تفكيك است: | 55 | 15 | PARTIALLY_IDENTIFIED |
+| 1404 | 26 | 27 | 27 | پرداختني‌هاي بلند مدت: | 62 | 19 | PARTIALLY_IDENTIFIED |
+| 1404 | 27 | 28 | 28 | ماليات پرداختني | 86 | 25 | PARTIALLY_IDENTIFIED |
+| 1404 | 28 | 29 | 29 | 21- سود سهام پرداختنی | 86 | 22 | PARTIALLY_IDENTIFIED |
+| 1404 | 29 | 30 | 30 | نقد حاصل از عملیات | 57 | 19 | PARTIALLY_IDENTIFIED |
+| 1404 | 30 | 31 | 31 | 25-4- مدیریت ریسک اعتباری | 53 | 17 | PARTIALLY_IDENTIFIED |
+| 1404 | 31 | 32 | 32 | 25-5- مدیریت ریسک نقدینگی | 44 | 21 | PARTIALLY_IDENTIFIED |
+| 1404 | 32 | 33 | 33 | 27 - معاملات با اشخاص وابسته | 58 | 13 | PARTIALLY_IDENTIFIED |
+| 1404 | 33 | 34 | 34 | (مبالغ به ریال) | 67 | 22 | PARTIALLY_IDENTIFIED |
+| 1404 | 34 | 35 | 35 | 28- تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | 54 | 20 | PARTIALLY_IDENTIFIED |
+| 1404 | 35 | 36-37 | 36-37 | سایر اطلاعات مالی | 146 | 22 | PARTIALLY_IDENTIFIED |
+| 1404 | 36 | 38 | 38 | سایر اطلاعات مالی | 64 | 16 | PARTIALLY_IDENTIFIED |
+| 1404 | 37 | 39 | 39 | سایر اطلاعات مالی | 64 | 18 | PARTIALLY_IDENTIFIED |
 
 ## Worksheet-Level Inspection
 
@@ -1964,15 +1965,16 @@
 - **Fiscal Year**: 1403
 - **Worksheet Index**: 1
 - **Visibility Status**: visible
-- **Used Row Count**: 204179
+- **Physical Used Rows**: 204179
+- **Actual Data-Record Rows**: 204177
 - **Used Column Count**: 29
 - **Used Range**: A1:AD204180
 - **Merged-Cell Count**: 0
-- **Formula-Cell Presence**: False
-- **Approximate Formula Count**: 0
+- **Formula-Cell Presence**: True
+- **Approximate Formula Count**: 10
 - **First Meaningful Non-Empty Rows**: 2
 - **Header Rows**: 2
-- **Likely Sheet Category**: FINANCIAL_NOTE
+- **Likely Sheet Category**: SOURCE_LEDGER
 - **Apparent Cross-Sheet References**: False
 - **Apparent External References**: False
 
@@ -1980,15 +1982,16 @@
 - **Fiscal Year**: 1404
 - **Worksheet Index**: 1
 - **Visibility Status**: visible
-- **Used Row Count**: 252900
+- **Physical Used Rows**: 252900
+- **Actual Data-Record Rows**: 252898
 - **Used Column Count**: 26
 - **Used Range**: A1:AA252900
 - **Merged-Cell Count**: 0
-- **Formula-Cell Presence**: False
-- **Approximate Formula Count**: 0
+- **Formula-Cell Presence**: True
+- **Approximate Formula Count**: 252908
 - **First Meaningful Non-Empty Rows**: 2
 - **Header Rows**: 2
-- **Likely Sheet Category**: FINANCIAL_NOTE
+- **Likely Sheet Category**: SOURCE_LEDGER
 - **Apparent Cross-Sheet References**: False
 - **Apparent External References**: False
 
@@ -1996,15 +1999,16 @@
 - **Fiscal Year**: 1404
 - **Worksheet Index**: 1
 - **Visibility Status**: visible
-- **Used Row Count**: 505
+- **Physical Used Row Count**: 505
+- **Actual Mapping/Rule Rows**: 497
 - **Used Column Count**: 12
 - **Used Range**: A1:R505
 - **Merged-Cell Count**: 0
-- **Formula-Cell Presence**: True
-- **Approximate Formula Count**: 500
-- **First Meaningful Non-Empty Rows**: 1
+- **Formula-Cell Presence**: False
+- **Approximate Formula Count**: 0
+- **First Meaningful Non-Empty Rows**: 2
 - **Header Rows**: 1
-- **Likely Sheet Category**: FINANCIAL_NOTE
+- **Likely Sheet Category**: MAPPING
 - **Apparent Cross-Sheet References**: False
 - **Apparent External References**: False
 
@@ -2014,7 +2018,7 @@
 - **Path**: data/source_ledgers/source_1403.xlsx
 - **Hidden Sheets**: []
 - **Very Hidden Sheets**: []
-- **Presence of Formulas**: No
+- **Presence of Formulas**: Yes (10 formula cells)
 - **Structural Warnings**: []
 #### Field Dictionary
 | Exact Source Column Name | Normalized Interpretation | Data Type | Example Value | Null Prevalence |
@@ -2053,7 +2057,7 @@
 - **Path**: data/source_ledgers/source_1404.xlsx
 - **Hidden Sheets**: []
 - **Very Hidden Sheets**: []
-- **Presence of Formulas**: No
+- **Presence of Formulas**: Yes (252,908 formula cells)
 - **Structural Warnings**: []
 #### Field Dictionary
 | Exact Source Column Name | Normalized Interpretation | Data Type | Example Value | Null Prevalence |
@@ -2094,9 +2098,11 @@
 - **Very Hidden Sheets**: []
 - **Workbook Type**: MAPPING
 - **Status**: Opens successfully
-- **Presence of Formulas**: Yes
+- **Presence of Formulas**: No
 - **Structural Warnings**: []
-- **Row Count**: 497
+- **Physical Used Rows**: 505
+- **Actual Mapping/Rule Rows**: 497
+- **Header Row Count**: 1
 - **Column Count**: 12
 
 #### Structure

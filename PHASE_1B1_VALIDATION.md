@@ -15,16 +15,21 @@
 - **Source-ledger worksheets**: 2
 - **Mapping worksheets**: 1
 - **Hidden worksheets**: 0 (all evaluated sheets had state='visible')
-- **Formula-containing worksheets**: Yes, multiple official statement and note worksheets contain formulas.
+- **Formula-containing worksheets**: None in official statements or mapping. source_1403.xlsx (1 sheet, 10 cells) and source_1404.xlsx (1 sheet, 252,908 cells) contain formulas.
 
 ## SOURCE LEDGERS
-- **source_1403 exact/reliable row count**: 204,179
+- **source_1403 physical used rows**: 204,179
+- **source_1403 actual data-record rows**: 204,177
+- **source_1403 header rows**: 2
 - **source_1403 column count**: 29
-- **source_1404 exact/reliable row count**: 252,900
+- **source_1404 physical used rows**: 252,900
+- **source_1404 actual data-record rows**: 252,898
+- **source_1404 header rows**: 2
 - **source_1404 column count**: 26
 
 ## MAPPING
-- **mapping_1404 row count**: 505
+- **mapping_1404 physical used rows**: 505
+- **mapping_1404 actual mapping/rule rows**: 497
 - **mapping_1404 column count**: 12
 - **Exact mapping column names**:
   - کد حساب
