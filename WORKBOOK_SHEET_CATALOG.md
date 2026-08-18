@@ -48,11 +48,6 @@
 
 | Fiscal Year | Sheet Order | Sheet Name | Note Number | Exact Visible Title | Rows | Columns | Status |
 |-------------|-------------|------------|-------------|---------------------|------|---------|--------|
-| 1402 | 1 | ص امضا | N/A | N/A | 32 | 14 | TITLE_UNCLEAR |
-| 1402 | 2 | سودوزيان | N/A | N/A | 44 | 14 | TITLE_UNCLEAR |
-| 1402 | 3 | وضعيت مالي | N/A | N/A | 54 | 22 | TITLE_UNCLEAR |
-| 1402 | 4 | حقوق مالكانه | N/A | N/A | 65 | 16 | TITLE_UNCLEAR |
-| 1402 | 5 | جريان هاي نقدي | N/A | N/A | 82 | 14 | TITLE_UNCLEAR |
 | 1402 | 6 | 6 | 6 | كليه دارایي‌ها و بدهي‌هاي اين شركت در شروع فعاليت، به ارزش دفتري از طرف شركت ملي گاز ايران و بر اساس مصوبه يك هزار و سيصد و سيزدهمين جلسه هيأت مديره شركت ملي گاز مورخ 1386/12/26 انتقال يافته و در حسابها ثبت گرديده است. | 51 | 24 | IDENTIFIED |
 | 1402 | 7 | 7 | 7 | اهم رویه های حسابداری | 30 | 22 | IDENTIFIED |
 | 1402 | 8 | 8 | 8 | -3-5 | 37 | 12 | IDENTIFIED |
@@ -86,11 +81,6 @@
 | 1402 | 36 | 36 | 36 | شركت انتقال گاز ايران (سهامي خاص) | 56 | 16 | IDENTIFIED |
 | 1402 | 37 | 37 | 37 | سایر اطلاعات مالی | 66 | 16 | IDENTIFIED |
 | 1402 | 38 | 38 | 38 | سایر اطلاعات مالی | 64 | 18 | IDENTIFIED |
-| 1403 | 1 | ص امضا | N/A | N/A | 32 | 14 | TITLE_UNCLEAR |
-| 1403 | 2 | سودوزيان | N/A | N/A | 44 | 14 | TITLE_UNCLEAR |
-| 1403 | 3 | وضعيت مالي | N/A | N/A | 53 | 22 | TITLE_UNCLEAR |
-| 1403 | 4 | حقوق مالكانه | N/A | N/A | 66 | 17 | TITLE_UNCLEAR |
-| 1403 | 5 | جريان هاي نقدي | N/A | N/A | 82 | 14 | TITLE_UNCLEAR |
 | 1403 | 6 | 6 | 6 | كليه دارایي‌ها و بدهي‌هاي اين شركت در شروع فعاليت، به ارزش دفتري از طرف شركت ملي گاز ايران و بر اساس مصوبه يك هزار و سيصد و سيزدهمين جلسه هيأت مديره شركت ملي گاز مورخ 1386/12/26 انتقال يافته و در حسابها ثبت گرديده است. | 50 | 24 | IDENTIFIED |
 | 1403 | 7 | 7 | 7 | اهم رویه های حسابداری | 30 | 22 | IDENTIFIED |
 | 1403 | 8 | 8 | 8 | -3-5 | 38 | 10 | IDENTIFIED |
@@ -124,10 +114,6 @@
 | 1403 | 36 | 36-37 | 36-37 | شركت انتقال گاز ايران (سهامي خاص) | 139 | 22 | IDENTIFIED |
 | 1403 | 37 | 38 | 38 | سایر اطلاعات مالی | 66 | 16 | IDENTIFIED |
 | 1403 | 38 | 39 | 39 | سایر اطلاعات مالی | 64 | 18 | IDENTIFIED |
-| 1404 | 1 | سودوزيان | N/A | N/A | 44 | 14 | TITLE_UNCLEAR |
-| 1404 | 2 | وضعيت مالي | N/A | N/A | 55 | 23 | TITLE_UNCLEAR |
-| 1404 | 3 | حقوق مالكانه | N/A | N/A | 68 | 20 | TITLE_UNCLEAR |
-| 1404 | 4 | جريان هاي نقدي | N/A | N/A | 82 | 14 | TITLE_UNCLEAR |
 | 1404 | 5 | 6 | 6 | كليه دارایي‌ها و بدهي‌هاي اين شركت در شروع فعاليت، به ارزش دفتري از طرف شركت ملي گاز ايران و بر اساس مصوبه يك هزار و سيصد و سيزدهمين جلسه هيأت مديره شركت ملي گاز به تاریخ 1386/12/26 انتقال يافته و در حسابها ثبت گرديده است. | 50 | 24 | IDENTIFIED |
 | 1404 | 6 | 7 | 7 | 2-2- | 37 | 22 | IDENTIFIED |
 | 1404 | 7 | 8 | 8 | -3-5 | 41 | 10 | IDENTIFIED |
@@ -1972,10 +1958,64 @@
 - **Apparent Cross-Sheet References**: DOMAIN CONFIRMATION REQUIRED
 - **Apparent External References**: DOMAIN CONFIRMATION REQUIRED
 
+
+
+### source_1403.xlsx - Source
+- **Fiscal Year**: 1403
+- **Worksheet Index**: 1
+- **Visibility Status**: visible
+- **Used Row Count**: 204179
+- **Used Column Count**: 29
+- **Used Range**: A1:AD204180
+- **Merged-Cell Count**: 0
+- **Formula-Cell Presence**: False
+- **Approximate Formula Count**: 0
+- **First Meaningful Non-Empty Rows**: 2
+- **Header Rows**: 2
+- **Likely Sheet Category**: SOURCE_LEDGER
+- **Apparent Cross-Sheet References**: False
+- **Apparent External References**: False
+
+### source_1404.xlsx - Source
+- **Fiscal Year**: 1404
+- **Worksheet Index**: 1
+- **Visibility Status**: visible
+- **Used Row Count**: 252900
+- **Used Column Count**: 26
+- **Used Range**: A1:AA252900
+- **Merged-Cell Count**: 0
+- **Formula-Cell Presence**: False
+- **Approximate Formula Count**: 0
+- **First Meaningful Non-Empty Rows**: 2
+- **Header Rows**: 2
+- **Likely Sheet Category**: SOURCE_LEDGER
+- **Apparent Cross-Sheet References**: False
+- **Apparent External References**: False
+
+### mapping_1404.xlsx - Data
+- **Fiscal Year**: 1404
+- **Worksheet Index**: 1
+- **Visibility Status**: visible
+- **Used Row Count**: 505
+- **Used Column Count**: 12
+- **Used Range**: A1:R505
+- **Merged-Cell Count**: 0
+- **Formula-Cell Presence**: True
+- **Approximate Formula Count**: 500
+- **First Meaningful Non-Empty Rows**: 1
+- **Header Rows**: 1
+- **Likely Sheet Category**: MAPPING
+- **Apparent Cross-Sheet References**: False
+- **Apparent External References**: False
+
 ## Source Ledgers
 
 ### source_1403.xlsx
 - **Path**: data/source_ledgers/source_1403.xlsx
+- **Hidden Sheets**: []
+- **Very Hidden Sheets**: []
+- **Presence of Formulas**: No
+- **Structural Warnings**: []
 #### Field Dictionary
 | Exact Source Column Name | Normalized Interpretation | Data Type | Example Value | Null Prevalence |
 |--------------------------|---------------------------|-----------|---------------|-----------------|
@@ -2011,6 +2051,10 @@
 
 ### source_1404.xlsx
 - **Path**: data/source_ledgers/source_1404.xlsx
+- **Hidden Sheets**: []
+- **Very Hidden Sheets**: []
+- **Presence of Formulas**: No
+- **Structural Warnings**: []
 #### Field Dictionary
 | Exact Source Column Name | Normalized Interpretation | Data Type | Example Value | Null Prevalence |
 |--------------------------|---------------------------|-----------|---------------|-----------------|
@@ -2045,6 +2089,13 @@
 
 ### mapping_1404.xlsx
 - **Path**: data/mappings/mapping_1404.xlsx
+- **Ordered Worksheet Names**: ['Data']
+- **Hidden Sheets**: []
+- **Very Hidden Sheets**: []
+- **Workbook Type**: MAPPING
+- **Status**: Opens successfully
+- **Presence of Formulas**: Yes
+- **Structural Warnings**: []
 - **Row Count**: 497
 - **Column Count**: 12
 
