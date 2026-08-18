@@ -18,14 +18,16 @@ Any mapping classification currently present in the application for 1403 must be
 ### source_1403.xlsx
 - **Actual Data Records**: 204176
 - **Duplicate Physical Rows**: 0
-- **Null Key Dimensions (AccountId, T1-T4)**: 0
+- **Key-dimension null profile**: `AccountId`, `T1_CODE`, `T2_CODE`, `T3_CODE`, and `T4_CODE` were recorded as 0.0% null in the accepted Phase 1B-1 field dictionary.
 - **Schema**: Contains 29 columns including dimensions, opening/closing balances, and statement mapping outputs.
 
 ### source_1404.xlsx
 - **Actual Data Records**: 252898
 - **Duplicate Physical Rows**: 0
-- **Null Key Dimensions (AccountId, T1-T4)**: 0
+- **Key-dimension null profile**: the accepted Phase 1B-1 field dictionary records non-zero null prevalence: `AccountId` 0.2%, `T1_CODE` 2.2%, `T2_CODE` 2.8%, `T3_CODE` 2.4%, and `T4_CODE` 2.4%. These nulls must not be described as zero and must be handled explicitly by any deterministic mapping logic.
 - **Schema**: Contains 26 columns. Identifiable structural differences exist compared to 1403 (e.g., column count).
+
+The presence of a null in an optional dimension does not by itself mean a source row is ineligible for mapping; eligibility depends on the dimensions required by the applicable mapping rule. Coverage metrics below therefore use the full source-row denominator and separately report unmapped/multiple-match outcomes.
 
 ## 4. Specific High-Value Exception Review
 A robust search across all account-code and account-name columns (including `حساب`, `kol`, `KOL_NAME`, `AccountId`, `ACCOUNT_NAME`, `شرح کل`, `T1_NAME`, `T2_NAME`, `T3_NAME`, `T4_NAME`) identified 11 rows related to the closing/offset account **8999** (حساب ترازاختتاميه).
@@ -76,7 +78,6 @@ There are 143 rows that failed to map deterministically due to missing mapping l
 | 8161 | 117777 | 4512 | 6 | 301,400,000,000 | 0 |
 | 8161 | 117488 | 4502 | 22 | 159,965,459,804 | 48,274,392,545 |
 | 8161 | 117865 | 4512 | 3 | 128,833,512,752 | 17,044,422,304 |
-
 
 ### Proven Lineage Examples
 1. **Simple Account Rule**: `1101 -> Note 6`. Rows with `حساب` 1101 are matched successfully if they don't have conflicting T1/T4 specific rules.
