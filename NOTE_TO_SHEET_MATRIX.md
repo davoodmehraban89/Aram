@@ -1,17 +1,47 @@
 # NOTE TO SHEET MATRIX
 
-In the current dataset, the mapping between a Note and its Source Sheet is 1:1.
+## Executive Summary
+This document defines the mapping between logical financial statement notes and their corresponding physical worksheet names in the official Excel workbooks (`data/official_statements/financial_1402.xlsx`, `financial_1403.xlsx`, and `financial_1404.xlsx`).
 
-| Logical Note | Source Workbook Sheet Name | Years Applicable |
-| --- | --- | --- |
-| یادداشت ۶ | `6` | 1402, 1403, 1404 |
-| یادداشت ۷ | `7` | 1402, 1403, 1404 |
-| یادداشت ۸ | `8` | 1402, 1403, 1404 |
-| ... | ... | ... |
-| یادداشت ۳۵ | `35` | 1402, 1403, 1404 |
-| یادداشت ۳۶ | `36` (1402), `36-37` (1403, 1404) | 1402, 1403, 1404 |
-| یادداشت ۳۷ | `37` (1402), `36-37` (1403, 1404) | 1402, 1403, 1404 |
-| یادداشت ۳۸ | `38` | 1402, 1403, 1404 |
-| یادداشت ۳۹ | `39` | 1403, 1404 |
+---
 
-*Observation*: Some notes (e.g., 36 and 37) are merged into a single sheet in later years. The ingestion engine must support multi-note parsing from a single sheet.
+## 1. Logical Note to Physical Sheet Mapping
+
+| Logical Note Ref | Description / Section | 1402 Sheet Name | 1403 Sheet Name | 1404 Sheet Name | Mapping Nature |
+| --- | --- | --- | --- | --- | --- |
+| **یادداشت ۵** | درآمدهای عملیاتی | `سودوزيان` / `10` | `سودوزيان` / `10` | `سودوزيان` / `10` | Embedded in Statement & Sheet 10 |
+| **یادداشت ۶** | بهای تمام شده درآمدهای عملیاتی | `6` | `6` | `6` | 1:1 Direct |
+| **یادداشت ۷** | هزینه‌های فروش، اداری و عمومی | `7` | `7` | `7` | 1:1 Direct |
+| **یادداشت ۸** | سایر درآمدها | `8` | `8` | `8` | 1:1 Direct |
+| **یادداشت ۹** | سایر درآمدها و هزینه‌های غیرعملیاتی | `9` | `9` | `9` | 1:1 Direct |
+| **یادداشت ۱۰** | دارایی‌های ثابت مشهود | `10` | `10` | `10` | 1:1 Direct |
+| **یادداشت ۱۱** | دارایی‌های نامشهود | `11` | `11` | `11` | 1:1 Direct |
+| **یادداشت ۱۲** | دریافتنی‌های تجاری و سایر دریافتنی‌ها (12-1 / 12-2) | `12` | `12` | `12` | 1:1 Direct |
+| **یادداشت ۱۳** | پیش‌پرداخت‌ها | `13` | `13` | `13` | 1:1 Direct |
+| **یادداشت ۱۴** | موجودی مواد و کالا | `14` | `14` | `14` | 1:1 Direct |
+| **یادداشت ۱۵** | موجودی نقد | `15` | `15` | `15` | 1:1 Direct |
+| **یادداشت ۱۶** | سرمایه | `16` | `16` | `16` | 1:1 Direct |
+| **یادداشت ۱۷** | افزایش / کاهش سرمایه در جریان (17-1 / 17-2) | `17` | `17` | `17` | 1:1 Direct |
+| **یادداشت ۱۸** | اندوخته قانونی | `18` | `18` | `18` | 1:1 Direct |
+| **یادداشت ۱۹** | پرداختنی‌های تجاری و سایر پرداختنی‌ها (19-1 / 19-2) | `19` | `19` | `19` | 1:1 Direct |
+| **یادداشت ۲۰** | ذخیره مزایای پایان خدمت و مالیات (20-1 / 20-3) | `20` | `20` | `20` | 1:1 Direct |
+| **یادداشت ۲۱** | مالیات پرداختنی / سود سهام پرداختنی | `21` | `21` | `21` | 1:1 Direct |
+| **یادداشت ۲۲** | پیش‌دریافت‌ها / نقد حاصل از عملیات / اصلاح اشتباهات | `22` | `22` | `22` | 1:1 Direct |
+| **یادداشت ۲۳** | نقد حاصل از عملیات / معاملات غیرنقدی | `23` | `23` | `23` | 1:1 Direct |
+| **یادداشت ۲۴** | معاملات غیر نقدی | `24` | `24` | `24` | 1:1 Direct |
+| **یادداشت ۲۵** | مدیریت ریسک مالی | `25` | `25` | `25` | 1:1 Direct |
+| **یادداشت ۲۶** | ارزش منصفانه دارایی‌ها و بدهی‌های مالی | `26` | `26` | `26` | 1:1 Direct |
+| **یادداشت ۲۷** | معاملات با اشخاص وابسته | `27` | `27` | `27` | 1:1 Direct |
+| **یادداشت ۲۸** | تعهدات و بدهی‌های احتمالی | `28` | `28` | `28` | 1:1 Direct |
+| **یادداشت ۲۹** | رویدادهای پس از تاریخ صورت وضعیت مالی | `29` | `29` | `29` | 1:1 Direct |
+| **یادداشت‌های ۳۰-۳۵** | سایر یادداشت‌های افشا | `30` to `35` | `30` to `35` | `30` to `35` | 1:1 Direct |
+| **یادداشت ۳۶** | تطبیق عملکرد بودجه (درآمدها) | `36` | `36-37` | `36-37` | Merged in 1403/1404 (`36-37`) |
+| **یادداشت ۳۷** | تطبیق عملکرد بودجه (هزینه‌ها) | `37` | `36-37` | `36-37` | Merged in 1403/1404 (`36-37`) |
+| **یادداشت ۳۸** | گزارش توجیهی بودجه | `38` | `38` | `38` | 1:1 Direct |
+| **یادداشت ۳۹** | خلاصه منابع و مصارف | *Absent* | `39` | `39` | Introduced in 1403 |
+
+---
+
+## 2. Ingestion Rules
+1. **Multi-Note Parsing**: The ingestion engine must support multi-note parsing from single sheets (such as sheet `36-37` containing both Note 36 and Note 37 disclosures in 1403 and 1404).
+2. **Year-Aware Sheet Resolution**: Logical Note references must be resolved using fiscal year context (e.g. Note 36 resolves to sheet `36` in 1402, but sheet `36-37` in 1403 and 1404).
