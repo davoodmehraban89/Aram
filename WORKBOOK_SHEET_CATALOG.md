@@ -1378,7 +1378,7 @@
 - **Approximate Formula Count**: 0
 - **First Meaningful Non-Empty Rows**: 7
 - **Header Rows**: 7
-- **Likely Sheet Category**: UNKNOWN
+- **Likely Sheet Category**: PRIMARY_STATEMENT
 - **Apparent Cross-Sheet References**: DOMAIN CONFIRMATION REQUIRED
 - **Apparent External References**: DOMAIN CONFIRMATION REQUIRED
 
@@ -1442,7 +1442,7 @@
 - **Approximate Formula Count**: 0
 - **First Meaningful Non-Empty Rows**: 4
 - **Header Rows**: None
-- **Likely Sheet Category**: PRIMARY_STATEMENT
+- **Likely Sheet Category**: FINANCIAL_NOTE
 - **Apparent Cross-Sheet References**: DOMAIN CONFIRMATION REQUIRED
 - **Apparent External References**: DOMAIN CONFIRMATION REQUIRED
 
@@ -1972,7 +1972,7 @@
 - **Approximate Formula Count**: 0
 - **First Meaningful Non-Empty Rows**: 2
 - **Header Rows**: 2
-- **Likely Sheet Category**: SOURCE_LEDGER
+- **Likely Sheet Category**: FINANCIAL_NOTE
 - **Apparent Cross-Sheet References**: False
 - **Apparent External References**: False
 
@@ -1988,7 +1988,7 @@
 - **Approximate Formula Count**: 0
 - **First Meaningful Non-Empty Rows**: 2
 - **Header Rows**: 2
-- **Likely Sheet Category**: SOURCE_LEDGER
+- **Likely Sheet Category**: FINANCIAL_NOTE
 - **Apparent Cross-Sheet References**: False
 - **Apparent External References**: False
 
@@ -2004,7 +2004,7 @@
 - **Approximate Formula Count**: 500
 - **First Meaningful Non-Empty Rows**: 1
 - **Header Rows**: 1
-- **Likely Sheet Category**: MAPPING
+- **Likely Sheet Category**: FINANCIAL_NOTE
 - **Apparent Cross-Sheet References**: False
 - **Apparent External References**: False
 
