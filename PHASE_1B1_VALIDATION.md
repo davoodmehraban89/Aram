@@ -18,18 +18,22 @@
 - **Formula-containing worksheets**: None in official statements or mapping. source_1403.xlsx (1 sheet, 10 cells) and source_1404.xlsx (1 sheet, 252,908 cells) contain formulas.
 
 ## SOURCE LEDGERS
-- **source_1403 physical used rows**: 204,179
-- **source_1403 actual data-record rows**: 204,177
+- **source_1403 worksheet max_row**: 204,180
+- **source_1403 actual data-record rows**: 204,176
+- **source_1403 formatted-only or blank trailing rows**: 2
 - **source_1403 header rows**: 2
 - **source_1403 column count**: 29
-- **source_1404 physical used rows**: 252,900
+- **source_1404 worksheet max_row**: 252,900
 - **source_1404 actual data-record rows**: 252,898
+- **source_1404 formatted-only or blank trailing rows**: 0
 - **source_1404 header rows**: 2
 - **source_1404 column count**: 26
 
 ## MAPPING
-- **mapping_1404 physical used rows**: 505
+- **mapping_1404 worksheet max_row**: 505
 - **mapping_1404 actual mapping/rule rows**: 497
+- **mapping_1404 header rows**: 1
+- **mapping_1404 completely blank/formatted-only rows**: 7
 - **mapping_1404 column count**: 12
 - **Exact mapping column names**:
   - کد حساب
