@@ -11,13 +11,15 @@ Across **252,898 total general ledger data rows**, multi-dimensional matching (i
 
 Coverage terminology strictly distinguishes between deterministic, unique lineage and ambiguous or unmapped rows. Ambiguous multi-match rows are **never** treated as proven lineage without explicit, provable disambiguation rules from the canonical mapping workbook.
 
-| Metric | Row Count | Percentage of Total | Description / Definition |
+| Metric | Row Count | Percentage of Mapping-Eligible Rows | Description / Definition |
 | --- | --- | --- | --- |
-| **`UNIQUE_DETERMINISTIC_COVERAGE`** | **214,848** | **84.95%** (84.9544%) | General ledger rows matching exactly one unique mapping rule. |
-| **`AMBIGUOUS/MULTI_MATCH_RATE`** | **37,907** | **14.99%** (14.9890%) | General ledger rows matching multiple mapping rules due to overlapping dimensional rules or missing sub-filters. |
-| **`UNMAPPED_RATE`** | **143** | **0.06%** (0.0565%) | General ledger rows matching zero mapping rules in `mapping_1404.xlsx`. |
-| **`ANY_MATCH_COVERAGE`** | **252,755** | **99.94%** (99.9435%) | Total general ledger rows with at least one matching rule (`UNIQUE` + `AMBIGUOUS`). |
-| **TOTAL GENERAL LEDGER ROWS** | **252,898** | **100.00%** | Total active data rows in `data/source_ledgers/source_1404.xlsx`. |
+| **`UNIQUE_DETERMINISTIC_COVERAGE`** | **214,848** | **84.96%** (84.9581%) | Mapping-eligible ledger rows matching exactly one unique mapping rule. |
+| **`AMBIGUOUS/MULTI_MATCH_RATE`** | **37,907** | **14.99%** (14.9897%) | Mapping-eligible ledger rows matching multiple mapping rules. |
+| **`UNMAPPED_RATE`** | **132** | **0.05%** (0.0522%) | Mapping-eligible ledger rows matching zero mapping rules. |
+| **`ANY_MATCH_COVERAGE`** | **252,755** | **99.95%** (99.9478%) | Mapping-eligible rows with at least one matching rule (`UNIQUE` + `AMBIGUOUS`). |
+| **TOTAL SOURCE LEDGER ROWS** | **252,898** | -- | Full canonical source ledger, preserved unchanged. |
+| **SYSTEM CLOSING ROWS EXCLUDED FROM MAPPING** | **11** | -- | Account `8999`; retained in source but excluded from mapping scope. |
+| **TOTAL MAPPING-ELIGIBLE ROWS** | **252,887** | **100.00%** | Source rows used as the mapping coverage denominator. |
 
 ---
 
@@ -36,29 +38,26 @@ Multiple matches occur across 37,907 ledger rows representing **21 distinct acco
 
 ---
 
-## 3. Account 8999 High-Gross / Zero-Net Exception
+## 3. Account 8999 System Closing Account — Excluded From Mapping Scope
 
-Account `8999` (`998999.0` / `حساب افتتاحیه و اختتامیه` - Opening & Closing Suspense Account) represents a verified high-gross / zero-net exception:
+Account `8999` (`998999.0` / `حساب افتتاحیه و اختتامیه`) is a system opening/closing account used exclusively for accounting close procedures.
 
 - **Row Count**: 11 ledger rows.
-- **OPENING Balance**: `0.0` Rials.
-- **Period Debit**: `0.0` Rials.
-- **Period Credit**: `0.0` Rials.
-- **Gross CLOSING Debit Balance**: `+1,310,883,439,013,116` Rials (+1.31 Quadrillion Rials).
-- **Gross CLOSING Credit Balance**: `-1,310,883,439,013,116` Rials (-1.31 Quadrillion Rials).
-- **Net CLOSING Balance**: **`0.0` Rials** (EXACT ZERO).
+- **Business Classification**: SYSTEM CLOSING ACCOUNT.
+- **Mapping Eligibility**: **EXCLUDED FROM MAPPING SCOPE**.
+- **Financial Note Mapping**: Not applicable.
+- **Domain Confirmation**: Confirmed by accounting owner that Account `8999` is not intended to map to any financial statement note and is not a true unmapped-account exception.
+- **Source Preservation Rule**: The 11 source rows remain unchanged in the canonical ledger for audit traceability and must not be deleted.
 
-*Verification Conclusion*: Account `8999` is an internal accounting clearing mechanism used for opening and closing ledger balances. While unmapped in `mapping_1404.xlsx`, its net financial statement impact is **exactly zero**.
+Accordingly, Account `8999` is excluded from mapping coverage denominators and unmapped-exposure metrics.
 
 ---
 
-## 4. Reconciled 143-Unmapped Exposure Analysis
+## 4. Reconciled 132-Unmapped Exposure Analysis
 
-The 143 unmapped general ledger rows are fully reconciled to canonical source data:
+The mapping-eligible ledger contains **132 true unmapped rows** across 8 distinct accounts.
 
-### Breakdown of Unmapped Rows
-- **11 rows**: Account `8999` (High-gross / Zero-net suspense account; Net Closing = `0` Rials).
-- **132 rows**: Remaining active unmapped ledger rows across 8 distinct accounts.
+Account `8999` is not included in this unmapped population because its 11 rows are a domain-confirmed system closing account excluded from mapping scope.
 
 ### Exact Source Financial Reconciliation for 132 Active Unmapped Rows
 
@@ -72,9 +71,7 @@ The 143 unmapped general ledger rows are fully reconciled to canonical source da
 | **`8767`** | واسطه انتقال كالاي برگشتي به انبار(جاري) | 8 | 0 | 23,002,900,150 | 23,002,900,150 | **0** | 0.00% |
 | **`8769`** | واسطه انتقال كالاي برگشتي به انبار (سرمايه اي) | 6 | 0 | 7,855,802,639 | 7,855,802,639 | **0** | 0.00% |
 | **`8874`** | بانك ملت | 3 | 0 | 155,180,000 | 155,180,000 | **0** | 0.00% |
-| **SUBTOTAL (132 Rows)** | *Active Unmapped Accounts* | **132** | **116,541,110,893** | **3,961,800,186,318** | **3,881,433,378,410** | **196,907,918,801** | **100.00%** |
-| **`8999`** | *حساب افتتاحيه و اختتاميه* | 11 | 0 | 0 | 0 | **0** | 0.00% |
-| **TOTAL (143 Rows)** | *All Unmapped Rows* | **143** | **116,541,110,893** | **3,961,800,186,318** | **3,881,433,378,410** | **196,907,918,801** | **100.00%** |
+| **TOTAL (132 Mapping-Eligible Unmapped Rows)** | *Active Unmapped Accounts* | **132** | **116,541,110,893** | **3,961,800,186,318** | **3,881,433,378,410** | **196,907,918,801** | **100.00%** |
 
 ### Key Exposure Insights
 1. **Exposure Concentration**: 100% of the net unmapped closing balance exposure (**196,907,918,801 Rials**, or **~196.91 Billion Rials** / **196,908 Million Rials**) belongs entirely to **Account `8161` (حساب کنترل پیمانکاران)** across 110 unmapped rows where specific T1/T4 combinations are omitted from `mapping_1404.xlsx`.
