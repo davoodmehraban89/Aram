@@ -37,7 +37,7 @@ Across **252,898 total general ledger data rows** in `data/source_ledgers/source
    - **Credit Sum**: 3,881,433,378,410 Rials.
    - **CLOSING Sum**: **196,907,918,801 Rials** (~196.91 Billion Rials / 196,908 Million Rials).
    - **100% Exposure Concentration**: Account `8161` (حساب کنترل پیمانکاران) accounts for 110 rows and **100%** of the closing balance exposure (196,907,918,801 Rials).
-   - **Zero-Closing Clearing Accounts**: 22 rows across 8 distinct accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have **EXACTLY ZERO closing balance**.
+   - **Zero-Closing Clearing Accounts**: 22 rows across 7 distinct zero-closing accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have **EXACTLY ZERO closing balance**.
 
 ---
 
