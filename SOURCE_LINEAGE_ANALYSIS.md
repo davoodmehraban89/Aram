@@ -30,14 +30,14 @@ The system implements a 5-tier bidirectional drill-down architecture:
 
 ## 2. Lineage Coverage Metrics & Disambiguation
 
-Lineage status across all **252,898 general ledger data rows** in `data/source_ledgers/source_1404.xlsx` is categorized into strict, non-overlapping coverage classes:
+Lineage coverage is measured across **252,887 mapping-eligible ledger rows** in `data/source_ledgers/source_1404.xlsx`. The canonical source ledger contains **252,898 rows** in total; 11 rows belonging to Account `8999` are retained in source for audit traceability but excluded from mapping and lineage coverage because they are a domain-confirmed system closing account.
 
-| Lineage Class | Row Count | % Coverage | Lineage Status |
+| Lineage Class | Row Count | % of Mapping-Eligible Rows | Lineage Status |
 | --- | --- | --- | --- |
-| **`UNIQUE_DETERMINISTIC_COVERAGE`** | **214,848** | **84.95%** | **Proven End-to-End Lineage**: Mapped deterministically through a single unique composite mapping rule. |
-| **`AMBIGUOUS/MULTI_MATCH_RATE`** | **37,907** | **14.99%** | **Ambiguous Lineage**: Matches multiple mapping rules due to overlapping account definitions or missing sub-filters. *Not treated as proven lineage.* |
-| **`UNMAPPED_RATE`** | **143** | **0.06%** | **Unmapped Lineage**: Matches zero mapping rules in `mapping_1404.xlsx`. |
-| **TOTAL GENERAL LEDGER ROWS** | **252,898** | **100.00%** | Full active general ledger dataset for 1404. |
+| **`UNIQUE_DETERMINISTIC_COVERAGE`** | **214,848** | **84.96%** | **Proven End-to-End Lineage**: Mapped deterministically through a single unique composite mapping rule. |
+| **`AMBIGUOUS/MULTI_MATCH_RATE`** | **37,907** | **14.99%** | **Ambiguous Lineage**: Matches multiple mapping rules. *Not treated as proven lineage.* |
+| **`UNMAPPED_RATE`** | **132** | **0.05%** | **Unmapped Lineage**: Mapping-eligible rows matching zero mapping rules. |
+| **TOTAL MAPPING-ELIGIBLE ROWS** | **252,887** | **100.00%** | Source rows subject to mapping/lineage coverage. |
 
 ---
 
@@ -60,10 +60,12 @@ All primary financial statements are mapped cell-by-cell in `NOTE_TO_STATEMENT_M
 
 ## 4. Unmapped Ledger Exposure Lineage Reconciliation
 
-Of the 143 unmapped rows:
-1. **Account `8999` (11 rows)**: `حساب افتتاحیه و اختتامیه` (Opening/Closing Suspense Account) has gross debit/credit balances of `±1,310,883,439,013,116` Rials and **EXACTLY ZERO net closing balance**. Verified as a zero-net internal clearing exception.
-2. **Account `8161` (110 rows)**: `حساب کنترل پیمانکاران` accounts for **100% of unmapped net closing balance exposure** (**196,907,918,801 Rials** / **196,908 Million Rials**).
-3. **7 Zero-Closing Clearing Accounts (22 rows)**: Accounts `8184`, `8260`, `8488`, `8724`, `8767`, `8769`, and `8874` have non-zero turnover but **EXACTLY ZERO net closing balance**.
+Account `8999` is **not part of the unmapped population**. Its 11 source rows are a domain-confirmed **SYSTEM CLOSING ACCOUNT**, excluded from mapping scope and retained unchanged in the canonical ledger for audit traceability.
+
+Of the **132 true mapping-eligible unmapped rows**:
+
+1. **Account `8161` (110 rows)**: `حساب کنترل پیمانکاران` accounts for **100% of unmapped net closing balance exposure** (**196,907,918,801 Rials** / **196,908 Million Rials**).
+2. **7 Zero-Closing Clearing Accounts (22 rows)**: Accounts `8184`, `8260`, `8488`, `8724`, `8767`, `8769`, and `8874` have non-zero turnover but **EXACTLY ZERO net closing balance**.
 
 ---
 
