@@ -63,7 +63,7 @@ All primary financial statements are mapped cell-by-cell in `NOTE_TO_STATEMENT_M
 Of the 143 unmapped rows:
 1. **Account `8999` (11 rows)**: `حساب افتتاحیه و اختتامیه` (Opening/Closing Suspense Account) has gross debit/credit balances of `±1,310,883,439,013,116` Rials and **EXACTLY ZERO net closing balance**. Verified as a zero-net internal clearing exception.
 2. **Account `8161` (110 rows)**: `حساب کنترل پیمانکاران` accounts for **100% of unmapped net closing balance exposure** (**196,907,918,801 Rials** / **196,908 Million Rials**).
-3. **8 Zero-Closing Clearing Accounts (22 rows)**: Accounts `8184`, `8260`, `8488`, `8724`, `8767`, `8769`, and `8874` have non-zero turnover but **EXACTLY ZERO net closing balance**.
+3. **7 Zero-Closing Clearing Accounts (22 rows)**: Accounts `8184`, `8260`, `8488`, `8724`, `8767`, `8769`, and `8874` have non-zero turnover but **EXACTLY ZERO net closing balance**.
 
 ---
 
