@@ -47,4 +47,4 @@ Scratchpad columns (Column K, L, N, etc.) are **never** concatenated or treated 
 ### 132 Active Unmapped Ledger Rows Exposure
 - **Total Unmapped Closing Exposure**: **196,907,918,801 Rials** (~196.91 Billion Rials / 196,908 Million Rials).
 - **Account 8161 Concentration**: 100% of the closing balance exposure belongs to Account `8161` (حساب کنترل پیمانکاران) across 110 unmapped rows where specific T1/T4 combinations are missing from `mapping_1404.xlsx`.
-- **Zero-Closing Clearing Accounts**: 22 rows across 8 distinct accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have non-zero turnover but **EXACTLY ZERO net closing balance**.
+- **Zero-Closing Clearing Accounts**: 22 rows across 7 distinct zero-closing accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have non-zero turnover but **EXACTLY ZERO net closing balance**.
