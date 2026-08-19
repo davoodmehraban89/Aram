@@ -12,32 +12,34 @@ Phase 1B-2 has completed all required audit corrections directly on the accepted
 ### A. Cell-by-Cell Primary Statement Extraction (`NOTE_TO_STATEMENT_MATRIX.md`)
 - **Statements Extracted**: All four primary financial statements (`سودوزيان`, `وضعيت مالي`, `حقوق مالكانه`, `جريان هاي نقدي`) across fiscal years **1402**, **1403**, and **1404**.
 - **Source Verification**: Every line item caption, note reference, current period amount, and comparative period amount is mapped directly to its exact Excel cell coordinate (`Sheet!ColRow`).
-- **Scratchpad Anomaly Isolation**: Working/scratchpad columns (e.g. Column K in cash flow workbooks containing unformatted raw Rial numbers like `109388328483`, `-33462657272375`, `41299837917`, `-301280000000`, `1594875501283`) are isolated and excluded from statement values. No cell concatenation or column-shift errors exist.
-- **Verification Gate**: 100% of verified statement items are marked **`MATCH`**.
+- **Scratchpad Anomaly Isolation**: Working/scratchpad columns (e.g. Column K in cash flow workbooks containing unformatted raw Rial numbers like `109388328483`, `-33462657272375`, `41299837917`, `-301280000000`, `1594875501283`) are isolated and excluded from statement values. No cell concatenation or column-shift errors are accepted as verified statement values.
+- **Verification Gate**: Only statement items whose exact source cells are verified are marked **`MATCH`**; anomalous or unresolved source cells remain **`UNVERIFIED`**.
 
 ### B. Standardized Mapping Coverage Metrics (`MAPPING_ANALYSIS.md`)
-Across **252,898 total general ledger data rows** in `data/source_ledgers/source_1404.xlsx`:
+The canonical source ledger contains **252,898 total rows**. Account `8999` contributes 11 domain-confirmed system closing rows that are retained in source but excluded from mapping scope, leaving **252,887 mapping-eligible rows**.
 
-| Standardized Coverage Metric | Row Count | Percentage | Definition |
+| Standardized Coverage Metric | Row Count | Percentage of Mapping-Eligible Rows | Definition |
 | --- | --- | --- | --- |
-| **`UNIQUE_DETERMINISTIC_COVERAGE`** | **214,848** | **84.95%** (84.9544%) | Rows matching exactly one unique mapping rule. |
-| **`AMBIGUOUS/MULTI_MATCH_RATE`** | **37,907** | **14.99%** (14.9890%) | Rows matching multiple mapping rules due to overlapping dimensional rules or missing sub-filters. *Not called proven lineage.* |
-| **`UNMAPPED_RATE`** | **143** | **0.06%** (0.0565%) | Rows matching zero mapping rules in `mapping_1404.xlsx`. |
-| **`ANY_MATCH_COVERAGE`** | **252,755** | **99.94%** (99.9435%) | Total rows with at least one matching rule (`UNIQUE` + `AMBIGUOUS`). |
+| **`UNIQUE_DETERMINISTIC_COVERAGE`** | **214,848** | **84.96%** (84.9581%) | Mapping-eligible rows matching exactly one unique mapping rule. |
+| **`AMBIGUOUS/MULTI_MATCH_RATE`** | **37,907** | **14.99%** (14.9897%) | Mapping-eligible rows matching multiple mapping rules due to overlapping dimensional rules or missing sub-filters. *Not called proven lineage.* |
+| **`UNMAPPED_RATE`** | **132** | **0.05%** (0.0522%) | Mapping-eligible rows matching zero mapping rules in `mapping_1404.xlsx`. |
+| **`ANY_MATCH_COVERAGE`** | **252,755** | **99.95%** (99.9478%) | Mapping-eligible rows with at least one matching rule (`UNIQUE` + `AMBIGUOUS`). |
+| **TOTAL MAPPING-ELIGIBLE ROWS** | **252,887** | **100.00%** | Source rows used as the mapping coverage denominator. |
 
 ### C. Reconciled Exposure Analysis
-1. **Account 8999 High-Gross / Zero-Net Exception**:
-   - 11 rows in `source_1404.xlsx`.
-   - Gross CLOSING Debit/Credit = `±1,310,883,439,013,116` Rials.
-   - Net CLOSING Balance = **`0.0` Rials** (EXACT ZERO). Verified zero financial statement impact.
+1. **Account 8999 System Closing Account — Excluded From Mapping Scope**:
+   - 11 rows remain unchanged in `source_1404.xlsx` for audit traceability.
+   - Domain-confirmed system opening/closing account.
+   - Not intended to map to a financial statement note and therefore not counted as a true unmapped-account exception.
+   - Excluded from mapping coverage denominators and unmapped-exposure metrics.
 
-2. **132 Active Unmapped Rows Exposure**:
+2. **132 True Mapping-Eligible Unmapped Rows Exposure**:
    - **OPENING Sum**: 116,541,110,893 Rials.
    - **Debit Sum**: 3,961,800,186,318 Rials.
    - **Credit Sum**: 3,881,433,378,410 Rials.
    - **CLOSING Sum**: **196,907,918,801 Rials** (~196.91 Billion Rials / 196,908 Million Rials).
    - **100% Exposure Concentration**: Account `8161` (حساب کنترل پیمانکاران) accounts for 110 rows and **100%** of the closing balance exposure (196,907,918,801 Rials).
-   - **Zero-Closing Clearing Accounts**: 22 rows across 7 distinct zero-closing accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have **EXACTLY ZERO closing balance**.
+   - **Seven Zero-Closing Clearing Accounts**: 22 rows across 7 distinct zero-closing accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have **EXACTLY ZERO closing balance**.
 
 ---
 
