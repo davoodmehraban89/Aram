@@ -37,14 +37,16 @@ Scratchpad columns (Column K, L, N, etc.) are **never** concatenated or treated 
 
 ---
 
-## 3. General Ledger Unmapped Account Reconciliation
+## 3. General Ledger Mapping-Scope Reconciliation
 
-### Account 8999 High-Gross / Zero-Net Clearing Account
-- **Account**: `998999.0` (`حساب افتتاحیه و اختتامیه` - Opening & Closing Suspense Account).
-- **Data**: 11 rows in `source_1404.xlsx`.
-- **Financial Status**: Gross closing debit and credit balances are `±1,310,883,439,013,116` Rials, yielding **EXACTLY ZERO net closing balance**. Verified as a zero-impact clearing exception.
+### Account 8999 System Closing Account — Excluded From Mapping Scope
+- **Account**: `998999.0` (`حساب افتتاحیه و اختتامیه`).
+- **Data**: 11 rows remain unchanged in `source_1404.xlsx`.
+- **Business Classification**: Domain-confirmed system opening/closing account.
+- **Mapping Status**: Excluded from mapping scope; not treated as a true unmapped-account exception.
+- **Audit Rule**: Source rows are preserved for traceability, while mapping coverage denominators and unmapped-exposure metrics exclude these 11 rows.
 
-### 132 Active Unmapped Ledger Rows Exposure
+### 132 True Mapping-Eligible Unmapped Ledger Rows Exposure
 - **Total Unmapped Closing Exposure**: **196,907,918,801 Rials** (~196.91 Billion Rials / 196,908 Million Rials).
 - **Account 8161 Concentration**: 100% of the closing balance exposure belongs to Account `8161` (حساب کنترل پیمانکاران) across 110 unmapped rows where specific T1/T4 combinations are missing from `mapping_1404.xlsx`.
-- **Zero-Closing Clearing Accounts**: 22 rows across 7 distinct zero-closing accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have non-zero turnover but **EXACTLY ZERO net closing balance**.
+- **Seven Zero-Closing Clearing Accounts**: 22 rows across 7 distinct zero-closing accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) have non-zero turnover but **EXACTLY ZERO net closing balance**.
