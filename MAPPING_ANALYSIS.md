@@ -78,7 +78,7 @@ The 143 unmapped general ledger rows are fully reconciled to canonical source da
 
 ### Key Exposure Insights
 1. **Exposure Concentration**: 100% of the net unmapped closing balance exposure (**196,907,918,801 Rials**, or **~196.91 Billion Rials** / **196,908 Million Rials**) belongs entirely to **Account `8161` (حساب کنترل پیمانکاران)** across 110 unmapped rows where specific T1/T4 combinations are omitted from `mapping_1404.xlsx`.
-2. **Zero-Closing Clearing Accounts**: The remaining 22 unmapped rows across 8 distinct accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) are temporary or clearing accounts with non-zero period turnover but **EXACTLY ZERO closing balance**.
+2. **Zero-Closing Clearing Accounts**: The remaining 22 unmapped rows across 7 distinct zero-closing accounts (`8184`, `8260`, `8488`, `8724`, `8767`, `8769`, `8874`) are temporary or clearing accounts with non-zero period turnover but **EXACTLY ZERO closing balance**.
 
 ---
 
