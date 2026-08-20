@@ -68,6 +68,37 @@ def test_fiscal_year_isolation_for_mapping(session):
         session.commit()
 
 
+def test_fiscal_year_isolation_cannot_be_bypassed_with_raw_ids(session):
+    first = make_year(session, 1403)
+    second = make_year(session, 1404)
+    note = NoteDefinition(year_id=first.id, note_number="10", title="Assets")
+    session.add(note)
+    session.commit()
+    session.add(MappingRule(
+        year_id=second.id, rule_key="raw-id-rule", account_code="1000",
+        target_note_id=note.id, mapping_type="O"
+    ))
+    with pytest.raises(ValueError, match="same fiscal year"):
+        session.commit()
+
+
+def test_statement_line_isolation_cannot_be_bypassed_with_raw_ids(session):
+    first = make_year(session, 1403)
+    second = make_year(session, 1404)
+    note = NoteDefinition(year_id=first.id, note_number="10", title="Assets")
+    statement = FinancialStatement(
+        year_id=second.id, statement_type=StatementType.BALANCE_SHEET
+    )
+    session.add_all([note, statement])
+    session.commit()
+    session.add(StatementLine(
+        statement_id=statement.id, line_order=0, line_label="Assets",
+        target_note_id=note.id
+    ))
+    with pytest.raises(ValueError, match="same fiscal year"):
+        session.commit()
+
+
 def test_locked_year_blocks_mutation(session):
     year = make_year(session)
     year.status = FiscalYearStatus.APPROVED
@@ -75,6 +106,24 @@ def test_locked_year_blocks_mutation(session):
     year.status = FiscalYearStatus.LOCKED
     session.commit()
     session.add(AccountVersion(year_id=year.id, account_code="1000", account_name="Cash"))
+    with pytest.raises(ValueError, match="locked"):
+        session.commit()
+
+
+def test_locked_year_protection_cannot_be_bypassed_with_raw_parent_id(session):
+    year = make_year(session)
+    statement = FinancialStatement(
+        year_id=year.id, statement_type=StatementType.BALANCE_SHEET
+    )
+    session.add(statement)
+    session.commit()
+    year.status = FiscalYearStatus.APPROVED
+    session.commit()
+    year.status = FiscalYearStatus.LOCKED
+    session.commit()
+    session.add(StatementLine(
+        statement_id=statement.id, line_order=0, line_label="Blocked"
+    ))
     with pytest.raises(ValueError, match="locked"):
         session.commit()
 
