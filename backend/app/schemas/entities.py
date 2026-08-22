@@ -38,6 +38,8 @@ class SourceDocumentRead(BaseORMModel):
     file_hash: str
     doc_type: str
     upload_date: Optional[str] = None
+    processing_status: str
+    version: int
     created_at: datetime
     updated_at: datetime
 

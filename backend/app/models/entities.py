@@ -64,6 +64,8 @@ class SourceDocument(Base, TimestampMixin):
     file_hash = Column(String(64), nullable=False)
     doc_type = Column(String(50), nullable=False)  # ledger, official_statement, mapping, auditor_report
     upload_date = Column(String(50), nullable=True)
+    processing_status = Column(String(50), nullable=False, default="REGISTERED")
+    version = Column(Integer, nullable=False, default=1)
 
     fiscal_year = relationship("FiscalYear", back_populates="source_documents")
 
