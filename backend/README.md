@@ -1,6 +1,6 @@
-# Financial Reporting Platform - Backend Architecture (Phase 2A - Phase 4B)
+# Financial Reporting Platform - Backend Architecture (Phase 2A - Phase 5)
 
-This backend application implements the persistent relational data model, source document ingestion, financial data normalization, accounting rule engine, and statement review snapshot layer for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
+This backend application implements the persistent relational data model, source document ingestion, financial data normalization, accounting rule engine, statement review snapshot layer, and financial reporting API layer for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
 
 ## Prerequisites
 
@@ -68,10 +68,21 @@ The accounting module under `backend/app/accounting/` performs rule-based calcul
 The snapshot module under `backend/app/accounting/snapshot.py` supports review workflows and versioned statement calculation snapshots:
 
 - **Entity (`StatementSnapshot`)**: Stores frozen calculation JSON (`snapshot_data`), version number, notes, and review status (`ReviewStatus`: `DRAFT`, `UNDER_REVIEW`, `APPROVED`, `REJECTED`).
-- **Service Layer (`backend/app/accounting/snapshot.py`)**:
-  - `create_statement_snapshot(db, year_id, notes, created_by, rule_config)`: Generates statements, auto-increments version number for the fiscal year, and persists snapshot.
-  - `get_snapshots_for_year(db, year_id)`: Retrieves snapshots ordered by version descending.
-  - `update_snapshot_review_status(db, snapshot_id, new_status, notes)`: Manages review status transitions while enforcing fiscal year status immutability.
+- **Service Layer (`backend/app/accounting/snapshot.py`)**: `create_statement_snapshot()`, `get_snapshots_for_year()`, and `update_snapshot_review_status()`.
+
+## Financial Reporting API Layer (Phase 5)
+
+The API layer under `backend/app/api/` exposes versioned financial statements and snapshot review operations:
+
+- **Authentication Placeholder (`backend/app/api/auth.py`)**: `get_current_user` dependency for API key / token header validation.
+- **Endpoints (`backend/app/api/endpoints.py`)**:
+  - `GET /api/v1/reporting/trial-balance`: Calculated Trial Balance.
+  - `GET /api/v1/reporting/balance-sheet`: Calculated Balance Sheet.
+  - `GET /api/v1/reporting/income-statement`: Calculated Income Statement.
+  - `GET /api/v1/snapshots`: List versioned statement snapshots.
+  - `POST /api/v1/snapshots`: Generate and persist a new snapshot.
+  - `PATCH /api/v1/snapshots/{snapshot_id}/status`: Transition review status (`UNDER_REVIEW`, `APPROVED`, `REJECTED`).
+  - `GET /api/v1/snapshots/{snapshot_id}`: Read-only access to specific snapshot calculations.
 
 ## Running Tests
 
