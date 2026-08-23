@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, ConfigDict
-from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity, ReviewStatus, UserRole
+from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity, ReviewStatus, UserRole, WorkflowStatus
 
 
 class BaseORMModel(BaseModel):
@@ -57,6 +57,7 @@ class FiscalYearBase(BaseModel):
     company_id: int
     year: int
     status: FiscalYearStatus = FiscalYearStatus.DRAFT
+    workflow_status: WorkflowStatus = WorkflowStatus.UPLOADED
 
 
 class FiscalYearRead(FiscalYearBase, BaseORMModel):

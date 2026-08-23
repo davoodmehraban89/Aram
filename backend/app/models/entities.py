@@ -49,6 +49,16 @@ class UserRole(str, enum.Enum):
     VIEWER = "VIEWER"
 
 
+class WorkflowStatus(str, enum.Enum):
+    UPLOADED = "UPLOADED"
+    PROCESSING = "PROCESSING"
+    NORMALIZED = "NORMALIZED"
+    CALCULATED = "CALCULATED"
+    READY_FOR_REVIEW = "READY_FOR_REVIEW"
+    APPROVED = "APPROVED"
+    FAILED = "FAILED"
+
+
 class User(Base, TimestampMixin):
     __tablename__ = "users"
 
@@ -66,7 +76,7 @@ class AuditLog(Base, TimestampMixin):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     user_action = Column(String(255), nullable=False)
     entity_affected = Column(String(100), nullable=False)
-    action_type = Column(String(50), nullable=False)  # CREATE, READ, UPDATE, DELETE, LOGIN
+    action_type = Column(String(50), nullable=False)
     context_metadata = Column(JSON, nullable=True)
 
     user = relationship("User", back_populates="audit_logs")
@@ -90,6 +100,7 @@ class FiscalYear(Base, TimestampMixin):
     company_id = Column(Integer, ForeignKey("companies.id", ondelete="CASCADE"), nullable=False, index=True)
     year = Column(Integer, nullable=False, index=True)
     status = Column(SQLEnum(FiscalYearStatus), default=FiscalYearStatus.DRAFT, nullable=False)
+    workflow_status = Column(SQLEnum(WorkflowStatus), default=WorkflowStatus.UPLOADED, nullable=False)
 
     company = relationship("Company", back_populates="fiscal_years")
     source_documents = relationship("SourceDocument", back_populates="fiscal_year", cascade="all, delete-orphan")

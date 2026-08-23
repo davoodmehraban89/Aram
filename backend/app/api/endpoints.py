@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Body
 from sqlalchemy.orm import Session
 
 from backend.app.database import get_db
@@ -18,6 +18,7 @@ from backend.app.accounting.snapshot import (
     get_snapshots_for_year,
     update_snapshot_review_status,
 )
+from backend.app.workflow.service import execute_end_to_end_workflow, approve_workflow_and_snapshot, update_workflow_status
 
 
 router = APIRouter()
@@ -27,6 +28,57 @@ router = APIRouter()
 def health_check():
     """Health check endpoint to verify backend service status."""
     return {"status": "ok", "service": "financial-reporting-platform"}
+
+
+# --- Workflow Orchestration Endpoints (Phase 8) ---
+
+@router.post("/workflow/execute")
+def execute_workflow_endpoint(
+    year_id: int = Query(..., description="Fiscal Year ID"),
+    file_path: str = Query(..., description="Source File Path"),
+    doc_type: str = Query("ledger", description="Document Type"),
+    raw_rows: List[Dict[str, Any]] = Body(..., description="Raw rows payload"),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(require_role([models.UserRole.ADMIN, models.UserRole.AUDITOR])),
+):
+    """Executes complete end-to-end workflow: Ingestion -> Normalization -> Calculation -> Snapshot."""
+    fy, doc, snap = execute_end_to_end_workflow(
+        db,
+        year_id=year_id,
+        file_path=file_path,
+        doc_type=doc_type,
+        raw_rows=raw_rows,
+        user_id=user.get("user_id"),
+        username=user.get("username"),
+    )
+    return {
+        "year_id": year_id,
+        "workflow_status": fy.workflow_status,
+        "source_document_id": doc.id,
+        "snapshot_id": snap.id,
+        "snapshot_version": snap.version,
+    }
+
+
+@router.post("/workflow/approve")
+def approve_workflow_endpoint(
+    snapshot_id: int = Query(..., description="Snapshot ID to approve"),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(require_role([models.UserRole.ADMIN, models.UserRole.AUDITOR])),
+):
+    """Approves workflow and review snapshot."""
+    fy, snap = approve_workflow_and_snapshot(
+        db,
+        snapshot_id=snapshot_id,
+        user_id=user.get("user_id"),
+        username=user.get("username"),
+    )
+    return {
+        "year_id": fy.id,
+        "workflow_status": fy.workflow_status,
+        "snapshot_id": snap.id,
+        "snapshot_status": snap.status,
+    }
 
 
 # --- Authentication & User Endpoints ---

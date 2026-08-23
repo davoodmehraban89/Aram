@@ -1,6 +1,6 @@
-# Financial Reporting Platform - Backend Architecture (Phase 2A - Phase 5)
+# Financial Reporting Platform - Backend Architecture (Phase 2A - Phase 8)
 
-This backend application implements the persistent relational data model, source document ingestion, financial data normalization, accounting rule engine, statement review snapshot layer, and financial reporting API layer for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
+This backend application implements the persistent relational data model, source document ingestion, financial data normalization, accounting rule engine, statement review snapshot layer, financial reporting API layer, and end-to-end workflow orchestration for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
 
 ## Prerequisites
 
@@ -37,17 +37,27 @@ This backend application implements the persistent relational data model, source
 Environment variables can be overridden via system environment or a `.env` file:
 
 - `DATABASE_URL`: SQLAlchemy connection URI (default: `sqlite:///./financial_platform.db`). Can be replaced with a PostgreSQL URI (e.g., `postgresql://user:pass@localhost:5432/financial_db`) for production.
+- `SECRET_KEY`: Secret key for JWT access token signatures.
+
+## Workflow Orchestration Layer (Phase 8)
+
+The workflow orchestration module under `backend/app/workflow/service.py` manages the end-to-end lifecycle from source file upload to approved financial statements:
+
+- **Workflow Status Tracking (`WorkflowStatus`)**:
+  - `UPLOADED` -> `PROCESSING` -> `NORMALIZED` -> `CALCULATED` -> `READY_FOR_REVIEW` -> `APPROVED` (or `FAILED`).
+- **Service Operations**:
+  - `execute_end_to_end_workflow()`: Automates file registration, row normalization, accounting calculations, and snapshot creation.
+  - `approve_workflow_and_snapshot()`: Transitions review snapshot status and sets workflow state to `APPROVED`.
+- **API Endpoints**:
+  - `POST /api/v1/workflow/execute`: Triggers full automated pipeline execution.
+  - `POST /api/v1/workflow/approve`: Approves review snapshot and sets workflow state to `APPROVED`.
 
 ## Ingestion Engine (Phase 2B)
-
-The ingestion module under `backend/app/ingestion/` provides controlled financial source document importing:
 
 - **Parsers (`backend/app/ingestion/parsers.py`)**: Format validation and SHA256 checksum computation for `.xlsx`, `.csv`, and `.pdf` files without mutating raw source files.
 - **Service Layer (`backend/app/ingestion/service.py`)**: `validate_source()`, `register_source_document()`, and `process_import()`.
 
 ## Normalization Engine (Phase 3)
-
-The normalization module under `backend/app/normalization/` converts ingested source data into standardized financial records:
 
 - **Analyzer (`backend/app/normalization/analyzer.py`)**: Detects column headers and analyzes tabular file structure.
 - **Mapper (`backend/app/normalization/mapper.py`)**: Translates raw row data into normalized attributes (`account_code`, `account_name`, `debit`, `credit`, `net_amount`, `t1`-`t4`).
@@ -56,8 +66,6 @@ The normalization module under `backend/app/normalization/` converts ingested so
 
 ## Accounting Rule Engine Foundation (Phase 4A)
 
-The accounting module under `backend/app/accounting/` performs rule-based calculations on normalized financial records:
-
 - **Rules (`backend/app/accounting/rules.py`)**: Configurable account grouping rules (`AccountGroupRule`, `AccountingRuleConfig`).
 - **Calculator (`backend/app/accounting/calculator.py`)**: Debit/credit aggregation and account classification logic.
 - **Statements (`backend/app/accounting/statements.py`)**: Foundation generators for Trial Balance (TB), Balance Sheet (BS), and Income Statement (IS).
@@ -65,24 +73,13 @@ The accounting module under `backend/app/accounting/` performs rule-based calcul
 
 ## Review & Snapshot Layer (Phase 4B)
 
-The snapshot module under `backend/app/accounting/snapshot.py` supports review workflows and versioned statement calculation snapshots:
-
 - **Entity (`StatementSnapshot`)**: Stores frozen calculation JSON (`snapshot_data`), version number, notes, and review status (`ReviewStatus`: `DRAFT`, `UNDER_REVIEW`, `APPROVED`, `REJECTED`).
 - **Service Layer (`backend/app/accounting/snapshot.py`)**: `create_statement_snapshot()`, `get_snapshots_for_year()`, and `update_snapshot_review_status()`.
 
-## Financial Reporting API Layer (Phase 5)
+## Financial Reporting API & Authentication (Phase 5 & 7)
 
-The API layer under `backend/app/api/` exposes versioned financial statements and snapshot review operations:
-
-- **Authentication Placeholder (`backend/app/api/auth.py`)**: `get_current_user` dependency for API key / token header validation.
-- **Endpoints (`backend/app/api/endpoints.py`)**:
-  - `GET /api/v1/reporting/trial-balance`: Calculated Trial Balance.
-  - `GET /api/v1/reporting/balance-sheet`: Calculated Balance Sheet.
-  - `GET /api/v1/reporting/income-statement`: Calculated Income Statement.
-  - `GET /api/v1/snapshots`: List versioned statement snapshots.
-  - `POST /api/v1/snapshots`: Generate and persist a new snapshot.
-  - `PATCH /api/v1/snapshots/{snapshot_id}/status`: Transition review status (`UNDER_REVIEW`, `APPROVED`, `REJECTED`).
-  - `GET /api/v1/snapshots/{snapshot_id}`: Read-only access to specific snapshot calculations.
+- **Authentication (`backend/app/api/auth.py`)**: SHA256 password hashing, signed access tokens, and RBAC permission checks (`UserRole`: `ADMIN`, `AUDITOR`, `VIEWER`).
+- **Audit Logging (`backend/app/services/audit.py`)**: Action tracking (`AuditLog`).
 
 ## Running Tests
 
@@ -95,7 +92,7 @@ PYTHONPATH=. pytest -v backend/tests
 ## Data Model Core Entities
 
 - **Company**: Corporate entity metadata (`code`, `name`).
-- **FiscalYear**: Year context (`year`, `status`: `Draft`, `Approved`, `Locked`).
+- **FiscalYear**: Year context (`year`, `status`: `Draft`, `Approved`, `Locked`, `workflow_status`).
 - **SourceDocument**: Metadata for imported ledger/statement files.
 - **AccountVersion**: Fiscal-year isolated Chart of Accounts.
 - **MappingRule**: Mapping rules linking accounts to note definitions.
@@ -105,3 +102,4 @@ PYTHONPATH=. pytest -v backend/tests
 - **NormalizedFinancialRecord**: Standardized financial transaction/account row records.
 - **ValidationErrorLog**: Log of data validation errors and warnings.
 - **StatementSnapshot**: Versioned financial calculation snapshot and review entity.
+- **User** & **AuditLog**: User authentication, role-based authorization, and compliance audit log entity.

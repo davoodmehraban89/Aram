@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پلتفرم گزارش‌گری مالی - سامانه مدیریت صورت‌های مالی</title>
+    <title>پلتفرم گزارش‌گری مالی - گردش کار جامعی تا دریافت صورت‌های مالی</title>
     <style>
         body { font-family: Tahoma, Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; direction: rtl; }
         .header { background-color: #1e293b; color: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -17,17 +17,18 @@
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold; }
         .badge-draft { background-color: #fef08a; color: #854d0e; }
         .badge-approved { background-color: #bbf7d0; color: #166534; }
+        .badge-status { background-color: #dbeafe; color: #1e40af; }
         .user-info { font-size: 0.9em; background-color: #334155; padding: 8px 12px; border-radius: 6px; }
-        .login-form { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 40px auto; }
-        .login-form input { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
-        .login-form button { padding: 10px; background-color: #2563eb; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .workflow-stepper { display: flex; gap: 15px; margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; }
+        .step { flex: 1; text-align: center; padding: 8px; background: #e2e8f0; border-radius: 6px; font-size: 0.85em; font-weight: bold; }
+        .step.active { background: #2563eb; color: white; }
     </style>
 </head>
 <body>
     <div class="header">
         <div>
             <h2 style="margin:0;">پلتفرم گزارش‌گری مالی (Financial Reporting Platform V2)</h2>
-            <p style="margin:5px 0 0 0; font-size:0.9em;">داشبورد مشاهده صورت‌های مالی، تراز آزمایشی، تاریخچه اسنپ‌شات‌ها و لاگ‌های حسابرسی</p>
+            <p style="margin:5px 0 0 0; font-size:0.9em;">سامانه مدیریت گردش کار جامع، از بارگذاری تا نهایی‌سازی صورت‌های مالی</p>
         </div>
         <div id="user-session" class="user-info">
             کاربر: <span id="username-display">ادمین سیستم</span> (<span id="role-display">ADMIN</span>)
@@ -35,7 +36,8 @@
     </div>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('tb')">تراز آزمایشی (TB)</button>
+        <button class="tab-btn active" onclick="switchTab('workflow')">گردش کار و بارگذاری</button>
+        <button class="tab-btn" onclick="switchTab('tb')">تراز آزمایشی (TB)</button>
         <button class="tab-btn" onclick="switchTab('bs')">ترازنامه (BS)</button>
         <button class="tab-btn" onclick="switchTab('is')">صورت سود و زیان (IS)</button>
         <button class="tab-btn" onclick="switchTab('snapshots')">تاریخچه اسنپ‌شات‌ها</button>
@@ -43,11 +45,51 @@
     </div>
 
     <div id="content-area" class="card">
-        <h3>در حال بارگذاری اطلاعات از API...</h3>
+        <h3>اجرای گردش کار مالی</h3>
+        <p>مراحل گردش کار: بارگذاری منبع ➔ نرمال‌سازی ➔ محاسبه ➔ تولید اسنپ‌شات ➔ بررسی و تایید</p>
+
+        <div class="workflow-stepper">
+            <div class="step active">UPLOADED</div>
+            <div class="step">PROCESSING</div>
+            <div class="step">NORMALIZED</div>
+            <div class="step">CALCULATED</div>
+            <div class="step">READY_FOR_REVIEW</div>
+            <div class="step">APPROVED</div>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button class="tab-btn active" style="background:#059669; color:white;" onclick="triggerE2EWorkflow()">شروع اجرای آنلاین گردش کار E2E</button>
+        </div>
     </div>
 
     <script>
         const API_BASE = '/api/v1';
+
+        async function triggerE2EWorkflow() {
+            const area = document.getElementById('content-area');
+            area.innerHTML = '<h3>در حال اجرای کامل گردش کار...</h3>';
+            try {
+                const rawRows = [
+                    { "account_code": "1101", "account_name": "موجود نقد", "debit": "2000", "credit": "0" },
+                    { "account_code": "3101", "account_name": "بدهی تجاری", "debit": "0", "credit": "2000" }
+                ];
+                const res = await fetch(`${API_BASE}/workflow/execute?year_id=1&file_path=sample_e2e_ledger.csv&doc_type=ledger`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rawRows)
+                });
+                const data = await res.json();
+                area.innerHTML = `
+                    <h3 style="color:green;">گردش کار با موفقیت اجرا شد!</h3>
+                    <p>شناسه دوره مالی: <strong>${data.year_id}</strong></p>
+                    <p>وضعیت جدید گردش کار: <span class="badge badge-status">${data.workflow_status}</span></p>
+                    <p>شناسه اسنپ‌شات تولید شده: <strong>${data.snapshot_id} (نسخه ${data.snapshot_version})</strong></p>
+                    <button class="tab-btn active" style="background:#2563eb;" onclick="switchTab('snapshots')">مشاهده در تاریخچه اسنپ‌شات‌ها</button>
+                `;
+            } catch (e) {
+                area.innerHTML = '<h3 style="color:red;">خطا در اجرای گردش کار.</h3>';
+            }
+        }
 
         async function fetchReport(type) {
             const area = document.getElementById('content-area');
@@ -83,7 +125,8 @@
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            if (tab === 'tb') fetchReport('trial-balance');
+            if (tab === 'workflow') location.reload();
+            else if (tab === 'tb') fetchReport('trial-balance');
             else if (tab === 'bs') fetchReport('balance-sheet');
             else if (tab === 'is') fetchReport('income-statement');
             else if (tab === 'snapshots') fetchSnapshots();
@@ -123,8 +166,6 @@
                 area.innerHTML = '<h3 style="color:red;">خطا در دریافت لاگ‌های حسابرسی.</h3>';
             }
         }
-
-        fetchReport('trial-balance');
     </script>
 </body>
 </html>
