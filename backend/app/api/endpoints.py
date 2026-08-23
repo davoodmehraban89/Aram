@@ -19,6 +19,7 @@ from backend.app.accounting.snapshot import (
     update_snapshot_review_status,
 )
 from backend.app.workflow.service import execute_end_to_end_workflow, approve_workflow_and_snapshot, update_workflow_status
+from backend.app.normalization.mapping_engine import COAMappingEngine
 
 
 router = APIRouter()
@@ -30,7 +31,67 @@ def health_check():
     return {"status": "ok", "service": "financial-reporting-platform"}
 
 
-# --- Workflow Orchestration Endpoints (Phase 8) ---
+# --- COA Mapping Engine Endpoints (Phase 12) ---
+
+@router.get("/coa/unmapped", response_model=List[Dict[str, Any]])
+def get_unmapped_accounts(
+    year_id: int = Query(..., description="Fiscal Year ID"),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    """Detects unmapped accounts for a fiscal year."""
+    engine = COAMappingEngine(db, year_id)
+    return engine.detect_unmapped_accounts()
+
+
+@router.post("/coa/rules", response_model=schemas.COAMappingRuleRead)
+def save_coa_mapping_rule(
+    year_id: int = Query(..., description="Fiscal Year ID"),
+    rule_data: schemas.COAMappingRuleBase = Body(...),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(require_role([models.UserRole.ADMIN, models.UserRole.AUDITOR])),
+):
+    """Saves or updates a Chart of Accounts mapping rule."""
+    engine = COAMappingEngine(db, year_id)
+    rule = engine.save_mapping_rule(
+        account_code=rule_data.account_code,
+        account_name=rule_data.account_name,
+        target_statement=rule_data.target_statement,
+        statement_section=rule_data.statement_section,
+        group_name=rule_data.group_name,
+        is_approved=rule_data.is_approved,
+    )
+    log_audit_event(
+        db,
+        user_id=user.get("user_id"),
+        user_action=f"Saved COAMappingRule for code '{rule_data.account_code}' in FiscalYear {year_id}.",
+        entity_affected="COAMappingRule",
+        action_type="CREATE",
+    )
+    return rule
+
+
+@router.post("/coa/copy-template")
+def copy_mapping_template(
+    year_id: int = Query(..., description="Target Fiscal Year ID"),
+    source_year_id: int = Query(..., description="Source Fiscal Year ID"),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(require_role([models.UserRole.ADMIN, models.UserRole.AUDITOR])),
+):
+    """Copies approved mapping rules from a previous fiscal year for template reuse."""
+    engine = COAMappingEngine(db, year_id)
+    copied_count = engine.copy_template_from_year(source_year_id)
+    log_audit_event(
+        db,
+        user_id=user.get("user_id"),
+        user_action=f"Copied {copied_count} COAMappingRules from FiscalYear {source_year_id} to {year_id}.",
+        entity_affected="COAMappingRule",
+        action_type="CREATE",
+    )
+    return {"year_id": year_id, "source_year_id": source_year_id, "copied_rules_count": copied_count}
+
+
+# --- Workflow Orchestration Endpoints ---
 
 @router.post("/workflow/execute")
 def execute_workflow_endpoint(

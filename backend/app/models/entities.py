@@ -59,6 +59,15 @@ class WorkflowStatus(str, enum.Enum):
     FAILED = "FAILED"
 
 
+class AccountHierarchyLevel(str, enum.Enum):
+    GENERAL_LEDGER = "GENERAL_LEDGER"  # کل
+    SUBSIDIARY_LEDGER = "SUBSIDIARY_LEDGER"  # معین
+    DETAIL_1 = "DETAIL_1"  # تفصيل ۱
+    DETAIL_2 = "DETAIL_2"  # تفصيل ۲
+    DETAIL_3 = "DETAIL_3"  # تفصيل ۳
+    DETAIL_4 = "DETAIL_4"  # تفصيل ۴
+
+
 class User(Base, TimestampMixin):
     __tablename__ = "users"
 
@@ -112,6 +121,7 @@ class FiscalYear(Base, TimestampMixin):
     normalized_records = relationship("NormalizedFinancialRecord", back_populates="fiscal_year", cascade="all, delete-orphan")
     validation_logs = relationship("ValidationErrorLog", back_populates="fiscal_year", cascade="all, delete-orphan")
     statement_snapshots = relationship("StatementSnapshot", back_populates="fiscal_year", cascade="all, delete-orphan")
+    coa_mapping_rules = relationship("COAMappingRule", back_populates="fiscal_year", cascade="all, delete-orphan")
 
 
 class SourceDocument(Base, TimestampMixin):
@@ -139,6 +149,8 @@ class AccountVersion(Base, TimestampMixin):
     year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
     account_code = Column(String(100), nullable=False, index=True)
     account_name = Column(String(255), nullable=False)
+    hierarchy_level = Column(SQLEnum(AccountHierarchyLevel), default=AccountHierarchyLevel.SUBSIDIARY_LEDGER, nullable=False)
+    parent_account_code = Column(String(100), nullable=True)
     t1 = Column(String(100), nullable=True)
     t2 = Column(String(100), nullable=True)
     t3 = Column(String(100), nullable=True)
@@ -161,6 +173,23 @@ class MappingRule(Base, TimestampMixin):
     fiscal_year = relationship("FiscalYear", back_populates="mapping_rules")
     account_version = relationship("AccountVersion", back_populates="mapping_rules")
     target_note = relationship("NoteDefinition", back_populates="mapping_rules")
+
+
+class COAMappingRule(Base, TimestampMixin):
+    __tablename__ = "coa_mapping_rules"
+    __table_args__ = (
+        UniqueConstraint("year_id", "account_code", name="uq_year_coa_account_code"),
+    )
+
+    year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
+    account_code = Column(String(100), nullable=False, index=True)
+    account_name = Column(String(255), nullable=False)
+    target_statement = Column(SQLEnum(StatementType), nullable=False)  # BS, IS, CF, EQ
+    statement_section = Column(String(100), nullable=False)  # Current Assets, Revenues, etc.
+    group_name = Column(String(255), nullable=False)
+    is_approved = Column(Boolean, default=False, nullable=False)
+
+    fiscal_year = relationship("FiscalYear", back_populates="coa_mapping_rules")
 
 
 class NoteDefinition(Base, TimestampMixin):

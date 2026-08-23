@@ -1,4 +1,6 @@
 from backend.app.schemas.entities import (
+    COAMappingRuleBase,
+    COAMappingRuleRead,
     UserCreate,
     UserRead,
     Token,
@@ -17,6 +19,8 @@ from backend.app.schemas.entities import (
 )
 
 __all__ = [
+    "COAMappingRuleBase",
+    "COAMappingRuleRead",
     "UserCreate",
     "UserRead",
     "Token",

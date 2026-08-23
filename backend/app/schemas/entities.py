@@ -1,11 +1,35 @@
 from datetime import datetime
 from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, ConfigDict
-from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity, ReviewStatus, UserRole, WorkflowStatus
+from backend.app.models.entities import (
+    FiscalYearStatus,
+    StatementType,
+    ValidationSeverity,
+    ReviewStatus,
+    UserRole,
+    WorkflowStatus,
+    AccountHierarchyLevel,
+)
 
 
 class BaseORMModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
+
+class COAMappingRuleBase(BaseModel):
+    account_code: str
+    account_name: str
+    target_statement: StatementType
+    statement_section: str
+    group_name: str
+    is_approved: bool = False
+
+
+class COAMappingRuleRead(COAMappingRuleBase, BaseORMModel):
+    id: int
+    year_id: int
+    created_at: datetime
+    updated_at: datetime
 
 
 class UserBase(BaseModel):
