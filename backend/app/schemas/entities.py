@@ -1,11 +1,45 @@
 from datetime import datetime
 from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, ConfigDict
-from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity, ReviewStatus
+from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity, ReviewStatus, UserRole
 
 
 class BaseORMModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserBase(BaseModel):
+    username: str
+    role: UserRole = UserRole.AUDITOR
+    is_active: bool = True
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class UserRead(UserBase, BaseORMModel):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    username: str
+    role: UserRole
+
+
+class AuditLogRead(BaseORMModel):
+    id: int
+    user_id: Optional[int] = None
+    user_action: str
+    entity_affected: str
+    action_type: str
+    context_metadata: Optional[Dict[str, Any]] = None
+    created_at: datetime
+    updated_at: datetime
 
 
 class CompanyBase(BaseModel):

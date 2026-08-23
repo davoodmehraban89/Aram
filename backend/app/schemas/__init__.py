@@ -1,4 +1,8 @@
 from backend.app.schemas.entities import (
+    UserCreate,
+    UserRead,
+    Token,
+    AuditLogRead,
     CompanyRead,
     FiscalYearRead,
     SourceDocumentRead,
@@ -13,6 +17,10 @@ from backend.app.schemas.entities import (
 )
 
 __all__ = [
+    "UserCreate",
+    "UserRead",
+    "Token",
+    "AuditLogRead",
     "CompanyRead",
     "FiscalYearRead",
     "SourceDocumentRead",

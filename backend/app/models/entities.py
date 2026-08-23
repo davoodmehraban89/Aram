@@ -3,6 +3,7 @@ from sqlalchemy import (
     Column,
     String,
     Integer,
+    Boolean,
     ForeignKey,
     Enum as SQLEnum,
     UniqueConstraint,
@@ -42,6 +43,35 @@ class ReviewStatus(str, enum.Enum):
     REJECTED = "REJECTED"
 
 
+class UserRole(str, enum.Enum):
+    ADMIN = "ADMIN"
+    AUDITOR = "AUDITOR"
+    VIEWER = "VIEWER"
+
+
+class User(Base, TimestampMixin):
+    __tablename__ = "users"
+
+    username = Column(String(100), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    role = Column(SQLEnum(UserRole), default=UserRole.AUDITOR, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+
+    audit_logs = relationship("AuditLog", back_populates="user", cascade="all, delete-orphan")
+
+
+class AuditLog(Base, TimestampMixin):
+    __tablename__ = "audit_logs"
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    user_action = Column(String(255), nullable=False)
+    entity_affected = Column(String(100), nullable=False)
+    action_type = Column(String(50), nullable=False)  # CREATE, READ, UPDATE, DELETE, LOGIN
+    context_metadata = Column(JSON, nullable=True)
+
+    user = relationship("User", back_populates="audit_logs")
+
+
 class Company(Base, TimestampMixin):
     __tablename__ = "companies"
 
@@ -79,7 +109,7 @@ class SourceDocument(Base, TimestampMixin):
     year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
     filename = Column(String(255), nullable=False)
     file_hash = Column(String(64), nullable=False)
-    doc_type = Column(String(50), nullable=False)  # ledger, official_statement, mapping, auditor_report
+    doc_type = Column(String(50), nullable=False)
     upload_date = Column(String(50), nullable=True)
     processing_status = Column(String(50), nullable=False, default="REGISTERED")
     version = Column(Integer, nullable=False, default=1)
@@ -233,7 +263,7 @@ class StatementSnapshot(Base, TimestampMixin):
     year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
     version = Column(Integer, nullable=False, default=1)
     status = Column(SQLEnum(ReviewStatus), nullable=False, default=ReviewStatus.DRAFT)
-    snapshot_data = Column(JSON, nullable=False)  # Contains frozen Trial Balance, Balance Sheet, Income Statement
+    snapshot_data = Column(JSON, nullable=False)
     created_by = Column(String(100), nullable=True)
     notes = Column(Text, nullable=True)
 
