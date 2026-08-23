@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, ConfigDict
-from backend.app.models.entities import FiscalYearStatus, StatementType
+from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity
 
 
 class BaseORMModel(BaseModel):
@@ -79,5 +79,44 @@ class FinancialStatementRead(BaseORMModel):
     id: int
     year_id: int
     statement_type: StatementType
+    created_at: datetime
+    updated_at: datetime
+
+
+class MappingTemplateRead(BaseORMModel):
+    id: int
+    year_id: int
+    template_name: str
+    column_mappings: Dict[str, Any]
+    created_at: datetime
+    updated_at: datetime
+
+
+class NormalizedFinancialRecordRead(BaseORMModel):
+    id: int
+    year_id: int
+    source_document_id: int
+    row_index: int
+    account_code: str
+    account_name: str
+    debit: float
+    credit: float
+    net_amount: float
+    t1: Optional[str] = None
+    t2: Optional[str] = None
+    t3: Optional[str] = None
+    t4: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ValidationErrorLogRead(BaseORMModel):
+    id: int
+    year_id: int
+    source_document_id: Optional[int] = None
+    severity: ValidationSeverity
+    error_code: str
+    message: str
+    context_data: Optional[Dict[str, Any]] = None
     created_at: datetime
     updated_at: datetime

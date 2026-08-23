@@ -29,6 +29,12 @@ class StatementType(str, enum.Enum):
     EQ = "EQ"  # Equity Statement
 
 
+class ValidationSeverity(str, enum.Enum):
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+
+
 class Company(Base, TimestampMixin):
     __tablename__ = "companies"
 
@@ -54,6 +60,9 @@ class FiscalYear(Base, TimestampMixin):
     mapping_rules = relationship("MappingRule", back_populates="fiscal_year", cascade="all, delete-orphan")
     note_definitions = relationship("NoteDefinition", back_populates="fiscal_year", cascade="all, delete-orphan")
     financial_statements = relationship("FinancialStatement", back_populates="fiscal_year", cascade="all, delete-orphan")
+    mapping_templates = relationship("MappingTemplate", back_populates="fiscal_year", cascade="all, delete-orphan")
+    normalized_records = relationship("NormalizedFinancialRecord", back_populates="fiscal_year", cascade="all, delete-orphan")
+    validation_logs = relationship("ValidationErrorLog", back_populates="fiscal_year", cascade="all, delete-orphan")
 
 
 class SourceDocument(Base, TimestampMixin):
@@ -68,6 +77,8 @@ class SourceDocument(Base, TimestampMixin):
     version = Column(Integer, nullable=False, default=1)
 
     fiscal_year = relationship("FiscalYear", back_populates="source_documents")
+    normalized_records = relationship("NormalizedFinancialRecord", back_populates="source_document", cascade="all, delete-orphan")
+    validation_logs = relationship("ValidationErrorLog", back_populates="source_document", cascade="all, delete-orphan")
 
 
 class AccountVersion(Base, TimestampMixin):
@@ -155,3 +166,51 @@ class StatementLine(Base, TimestampMixin):
 
     financial_statement = relationship("FinancialStatement", back_populates="lines")
     target_note = relationship("NoteDefinition", back_populates="statement_lines")
+
+
+class MappingTemplate(Base, TimestampMixin):
+    __tablename__ = "mapping_templates"
+    __table_args__ = (
+        UniqueConstraint("year_id", "template_name", name="uq_year_template_name"),
+    )
+
+    year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
+    template_name = Column(String(100), nullable=False)
+    column_mappings = Column(JSON, nullable=False)  # JSON dict mapping canonical fields to source column headers
+
+    fiscal_year = relationship("FiscalYear", back_populates="mapping_templates")
+
+
+class NormalizedFinancialRecord(Base, TimestampMixin):
+    __tablename__ = "normalized_financial_records"
+
+    year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
+    source_document_id = Column(Integer, ForeignKey("source_documents.id", ondelete="CASCADE"), nullable=False, index=True)
+    row_index = Column(Integer, nullable=False)
+    account_code = Column(String(100), nullable=False, index=True)
+    account_name = Column(String(255), nullable=False)
+    debit = Column(Numeric(precision=20, scale=2), default=0.00, nullable=False)
+    credit = Column(Numeric(precision=20, scale=2), default=0.00, nullable=False)
+    net_amount = Column(Numeric(precision=20, scale=2), default=0.00, nullable=False)
+    t1 = Column(String(100), nullable=True)
+    t2 = Column(String(100), nullable=True)
+    t3 = Column(String(100), nullable=True)
+    t4 = Column(String(100), nullable=True)
+    raw_payload = Column(JSON, nullable=True)
+
+    fiscal_year = relationship("FiscalYear", back_populates="normalized_records")
+    source_document = relationship("SourceDocument", back_populates="normalized_records")
+
+
+class ValidationErrorLog(Base, TimestampMixin):
+    __tablename__ = "validation_error_logs"
+
+    year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
+    source_document_id = Column(Integer, ForeignKey("source_documents.id", ondelete="CASCADE"), nullable=True, index=True)
+    severity = Column(SQLEnum(ValidationSeverity), nullable=False, default=ValidationSeverity.ERROR)
+    error_code = Column(String(100), nullable=False)
+    message = Column(Text, nullable=False)
+    context_data = Column(JSON, nullable=True)
+
+    fiscal_year = relationship("FiscalYear", back_populates="validation_logs")
+    source_document = relationship("SourceDocument", back_populates="validation_logs")

@@ -6,6 +6,9 @@ from backend.app.schemas.entities import (
     NoteRowRead,
     FinancialStatementRead,
     StatementLineRead,
+    MappingTemplateRead,
+    NormalizedFinancialRecordRead,
+    ValidationErrorLogRead,
 )
 
 __all__ = [
@@ -16,4 +19,7 @@ __all__ = [
     "NoteRowRead",
     "FinancialStatementRead",
     "StatementLineRead",
+    "MappingTemplateRead",
+    "NormalizedFinancialRecordRead",
+    "ValidationErrorLogRead",
 ]

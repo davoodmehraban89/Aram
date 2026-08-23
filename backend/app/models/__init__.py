@@ -4,6 +4,7 @@ from backend.app.models.entities import (
     FiscalYear,
     FiscalYearStatus,
     StatementType,
+    ValidationSeverity,
     SourceDocument,
     AccountVersion,
     MappingRule,
@@ -11,6 +12,9 @@ from backend.app.models.entities import (
     NoteRow,
     FinancialStatement,
     StatementLine,
+    MappingTemplate,
+    NormalizedFinancialRecord,
+    ValidationErrorLog,
 )
 
 __all__ = [
@@ -19,6 +23,7 @@ __all__ = [
     "FiscalYear",
     "FiscalYearStatus",
     "StatementType",
+    "ValidationSeverity",
     "SourceDocument",
     "AccountVersion",
     "MappingRule",
@@ -26,4 +31,7 @@ __all__ = [
     "NoteRow",
     "FinancialStatement",
     "StatementLine",
+    "MappingTemplate",
+    "NormalizedFinancialRecord",
+    "ValidationErrorLog",
 ]

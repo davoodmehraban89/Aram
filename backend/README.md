@@ -1,6 +1,6 @@
-# Financial Reporting Platform - Backend Foundation & Ingestion Engine (Phase 2A & 2B)
+# Financial Reporting Platform - Backend Foundation, Ingestion & Normalization Engine (Phase 2A, 2B & 3)
 
-This backend application implements the persistent relational data model foundation and controlled financial source ingestion engine for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
+This backend application implements the persistent relational data model foundation, controlled financial source ingestion engine, and financial data normalization framework for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
 
 ## Prerequisites
 
@@ -48,6 +48,16 @@ The ingestion module under `backend/app/ingestion/` provides controlled financia
   - `register_source_document(db, year_id, file_path, doc_type)`: Verifies fiscal year mutability, checks for duplicate document hashes, and records a `SourceDocument`.
   - `process_import(db, year_id, file_path, doc_type)`: Orchestrates document registration, status tracking (`REGISTERED` -> `PROCESSED`), and metadata extraction.
 
+## Normalization Engine (Phase 3)
+
+The normalization module under `backend/app/normalization/` converts ingested source data into standardized financial records:
+
+- **Analyzer (`backend/app/normalization/analyzer.py`)**: Detects column headers and analyzes tabular file structure.
+- **Mapper (`backend/app/normalization/mapper.py`)**: Applies column mapping templates to translate raw row key-value pairs into normalized fields (`account_code`, `account_name`, `debit`, `credit`, `net_amount`, `t1`-`t4`).
+- **Validator (`backend/app/normalization/validator.py`)**: Enforces required field validation, non-negative monetary constraints, and generates structured `ValidationErrorLog` records.
+- **Service Layer (`backend/app/normalization/service.py`)**:
+  - `normalize_and_persist_records(db, year_id, source_document_id, raw_rows, template_name)`: Orchestrates row mapping, validation, error logging, and persistence of `NormalizedFinancialRecord` and `ValidationErrorLog` entities while enforcing fiscal-year immutability.
+
 ## Running Tests
 
 Run the full automated test suite using `pytest`:
@@ -65,3 +75,6 @@ PYTHONPATH=. pytest -v backend/tests
 - **MappingRule**: Mapping rules linking accounts to note definitions.
 - **NoteDefinition** & **NoteRow**: Financial note definitions and structural line items.
 - **FinancialStatement** & **StatementLine**: Primary financial statement headers and line items.
+- **MappingTemplate**: Custom column header mapping definitions per fiscal year.
+- **NormalizedFinancialRecord**: Standardized financial transaction/account row records.
+- **ValidationErrorLog**: Log of data validation errors and warnings (`INFO`, `WARNING`, `ERROR`).
