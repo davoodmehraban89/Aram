@@ -1,6 +1,6 @@
-# Financial Reporting Platform - Backend Architecture (Phase 2A - Phase 4A)
+# Financial Reporting Platform - Backend Architecture (Phase 2A - Phase 4B)
 
-This backend application implements the persistent relational data model, source document ingestion, financial data normalization, and accounting rule engine foundation for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
+This backend application implements the persistent relational data model, source document ingestion, financial data normalization, accounting rule engine, and statement review snapshot layer for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
 
 ## Prerequisites
 
@@ -63,6 +63,16 @@ The accounting module under `backend/app/accounting/` performs rule-based calcul
 - **Statements (`backend/app/accounting/statements.py`)**: Foundation generators for Trial Balance (TB), Balance Sheet (BS), and Income Statement (IS).
 - **Service (`backend/app/accounting/service.py`)**: `generate_financial_statements()`.
 
+## Review & Snapshot Layer (Phase 4B)
+
+The snapshot module under `backend/app/accounting/snapshot.py` supports review workflows and versioned statement calculation snapshots:
+
+- **Entity (`StatementSnapshot`)**: Stores frozen calculation JSON (`snapshot_data`), version number, notes, and review status (`ReviewStatus`: `DRAFT`, `UNDER_REVIEW`, `APPROVED`, `REJECTED`).
+- **Service Layer (`backend/app/accounting/snapshot.py`)**:
+  - `create_statement_snapshot(db, year_id, notes, created_by, rule_config)`: Generates statements, auto-increments version number for the fiscal year, and persists snapshot.
+  - `get_snapshots_for_year(db, year_id)`: Retrieves snapshots ordered by version descending.
+  - `update_snapshot_review_status(db, snapshot_id, new_status, notes)`: Manages review status transitions while enforcing fiscal year status immutability.
+
 ## Running Tests
 
 Run the full automated test suite using `pytest`:
@@ -83,3 +93,4 @@ PYTHONPATH=. pytest -v backend/tests
 - **MappingTemplate**: Custom column header mapping definitions.
 - **NormalizedFinancialRecord**: Standardized financial transaction/account row records.
 - **ValidationErrorLog**: Log of data validation errors and warnings.
+- **StatementSnapshot**: Versioned financial calculation snapshot and review entity.

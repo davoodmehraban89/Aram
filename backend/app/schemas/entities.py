@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, ConfigDict
-from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity
+from backend.app.models.entities import FiscalYearStatus, StatementType, ValidationSeverity, ReviewStatus
 
 
 class BaseORMModel(BaseModel):
@@ -118,5 +118,17 @@ class ValidationErrorLogRead(BaseORMModel):
     error_code: str
     message: str
     context_data: Optional[Dict[str, Any]] = None
+    created_at: datetime
+    updated_at: datetime
+
+
+class StatementSnapshotRead(BaseORMModel):
+    id: int
+    year_id: int
+    version: int
+    status: ReviewStatus
+    snapshot_data: Dict[str, Any]
+    created_by: Optional[str] = None
+    notes: Optional[str] = None
     created_at: datetime
     updated_at: datetime

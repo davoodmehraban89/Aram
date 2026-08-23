@@ -9,6 +9,7 @@ from backend.app.schemas.entities import (
     MappingTemplateRead,
     NormalizedFinancialRecordRead,
     ValidationErrorLogRead,
+    StatementSnapshotRead,
 )
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "MappingTemplateRead",
     "NormalizedFinancialRecordRead",
     "ValidationErrorLogRead",
+    "StatementSnapshotRead",
 ]

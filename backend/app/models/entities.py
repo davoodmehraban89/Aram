@@ -35,6 +35,13 @@ class ValidationSeverity(str, enum.Enum):
     ERROR = "ERROR"
 
 
+class ReviewStatus(str, enum.Enum):
+    DRAFT = "DRAFT"
+    UNDER_REVIEW = "UNDER_REVIEW"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+
+
 class Company(Base, TimestampMixin):
     __tablename__ = "companies"
 
@@ -63,6 +70,7 @@ class FiscalYear(Base, TimestampMixin):
     mapping_templates = relationship("MappingTemplate", back_populates="fiscal_year", cascade="all, delete-orphan")
     normalized_records = relationship("NormalizedFinancialRecord", back_populates="fiscal_year", cascade="all, delete-orphan")
     validation_logs = relationship("ValidationErrorLog", back_populates="fiscal_year", cascade="all, delete-orphan")
+    statement_snapshots = relationship("StatementSnapshot", back_populates="fiscal_year", cascade="all, delete-orphan")
 
 
 class SourceDocument(Base, TimestampMixin):
@@ -176,7 +184,7 @@ class MappingTemplate(Base, TimestampMixin):
 
     year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
     template_name = Column(String(100), nullable=False)
-    column_mappings = Column(JSON, nullable=False)  # JSON dict mapping canonical fields to source column headers
+    column_mappings = Column(JSON, nullable=False)
 
     fiscal_year = relationship("FiscalYear", back_populates="mapping_templates")
 
@@ -214,3 +222,19 @@ class ValidationErrorLog(Base, TimestampMixin):
 
     fiscal_year = relationship("FiscalYear", back_populates="validation_logs")
     source_document = relationship("SourceDocument", back_populates="validation_logs")
+
+
+class StatementSnapshot(Base, TimestampMixin):
+    __tablename__ = "statement_snapshots"
+    __table_args__ = (
+        UniqueConstraint("year_id", "version", name="uq_year_snapshot_version"),
+    )
+
+    year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
+    version = Column(Integer, nullable=False, default=1)
+    status = Column(SQLEnum(ReviewStatus), nullable=False, default=ReviewStatus.DRAFT)
+    snapshot_data = Column(JSON, nullable=False)  # Contains frozen Trial Balance, Balance Sheet, Income Statement
+    created_by = Column(String(100), nullable=True)
+    notes = Column(Text, nullable=True)
+
+    fiscal_year = relationship("FiscalYear", back_populates="statement_snapshots")
