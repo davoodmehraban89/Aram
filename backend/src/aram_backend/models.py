@@ -181,27 +181,27 @@ class StatementLine(TimestampMixin, Base):
     target_note: Mapped[NoteDefinition | None] = relationship()
 
 
+def _resolve_parent_year_id(
+    obj: Any, session: Session, rel_attr: str, fk_attr: str, parent_cls: type[Any]
+) -> int | None:
+    parent = getattr(obj, rel_attr, None)
+    if parent is not None:
+        return parent.year_id
+    fk_val = getattr(obj, fk_attr, None)
+    if fk_val is not None:
+        return session.scalar(select(parent_cls.year_id).where(parent_cls.id == fk_val))
+    return None
+
+
 def _year_id_for(obj: object, session: Session) -> int | None:
     if isinstance(obj, FiscalYear):
         return obj.id
     if isinstance(obj, YearOwnedMixin):
         return obj.year_id
     if isinstance(obj, NoteRow):
-        if obj.note is not None:
-            return obj.note.year_id
-        if obj.note_id is not None:
-            return session.scalar(
-                select(NoteDefinition.year_id).where(NoteDefinition.id == obj.note_id)
-            )
+        return _resolve_parent_year_id(obj, session, "note", "note_id", NoteDefinition)
     if isinstance(obj, StatementLine):
-        if obj.statement is not None:
-            return obj.statement.year_id
-        if obj.statement_id is not None:
-            return session.scalar(
-                select(FinancialStatement.year_id).where(
-                    FinancialStatement.id == obj.statement_id
-                )
-            )
+        return _resolve_parent_year_id(obj, session, "statement", "statement_id", FinancialStatement)
     return None
 
 
@@ -234,26 +234,10 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
             )
 
         if isinstance(obj, MappingRule):
-            target_year_id = (
-                obj.target_note.year_id
-                if obj.target_note is not None
-                else session.scalar(
-                    select(NoteDefinition.year_id).where(
-                        NoteDefinition.id == obj.target_note_id
-                    )
-                )
-            )
+            target_year_id = _resolve_parent_year_id(obj, session, "target_note", "target_note_id", NoteDefinition)
             if target_year_id != obj.year_id:
                 raise ValueError("Mapping rule and target note must belong to the same fiscal year")
         if isinstance(obj, StatementLine) and obj.target_note_id is not None:
-            target_year_id = (
-                obj.target_note.year_id
-                if obj.target_note is not None
-                else session.scalar(
-                    select(NoteDefinition.year_id).where(
-                        NoteDefinition.id == obj.target_note_id
-                    )
-                )
-            )
+            target_year_id = _resolve_parent_year_id(obj, session, "target_note", "target_note_id", NoteDefinition)
             if target_year_id != year_id:
                 raise ValueError("Statement line and target note must belong to the same fiscal year")
