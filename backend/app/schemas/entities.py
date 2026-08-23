@@ -9,11 +9,41 @@ from backend.app.models.entities import (
     UserRole,
     WorkflowStatus,
     AccountHierarchyLevel,
+    FeedbackCategory,
 )
 
 
 class BaseORMModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
+
+class PilotFeedbackCreate(BaseModel):
+    category: FeedbackCategory = FeedbackCategory.MAPPING_CORRECTION
+    account_code: Optional[str] = None
+    original_value: Optional[str] = None
+    corrected_value: Optional[str] = None
+    comments: str
+
+
+class PilotFeedbackRead(PilotFeedbackCreate, BaseORMModel):
+    id: int
+    year_id: int
+    user_id: Optional[int] = None
+    created_at: datetime
+    updated_at: datetime
+
+
+class PilotValidationLogRead(BaseORMModel):
+    id: int
+    year_id: int
+    uploaded_filename: str
+    file_hash: str
+    record_count: int
+    mapping_decisions: Optional[Dict[str, Any]] = None
+    user_corrections_count: int
+    processing_result: str
+    created_at: datetime
+    updated_at: datetime
 
 
 class COAMappingRuleBase(BaseModel):

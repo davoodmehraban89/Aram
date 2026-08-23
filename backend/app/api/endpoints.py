@@ -12,6 +12,11 @@ from backend.app.api.auth import (
     create_access_token,
 )
 from backend.app.services.audit import log_audit_event
+from backend.app.services.feedback import (
+    record_pilot_feedback,
+    log_pilot_validation_summary,
+    get_recurring_unknown_accounts,
+)
 from backend.app.accounting.service import generate_financial_statements
 from backend.app.accounting.snapshot import (
     create_statement_snapshot,
@@ -31,7 +36,67 @@ def health_check():
     return {"status": "ok", "service": "financial-reporting-platform"}
 
 
-# --- COA Mapping Engine Endpoints (Phase 12) ---
+# --- Pilot Feedback & Validation Endpoints (Phase 13) ---
+
+@router.post("/pilot/feedback", response_model=schemas.PilotFeedbackRead)
+def submit_pilot_feedback(
+    year_id: int = Query(..., description="Fiscal Year ID"),
+    feedback_data: schemas.PilotFeedbackCreate = Body(...),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    """Submits accountant pilot feedback or mapping correction."""
+    fb = record_pilot_feedback(
+        db,
+        year_id=year_id,
+        user_id=user.get("user_id"),
+        category=feedback_data.category,
+        comments=feedback_data.comments,
+        account_code=feedback_data.account_code,
+        original_value=feedback_data.original_value,
+        corrected_value=feedback_data.corrected_value,
+    )
+    log_audit_event(
+        db,
+        user_id=user.get("user_id"),
+        user_action=f"Submitted pilot feedback for account '{feedback_data.account_code}'.",
+        entity_affected="PilotFeedback",
+        action_type="CREATE",
+    )
+    return fb
+
+
+@router.get("/pilot/feedback", response_model=List[schemas.PilotFeedbackRead])
+def list_pilot_feedback(
+    year_id: int = Query(..., description="Fiscal Year ID"),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(require_role([models.UserRole.ADMIN, models.UserRole.AUDITOR])),
+):
+    """Lists pilot feedback entries for a fiscal year."""
+    return db.query(models.PilotFeedback).filter(models.PilotFeedback.year_id == year_id).all()
+
+
+@router.get("/pilot/validation-logs", response_model=List[schemas.PilotValidationLogRead])
+def list_pilot_validation_logs(
+    year_id: int = Query(..., description="Fiscal Year ID"),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(require_role([models.UserRole.ADMIN, models.UserRole.AUDITOR])),
+):
+    """Lists pilot validation summary logs for a fiscal year."""
+    return db.query(models.PilotValidationLog).filter(models.PilotValidationLog.year_id == year_id).all()
+
+
+@router.get("/pilot/recurring-unknowns")
+def list_recurring_unknown_accounts(
+    year_id: int = Query(..., description="Fiscal Year ID"),
+    db: Session = Depends(get_db),
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    """Lists recurring unknown or unmapped accounts detected from pilot feedback."""
+    return get_recurring_unknown_accounts(db, year_id)
+
+
+# --- COA Mapping Engine Endpoints ---
 
 @router.get("/coa/unmapped", response_model=List[Dict[str, Any]])
 def get_unmapped_accounts(

@@ -1,4 +1,7 @@
 from backend.app.schemas.entities import (
+    PilotFeedbackCreate,
+    PilotFeedbackRead,
+    PilotValidationLogRead,
     COAMappingRuleBase,
     COAMappingRuleRead,
     UserCreate,
@@ -19,6 +22,9 @@ from backend.app.schemas.entities import (
 )
 
 __all__ = [
+    "PilotFeedbackCreate",
+    "PilotFeedbackRead",
+    "PilotValidationLogRead",
     "COAMappingRuleBase",
     "COAMappingRuleRead",
     "UserCreate",

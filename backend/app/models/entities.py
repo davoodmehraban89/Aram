@@ -60,12 +60,18 @@ class WorkflowStatus(str, enum.Enum):
 
 
 class AccountHierarchyLevel(str, enum.Enum):
-    GENERAL_LEDGER = "GENERAL_LEDGER"  # کل
-    SUBSIDIARY_LEDGER = "SUBSIDIARY_LEDGER"  # معین
-    DETAIL_1 = "DETAIL_1"  # تفصيل ۱
-    DETAIL_2 = "DETAIL_2"  # تفصيل ۲
-    DETAIL_3 = "DETAIL_3"  # تفصيل ۳
-    DETAIL_4 = "DETAIL_4"  # تفصيل ۴
+    GENERAL_LEDGER = "GENERAL_LEDGER"
+    SUBSIDIARY_LEDGER = "SUBSIDIARY_LEDGER"
+    DETAIL_1 = "DETAIL_1"
+    DETAIL_2 = "DETAIL_2"
+    DETAIL_3 = "DETAIL_3"
+    DETAIL_4 = "DETAIL_4"
+
+
+class FeedbackCategory(str, enum.Enum):
+    MAPPING_CORRECTION = "MAPPING_CORRECTION"
+    PROCESSING_ISSUE = "PROCESSING_ISSUE"
+    USER_SUGGESTION = "USER_SUGGESTION"
 
 
 class User(Base, TimestampMixin):
@@ -89,6 +95,34 @@ class AuditLog(Base, TimestampMixin):
     context_metadata = Column(JSON, nullable=True)
 
     user = relationship("User", back_populates="audit_logs")
+
+
+class PilotFeedback(Base, TimestampMixin):
+    __tablename__ = "pilot_feedbacks"
+
+    year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    category = Column(SQLEnum(FeedbackCategory), nullable=False, default=FeedbackCategory.MAPPING_CORRECTION)
+    account_code = Column(String(100), nullable=True)
+    original_value = Column(String(255), nullable=True)
+    corrected_value = Column(String(255), nullable=True)
+    comments = Column(Text, nullable=False)
+
+    fiscal_year = relationship("FiscalYear", back_populates="pilot_feedbacks")
+
+
+class PilotValidationLog(Base, TimestampMixin):
+    __tablename__ = "pilot_validation_logs"
+
+    year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
+    uploaded_filename = Column(String(255), nullable=False)
+    file_hash = Column(String(64), nullable=False)
+    record_count = Column(Integer, default=0, nullable=False)
+    mapping_decisions = Column(JSON, nullable=True)
+    user_corrections_count = Column(Integer, default=0, nullable=False)
+    processing_result = Column(String(100), nullable=False)
+
+    fiscal_year = relationship("FiscalYear", back_populates="pilot_validation_logs")
 
 
 class Company(Base, TimestampMixin):
@@ -122,6 +156,8 @@ class FiscalYear(Base, TimestampMixin):
     validation_logs = relationship("ValidationErrorLog", back_populates="fiscal_year", cascade="all, delete-orphan")
     statement_snapshots = relationship("StatementSnapshot", back_populates="fiscal_year", cascade="all, delete-orphan")
     coa_mapping_rules = relationship("COAMappingRule", back_populates="fiscal_year", cascade="all, delete-orphan")
+    pilot_feedbacks = relationship("PilotFeedback", back_populates="fiscal_year", cascade="all, delete-orphan")
+    pilot_validation_logs = relationship("PilotValidationLog", back_populates="fiscal_year", cascade="all, delete-orphan")
 
 
 class SourceDocument(Base, TimestampMixin):
@@ -184,8 +220,8 @@ class COAMappingRule(Base, TimestampMixin):
     year_id = Column(Integer, ForeignKey("fiscal_years.id", ondelete="CASCADE"), nullable=False, index=True)
     account_code = Column(String(100), nullable=False, index=True)
     account_name = Column(String(255), nullable=False)
-    target_statement = Column(SQLEnum(StatementType), nullable=False)  # BS, IS, CF, EQ
-    statement_section = Column(String(100), nullable=False)  # Current Assets, Revenues, etc.
+    target_statement = Column(SQLEnum(StatementType), nullable=False)
+    statement_section = Column(String(100), nullable=False)
     group_name = Column(String(255), nullable=False)
     is_approved = Column(Boolean, default=False, nullable=False)
 
