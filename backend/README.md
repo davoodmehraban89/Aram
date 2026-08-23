@@ -1,6 +1,6 @@
-# Financial Reporting Platform - Backend Foundation, Ingestion & Normalization Engine (Phase 2A, 2B & 3)
+# Financial Reporting Platform - Backend Architecture (Phase 2A - Phase 4A)
 
-This backend application implements the persistent relational data model foundation, controlled financial source ingestion engine, and financial data normalization framework for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
+This backend application implements the persistent relational data model, source document ingestion, financial data normalization, and accounting rule engine foundation for the Financial Reporting Platform using Python, FastAPI, SQLAlchemy, and Pydantic.
 
 ## Prerequisites
 
@@ -42,21 +42,26 @@ Environment variables can be overridden via system environment or a `.env` file:
 
 The ingestion module under `backend/app/ingestion/` provides controlled financial source document importing:
 
-- **Parsers (`backend/app/ingestion/parsers.py`)**: Supports format validation and SHA256 checksum computation for `.xlsx`, `.csv`, and `.pdf` files without mutating raw source files.
-- **Service Layer (`backend/app/ingestion/service.py`)**:
-  - `validate_source(file_path)`: Validates file existence, format support, and computes file hash.
-  - `register_source_document(db, year_id, file_path, doc_type)`: Verifies fiscal year mutability, checks for duplicate document hashes, and records a `SourceDocument`.
-  - `process_import(db, year_id, file_path, doc_type)`: Orchestrates document registration, status tracking (`REGISTERED` -> `PROCESSED`), and metadata extraction.
+- **Parsers (`backend/app/ingestion/parsers.py`)**: Format validation and SHA256 checksum computation for `.xlsx`, `.csv`, and `.pdf` files without mutating raw source files.
+- **Service Layer (`backend/app/ingestion/service.py`)**: `validate_source()`, `register_source_document()`, and `process_import()`.
 
 ## Normalization Engine (Phase 3)
 
 The normalization module under `backend/app/normalization/` converts ingested source data into standardized financial records:
 
 - **Analyzer (`backend/app/normalization/analyzer.py`)**: Detects column headers and analyzes tabular file structure.
-- **Mapper (`backend/app/normalization/mapper.py`)**: Applies column mapping templates to translate raw row key-value pairs into normalized fields (`account_code`, `account_name`, `debit`, `credit`, `net_amount`, `t1`-`t4`).
-- **Validator (`backend/app/normalization/validator.py`)**: Enforces required field validation, non-negative monetary constraints, and generates structured `ValidationErrorLog` records.
-- **Service Layer (`backend/app/normalization/service.py`)**:
-  - `normalize_and_persist_records(db, year_id, source_document_id, raw_rows, template_name)`: Orchestrates row mapping, validation, error logging, and persistence of `NormalizedFinancialRecord` and `ValidationErrorLog` entities while enforcing fiscal-year immutability.
+- **Mapper (`backend/app/normalization/mapper.py`)**: Translates raw row data into normalized attributes (`account_code`, `account_name`, `debit`, `credit`, `net_amount`, `t1`-`t4`).
+- **Validator (`backend/app/normalization/validator.py`)**: Enforces required field validation, non-negative monetary constraints, and generates `ValidationErrorLog` records.
+- **Service Layer (`backend/app/normalization/service.py`)**: `normalize_and_persist_records()`.
+
+## Accounting Rule Engine Foundation (Phase 4A)
+
+The accounting module under `backend/app/accounting/` performs rule-based calculations on normalized financial records:
+
+- **Rules (`backend/app/accounting/rules.py`)**: Configurable account grouping rules (`AccountGroupRule`, `AccountingRuleConfig`).
+- **Calculator (`backend/app/accounting/calculator.py`)**: Debit/credit aggregation and account classification logic.
+- **Statements (`backend/app/accounting/statements.py`)**: Foundation generators for Trial Balance (TB), Balance Sheet (BS), and Income Statement (IS).
+- **Service (`backend/app/accounting/service.py`)**: `generate_financial_statements()`.
 
 ## Running Tests
 
@@ -70,11 +75,11 @@ PYTHONPATH=. pytest -v backend/tests
 
 - **Company**: Corporate entity metadata (`code`, `name`).
 - **FiscalYear**: Year context (`year`, `status`: `Draft`, `Approved`, `Locked`).
-- **SourceDocument**: Metadata for imported ledger/statement files (`file_hash`, `processing_status`, `version`).
+- **SourceDocument**: Metadata for imported ledger/statement files.
 - **AccountVersion**: Fiscal-year isolated Chart of Accounts.
 - **MappingRule**: Mapping rules linking accounts to note definitions.
 - **NoteDefinition** & **NoteRow**: Financial note definitions and structural line items.
 - **FinancialStatement** & **StatementLine**: Primary financial statement headers and line items.
-- **MappingTemplate**: Custom column header mapping definitions per fiscal year.
+- **MappingTemplate**: Custom column header mapping definitions.
 - **NormalizedFinancialRecord**: Standardized financial transaction/account row records.
-- **ValidationErrorLog**: Log of data validation errors and warnings (`INFO`, `WARNING`, `ERROR`).
+- **ValidationErrorLog**: Log of data validation errors and warnings.
