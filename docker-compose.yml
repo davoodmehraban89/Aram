@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://aram_user:aram_password@db:5432/aram_db
+      - SECRET_KEY=PRODUCTION_SECRET_KEY_PLEASE_CHANGE_IN_ENV
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=aram_user
+      - POSTGRES_PASSWORD=aram_password
+      - POSTGRES_DB=aram_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:

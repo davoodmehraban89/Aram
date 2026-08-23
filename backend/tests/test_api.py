@@ -1,8 +1,8 @@
 from backend.app.models import Company, FiscalYear, FiscalYearStatus, NoteDefinition, FinancialStatement, StatementType
 
 
-def test_root_endpoint(client):
-    response = client.get("/")
+def test_info_endpoint(client):
+    response = client.get("/info")
     assert response.status_code == 200
     assert response.json()["message"] == "Financial Reporting Platform API Foundation"
 
