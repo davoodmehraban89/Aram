@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from backend.app.config import settings
 from backend.app.api.endpoints import router as api_router
+from backend.app.export.endpoints import router as export_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -9,6 +10,7 @@ app = FastAPI(
 )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(export_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def root():

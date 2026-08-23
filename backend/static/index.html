@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پلتفرم گزارش‌گری مالی - سامانه مدیریت صورت‌های مالی</title>
+    <style>
+        body { font-family: Tahoma, Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; direction: rtl; }
+        .header { background-color: #1e293b; color: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 18px; border: none; background-color: #e2e8f0; cursor: pointer; border-radius: 6px; font-weight: bold; }
+        .tab-btn.active { background-color: #2563eb; color: #fff; }
+        .card { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: right; }
+        th { background-color: #f1f5f9; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold; }
+        .badge-draft { background-color: #fef08a; color: #854d0e; }
+        .badge-approved { background-color: #bbf7d0; color: #166534; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>پلتفرم گزارش‌گری مالی (Financial Reporting Platform V2)</h2>
+        <p>داشبورد مشاهده صورت‌های مالی، تراز آزمایشی و تاریخچه اسنپ‌شات‌ها</p>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('tb')">تراز آزمایشی (TB)</button>
+        <button class="tab-btn" onclick="switchTab('bs')">ترازنامه (BS)</button>
+        <button class="tab-btn" onclick="switchTab('is')">صورت سود و زیان (IS)</button>
+        <button class="tab-btn" onclick="switchTab('snapshots')">تاریخچه اسنپ‌شات‌ها</button>
+    </div>
+
+    <div id="content-area" class="card">
+        <h3>در حال بارگذاری اطلاعات از API...</h3>
+    </div>
+
+    <script>
+        const API_BASE = '/api/v1';
+
+        async function fetchReport(type) {
+            const area = document.getElementById('content-area');
+            area.innerHTML = '<h3>در حال فراخوانی داده‌ها...</h3>';
+            try {
+                const res = await fetch(`${API_BASE}/reporting/${type}?year_id=1`);
+                const data = await res.json();
+                renderReport(type, data);
+            } catch (e) {
+                area.innerHTML = '<h3 style="color:red;">خطا در دریافت داده‌ها از API. لطفاً از فعال بودن سرور مطمئن شوید.</h3>';
+            }
+        }
+
+        function renderReport(type, data) {
+            const area = document.getElementById('content-area');
+            let html = `<h3>${data.title || type}</h3>`;
+            if (type === 'trial-balance') {
+                html += `
+                    <p>مجموع بدهکار: <strong>${data.total_debit.toLocaleString()}</strong> | مجموع بستانکار: <strong>${data.total_credit.toLocaleString()}</strong></p>
+                    <table>
+                        <thead><tr><th>کد حساب</th><th>نام حساب</th><th>بدهکار</th><th>بستانکار</th><th>مانده خالص</th></tr></thead>
+                        <tbody>
+                            ${data.rows.map(r => `<tr><td>${r.account_code}</td><td>${r.account_name}</td><td>${r.total_debit.toLocaleString()}</td><td>${r.total_credit.toLocaleString()}</td><td>${r.net_balance.toLocaleString()}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            }
+            area.innerHTML = html;
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (tab === 'tb') fetchReport('trial-balance');
+            else if (tab === 'bs') fetchReport('balance-sheet');
+            else if (tab === 'is') fetchReport('income-statement');
+            else fetchSnapshots();
+        }
+
+        async function fetchSnapshots() {
+            const area = document.getElementById('content-area');
+            area.innerHTML = '<h3>در حال فراخوانی تاریخچه اسنپ‌شات‌ها...</h3>';
+            try {
+                const res = await fetch(`${API_BASE}/snapshots?year_id=1`);
+                const data = await res.json();
+                let html = '<h3>تاریخچه اسنپ‌شات‌های صورت‌های مالی</h3><table><thead><tr><th>نسخه</th><th>وضعیت بررسی</th><th>ایجاد کننده</th><th>توضیحات</th></tr></thead><tbody>';
+                data.forEach(s => {
+                    html += `<tr><td>نسخه ${s.version}</td><td><span class="badge badge-draft">${s.status}</span></td><td>${s.created_by || '-'}</td><td>${s.notes || '-'}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                area.innerHTML = html;
+            } catch (e) {
+                area.innerHTML = '<h3 style="color:red;">خطا در دریافت اسنپ‌شات‌ها.</h3>';
+            }
+        }
+
+        // Default load
+        fetchReport('trial-balance');
+    </script>
+</body>
+</html>
