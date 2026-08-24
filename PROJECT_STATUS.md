@@ -48,7 +48,7 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 
 ## Next approved action
 
-1. Review and merge this documentation-control PR only after confirming its six-file scope.
+1. Review and merge this documentation-control PR only after confirming its nine-file documentation and handoff scope.
 2. Independently review PR #9 and accept, correct, or close it.
 3. Audit PR #7 feature-by-feature; recover useful work through small PRs only.
 4. Build the mandatory Mapping Excel and note/sub-note workflow before V1 acceptance.
@@ -59,3 +59,5 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 - [Decision log](docs/DECISION_LOG.md)
 - [Acceptance policy](docs/ACCEPTANCE_POLICY.md)
 - [Jules task template](docs/JULES_TASK_TEMPLATE.md)
+- [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
+- [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
