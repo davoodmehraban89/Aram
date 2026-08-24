@@ -59,7 +59,7 @@ Do not ask Davood to reconstruct project history from memory.
 
 ### Single next action
 
-Review and merge the documentation-only post-merge control update that records
+Review and merge documentation-only PR #13 (https://github.com/davoodmehraban89/Aram/pull/13), which records
 the accepted PR #12 merge and PR #9 closure. After that, verify Issue #11 and
 select the next small, controlled implementation task. Do not begin work from
 an old Jules task or cached branch.
