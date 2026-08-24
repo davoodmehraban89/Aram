@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import enum
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -35,6 +33,13 @@ class FiscalYearStatus(str, enum.Enum):
     LOCKED = "Locked"
 
 
+class MappingStatus(str, enum.Enum):
+    DRAFT = "Draft"
+    PROPOSED = "Proposed"
+    ACTIVE = "Active"
+    RETIRED = "Retired"
+
+
 class StatementType(str, enum.Enum):
     BALANCE_SHEET = "BS"
     INCOME_STATEMENT = "IS"
@@ -54,7 +59,7 @@ class Company(TimestampMixin, Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     code: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
-    fiscal_years: Mapped[list[FiscalYear]] = relationship(
+    fiscal_years: Mapped[list["FiscalYear"]] = relationship(
         back_populates="company", cascade="all, delete-orphan"
     )
 
@@ -118,7 +123,7 @@ class NoteDefinition(TimestampMixin, YearOwnedMixin, Base):
     title: Mapped[str] = mapped_column(String(512))
     version: Mapped[int] = mapped_column(Integer, default=1)
     configuration_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
-    rows: Mapped[list[NoteRow]] = relationship(back_populates="note", cascade="all, delete-orphan")
+    rows: Mapped[list["NoteRow"]] = relationship(back_populates="note", cascade="all, delete-orphan")
 
 
 class NoteRow(TimestampMixin, Base):
@@ -148,6 +153,9 @@ class MappingRule(TimestampMixin, YearOwnedMixin, Base):
     account_code: Mapped[str] = mapped_column(String(64), index=True)
     target_note_id: Mapped[int] = mapped_column(ForeignKey("note_definitions.id", ondelete="RESTRICT"))
     mapping_type: Mapped[str] = mapped_column(String(32))
+    status: Mapped[MappingStatus] = mapped_column(
+        Enum(MappingStatus, native_enum=False), default=MappingStatus.DRAFT
+    )
     target_note: Mapped[NoteDefinition] = relationship()
 
 
@@ -160,7 +168,7 @@ class FinancialStatement(TimestampMixin, YearOwnedMixin, Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     statement_type: Mapped[StatementType] = mapped_column(Enum(StatementType, native_enum=False))
     version: Mapped[int] = mapped_column(Integer, default=1)
-    lines: Mapped[list[StatementLine]] = relationship(
+    lines: Mapped[list["StatementLine"]] = relationship(
         back_populates="statement", cascade="all, delete-orphan"
     )
 
@@ -219,6 +227,19 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
                 }
                 if obj.status not in allowed[old]:
                     raise ValueError(f"Invalid fiscal-year transition: {old.value} -> {obj.status.value}")
+
+        if isinstance(obj, MappingRule):
+            history = inspect(obj).attrs.status.history
+            if history.deleted:
+                old = history.deleted[0]
+                allowed = {
+                    MappingStatus.DRAFT: {MappingStatus.PROPOSED, MappingStatus.RETIRED},
+                    MappingStatus.PROPOSED: {MappingStatus.ACTIVE, MappingStatus.DRAFT, MappingStatus.RETIRED},
+                    MappingStatus.ACTIVE: {MappingStatus.RETIRED},
+                    MappingStatus.RETIRED: set(),
+                }
+                if obj.status not in allowed[old]:
+                    raise ValueError(f"Invalid mapping transition: {old.value} -> {obj.status.value}")
 
     protected = (session.new | session.dirty | session.deleted)
     for obj in protected:
