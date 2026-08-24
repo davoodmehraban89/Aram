@@ -14,66 +14,60 @@ Do not ask Davood to reconstruct project history from memory.
 ### Accepted repository state
 
 - Canonical branch: `source-data-cleanup`
-- Approved base used by the active Phase 2B candidate:
-  `a41b07d7a7dd192c3ae4a277eb4903327883456f`
+- Accepted head after Phase 2B:
+  `7b5bd79b760d534dad34b3162f770e838616ebe9`
 - Phase 1B-1: merged through PR #1.
 - Phase 1B-2 corrections: merged through PR #4.
 - Phase 2A backend foundation: merged through PR #6.
 - One-file model refactor: merged through PR #8.
 - Project-control foundation: merged through PR #10.
-- No Phase 2B candidate and no user-ready V1 release has been accepted or merged.
+- Phase 2B ingestion foundation: independently reviewed and squash-merged
+  through PR #12 on 2026-08-24.
+- No user-ready V1 release has been accepted or proven.
 
-### Active Phase 2B candidate: PR #12
+### Accepted Phase 2B evidence
 
-- URL: https://github.com/davoodmehraban89/Aram/pull/12
-- Branch: `codex/phase-2b-source-registration-12955190277775369594`
-- Base: `source-data-cleanup@a41b07d7a7dd192c3ae4a277eb4903327883456f`
-- State at last verification: OPEN, DRAFT, MERGEABLE, NOT MERGED.
-- Independently reviewed implementation head:
-  `9e90533658e400a51402db673efae9cbd0aa37d1`
-- Scope at that head: 11 files; no canonical XLSX/PDF, `data/`, database,
-  ZIP, EXE, or financial-source file.
-- Backend CI run #17:
-  https://github.com/davoodmehraban89/Aram/actions/runs/32703999006
-- Run #17 conclusion: `success`.
-- Regression tests cover exact-duplicate idempotency and rejection of same-year,
-  same-hash conflicts in filename, document type, or both. Rejected conflicts
-  leave one unchanged original `SourceDocument`.
-- Backend README documents metadata-only registration, supported types,
-  read-only XLSX inspection and ledger parsing, semantic-conflict rejection,
-  and the non-persistence of payload bytes and financial values.
-- Documentation-control corrections were added after the reviewed implementation
-  head; fetch the current PR head and its newest CI before deciding acceptance.
+- PR: https://github.com/davoodmehraban89/Aram/pull/12
+- Reviewed PR head: `f7cb6abb7caf3f1c0c28d402ae41b0e3c005a280`
+- Squash merge commit:
+  `7b5bd79b760d534dad34b3162f770e838616ebe9`
+- Final PR CI: https://github.com/davoodmehraban89/Aram/actions/runs/32705724028
+- CI conclusion: `success`; 42 tests passed, Alembic upgrade/downgrade
+  succeeded, and compileall succeeded.
+- Accepted capabilities: metadata-only source registration, exact-duplicate
+  idempotency, semantic-conflict rejection, read-only XLSX structural
+  inspection, and typed in-memory general-ledger parsing.
+- Protected boundary: no canonical XLSX/PDF, `data/`, database, ZIP, EXE,
+  binary, or financial-source file changed in PR #12.
 
-### Superseded candidate: PR #9
+### Superseded work
 
-- URL: https://github.com/davoodmehraban89/Aram/pull/9
-- PR #9 is the older Phase 2B candidate.
-- Do not merge PR #9 while PR #12 is under review.
-- Close or otherwise disposition PR #9 only after PR #12 receives an explicit
-  independent acceptance decision.
+- PR #9: https://github.com/davoodmehraban89/Aram/pull/9
+- State: CLOSED WITHOUT MERGE on 2026-08-24.
+- PR #9 must not be reopened or merged; its Phase 2B role was replaced by
+  accepted PR #12.
+- PR #7 remains closed and unmerged. Recover any useful feature only through a
+  separately approved, focused PR.
 
-### Protected boundaries
+### Remaining product boundary
 
-- Do not modify canonical XLSX/PDF files, `data/`, financial source values,
-  databases, ZIP/EXE artifacts, mappings, desktop code, or release code as part
-  of Phase 2B candidate review.
-- PR #7 remains closed and unmerged; recover work from it only through separately
-  approved focused tasks.
-- Mapping import/export, note/sub-note workflow, UI, and an official tested V1
-  release remain incomplete.
+- Comprehensive Mapping Excel import/export is not implemented.
+- Note and sub-note mapping workflow and UI are not implemented.
+- Official `v1.0.0-pilot` release and clean-environment artifacts are not proven.
+- GitHub Issue #11 remains the V1 Pilot roadmap:
+  https://github.com/davoodmehraban89/Aram/issues/11
 
 ### Single next action
 
-Independently review the current remote head of Draft PR #12: verify its complete
-diff, changed-file list, new Backend CI result, regression behavior, and protected
-data boundary. Record an explicit acceptance decision. Do not merge either PR #12
-or PR #9 before that decision.
+Review and merge the documentation-only post-merge control update that records
+the accepted PR #12 merge and PR #9 closure. After that, verify Issue #11 and
+select the next small, controlled implementation task. Do not begin work from
+an old Jules task or cached branch.
 
 ### Mandatory first response
 
-Report whether GitHub access succeeded. Then report the current PR #12 head,
-Draft/merge state, exact changed files, and CI evidence compared with this handoff.
-Do not start new implementation work until that comparison is complete.
+Report whether GitHub access succeeded. Verify the canonical branch head,
+PR #12 merge state, PR #9 closure state, the current documentation-control PR,
+and CI evidence. Do not start implementation until this comparison is complete.
 
 ## END COPY
