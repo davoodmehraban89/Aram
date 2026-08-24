@@ -4,6 +4,9 @@ Phase 2A provides the persistent, audit-safe data foundation. Phase 2B starts
 with an isolated source-registration primitive that records a filename, type,
 and SHA-256 digest for a Draft fiscal year. It does not persist source bytes,
 parse spreadsheets, calculate financial values, or alter canonical files.
+XLSX preflight inspection validates the accepted worksheet names and header
+locations before any future row-level import; it does not evaluate formulas or
+read financial data rows.
 
 ## Local setup
 
