@@ -41,7 +41,9 @@ Every meaningful PR must:
 - append a complete entry to `docs/PROJECT_LOG.md`;
 - add a new ADR instead of silently rewriting an accepted decision;
 - satisfy `docs/ACCEPTANCE_POLICY.md`;
-- use `.github/pull_request_template.md`.
+- use `.github/pull_request_template.md`;
+- update `docs/handoff/LATEST_HANDOFF.md` after every meaningful completed or rejected step so a successor can resume without chat history;
+- keep `docs/handoff/MASTER_RECOVERY_PROMPT.md` stable unless the governance process itself changes.
 
 An agent's written success report is not acceptance evidence.
 
