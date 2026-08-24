@@ -6,7 +6,7 @@
 
 - Repository: [davoodmehraban89/Aram](https://github.com/davoodmehraban89/Aram)
 - Accepted branch: `source-data-cleanup`
-- Accepted baseline commit: [`a41b07d7a7dd192c3ae4a277eb4903327883456f`](https://github.com/davoodmehraban89/Aram/commit/a41b07d7a7dd192c3ae4a277eb4903327883456f)
+- Accepted baseline commit: [`7b5bd79b760d534dad34b3162f770e838616ebe9`](https://github.com/davoodmehraban89/Aram/commit/7b5bd79b760d534dad34b3162f770e838616ebe9)
 - Product objective: a controlled, auditable accounting and financial-statement workflow that preserves canonical source data.
 
 ## Status vocabulary
@@ -30,7 +30,7 @@
 | Phase 2A backend foundation | `VERIFIED_AND_MERGED` | [PR #6](https://github.com/davoodmehraban89/Aram/pull/6) |
 | Project control refactor | `VERIFIED_AND_MERGED` | [PR #10](https://github.com/davoodmehraban89/Aram/pull/10) |
 | One-file model refactor | `VERIFIED_AND_MERGED` | [PR #8](https://github.com/davoodmehraban89/Aram/pull/8) |
-| Phase 2B ingestion foundation | `IN_PROGRESS` | Draft [PR #12](https://github.com/davoodmehraban89/Aram/pull/12) replacement candidate (PR #9 superseded) |
+| Phase 2B ingestion foundation | `VERIFIED_AND_MERGED` | [PR #12](https://github.com/davoodmehraban89/Aram/pull/12), squash merge `7b5bd79b760d534dad34b3162f770e838616ebe9` |
 | Parallel V1 prototype | `VERIFIED_BUT_UNMERGED` | Closed, unmerged [PR #7](https://github.com/davoodmehraban89/Aram/pull/7); reference/recovery source only |
 | PR #7 test/release claims | `CLAIMED_BUT_NOT_PROVEN` | No independent acceptance evidence recorded |
 | Official V1 release | `NOT_IMPLEMENTED` | No accepted user-ready release |
@@ -43,16 +43,15 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 
 - Agent reports have previously diverged from the remote repository.
 - PR #7 is large, unmerged, and cannot be accepted as a single unit.
-- PR #12 is the current replacement candidate; PR #9 is superseded but open.
+- PR #12 is accepted and merged; superseded PR #9 is closed without merge.
 - Binary execution on a clean Windows environment has not been independently proven.
 - Mapping, notes, and sub-notes are incomplete for V1.
 
 ## Next approved action
 
-Independently review Draft PR #12 at its current remote head. Verify the complete
-11-file diff, successful Backend CI, regression coverage, and protected-data
-boundaries. Then explicitly accept it, request changes, or reject it. Do not merge
-PR #9 while PR #12 is the active replacement candidate.
+1. Independently review and merge the documentation-only post-merge control update.
+2. Reconfirm the accepted branch head and project records.
+3. Select the next focused task from the V1 Pilot roadmap in [Issue #11](https://github.com/davoodmehraban89/Aram/issues/11); do not revive PR #9 or merge PR #7 directly.
 
 ## Control documents
 
