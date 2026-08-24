@@ -61,3 +61,4 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 - [Jules task template](docs/JULES_TASK_TEMPLATE.md)
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
+- [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
