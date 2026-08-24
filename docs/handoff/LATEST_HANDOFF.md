@@ -12,8 +12,9 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
 ### Last independently verified repository state
 
 - Default/canonical branch: `source-data-cleanup`
-- Accepted baseline SHA at the start of the control-documentation work: `5122fd052ebe0ffe0e07dbb8153a872a4f047355`
-- Baseline URL: `https://github.com/davoodmehraban89/Aram/commit/5122fd052ebe0ffe0e07dbb8153a872a4f047355`
+- Accepted governance merge SHA: `e42d76a24e591a265d3bb6c79ac614ff5b2f211f`
+- Governance merge URL: `https://github.com/davoodmehraban89/Aram/commit/e42d76a24e591a265d3bb6c79ac614ff5b2f211f`
+- Note: a later documentation-only commit may move the branch head beyond this SHA. Always fetch the current branch head; `e42d76a...` remains the independently verified PR #10 merge evidence.
 
 ### Accepted and merged state
 
@@ -21,6 +22,7 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
 - Phase 1B-2 corrections: merged through PR #4.
 - Phase 2A backend/data-model foundation: merged through PR #6.
 - One-file model refactor: merged through PR #8.
+- Project-control and durable handoff foundation: merged through PR #10 at `e42d76a24e591a265d3bb6c79ac614ff5b2f211f`.
 - No accepted, user-ready V1 release has been proven.
 
 ### Work currently requiring attention
@@ -28,13 +30,14 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
 #### PR #10 — project-control foundation
 
 - URL: `https://github.com/davoodmehraban89/Aram/pull/10`
-- State at last verification: OPEN, DRAFT, NOT MERGED
+- State at last verification: CLOSED AND MERGED
+- Merged at: `2026-08-24T06:46:50Z`
+- Merge SHA: `e42d76a24e591a265d3bb6c79ac614ff5b2f211f`
 - Base: `source-data-cleanup`
 - Verified base SHA: `5122fd052ebe0ffe0e07dbb8153a872a4f047355`
 - Head branch: `codex/project-control-foundation`
-- Precursor head SHA immediately before this handoff update: `21a31d5dc1c394d268e75fa3bc8e15cd0f5c784c`
-- Important: the commit that updates this handoff file necessarily changes the PR head again. Always fetch the current PR head from GitHub; do not treat the embedded precursor SHA as the current head.
-- Verified scope: 10 files and 0 deletions. The exact current line count must be fetched because updating this handoff changes it.
+- Final reviewed head SHA: `7650aafd06a913d660704ae80dea260eb3728b04`
+- Verified scope: 10 files, 794 additions, and 0 deletions.
 - Verified changed files:
   - `.github/pull_request_template.md`
   - `AGENTS.md`
@@ -50,7 +53,7 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
 - Scope: documentation, agent instructions, and PR template only.
 - No application code, tests, workflows, XLSX, PDF, ZIP, EXE, database, or financial-data file changed.
 - GitHub Actions/check status at last verification: no workflow run and no status checks were attached to the head commit.
-- Mergeability at last verification: GitHub reported mergeable, but it was intentionally left Draft and unmerged.
+- Acceptance result: independently reviewed, explicitly authorized by Davood, and squash-merged successfully. The durable controls now exist on the accepted branch.
 
 The ten-file count supersedes the earlier six-file, seven-file, and nine-file reports. `AGENTS.md` was added after confirming from official Jules documentation that Jules reads repository-level instructions. Two durable handoff files were added so recovery remains possible when ChatGPT history is unavailable. A plain-text `CHATGPT_BOOTSTRAP_PROMPT.txt` was then added as the saveable entry point that guides a successor chat through official GitHub connection and evidence recovery.
 
@@ -58,7 +61,7 @@ The ten-file count supersedes the earlier six-file, seven-file, and nine-file re
 
 - URL: `https://github.com/davoodmehraban89/Aram/pull/9`
 - Last known state: OPEN, DRAFT, NOT MERGED
-- Base: `source-data-cleanup@5122fd052ebe0ffe0e07dbb8153a872a4f047355`
+- Original base: `source-data-cleanup@5122fd052ebe0ffe0e07dbb8153a872a4f047355`; it must now be rebased or updated onto the accepted governance baseline.
 - Last observed head SHA: `8b141d793ad2d534fdf7399bb79d101d53ae29af`
 - Claimed scope: source registration, read-only XLSX preflight, and ledger parsing.
 - Independent verification confirmed Backend CI run #14 succeeded with the PR head and the exact eight-file scope.
@@ -94,7 +97,7 @@ The ten-file count supersedes the earlier six-file, seven-file, and nine-file re
 
 ### Single next action
 
-PR #10 has been independently reviewed and is approved for merge from a scope/content perspective. Obtain Davood's explicit merge authorization, merge PR #10, record the new accepted baseline SHA, and then issue the focused Jules corrective task for PR #9. Do not begin the Excel importer until the corrected Phase 2B foundation is accepted.
+Send Jules the focused corrective task for PR #9: fix the same-hash semantic identity collision, add regression tests, rebase or update from the accepted governance baseline, and update `PROJECT_STATUS.md` plus append `docs/PROJECT_LOG.md`. Then independently verify its branch, commit, exact diff, CI, and GitHub evidence. Do not begin the Excel importer until the corrected Phase 2B foundation is accepted.
 
 ### Mandatory first response
 
