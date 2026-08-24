@@ -21,4 +21,5 @@ class SchemaCatalog(BaseModel):
 class EnumCatalog(BaseModel):
     fiscal_year_statuses: list[str]
     statement_types: list[str]
+    mapping_statuses: list[str]
 

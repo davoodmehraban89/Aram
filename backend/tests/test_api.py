@@ -15,4 +15,5 @@ def test_enum_catalog(client):
     response = client.get("/api/v1/schema/enums")
     assert response.json()["fiscal_year_statuses"] == ["Draft", "Approved", "Locked"]
     assert response.json()["statement_types"] == ["BS", "IS", "CF", "EQ"]
+    assert response.json()["mapping_statuses"] == ["Draft", "Proposed", "Active", "Retired"]
 

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from aram_backend import __version__
 from aram_backend.config import get_settings
-from aram_backend.models import FiscalYearStatus, StatementType
+from aram_backend.models import FiscalYearStatus, StatementType, MappingStatus
 from aram_backend.schemas import EntityDescriptor, EnumCatalog, HealthResponse, SchemaCatalog
 
 settings = get_settings()
@@ -34,5 +34,6 @@ def schema_enums() -> EnumCatalog:
     return EnumCatalog(
         fiscal_year_statuses=[item.value for item in FiscalYearStatus],
         statement_types=[item.value for item in StatementType],
+        mapping_statuses=[item.value for item in MappingStatus],
     )
 
