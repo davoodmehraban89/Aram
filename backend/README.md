@@ -1,8 +1,9 @@
 # Aram backend
 
-Phase 2A provides the persistent, audit-safe data foundation. It deliberately
-does not ingest spreadsheets, calculate financial values, or alter canonical
-source files.
+Phase 2A provides the persistent, audit-safe data foundation. Phase 2B starts
+with an isolated source-registration primitive that records a filename, type,
+and SHA-256 digest for a Draft fiscal year. It does not persist source bytes,
+parse spreadsheets, calculate financial values, or alter canonical files.
 
 ## Local setup
 
@@ -28,4 +29,3 @@ pytest
 
 Tests use an isolated temporary SQLite database with foreign-key enforcement.
 Runtime SQLite files are ignored by Git.
-
