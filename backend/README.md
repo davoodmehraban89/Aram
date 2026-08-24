@@ -1,5 +1,20 @@
 # Aram backend
 
+## Pilot workbook preflight
+
+Gate 2A adds a strictly in-memory validator for the governed Pilot workbook.
+Generate the approved blank template from the repository root with:
+
+```bash
+cd backend
+PYTHONPATH=src python scripts/generate_pilot_template.py
+```
+
+Call `preflight_pilot_workbook(workbook_bytes)` from
+`aram_backend.pilot_workbook`. The result reports every detectable error with
+an exact sheet, Excel row, and field. The function does not persist inputs,
+parsed values, mappings, or reports and never guesses a financial value.
+
 Phase 2A provides the persistent, audit-safe data foundation. It deliberately
 does not ingest spreadsheets, calculate financial values, or alter canonical
 source files.

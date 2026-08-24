@@ -156,3 +156,23 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: PR #13 must be independently reviewed before its documentation becomes accepted
 - Next action: review PR #13, then select the next focused Issue #11 roadmap task
 
+### 2026-08-24T09:29:00Z — Gate 2A implementation candidate prepared
+
+- Actor: ChatGPT/Codex implementation
+- Task/phase: Issue #14, Pilot workbook contract and read-only preflight
+- Base: `source-data-cleanup@7c7533ee87146dc8fc78b46ebf423be55532c7eb`
+- Working branch: `codex/gate-2a-pilot-workbook`
+- Scope: typed in-memory preflight, reproducible blank workbook generator,
+  approved blank template, contract, regression tests, and control records
+- Local focused verification: 9 targeted preflight scenarios passed through a
+  direct Python harness; compileall succeeded
+- Full pytest/Alembic: pending GitHub Backend CI because the automation runtime
+  could not install the repository test dependencies from the external package
+  index
+- Template SHA-256:
+  `e14a7feb80a216d79ed9cb6dde2b0df3e55317f3da6b26efc77f7118f4702b6f`
+- Protected data: no canonical XLSX/PDF, `data/`, database, financial-source,
+  migration, workflow, ZIP, EXE, desktop, or release file changed
+- Acceptance: `IN_PROGRESS`; Draft and unmerged
+- Remaining risks: full Backend CI and independent diff review are required
+- Recovery: close the Draft PR without merge; accepted branch remains unchanged
