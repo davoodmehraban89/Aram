@@ -176,3 +176,13 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Acceptance: `IN_PROGRESS`; Draft and unmerged
 - Remaining risks: full Backend CI and independent diff review are required
 - Recovery: close the Draft PR without merge; accepted branch remains unchanged
+
+### 2026-08-24T09:40:00Z — Gate 2A Draft PR and CI verified
+
+- Draft PR: [#15](https://github.com/davoodmehraban89/Aram/pull/15)
+- Published head: `8b0431b54392e3c19ae995e2b38bdf08a56a0473`
+- Changed files: 9, all within the Issue #14 allowlist
+- GitHub Actions: [Backend CI run #23](https://github.com/davoodmehraban89/Aram/actions/runs/32712716962), `success`
+- Test evidence: 52 passed, 1 warning; Alembic upgrade/downgrade and compileall succeeded
+- PR state: Draft, open, mergeable, and unmerged
+- Acceptance: `IN_PROGRESS`; independent diff review and explicit merge decision remain required

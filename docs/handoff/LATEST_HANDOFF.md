@@ -18,6 +18,7 @@
 - Task: https://github.com/davoodmehraban89/Aram/issues/14
 - Base: `source-data-cleanup@7c7533ee87146dc8fc78b46ebf423be55532c7eb`
 - Branch: `codex/gate-2a-pilot-workbook`
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/15
 - Candidate scope: governed blank Pilot workbook v0.1, reproducible generator,
   human-readable contract, deterministic read-only preflight, focused tests,
   and required project-control updates.
@@ -25,9 +26,10 @@
 - Template SHA-256:
   `e14a7feb80a216d79ed9cb6dde2b0df3e55317f3da6b26efc77f7118f4702b6f`
 - Local evidence: nine focused validation scenarios and compileall passed.
-- Required remote evidence: full Backend CI including pytest and Alembic
-  round-trip. Do not claim acceptance until it is green and independently
-  reviewed.
+- Remote evidence: Backend CI run #23 passed with 52 tests and one warning;
+  Alembic upgrade/downgrade and compileall succeeded:
+  https://github.com/davoodmehraban89/Aram/actions/runs/32712716962
+- Acceptance remains pending independent diff review and an explicit merge decision.
 
 ## Safety boundary
 
@@ -37,6 +39,6 @@ canonical XLSX/PDF or `data/`, or create desktop/release/ZIP/EXE artifacts.
 
 ## Single next action
 
-Fetch the Draft PR and its exact head, review all changed files against the base,
-wait for Backend CI, and correct only failures caused by Issue #14. Do not start
-Gate 3 and do not merge without a separate acceptance decision.
+Fetch Draft PR #15 and its exact head, review all changed files against the
+base, and verify the final head CI. Correct only failures caused by Issue #14.
+Do not start Gate 3 and do not merge without a separate acceptance decision.

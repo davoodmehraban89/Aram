@@ -32,7 +32,7 @@
 | One-file model refactor | `VERIFIED_AND_MERGED` | [PR #8](https://github.com/davoodmehraban89/Aram/pull/8) |
 | Phase 2B ingestion foundation | `VERIFIED_AND_MERGED` | [PR #12](https://github.com/davoodmehraban89/Aram/pull/12), squash merge `7b5bd79b760d534dad34b3162f770e838616ebe9` |
 | Phase 2B control reconciliation | `VERIFIED_AND_MERGED` | [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), squash merge `7c7533ee87146dc8fc78b46ebf423be55532c7eb` |
-| Gate 2A Pilot workbook contract/preflight | `IN_PROGRESS` | Dedicated branch `codex/gate-2a-pilot-workbook`; Draft PR and CI evidence required |
+| Gate 2A Pilot workbook contract/preflight | `IN_PROGRESS` | Draft [PR #15](https://github.com/davoodmehraban89/Aram/pull/15); Backend CI run #23 passed with 52 tests |
 | Parallel V1 prototype | `VERIFIED_BUT_UNMERGED` | Closed, unmerged [PR #7](https://github.com/davoodmehraban89/Aram/pull/7); reference/recovery source only |
 | PR #7 test/release claims | `CLAIMED_BUT_NOT_PROVEN` | No independent acceptance evidence recorded |
 | Official V1 release | `NOT_IMPLEMENTED` | No accepted user-ready release |
