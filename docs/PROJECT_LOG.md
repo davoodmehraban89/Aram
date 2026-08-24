@@ -132,3 +132,27 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close PR #12 without merging to leave the accepted branch unchanged
 - Next action: independently review the final remote head and record an explicit decision
 
+### 2026-08-24T08:35:40Z — Phase 2B accepted; superseded candidate closed
+
+- Actor: ChatGPT/Codex independent reviewer; repository owner authorization
+- Task/phase: Phase 2B ingestion foundation acceptance and post-merge control reconciliation
+- Accepted base before merge: `source-data-cleanup@a41b07d7a7dd192c3ae4a277eb4903327883456f`
+- Accepted branch after merge: `source-data-cleanup@7b5bd79b760d534dad34b3162f770e838616ebe9`
+- Accepted PR: [#12](https://github.com/davoodmehraban89/Aram/pull/12)
+- Reviewed PR #12 head: `f7cb6abb7caf3f1c0c28d402ae41b0e3c005a280`
+- Merge method and SHA: squash; `7b5bd79b760d534dad34b3162f770e838616ebe9`
+- Final PR #12 GitHub Actions: [Backend CI run #21](https://github.com/davoodmehraban89/Aram/actions/runs/32705724028), `success`
+- Test evidence: 42 passed, 1 warning; Alembic upgrade/downgrade and compileall succeeded
+- Superseded PR: [#9](https://github.com/davoodmehraban89/Aram/pull/9), closed without merge
+- Post-merge control branch: `codex/phase-2b-post-merge-record`
+- Post-merge control PR: [#13](https://github.com/davoodmehraban89/Aram/pull/13)
+- PR #13 base: `source-data-cleanup@7b5bd79b760d534dad34b3162f770e838616ebe9`
+- PR #13 changed files: `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`
+- PR #13 tests / CI / artifacts: documentation-only; no backend workflow triggered; artifacts `NONE`
+- Protected data: no application code, tests, workflows, canonical XLSX/PDF, `data/`, database, binary, ZIP, EXE, or financial-source file changed
+- Acceptance: PR #12 `VERIFIED_AND_MERGED`; PR #9 closed unmerged; PR #13 `IN_PROGRESS`
+- Reviewer: PR #12 independently accepted by ChatGPT/Codex with explicit repository-owner merge authorization; PR #13 review pending
+- Recovery: revert merge commit `7b5bd79b760d534dad34b3162f770e838616ebe9` through a separately reviewed rollback PR if Phase 2B must be withdrawn
+- Remaining risk: PR #13 must be independently reviewed before its documentation becomes accepted
+- Next action: review PR #13, then select the next focused Issue #11 roadmap task
+
