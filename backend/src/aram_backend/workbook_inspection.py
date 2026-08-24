@@ -30,7 +30,20 @@ _TABULAR_PROFILES = {
         "sheet": "Source",
         "header_row": 2,
         "required_headers": frozenset(
-            {"حساب", "ACCOUNT_NAME", "year", "OPENING", "Debit", "Credit", "CLOSING"}
+            {
+                "حساب",
+                "ACCOUNT_NAME",
+                "year",
+                "نوع",
+                "T1_CODE",
+                "T2_CODE",
+                "T3_CODE",
+                "T4_CODE",
+                "OPENING",
+                "Debit",
+                "Credit",
+                "CLOSING",
+            }
         ),
     },
     "mapping": {
