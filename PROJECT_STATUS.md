@@ -49,10 +49,10 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 
 ## Next approved action
 
-1. Review and merge this documentation-control PR only after confirming its nine-file documentation and handoff scope.
-2. Independently review PR #12 and accept, correct, or close it.
-3. Audit PR #7 feature-by-feature; recover useful work through small PRs only.
-4. Build the mandatory Mapping Excel and note/sub-note workflow before V1 acceptance.
+Independently review Draft PR #12 at its current remote head. Verify the complete
+11-file diff, successful Backend CI, regression coverage, and protected-data
+boundaries. Then explicitly accept it, request changes, or reject it. Do not merge
+PR #9 while PR #12 is the active replacement candidate.
 
 ## Control documents
 
