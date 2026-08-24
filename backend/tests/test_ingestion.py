@@ -165,3 +165,28 @@ def test_duplicate_registration_different_filename_rejected(session):
     existing = session.query(SourceDocument).first()
     assert existing.document_type == "trial_balance"
     assert existing.filename == "trial-balance.xlsx"
+
+def test_duplicate_registration_different_both_rejected(session):
+    year = make_year(session)
+    arguments = {
+        "year_id": year.id,
+        "filename": "trial-balance.xlsx",
+        "document_type": "trial_balance",
+        "content": b"safe-test-bytes-conflict-3",
+    }
+
+    first = register_source_document(session, **arguments)
+    session.commit()
+
+    conflict_arguments = arguments.copy()
+    conflict_arguments["document_type"] = "general_ledger"
+    conflict_arguments["filename"] = "other.xlsx"
+
+    with pytest.raises(SourceRegistrationError, match="document type and filename mismatch for existing content hash"):
+        register_source_document(session, **conflict_arguments)
+
+    session.rollback()
+    assert session.query(SourceDocument).count() == 1
+    existing = session.query(SourceDocument).first()
+    assert existing.document_type == "trial_balance"
+    assert existing.filename == "trial-balance.xlsx"

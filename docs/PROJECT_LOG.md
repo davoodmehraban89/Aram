@@ -103,3 +103,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Reviewer: pending independent review
 - Remaining risk: evidence and diff review incomplete
 - Next action: review before any acceptance
+
+### [2026-08-24] Phase 2B Replacement Candidate (PR #12)
+- Recorded PR #10 governance merge in PROJECT_STATUS.md.
+- Created and recorded PR #12 as the replacement candidate for Phase 2B, superseding PR #9.
+- Current active branch: `codex/phase-2b-source-registration-12955190277775369594`
+- Base SHA: `a41b07d7a7dd192c3ae4a277eb4903327883456f`
+- Verified CI evidence: GitHub Backend CI run #16 successful on PR #12.
+- Updated docs to ensure Phase 2B metadata-registration conflict rejection is thoroughly tested and verified.

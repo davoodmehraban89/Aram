@@ -104,3 +104,9 @@ Send Jules the focused corrective task for PR #9: fix the same-hash semantic ide
 Report whether GitHub access succeeded, then compare this handoff with current GitHub evidence. Do not ask Davood to retell the history and do not start new implementation work before the comparison is complete.
 
 ## END COPY
+
+## PR #12 Candidate
+- PR #12 is the current Phase 2B review candidate.
+- PR #9 is an older candidate that must not be merged while PR #12 is under review.
+- PR #12 remains Draft and unmerged.
+- The single next action is independent review of PR #12.
