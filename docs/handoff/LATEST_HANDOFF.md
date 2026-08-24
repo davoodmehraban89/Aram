@@ -23,6 +23,8 @@ Do not ask Davood to reconstruct project history from memory.
 - Project-control foundation: merged through PR #10.
 - Phase 2B ingestion foundation: independently reviewed and squash-merged
   through PR #12 on 2026-08-24.
+- Gate 2A Pilot Workbook contract: independently reviewed and merged
+  through PR #15 on 2026-08-24 (SHA: 35d45c3f200672a6ef97f13a84cf7c823ecf1bb8).
 - No user-ready V1 release has been accepted or proven.
 
 ### Accepted Phase 2B evidence

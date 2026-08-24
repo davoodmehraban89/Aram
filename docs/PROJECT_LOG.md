@@ -156,3 +156,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: PR #13 must be independently reviewed before its documentation becomes accepted
 - Next action: review PR #13, then select the next focused Issue #11 roadmap task
 
+
+### 2026-08-24T13:15:00Z — PR #15 merged for Pilot Workbook preflight
+
+- Actor: Jules implementation; ChatGPT/Codex independent remote verification
+- Task/phase: Gate 2A Pilot Workbook Contract
+- Base: `source-data-cleanup@7c7533ee87146dc8fc78b46ebf423be55532c7eb`
+- Working branch: `codex/gate-2a-pilot-workbook`
+- PR: #15
+- Merge SHA: `35d45c3f200672a6ef97f13a84cf7c823ecf1bb8`
+- Capabilities: Read-only in-memory structural validation of pilot workbooks, strict header verification, numeric type rejection, template generation, and regression coverage.
+- Protected data: No canonical or protected files modified.
+- Acceptance: PR #15 `VERIFIED_AND_MERGED`

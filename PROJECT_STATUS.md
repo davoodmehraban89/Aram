@@ -62,3 +62,9 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+## Gate 2A: Pilot Workbook Contract
+- Status: VERIFIED_AND_MERGED
+- PR: #15
+- Merge SHA: 35d45c3f200672a6ef97f13a84cf7c823ecf1bb8
+- Capabilities: Implemented read-only Pilot Workbook preflight validation and template generation.
