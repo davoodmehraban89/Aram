@@ -111,3 +111,24 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Base SHA: `a41b07d7a7dd192c3ae4a277eb4903327883456f`
 - Verified CI evidence: GitHub Backend CI run #16 successful on PR #12.
 - Updated docs to ensure Phase 2B metadata-registration conflict rejection is thoroughly tested and verified.
+
+### 2026-08-24T08:00:00Z — PR #12 corrective evidence and documentation finalization
+
+- Actor: Jules implementation; ChatGPT/Codex independent remote verification and documentation correction
+- Task/phase: Phase 2B ingestion foundation replacement candidate
+- Base: `source-data-cleanup@a41b07d7a7dd192c3ae4a277eb4903327883456f`
+- Working branch: `codex/phase-2b-source-registration-12955190277775369594`
+- PR: [#12](https://github.com/davoodmehraban89/Aram/pull/12)
+- Independently reviewed implementation head: `9e90533658e400a51402db673efae9cbd0aa37d1`
+- Changed files at reviewed head: `PROJECT_STATUS.md`, `backend/README.md`, `backend/pyproject.toml`, `backend/src/aram_backend/ingestion.py`, `backend/src/aram_backend/ledger_parser.py`, `backend/src/aram_backend/workbook_inspection.py`, `backend/tests/test_ingestion.py`, `backend/tests/test_ledger_parser.py`, `backend/tests/test_workbook_inspection.py`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`
+- Regression evidence: exact duplicate remains idempotent; same-year/same-hash conflicts in document type, filename, or both raise `SourceRegistrationError`; each rejection leaves one unchanged original `SourceDocument`
+- Reported local verification by Jules: full backend pytest suite, compileall, Alembic upgrade/downgrade round-trip, and `git diff --check` passed; exact pytest count was not independently captured and remains `NOT_VERIFIED`
+- GitHub Actions: [Backend CI run #17](https://github.com/davoodmehraban89/Aram/actions/runs/32703999006), `success`
+- Artifacts/releases: none
+- Protected data: the complete PR filename list contains no canonical XLSX/PDF, `data/`, database, ZIP, EXE, or financial-source file
+- Acceptance: `IN_PROGRESS`; Draft and unmerged
+- Reviewer: ChatGPT/Codex candidate-requirements review; final acceptance pending
+- Remaining risks: final documentation commits require their own CI result; independent acceptance decision is not yet recorded
+- Recovery: close PR #12 without merging to leave the accepted branch unchanged
+- Next action: independently review the final remote head and record an explicit decision
+
