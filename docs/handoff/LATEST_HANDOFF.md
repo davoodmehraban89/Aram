@@ -32,9 +32,9 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
 - Base: `source-data-cleanup`
 - Verified base SHA: `5122fd052ebe0ffe0e07dbb8153a872a4f047355`
 - Head branch: `codex/project-control-foundation`
-- Precursor head SHA immediately before this handoff update: `a0440cb2e18effc8ef405fb92a398323a996167b`
+- Precursor head SHA immediately before this handoff update: `21a31d5dc1c394d268e75fa3bc8e15cd0f5c784c`
 - Important: the commit that updates this handoff file necessarily changes the PR head again. Always fetch the current PR head from GitHub; do not treat the embedded precursor SHA as the current head.
-- Verified scope: 9 files and 0 deletions; immediately before this handoff update GitHub reported 680 additions.
+- Verified scope: 10 files and 0 deletions. The exact current line count must be fetched because updating this handoff changes it.
 - Verified changed files:
   - `.github/pull_request_template.md`
   - `AGENTS.md`
@@ -43,6 +43,7 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
   - `docs/DECISION_LOG.md`
   - `docs/JULES_TASK_TEMPLATE.md`
   - `docs/PROJECT_LOG.md`
+  - `docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt`
   - `docs/handoff/LATEST_HANDOFF.md`
   - `docs/handoff/MASTER_RECOVERY_PROMPT.md`
 - Verification: no trailing whitespace and no conflict markers were found.
@@ -51,7 +52,7 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
 - GitHub Actions/check status at last verification: no workflow run and no status checks were attached to the head commit.
 - Mergeability at last verification: GitHub reported mergeable, but it was intentionally left Draft and unmerged.
 
-The nine-file count supersedes the earlier six-file and seven-file reports. `AGENTS.md` was added after confirming from official Jules documentation that Jules reads repository-level instructions. The two handoff files were then added so recovery remains possible even when ChatGPT history is unavailable.
+The ten-file count supersedes the earlier six-file, seven-file, and nine-file reports. `AGENTS.md` was added after confirming from official Jules documentation that Jules reads repository-level instructions. Two durable handoff files were added so recovery remains possible when ChatGPT history is unavailable. A plain-text `CHATGPT_BOOTSTRAP_PROMPT.txt` was then added as the saveable entry point that guides a successor chat through official GitHub connection and evidence recovery.
 
 #### PR #9 — Phase 2B ingestion foundation
 
@@ -90,7 +91,7 @@ The nine-file count supersedes the earlier six-file and seven-file reports. `AGE
 Re-fetch PR #10 from GitHub and independently verify:
 
 1. it still targets `source-data-cleanup`;
-2. its current head SHA and exact nine-file diff;
+2. its current head SHA and exact ten-file diff;
 3. no code, workflow, binary, database, or canonical financial-data changes exist;
 4. the contents accurately reflect GitHub reality;
 5. whether any branch conflict or new check appeared.
