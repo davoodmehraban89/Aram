@@ -1,6 +1,6 @@
 # Aram — Latest Handoff Prompt
 
-> Current authoritative handoff snapshot created: 2026-08-24 UTC  
+> Current authoritative handoff snapshot created: 2026-08-24 UTC
 > This file supersedes every earlier handoff prompt. After each meaningful project step, replace this file with a newer version. Do not use older versions as the continuation baseline.
 
 ---
@@ -32,8 +32,9 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
 - Base: `source-data-cleanup`
 - Verified base SHA: `5122fd052ebe0ffe0e07dbb8153a872a4f047355`
 - Head branch: `codex/project-control-foundation`
-- Latest verified head SHA: `4540d71eacba3f9a0d1536ae384b3bd0b444d8ea`
-- Verified diff: 7 files, 457 additions, 0 deletions
+- Precursor head SHA immediately before this handoff update: `a0440cb2e18effc8ef405fb92a398323a996167b`
+- Important: the commit that updates this handoff file necessarily changes the PR head again. Always fetch the current PR head from GitHub; do not treat the embedded precursor SHA as the current head.
+- Verified scope: 9 files and 0 deletions; immediately before this handoff update GitHub reported 680 additions.
 - Verified changed files:
   - `.github/pull_request_template.md`
   - `AGENTS.md`
@@ -42,13 +43,15 @@ Use the permanent instructions in `ARAM_MASTER_RECOVERY_PROMPT.md`, then verify 
   - `docs/DECISION_LOG.md`
   - `docs/JULES_TASK_TEMPLATE.md`
   - `docs/PROJECT_LOG.md`
+  - `docs/handoff/LATEST_HANDOFF.md`
+  - `docs/handoff/MASTER_RECOVERY_PROMPT.md`
 - Verification: no trailing whitespace and no conflict markers were found.
 - Scope: documentation, agent instructions, and PR template only.
 - No application code, tests, workflows, XLSX, PDF, ZIP, EXE, database, or financial-data file changed.
 - GitHub Actions/check status at last verification: no workflow run and no status checks were attached to the head commit.
 - Mergeability at last verification: GitHub reported mergeable, but it was intentionally left Draft and unmerged.
 
-The seven-file count supersedes the earlier six-file report because `AGENTS.md` was added after confirming from official Jules documentation that Jules reads repository-level `AGENTS.md` instructions.
+The nine-file count supersedes the earlier six-file and seven-file reports. `AGENTS.md` was added after confirming from official Jules documentation that Jules reads repository-level instructions. The two handoff files were then added so recovery remains possible even when ChatGPT history is unavailable.
 
 #### PR #9 — Phase 2B ingestion foundation
 
@@ -87,7 +90,7 @@ The seven-file count supersedes the earlier six-file report because `AGENTS.md` 
 Re-fetch PR #10 from GitHub and independently verify:
 
 1. it still targets `source-data-cleanup`;
-2. its current head SHA and exact seven-file diff;
+2. its current head SHA and exact nine-file diff;
 3. no code, workflow, binary, database, or canonical financial-data changes exist;
 4. the contents accurately reflect GitHub reality;
 5. whether any branch conflict or new check appeared.
@@ -99,4 +102,3 @@ Then give Davood an explicit decision: approve PR #10 for merge, or reject it wi
 Report whether GitHub access succeeded, then compare this handoff with current GitHub evidence. Do not ask Davood to retell the history and do not start new implementation work before the comparison is complete.
 
 ## END COPY
-
