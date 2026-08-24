@@ -81,9 +81,11 @@ The ten-file count supersedes the earlier six-file, seven-file, and nine-file re
 
 ### Current operating decision
 
-- Jules may remain the implementation agent only under the repository controls in `AGENTS.md` and the acceptance policy.
+- Davood has Google AI Pro and therefore uses Jules in Pro. At the time of this handoff, the published Jules in Pro allowance is 100 tasks per rolling 24 hours and 15 concurrent tasks; this is not expected to constrain the project's controlled, sequential workflow.
+- Jules is the primary implementation agent under the repository controls in `AGENTS.md` and the acceptance policy.
 - ChatGPT/Codex must independently verify the remote branch, commit, diff, CI, and artifacts after each task.
-- If Jules again reports completion that is absent or contradictory in GitHub, migrate implementation work to GitHub Copilot Cloud Agent.
+- GitHub Copilot Cloud Agent is not the planned replacement because it requires a paid Copilot plan and may introduce payment/access risk for Davood in Iran.
+- If Jules reports completion that is absent or contradictory in GitHub, reject that task and issue one controlled corrective prompt. Escalate the specific task to direct GitHub/Codex implementation only if the corrective attempt also fails.
 - The project must never depend on a single chat session or agent memory.
 
 ### Single next action
