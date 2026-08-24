@@ -7,6 +7,9 @@ parse spreadsheets, calculate financial values, or alter canonical files.
 XLSX preflight inspection validates the accepted worksheet names and header
 locations before any future row-level import; it does not evaluate formulas or
 read financial data rows.
+The ledger parser then streams validated rows as immutable typed records. It
+uses `Decimal` for source amounts, rejects non-finite or incomplete values, and
+does not calculate balances or write parsed rows to the database.
 
 ## Local setup
 
