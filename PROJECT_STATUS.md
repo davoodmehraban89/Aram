@@ -49,7 +49,7 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 
 ## Next approved action
 
-1. Independently review and merge the documentation-only post-merge control update.
+1. Independently review and merge documentation-only [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), which records the post-merge control state.
 2. Reconfirm the accepted branch head and project records.
 3. Select the next focused task from the V1 Pilot roadmap in [Issue #11](https://github.com/davoodmehraban89/Aram/issues/11); do not revive PR #9 or merge PR #7 directly.
 
