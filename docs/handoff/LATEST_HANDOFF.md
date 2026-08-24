@@ -61,7 +61,9 @@ The ten-file count supersedes the earlier six-file, seven-file, and nine-file re
 - Base: `source-data-cleanup@5122fd052ebe0ffe0e07dbb8153a872a4f047355`
 - Last observed head SHA: `8b141d793ad2d534fdf7399bb79d101d53ae29af`
 - Claimed scope: source registration, read-only XLSX preflight, and ledger parsing.
-- Do not accept its reported tests or CI from this handoff alone; re-fetch the current PR, diff, run URLs, and conclusions.
+- Independent verification confirmed Backend CI run #14 succeeded with the PR head and the exact eight-file scope.
+- An independent review comment requested two changes before acceptance: reject same-hash registrations when filename/document type conflicts with the existing record, and integrate the project-control documents after PR #10 becomes the baseline.
+- Review comment ID: `5391629767`.
 
 #### PR #7 — closed prototype/recovery source
 
@@ -78,6 +80,8 @@ The ten-file count supersedes the earlier six-file, seven-file, and nine-file re
 - Mapping management UI is not complete.
 - Official `v1.0.0-pilot` GitHub Release and independently verified downloadable assets have not been proven.
 - Branch-level ZIP/EXE existence does not equal an official or tested release.
+- A governed Pilot Excel contract named `Aram_Pilot_Input_and_Mapping_Template_v0.1.xlsx` has been created for user testing and future importer implementation. It contains Company, Accounts, Notes, Mapping, Test_Log, Checks, and data-dictionary sheets. It is a data contract, not proof that the current application can import it yet.
+- GitHub Issue #11 is the canonical V1 Pilot roadmap: `https://github.com/davoodmehraban89/Aram/issues/11`.
 
 ### Current operating decision
 
@@ -90,15 +94,7 @@ The ten-file count supersedes the earlier six-file, seven-file, and nine-file re
 
 ### Single next action
 
-Re-fetch PR #10 from GitHub and independently verify:
-
-1. it still targets `source-data-cleanup`;
-2. its current head SHA and exact ten-file diff;
-3. no code, workflow, binary, database, or canonical financial-data changes exist;
-4. the contents accurately reflect GitHub reality;
-5. whether any branch conflict or new check appeared.
-
-Then give Davood an explicit decision: approve PR #10 for merge, or reject it with exact requested changes. Do not merge without his explicit authorization. Only after PR #10 is resolved should PR #9 be independently reviewed.
+PR #10 has been independently reviewed and is approved for merge from a scope/content perspective. Obtain Davood's explicit merge authorization, merge PR #10, record the new accepted baseline SHA, and then issue the focused Jules corrective task for PR #9. Do not begin the Excel importer until the corrected Phase 2B foundation is accepted.
 
 ### Mandatory first response
 
