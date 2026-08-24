@@ -43,7 +43,8 @@ Every meaningful PR must:
 - satisfy `docs/ACCEPTANCE_POLICY.md`;
 - use `.github/pull_request_template.md`;
 - update `docs/handoff/LATEST_HANDOFF.md` after every meaningful completed or rejected step so a successor can resume without chat history;
-- keep `docs/handoff/MASTER_RECOVERY_PROMPT.md` stable unless the governance process itself changes.
+- keep `docs/handoff/MASTER_RECOVERY_PROMPT.md` stable unless the governance process itself changes;
+- keep `docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt` as the saveable entry point for a successor chat.
 
 An agent's written success report is not acceptance evidence.
 
