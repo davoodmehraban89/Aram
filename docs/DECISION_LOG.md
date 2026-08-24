@@ -51,3 +51,9 @@ Accepted decisions are immutable. To change one, add a new ADR that explicitly s
 
 - Status: Accepted
 - Decision: Every meaningful PR updates `PROJECT_STATUS.md` and appends an entry to `docs/PROJECT_LOG.md`. Work is not complete until the remote evidence is visible.
+
+### Model Forward References
+- **Date**: 2026-08-24
+- **Context**: During the Gate 2B implementation, `pytest` collection failed in GitHub Actions CI with an `ImportError` due to cyclic loading of `models.py`.
+- **Decision**: All SQLAlchemy relationship type hints for models (`FiscalYear`, `NoteRow`, `StatementLine`) must use stringified forward references (e.g. `Mapped[list["NoteRow"]]`) rather than direct type references to prevent circular imports during module load.
+- **Consequences**: Ensures clean schema initialization across tests and application instances without cyclic dependency crashes.

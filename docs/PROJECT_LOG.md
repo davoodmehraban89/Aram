@@ -156,3 +156,14 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: PR #13 must be independently reviewed before its documentation becomes accepted
 - Next action: review PR #13, then select the next focused Issue #11 roadmap task
 
+
+### 2026-08-24T16:04:14Z — Gate 2B Mapping Workflow Foundation CI Fix
+
+- Actor: Jules implementation
+- Task/phase: Gate 2B Mapping Workflow Foundation CI Fix
+- CI Failure: GitHub CI test job failed during pytest collection with `ImportError: cannot import name 'MappingStatus' from 'aram_backend.models'` because of cyclic reference evaluation due to missing forward declarations.
+- Root Cause: `FiscalYear`, `NoteRow`, and `StatementLine` were missing forward stringified declarations in relationship type hints within `models.py`, which caused circular imports that failed pytest collection.
+- Fix Applied: Stringified forward references (`"FiscalYear"`, `"NoteRow"`, `"StatementLine"`) in `models.py` relationship type hints. Re-added missing schema enums to schema catalog endpoints.
+- Commit SHA: d750fe63ce37624190c1f26dd03352723bb7c269
+- Tests / CI / artifacts: Verified locally (pytest passed, alembic round-trip passed, compileall passed). No artifact pollution found.
+- Next action: Independent review and merge of Gate 2B PR.

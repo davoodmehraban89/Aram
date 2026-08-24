@@ -34,6 +34,8 @@
 | Parallel V1 prototype | `VERIFIED_BUT_UNMERGED` | Closed, unmerged [PR #7](https://github.com/davoodmehraban89/Aram/pull/7); reference/recovery source only |
 | PR #7 test/release claims | `CLAIMED_BUT_NOT_PROVEN` | No independent acceptance evidence recorded |
 | Official V1 release | `NOT_IMPLEMENTED` | No accepted user-ready release |
+| Gate 2B Mapping Foundation | `PRESENT_BUT_UNVERIFIED` | PR pending review, CI fixed via stringified references |
+
 | Comprehensive Mapping Excel import/export | `NOT_IMPLEMENTED` | Mandatory before V1 acceptance |
 | Note and sub-note mapping workflow/UI | `NOT_IMPLEMENTED` | Mandatory before V1 acceptance |
 
