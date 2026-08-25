@@ -1,6 +1,6 @@
 # Aram — Master Recovery Prompt
 
-این فایل پرامپت دائمی بازیابی پروژه است. متن داخل بخش «COPY FROM HERE» را بدون تغییر به ChatGPT یا عامل جدید بدهید. این فایل ثابت می‌ماند؛ وضعیت روز پروژه در فایل `ARAM_LATEST_HANDOFF_PROMPT.md` قرار دارد.
+این فایل پرامپت دائمی بازیابی پروژه است. متن داخل بخش «COPY FROM HERE» را بدون تغییر به ChatGPT یا عامل جدید بدهید. این فایل ثابت می‌ماند؛ وضعیت روز پروژه در فایل `docs/handoff/LATEST_HANDOFF.md` قرار دارد.
 
 ---
 
@@ -40,7 +40,7 @@ If GitHub access is available:
    - `docs/ACCEPTANCE_POLICY.md`
    - `docs/JULES_TASK_TEMPLATE.md`
    - `.github/pull_request_template.md`
-4. Then read the newest `ARAM_LATEST_HANDOFF_PROMPT.md` supplied by Davood and verify every material claim against GitHub.
+4. Then read `docs/handoff/LATEST_HANDOFF.md` from the same authoritative ref and verify every material claim against GitHub.
 
 If authenticated GitHub access is NOT available:
 
