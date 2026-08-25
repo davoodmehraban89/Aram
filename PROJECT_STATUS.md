@@ -6,7 +6,7 @@
 
 - Repository: [davoodmehraban89/Aram](https://github.com/davoodmehraban89/Aram)
 - Accepted branch: `source-data-cleanup`
-- Accepted baseline commit: [`7b5bd79b760d534dad34b3162f770e838616ebe9`](https://github.com/davoodmehraban89/Aram/commit/7b5bd79b760d534dad34b3162f770e838616ebe9)
+- Accepted baseline commit: [`7c7533ee87146dc8fc78b46ebf423be55532c7eb`](https://github.com/davoodmehraban89/Aram/commit/7c7533ee87146dc8fc78b46ebf423be55532c7eb)
 - Product objective: a controlled, auditable accounting and financial-statement workflow that preserves canonical source data.
 
 ## Status vocabulary
@@ -31,6 +31,8 @@
 | Project control refactor | `VERIFIED_AND_MERGED` | [PR #10](https://github.com/davoodmehraban89/Aram/pull/10) |
 | One-file model refactor | `VERIFIED_AND_MERGED` | [PR #8](https://github.com/davoodmehraban89/Aram/pull/8) |
 | Phase 2B ingestion foundation | `VERIFIED_AND_MERGED` | [PR #12](https://github.com/davoodmehraban89/Aram/pull/12), squash merge `7b5bd79b760d534dad34b3162f770e838616ebe9` |
+| Phase 2B control reconciliation | `VERIFIED_AND_MERGED` | [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), squash merge `7c7533ee87146dc8fc78b46ebf423be55532c7eb` |
+| Gate 2A Pilot workbook contract/preflight | `IN_PROGRESS` | Draft [PR #15](https://github.com/davoodmehraban89/Aram/pull/15); Backend CI run #23 passed with 52 tests |
 | Parallel V1 prototype | `VERIFIED_BUT_UNMERGED` | Closed, unmerged [PR #7](https://github.com/davoodmehraban89/Aram/pull/7); reference/recovery source only |
 | PR #7 test/release claims | `CLAIMED_BUT_NOT_PROVEN` | No independent acceptance evidence recorded |
 | Official V1 release | `NOT_IMPLEMENTED` | No accepted user-ready release |
@@ -49,9 +51,9 @@ The accepted branch does not include PR #7's `desktop/`, `dist/`, ZIP/EXE, or V1
 
 ## Next approved action
 
-1. Independently review and merge documentation-only [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), which records the post-merge control state.
-2. Reconfirm the accepted branch head and project records.
-3. Select the next focused task from the V1 Pilot roadmap in [Issue #11](https://github.com/davoodmehraban89/Aram/issues/11); do not revive PR #9 or merge PR #7 directly.
+1. Independently review the focused Gate 2A Draft PR implementing [Issue #14](https://github.com/davoodmehraban89/Aram/issues/14).
+2. Require a green full Backend CI run and verify the generated blank template checksum.
+3. Do not merge without a separate acceptance decision; do not revive PR #9 or merge PR #7 directly.
 
 ## Control documents
 

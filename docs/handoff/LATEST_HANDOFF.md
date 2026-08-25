@@ -1,73 +1,44 @@
 # Aram — Latest Handoff Prompt
 
 > Current authoritative handoff snapshot: 2026-08-24 UTC
-> This file supersedes every earlier handoff prompt. Verify every statement against GitHub before acting.
+> Verify every statement against GitHub before acting.
 
----
-
-## COPY FROM HERE
-
-Use the permanent instructions in `docs/handoff/MASTER_RECOVERY_PROMPT.md`, then
-verify this snapshot against the private repository `davoodmehraban89/Aram`.
-Do not ask Davood to reconstruct project history from memory.
-
-### Accepted repository state
+## Accepted repository state
 
 - Canonical branch: `source-data-cleanup`
-- Accepted head after Phase 2B:
-  `7b5bd79b760d534dad34b3162f770e838616ebe9`
-- Phase 1B-1: merged through PR #1.
-- Phase 1B-2 corrections: merged through PR #4.
-- Phase 2A backend foundation: merged through PR #6.
-- One-file model refactor: merged through PR #8.
-- Project-control foundation: merged through PR #10.
-- Phase 2B ingestion foundation: independently reviewed and squash-merged
-  through PR #12 on 2026-08-24.
-- No user-ready V1 release has been accepted or proven.
+- Accepted head: `7c7533ee87146dc8fc78b46ebf423be55532c7eb`
+- Phase 1B-1, Phase 1B-2, Phase 2A, project controls, and Phase 2B are accepted.
+- PR #12 is squash-merged; PR #9 and PR #7 are closed without merge.
+- PR #13 is squash-merged and records the Phase 2B acceptance state.
+- No user-ready V1 release or EXE is accepted or proven.
 
-### Accepted Phase 2B evidence
+## Active focused candidate
 
-- PR: https://github.com/davoodmehraban89/Aram/pull/12
-- Reviewed PR head: `f7cb6abb7caf3f1c0c28d402ae41b0e3c005a280`
-- Squash merge commit:
-  `7b5bd79b760d534dad34b3162f770e838616ebe9`
-- Final PR CI: https://github.com/davoodmehraban89/Aram/actions/runs/32705724028
-- CI conclusion: `success`; 42 tests passed, Alembic upgrade/downgrade
-  succeeded, and compileall succeeded.
-- Accepted capabilities: metadata-only source registration, exact-duplicate
-  idempotency, semantic-conflict rejection, read-only XLSX structural
-  inspection, and typed in-memory general-ledger parsing.
-- Protected boundary: no canonical XLSX/PDF, `data/`, database, ZIP, EXE,
-  binary, or financial-source file changed in PR #12.
+- Roadmap: https://github.com/davoodmehraban89/Aram/issues/11
+- Task: https://github.com/davoodmehraban89/Aram/issues/14
+- Base: `source-data-cleanup@7c7533ee87146dc8fc78b46ebf423be55532c7eb`
+- Branch: `codex/gate-2a-pilot-workbook`
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/15
+- Candidate scope: governed blank Pilot workbook v0.1, reproducible generator,
+  human-readable contract, deterministic read-only preflight, focused tests,
+  and required project-control updates.
+- Template path: `samples/Aram_Pilot_Input_and_Mapping_Template_v0.1.xlsx`
+- Template SHA-256:
+  `e14a7feb80a216d79ed9cb6dde2b0df3e55317f3da6b26efc77f7118f4702b6f`
+- Local evidence: nine focused validation scenarios and compileall passed.
+- Remote evidence: Backend CI run #23 passed with 52 tests and one warning;
+  Alembic upgrade/downgrade and compileall succeeded:
+  https://github.com/davoodmehraban89/Aram/actions/runs/32712716962
+- Acceptance remains pending independent diff review and an explicit merge decision.
 
-### Superseded work
+## Safety boundary
 
-- PR #9: https://github.com/davoodmehraban89/Aram/pull/9
-- State: CLOSED WITHOUT MERGE on 2026-08-24.
-- PR #9 must not be reopened or merged; its Phase 2B role was replaced by
-  accepted PR #12.
-- PR #7 remains closed and unmerged. Recover any useful feature only through a
-  separately approved, focused PR.
+The candidate must remain a Draft and unmerged. It does not persist workbook
+bytes or financial values, execute mappings, calculate statements, modify
+canonical XLSX/PDF or `data/`, or create desktop/release/ZIP/EXE artifacts.
 
-### Remaining product boundary
+## Single next action
 
-- Comprehensive Mapping Excel import/export is not implemented.
-- Note and sub-note mapping workflow and UI are not implemented.
-- Official `v1.0.0-pilot` release and clean-environment artifacts are not proven.
-- GitHub Issue #11 remains the V1 Pilot roadmap:
-  https://github.com/davoodmehraban89/Aram/issues/11
-
-### Single next action
-
-Review and merge documentation-only PR #13 (https://github.com/davoodmehraban89/Aram/pull/13), which records
-the accepted PR #12 merge and PR #9 closure. After that, verify Issue #11 and
-select the next small, controlled implementation task. Do not begin work from
-an old Jules task or cached branch.
-
-### Mandatory first response
-
-Report whether GitHub access succeeded. Verify the canonical branch head,
-PR #12 merge state, PR #9 closure state, the current documentation-control PR,
-and CI evidence. Do not start implementation until this comparison is complete.
-
-## END COPY
+Fetch Draft PR #15 and its exact head, review all changed files against the
+base, and verify the final head CI. Correct only failures caused by Issue #14.
+Do not start Gate 3 and do not merge without a separate acceptance decision.
