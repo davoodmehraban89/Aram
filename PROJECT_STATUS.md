@@ -7,6 +7,7 @@
 - Repository: [davoodmehraban89/Aram](https://github.com/davoodmehraban89/Aram)
 - Accepted branch: source-data-cleanup
 - Recorded accepted control event: [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge [f213d321ff4cd7d3d6fa65ba78dc48f090ee846b](https://github.com/davoodmehraban89/Aram/commit/f213d321ff4cd7d3d6fa65ba78dc48f090ee846b)
+- Durable post-merge acceptance record: [PR #19](https://github.com/davoodmehraban89/Aram/pull/19), reviewed head `b9059592409606a0a4f11a71c30778cff158b6b6`, squash merge [77f9f595ccfe67a87b11024ff0f6143629dba438](https://github.com/davoodmehraban89/Aram/commit/77f9f595ccfe67a87b11024ff0f6143629dba438)
 - Before starting new work, fetch the live `source-data-cleanup` head; this record intentionally avoids a self-referential current-head claim
 - Product objective: a controlled, auditable accounting and financial-statement workflow that preserves canonical source data.
 
@@ -35,6 +36,8 @@
 | Phase 2B control reconciliation | VERIFIED_AND_MERGED | [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), squash merge 7c7533ee87146dc8fc78b46ebf423be55532c7eb |
 | Gate 2A Pilot workbook contract/preflight | VERIFIED_AND_MERGED | [PR #15](https://github.com/davoodmehraban89/Aram/pull/15), reviewed head 74b6a6397a2a2c9199a5c7bcf818bb661b2ebe06, squash merge 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4, [Backend CI #24](https://github.com/davoodmehraban89/Aram/actions/runs/32712900800) |
 | Post-Gate-2A control reconciliation | VERIFIED_AND_MERGED | [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b`; documentation only |
+| Durable post-merge acceptance record | VERIFIED_AND_MERGED | [PR #19](https://github.com/davoodmehraban89/Aram/pull/19), reviewed head `b9059592409606a0a4f11a71c30778cff158b6b6`, squash merge `77f9f595ccfe67a87b11024ff0f6143629dba438`; documentation only |
+| Role-based project operating model | VERIFIED_AND_MERGED | Permanent responsibilities and current assignments are defined in `docs/handoff/MASTER_RECOVERY_PROMPT.md` and ADR-011; introduced through [PR #20](https://github.com/davoodmehraban89/Aram/pull/20) |
 | Parallel V1 prototype | VERIFIED_BUT_UNMERGED | Closed, unmerged [PR #7](https://github.com/davoodmehraban89/Aram/pull/7); reference/recovery source only |
 | Superseded Phase 2B candidate | VERIFIED_BUT_UNMERGED | Closed, unmerged [PR #9](https://github.com/davoodmehraban89/Aram/pull/9) |
 | Duplicate Gate 2A candidate | VERIFIED_BUT_UNMERGED | [PR #16](https://github.com/davoodmehraban89/Aram/pull/16) closed without merge on 2026-08-25; no content accepted |
@@ -67,9 +70,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 
 ## Next approved action
 
-1. Fetch the live `source-data-cleanup` head and confirm that no open implementation PR exists.
-2. Define one new focused Gate 3 / Gate 2B Mapping task, branch, and PR from that exact head.
-3. Use closed PR #17 only as reference; do not reopen, revive, or merge it.
+1. The Operational Coordinator fetches the live `source-data-cleanup` head and confirms that no open implementation PR exists.
+2. It defines one focused Gate 3 / Gate 2B Mapping task from that exact head and routes the scope package to the Senior Technical Supervisor / Independent Reviewer.
+3. After scope review, Jules implements through one focused Draft PR; closed PR #17 remains reference-only and must not be reopened or merged.
 
 ## Control documents
 

@@ -51,3 +51,18 @@ Accepted decisions are immutable. To change one, add a new ADR that explicitly s
 
 - Status: Accepted
 - Decision: Every meaningful PR updates `PROJECT_STATUS.md` and appends an entry to `docs/PROJECT_LOG.md`. Work is not complete until the remote evidence is visible.
+
+## ADR-011 — Role-based project operation and current assignments
+
+- Status: Accepted
+- Supersedes: ADR-002 where it requires repeated repository-owner merge confirmation or leaves the current division of responsibilities underspecified.
+- Decision: Project work is governed by five durable roles: Project Owner, Operational Coordinator, Primary Implementation Agent, Senior Technical Supervisor / Independent Reviewer / Authorized Maintainer, and GitHub as the evidence source of truth.
+- Current assignment: Davood is Project Owner and the accounting/product authority.
+- Current assignment: ChatGPT chat is the Operational Coordinator and prepares focused tasks, implementation prompts, first-pass evidence reviews, and copy-ready handoff packets.
+- Current assignment: Jules is the primary Implementation Agent and works through one exact-base branch and focused Draft PR at a time; Jules never merges its own PR.
+- Current assignment: Codex Work is the Senior Technical Supervisor, Independent Reviewer, and Authorized Maintainer. It verifies remote evidence, directs technical sequencing, resolves cross-agent conflicts, may make exceptional critical fixes through focused PRs, records acceptance decisions, and has standing delegation for routine merge actions after evidence gates pass.
+- Current assignment: GitHub is the authoritative evidence system for accepted branches, commits, PRs, CI, artifacts, Issues, tags, releases, and control records.
+- Decision: Davood must not be burdened with routine Git, test, CI, diff, or merge confirmations covered by standing delegation. Accounting ambiguity, material product tradeoffs, protected-data changes, releases, destructive actions, credentials, and new external authority still require escalation.
+- Decision: If a tool or model changes, responsibility boundaries remain in force until an accepted governance change records the new assignment.
+- Decision: An implementation report is never acceptance evidence. Every acceptance action requires a fresh remote verification against the exact candidate head.
+- Rationale: Explicit current assignments remove ambiguity for successors, while durable role boundaries preserve the workflow when tools or models change.
