@@ -186,3 +186,27 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Test evidence: 52 passed, 1 warning; Alembic upgrade/downgrade and compileall succeeded
 - PR state: Draft, open, mergeable, and unmerged
 - Acceptance: `IN_PROGRESS`; independent diff review and explicit merge decision remain required
+
+### 2026-08-25T06:30:00Z — Post-Gate-2A control reconciliation and stale-work cleanup
+
+- Actor: Codex successor project manager / independent GitHub reviewer; cleanup authorized by repository owner
+- Task/phase: reconcile accepted Gate 2A evidence, close its duplicate candidate, and block stale-base Gate 2B work before continuation
+- Accepted base: source-data-cleanup@4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4
+- Working branch: codex/post-gate2a-control-reconciliation
+- PR: [#18](https://github.com/davoodmehraban89/Aram/pull/18), Draft and unmerged
+- Initial publication commit: c6eefc26955c694c388371bcfaa96452b1b5f469
+- Exact changed files planned/finalized: PROJECT_STATUS.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md, docs/handoff/MASTER_RECOVERY_PROMPT.md
+- Accepted Gate 2A evidence: [PR #15](https://github.com/davoodmehraban89/Aram/pull/15), reviewed head 74b6a6397a2a2c9199a5c7bcf818bb661b2ebe06, squash merge 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4
+- Final Gate 2A GitHub Actions: [Backend CI run #24](https://github.com/davoodmehraban89/Aram/actions/runs/32712900800), success; 52 passed, 1 warning; Alembic upgrade/downgrade and compileall succeeded
+- Pilot template SHA-256 independently recomputed from the accepted GitHub file: e14a7feb80a216d79ed9cb6dde2b0df3e55317f3da6b26efc77f7118f4702b6f
+- Superseded duplicate: [PR #16](https://github.com/davoodmehraban89/Aram/pull/16) closed without merge on 2026-08-25 after an evidence comment; it duplicated accepted Gate 2A, was dirty, and recorded incorrect merge SHA 35d45c3f200672a6ef97f13a84cf7c823ecf1bb8
+- Blocked candidate: [PR #17](https://github.com/davoodmehraban89/Aram/pull/17), base 7c7533ee87146dc8fc78b46ebf423be55532c7eb, head 4f8648add0e2ed60f01753e979fa3fbe9ccf0f18, open/non-Draft/dirty; its green CI does not prove compatibility with the accepted head
+- Tests for PR #18: documentation-only; backend pytest and migration execution are not applicable; final remote diff and changed-file review remain mandatory
+- GitHub Actions for PR #18: NOT_VERIFIED at entry creation; documentation-only paths may not trigger Backend CI
+- Artifacts/releases: NONE
+- Protected data: no application code, workflow, migration, XLSX/PDF, data/, database, financial-source, binary, ZIP, EXE, or release file changed
+- Acceptance: IN_PROGRESS; PR #18 is not merged and requires independent final-head review plus explicit repository-owner authorization
+- Reviewer: final PR #18 reviewer pending
+- Recovery: close PR #18 without merge; accepted branch remains at 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4
+- Remaining risks: branch protection is disabled; PR #17 remains open and stale; Mapping/UI/release work is incomplete
+- Next action: independently review Draft PR #18; do not start or merge Gate 2B work before the control decision
