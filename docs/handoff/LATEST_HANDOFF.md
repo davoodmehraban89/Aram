@@ -10,7 +10,8 @@
 - Last independently verified accepted head before the active control candidate: 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4
 - That commit is the squash merge of accepted [PR #15](https://github.com/davoodmehraban89/Aram/pull/15).
 - Earlier accepted work includes PR #1, #4, #6, #8, #10, #12, and #13.
-- PR #7, PR #9, and PR #16 are closed without merge and contribute no accepted code.
+- PR #7, PR #9, PR #16, and PR #17 are closed without merge and contribute no accepted code.
+- [Issue #14](https://github.com/davoodmehraban89/Aram/issues/14) is completed; [Issue #11](https://github.com/davoodmehraban89/Aram/issues/11) records Gate 2 accepted and Gate 3 blocked pending PR #18.
 - No user-ready V1 release, tag, ZIP, EXE, or retained release artifact is accepted or proven.
 
 ## Accepted Gate 2A evidence
@@ -41,15 +42,15 @@
 - It duplicated accepted PR #15, was based on stale head 7c7533ee87146dc8fc78b46ebf423be55532c7eb, had mergeable_state dirty, and recorded the incorrect merge SHA 35d45c3f200672a6ef97f13a84cf7c823ecf1bb8.
 - No file or claim from PR #16 is accepted.
 
-## Blocked Gate 2B candidate
+## Closed Gate 2B reference
 
 - PR: https://github.com/davoodmehraban89/Aram/pull/17
 - Base: source-data-cleanup@7c7533ee87146dc8fc78b46ebf423be55532c7eb
 - Head: 4f8648add0e2ed60f01753e979fa3fbe9ccf0f18
-- State at verification: open, non-Draft, unmerged, mergeable_state dirty.
+- Final state after cleanup: closed without merge on 2026-08-25; it was non-Draft, unmerged, and mergeable_state dirty before closure.
 - GitHub reports 12 changed files although the PR narrative names only 9.
 - Backend CI run #31 succeeded with 51 tests, but it ran on the stale branch head and does not prove compatibility with accepted Gate 2A.
-- The Mapping code in PR #17 is not accepted. Do not merge or patch that PR in place.
+- The Mapping code in PR #17 is not accepted. Do not reopen, revive, or merge that PR.
 - Comprehensive Mapping Excel import/export, carry-forward, unknown-account queue, note/sub-note mapping, management UI, reproducible Windows packaging, and end-to-end Pilot acceptance remain unimplemented.
 
 ## Governance and release reality
@@ -62,4 +63,4 @@
 
 ## Single next action
 
-Fetch Draft PR #18, verify its final head, exact four-file diff, Draft/unmerged state, protected-data boundary, and any GitHub checks. Record one explicit decision. Do not start, merge, or repair Gate 2B until that control decision is complete.
+Fetch Draft PR #18, verify its final head, exact four-file diff, Draft/unmerged state, protected-data boundary, and any GitHub checks. Record one explicit decision. Do not start Gate 2B or revive PR #17 until that control decision is complete.

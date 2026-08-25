@@ -38,7 +38,7 @@
 | Parallel V1 prototype | VERIFIED_BUT_UNMERGED | Closed, unmerged [PR #7](https://github.com/davoodmehraban89/Aram/pull/7); reference/recovery source only |
 | Superseded Phase 2B candidate | VERIFIED_BUT_UNMERGED | Closed, unmerged [PR #9](https://github.com/davoodmehraban89/Aram/pull/9) |
 | Duplicate Gate 2A candidate | VERIFIED_BUT_UNMERGED | [PR #16](https://github.com/davoodmehraban89/Aram/pull/16) closed without merge on 2026-08-25; no content accepted |
-| Gate 2B Mapping foundation candidate | BLOCKED | Open [PR #17](https://github.com/davoodmehraban89/Aram/pull/17); base 7c7533ee87146dc8fc78b46ebf423be55532c7eb, head 4f8648add0e2ed60f01753e979fa3fbe9ccf0f18, mergeable_state dirty; do not merge |
+| Gate 2B Mapping foundation candidate | VERIFIED_BUT_UNMERGED | [PR #17](https://github.com/davoodmehraban89/Aram/pull/17) closed without merge on 2026-08-25; stale-base reference only; no content accepted |
 | Official V1 release | NOT_IMPLEMENTED | No accepted tag, release, retained release artifact, ZIP, or EXE |
 | Comprehensive Mapping Excel import/export | NOT_IMPLEMENTED | Mandatory before V1 acceptance |
 | Unknown-account queue and mapping carry-forward | NOT_IMPLEMENTED | Mandatory before V1 acceptance |
@@ -60,8 +60,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## Current risks and blockers
 
 - The accepted branch is not protected by GitHub branch protection.
-- PR #17 is based on the pre-Gate-2A head, conflicts with the accepted branch, and its narrative lists 9 changed files while GitHub reports 12.
-- PR #17 final CI is green on its own stale head, but compatibility with the accepted Gate 2A baseline is not proven.
+- PR #17 was closed without merge; its stale-base 12-file diff is reference material only, and its narrative listed only 9 files.
+- PR #17 CI was green on its own stale head, but compatibility with accepted Gate 2A was never proven.
 - Durable records remain a candidate until PR #18 is independently reviewed and explicitly accepted.
 - Binary execution, release provenance, and clean Windows verification do not exist.
 - Mapping, notes/sub-notes, Pilot UI, and end-to-end user acceptance remain incomplete.
@@ -70,7 +70,7 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 
 1. Independently review the final remote head, four-file diff, and metadata of Draft PR #18.
 2. Merge PR #18 only after Davood gives explicit authorization following that review.
-3. Do not merge or patch PR #17 in place; after control reconciliation is accepted, define a new focused Gate 2B task from the then-current accepted head.
+3. Do not revive or merge PR #17; after control reconciliation is accepted, define a new focused Gate 2B task from the then-current accepted head.
 
 ## Control documents
 
