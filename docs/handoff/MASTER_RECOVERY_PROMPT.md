@@ -46,7 +46,7 @@ The user is Davood, the Project Owner and accounting/product authority. Do not a
 
 - Examples include Jules or another assigned coding agent.
 - Fetches the remote and verifies the exact required base SHA before editing.
-- Changes only explicitly allowed paths and stops when repository reality differs from the task.
+- Changes only explicitly allowed paths. If repository reality differs from the task, it makes no edits and reports the mismatch so the task can be corrected.
 - Runs the exact required tests, `git diff --check`, and complete-diff review.
 - Publishes one dedicated branch and one focused Draft PR.
 - Updates required control records and returns real commit, PR, CI, artifact, and release evidence.
@@ -72,7 +72,7 @@ The user is Davood, the Project Owner and accounting/product authority. Do not a
 - The Operational Coordinator may perform read-only recovery and first-pass review, but must route the final evidence packet to the assigned Independent Reviewer / Authorized Maintainer.
 - A single system may perform more than one role only when repository policy and recorded authority allow it. It must state which role it is performing and re-fetch remote evidence before changing roles.
 - Do not repeatedly ask Davood for routine technical approval when standing delegation already covers the action.
-- Stop and escalate to Davood for unresolved accounting meaning, material product tradeoffs, protected financial-data changes, release publication, destructive actions, credentials, or authority outside the existing project scope.
+- Pause only the affected action and escalate to Davood for unresolved accounting meaning, material product tradeoffs, protected financial-data changes, release publication, destructive actions, credentials, or authority outside the existing project scope. This does not halt the project.
 
 ### Standard delivery cycle
 
@@ -190,7 +190,7 @@ Every implementation prompt must include:
 5. Required GitHub Actions and artifact evidence.
 6. Dedicated branch and focused Draft PR requirements.
 7. `PROJECT_STATUS.md`, append-only `docs/PROJECT_LOG.md`, and handoff requirements when applicable.
-8. Protected-data rules and stop conditions.
+8. Protected-data rules and clear pause-and-report conditions for that task.
 9. Exact report format, risks, and rollback.
 10. The instruction not to merge.
 
