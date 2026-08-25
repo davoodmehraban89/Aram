@@ -1,13 +1,14 @@
 # Aram — Latest Handoff Prompt
 
-> Durable accepted-state record reconciled after PR #18 on 2026-08-25 UTC.
-> GitHub remote evidence remains authoritative. Always fetch the live branch head and open PRs before acting; the SHA below records a verified control event, not a perpetual current-head claim.
+> Durable accepted-state record with persistent role assignments and recovery workflow.
+> GitHub remote evidence remains authoritative. Always fetch the live branch head and open PRs before acting; recorded SHAs are verified events, not perpetual current-head claims.
 
 ## Accepted repository state
 
 - Repository: davoodmehraban89/Aram
 - Canonical branch: source-data-cleanup
 - Recorded accepted control event: [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b` at `2026-08-25T06:46:16Z`.
+- Durable post-merge record: [PR #19](https://github.com/davoodmehraban89/Aram/pull/19), reviewed head `b9059592409606a0a4f11a71c30778cff158b6b6`, squash merge `77f9f595ccfe67a87b11024ff0f6143629dba438` at `2026-08-25T06:57:02Z`.
 - Earlier accepted work includes PR #1, #4, #6, #8, #10, #12, #13, and #15.
 - PR #7, PR #9, PR #16, and PR #17 are closed without merge and contribute no accepted code.
 - [Issue #14](https://github.com/davoodmehraban89/Aram/issues/14) is completed. [Issue #11](https://github.com/davoodmehraban89/Aram/issues/11) records Gate 3 as ready for a new focused task definition.
@@ -38,6 +39,29 @@
 - Protected boundary: no application code, tests, workflow, migration, dependency, workbook content, financial data, binary, ZIP, EXE, artifact, or release file changed.
 - Acceptance authority: Davood explicitly authorized the merge after independent review.
 
+## Accepted PR #19 control evidence
+
+- Base: `source-data-cleanup@f213d321ff4cd7d3d6fa65ba78dc48f090ee846b`
+- Reviewed head: `b9059592409606a0a4f11a71c30778cff158b6b6`
+- Squash merge: `77f9f595ccfe67a87b11024ff0f6143629dba438`
+- Exact changed files: `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`
+- Verification: complete remote three-file diff, append-only log, whitespace, protected-data boundary, and post-merge accepted-head state passed.
+- GitHub Actions: none on the reviewed head; documentation-only paths did not trigger Backend CI.
+- Artifacts/releases: `NONE`
+
+## Durable role-based operating model
+
+- Permanent source: `docs/handoff/MASTER_RECOVERY_PROMPT.md`
+- Decision record: ADR-011 in `docs/DECISION_LOG.md`
+- Introduced through: [PR #20](https://github.com/davoodmehraban89/Aram/pull/20)
+- Davood is Project Owner and the accounting/product authority.
+- ChatGPT chat is Operational Coordinator: recovery, task scoping, implementation prompts, first-pass review, and copy-ready handoffs.
+- Jules is the primary Implementation Agent: exact-base focused implementation, tests, Draft PR, and evidence; it never merges its own PR.
+- Codex Work is Senior Technical Supervisor, Independent Reviewer, and Authorized Maintainer: technical sequencing, remote evidence review, conflict resolution, exceptional critical fixes, acceptance decisions, and routine merges under standing delegation.
+- GitHub is the evidence source of truth.
+- Accounting ambiguity, material scope, protected-data changes, releases, destructive actions, credentials, and new external authority remain Davood escalation points.
+- A repository mismatch pauses only the affected task without edits; it does not halt the project.
+
 ## Closed superseded work
 
 - PR #16 was closed without merge on 2026-08-25.
@@ -66,4 +90,4 @@
 
 ## Single next action
 
-Fetch the live `source-data-cleanup` head and open-PR list, then define one new focused Gate 3 / Gate 2B Mapping task, branch, and PR from that exact head. Use PR #17 only as reference.
+The Operational Coordinator fetches the live `source-data-cleanup` head and open-PR list, then prepares one focused Gate 3 / Gate 2B Mapping scope package for the Senior Technical Supervisor / Independent Reviewer. After scope review, Jules implements from that exact head through one focused Draft PR. Use PR #17 only as reference.

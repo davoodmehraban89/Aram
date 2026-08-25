@@ -233,3 +233,25 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: revert merge commit `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b` through a separately reviewed rollback PR if the accepted control reconciliation must be withdrawn
 - Remaining risks: the accepted branch is unprotected; Mapping, note/sub-note workflow/UI, reproducible Windows packaging, and end-to-end Pilot acceptance remain incomplete
 - Next action: fetch the live accepted head and define one new focused Gate 3 / Gate 2B Mapping task; do not revive or merge PR #17
+
+### 2026-08-25T07:37:08Z — Role-based operating model prepared
+
+- Actor: project manager / repository maintainer; requested by Davood
+- Task/phase: record the complete Aram responsibility model in the permanent recovery prompt
+- Base: `source-data-cleanup@77f9f595ccfe67a87b11024ff0f6143629dba438`
+- Working branch: `governance/role-based-operating-model`
+- PR: [#20](https://github.com/davoodmehraban89/Aram/pull/20)
+- Published implementation head before required control-record update: `92f6e096d3471bb5de1fe876066eedee5ab8bcf9`
+- Intended final changed files: `PROJECT_STATUS.md`, `docs/DECISION_LOG.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`, `docs/handoff/MASTER_RECOVERY_PROMPT.md`
+- Governance change: define Davood as Project Owner, ChatGPT chat as Operational Coordinator, Jules as primary Implementation Agent, Codex Work as Senior Technical Supervisor / Independent Reviewer / Authorized Maintainer, and GitHub as the evidence source of truth
+- Authority change: record standing delegation for routine technical review and merge actions after evidence gates, while retaining Davood escalation for accounting ambiguity, material scope, protected-data, release, destructive, credential, and external-authority decisions
+- Clarification: a repository mismatch pauses only the affected task without edits and does not halt the project
+- Tests: documentation-only; backend pytest, migrations, and compileall are not applicable; final remote content, diff, whitespace, link, and consistency checks are required
+- GitHub Actions at entry creation: `NOT_VERIFIED`; documentation-only paths may not trigger Backend CI
+- Artifacts/releases: `NONE`
+- Protected data: no application code, test, workflow, migration, dependency, XLSX/PDF, `data/`, database, financial-source, binary, ZIP, EXE, artifact, or release file is in scope
+- Acceptance at entry creation: `IN_PROGRESS`; this is a historical preparation record and the live PR state remains authoritative
+- Reviewer at entry creation: pending final-head independent remote review
+- Recovery: close PR #20 without merge; the accepted branch remains at `77f9f595ccfe67a87b11024ff0f6143629dba438`
+- Remaining risks: the accepted branch is unprotected; role assignments do not replace evidence gates; Gate 3 Mapping and all later V1 gates remain incomplete
+- Next action: finish the five-file remote candidate, independently review PR #20, and record one acceptance decision
