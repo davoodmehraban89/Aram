@@ -6,8 +6,8 @@
 
 - Repository: [davoodmehraban89/Aram](https://github.com/davoodmehraban89/Aram)
 - Accepted branch: source-data-cleanup
-- Last independently verified accepted branch head before the active control candidate: [4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4](https://github.com/davoodmehraban89/Aram/commit/4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4)
-- Active documentation-only control candidate: Draft [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), based exactly on 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4
+- Recorded accepted control event: [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge [f213d321ff4cd7d3d6fa65ba78dc48f090ee846b](https://github.com/davoodmehraban89/Aram/commit/f213d321ff4cd7d3d6fa65ba78dc48f090ee846b)
+- Before starting new work, fetch the live `source-data-cleanup` head; this record intentionally avoids a self-referential current-head claim
 - Product objective: a controlled, auditable accounting and financial-statement workflow that preserves canonical source data.
 
 ## Status vocabulary
@@ -34,7 +34,7 @@
 | Phase 2B ingestion foundation | VERIFIED_AND_MERGED | [PR #12](https://github.com/davoodmehraban89/Aram/pull/12), squash merge 7b5bd79b760d534dad34b3162f770e838616ebe9 |
 | Phase 2B control reconciliation | VERIFIED_AND_MERGED | [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), squash merge 7c7533ee87146dc8fc78b46ebf423be55532c7eb |
 | Gate 2A Pilot workbook contract/preflight | VERIFIED_AND_MERGED | [PR #15](https://github.com/davoodmehraban89/Aram/pull/15), reviewed head 74b6a6397a2a2c9199a5c7bcf818bb661b2ebe06, squash merge 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4, [Backend CI #24](https://github.com/davoodmehraban89/Aram/actions/runs/32712900800) |
-| Post-Gate-2A control reconciliation | IN_PROGRESS | Draft [PR #18](https://github.com/davoodmehraban89/Aram/pull/18); documentation only and unmerged |
+| Post-Gate-2A control reconciliation | VERIFIED_AND_MERGED | [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b`; documentation only |
 | Parallel V1 prototype | VERIFIED_BUT_UNMERGED | Closed, unmerged [PR #7](https://github.com/davoodmehraban89/Aram/pull/7); reference/recovery source only |
 | Superseded Phase 2B candidate | VERIFIED_BUT_UNMERGED | Closed, unmerged [PR #9](https://github.com/davoodmehraban89/Aram/pull/9) |
 | Duplicate Gate 2A candidate | VERIFIED_BUT_UNMERGED | [PR #16](https://github.com/davoodmehraban89/Aram/pull/16) closed without merge on 2026-08-25; no content accepted |
@@ -62,15 +62,14 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - The accepted branch is not protected by GitHub branch protection.
 - PR #17 was closed without merge; its stale-base 12-file diff is reference material only, and its narrative listed only 9 files.
 - PR #17 CI was green on its own stale head, but compatibility with accepted Gate 2A was never proven.
-- Durable records remain a candidate until PR #18 is independently reviewed and explicitly accepted.
 - Binary execution, release provenance, and clean Windows verification do not exist.
 - Mapping, notes/sub-notes, Pilot UI, and end-to-end user acceptance remain incomplete.
 
 ## Next approved action
 
-1. Independently review the final remote head, four-file diff, and metadata of Draft PR #18.
-2. Merge PR #18 only after Davood gives explicit authorization following that review.
-3. Do not revive or merge PR #17; after control reconciliation is accepted, define a new focused Gate 2B task from the then-current accepted head.
+1. Fetch the live `source-data-cleanup` head and confirm that no open implementation PR exists.
+2. Define one new focused Gate 3 / Gate 2B Mapping task, branch, and PR from that exact head.
+3. Use closed PR #17 only as reference; do not reopen, revive, or merge it.
 
 ## Control documents
 

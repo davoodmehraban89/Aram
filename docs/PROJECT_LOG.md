@@ -211,3 +211,25 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close PR #18 without merge; accepted branch remains at 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4
 - Remaining risks: branch protection is disabled; PR #17 reference work remains unaccepted; Mapping/UI/release work is incomplete
 - Next action: independently review Draft PR #18; do not start or merge Gate 2B work before the control decision
+
+### 2026-08-25T06:46:16Z — PR #18 accepted; time-bound candidate record reconciled
+
+- Actor: ChatGPT/Codex independent reviewer; repository owner explicit authorization
+- Task/phase: accept the post-Gate-2A control reconciliation and correct the preceding time-bound candidate snapshot
+- Accepted base before merge: `source-data-cleanup@4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4`
+- Working branch: `codex/post-gate2a-control-reconciliation`
+- PR: [#18](https://github.com/davoodmehraban89/Aram/pull/18)
+- Reviewed PR head: `fcbeb7387218e9ab294318ae462ed59de717fc95`
+- Merge method and SHA: squash; `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b`
+- Exact changed files: `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`, `docs/handoff/MASTER_RECOVERY_PROMPT.md`
+- Tests: documentation-only; backend pytest, migration execution, and compileall were not applicable
+- GitHub Actions: no workflow run was associated with reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`; documentation-only paths did not trigger Backend CI
+- Artifacts/releases: `NONE`
+- Protected data: no application code, tests, workflow, migration, dependency, XLSX/PDF, `data/`, database, financial-source, binary, ZIP, EXE, artifact, or release file changed
+- Acceptance: `VERIFIED_AND_MERGED`
+- Reviewer: ChatGPT/Codex after full remote four-file diff review and Davood's explicit merge authorization
+- Correction note: the preceding 2026-08-25T06:30:00Z entry is preserved as an accurate historical candidate snapshot; its Draft/unmerged and pending-review statements are no longer current
+- Issue metadata: [Issue #11](https://github.com/davoodmehraban89/Aram/issues/11) was reconciled after the merge; Gate 3 is ready for a new focused task definition, while closed PR #17 remains reference-only
+- Recovery: revert merge commit `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b` through a separately reviewed rollback PR if the accepted control reconciliation must be withdrawn
+- Remaining risks: the accepted branch is unprotected; Mapping, note/sub-note workflow/UI, reproducible Windows packaging, and end-to-end Pilot acceptance remain incomplete
+- Next action: fetch the live accepted head and define one new focused Gate 3 / Gate 2B Mapping task; do not revive or merge PR #17
