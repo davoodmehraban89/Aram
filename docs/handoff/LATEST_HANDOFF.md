@@ -93,15 +93,16 @@
 - Verified base: `source-data-cleanup@b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`
 - Working branch: `codex/v1-01-safety-gate-hardening`
 - Draft PR: [#21](https://github.com/davoodmehraban89/Aram/pull/21)
-- Independently reviewed candidate head: `700d800dbd9c657f6bd510faafedcbde4847fafd`.
-- Verified CI: [Backend CI #34](https://github.com/davoodmehraban89/Aram/actions/runs/32985984148), success; 67 tests passed, migration upgrade/downgrade and compile succeeded.
+- Independently reviewed implementation head: `700d800dbd9c657f6bd510faafedcbde4847fafd`.
+- Exact-head candidate: `aba10b61c770ce319b1b67d960a4f0a1057e25f6`.
+- Final verified CI: [Backend CI #36](https://github.com/davoodmehraban89/Aram/actions/runs/32989551021), success on `aba10b61c770ce319b1b67d960a4f0a1057e25f6`; 67 tests passed, migration upgrade/downgrade and compile succeeded.
 - Purpose: close the independently reproduced protected-year deletion/mutation and Pilot-preflight false-negative defects before any Mapping/UI expansion.
 - Planned changed files: `index.html`, `PROJECT_STATUS.md`, `backend/src/aram_backend/models.py`, `backend/src/aram_backend/pilot_workbook.py`, `backend/tests/test_models.py`, `backend/tests/test_pilot_workbook.py`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`.
 - Local evidence at preparation: 67 pytest tests passed; isolated Alembic upgrade/downgrade and compileall passed; focused Ruff and mypy checks passed.
 - Protected boundary: no canonical financial data, workbook, PDF, database, financial value, binary, ZIP, EXE, tag, or release is in scope.
-- Independent-review decision: code, tests, scope, diff, and protected-data boundary passed; merge was withheld only because `PROJECT_STATUS.md` and this handoff still described earlier evidence as pending.
-- Status: `IN_PROGRESS`; this two-document reconciliation is the only requested revision. The resulting final head and its CI must be re-fetched before Ready/Squash Merge.
+- Independent-review decision: code, tests, scope, diff, and protected-data boundary passed; exact-head CI #36 also passed. Merge was withheld only because `PROJECT_STATUS.md` and this handoff had not yet recorded that final CI evidence.
+- Status: `IN_PROGRESS`; this two-document CI-evidence reconciliation is the only requested revision. The resulting documentation-only head must be re-fetched and compared with `aba10b61c770ce319b1b67d960a4f0a1057e25f6` before Ready/Squash Merge.
 
 ## Single next action
 
-Publish the requested two-document reconciliation on PR #21, trigger CI on the resulting final head, and route that exact head back to the independent reviewer for Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified head `aba10b61c770ce319b1b67d960a4f0a1057e25f6`, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
