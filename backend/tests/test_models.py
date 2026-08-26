@@ -208,6 +208,19 @@ def test_company_with_protected_year_cannot_be_deleted(session):
         session.commit()
 
 
+def test_protected_year_cannot_be_reparented_through_relationship(session):
+    year = make_year(session)
+    replacement = Company(code="REPLACEMENT", name="Replacement Company")
+    session.add(replacement)
+    session.commit()
+    year.status = FiscalYearStatus.APPROVED
+    session.commit()
+
+    year.company = replacement
+    with pytest.raises(ValueError, match="identity cannot be mutated"):
+        session.commit()
+
+
 def test_draft_year_identity_and_deletion_remain_mutable(session):
     year = make_year(session)
     year.year = 1405

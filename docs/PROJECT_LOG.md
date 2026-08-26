@@ -266,7 +266,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Initial implementation commit SHA: `6d774e5dd7afb00b04e523ba255aeee4f13bfccc`; final reviewed head remains remote-state dependent
 - Exact planned changed files: `index.html`, `PROJECT_STATUS.md`, `backend/src/aram_backend/models.py`, `backend/src/aram_backend/pilot_workbook.py`, `backend/tests/test_models.py`, `backend/tests/test_pilot_workbook.py`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`
 - Implementation: prevent approved/locked fiscal-year identity mutation and deletion; prevent parent-company mutation/deletion when protected years exist; reject targetless, hierarchy-invalid, formula-code, review-evidence-deficient, and closing-delta-mismatched Pilot rows; replace the disconnected hard-coded root UI with an explicit quarantine page
-- Local tests: `cd backend && .venv/bin/pytest -q` -> 66 passed, 1 third-party deprecation warning
+- Local tests: `cd backend && .venv/bin/pytest -q` -> 67 passed, 1 third-party deprecation warning
 - Focused static checks: `.venv/bin/ruff check src/aram_backend/models.py src/aram_backend/pilot_workbook.py` -> passed; `.venv/bin/mypy src/aram_backend/models.py src/aram_backend/pilot_workbook.py` -> passed
 - Migration / compile: isolated SQLite `alembic upgrade head` and `alembic downgrade base` passed; `python -m compileall -q src tests scripts` passed
 - Adversarial verification: the previously accepted targetless/`account_level=99`/`closing_delta=999` workbook is rejected; locked-year identity mutation and deletion are blocked

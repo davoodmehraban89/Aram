@@ -253,7 +253,7 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
                     f"Invalid fiscal-year transition: {old_status.value} -> {obj.status.value}"
                 )
 
-        protected_metadata_changed = any(
+        protected_metadata_changed = state.attrs.company.history.has_changes() or any(
             state.attrs[field].history.has_changes() for field in ("company_id", "year")
         )
         if old_status in _PROTECTED_YEAR_STATUSES and protected_metadata_changed:
