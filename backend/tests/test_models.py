@@ -231,5 +231,3 @@ def test_draft_year_identity_and_deletion_remain_mutable(session):
     session.delete(year)
     session.commit()
     assert session.get(FiscalYear, year.id) is None
-
-# Temporary CI synchronization marker; reverted in the next commit.
