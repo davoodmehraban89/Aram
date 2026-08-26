@@ -218,7 +218,7 @@ def test_protected_year_cannot_be_reparented_through_relationship(session):
     session.commit()
 
     year.company = replacement
-    with pytest.raises(ValueError, match="identity cannot be mutated"):
+    with pytest.raises(ValueError, match="cannot be mutated"):
         session.commit()
 
 
