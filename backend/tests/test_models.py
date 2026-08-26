@@ -160,6 +160,7 @@ def test_invalid_status_skip_is_rejected(session):
         session.commit()
 
 
+# These adversarial cases reproduce the V1 audit bypasses; keep them as release gates.
 @pytest.mark.parametrize("status", [FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED])
 def test_protected_year_identity_cannot_be_mutated(session, status):
     year = make_year(session)
