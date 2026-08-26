@@ -35,7 +35,7 @@
 | Phase 2B ingestion foundation | VERIFIED_AND_MERGED | [PR #12](https://github.com/davoodmehraban89/Aram/pull/12), squash merge 7b5bd79b760d534dad34b3162f770e838616ebe9 |
 | Phase 2B control reconciliation | VERIFIED_AND_MERGED | [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), squash merge 7c7533ee87146dc8fc78b46ebf423be55532c7eb |
 | Gate 2A Pilot workbook contract/preflight | VERIFIED_AND_MERGED | [PR #15](https://github.com/davoodmehraban89/Aram/pull/15), reviewed head 74b6a6397a2a2c9199a5c7bcf818bb661b2ebe06, squash merge 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4, [Backend CI #24](https://github.com/davoodmehraban89/Aram/actions/runs/32712900800) |
-| V1-01 safety-gate hardening | IN_PROGRESS | Draft [PR #21](https://github.com/davoodmehraban89/Aram/pull/21) from exact base `b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`; independently reviewed candidate head `700d800dbd9c657f6bd510faafedcbde4847fafd`; [Backend CI #34](https://github.com/davoodmehraban89/Aram/actions/runs/32985984148) succeeded with 67 tests; reviewer requested only durable-document reconciliation before merge |
+| V1-01 safety-gate hardening | IN_PROGRESS | Draft [PR #21](https://github.com/davoodmehraban89/Aram/pull/21) from exact base `b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`; independently reviewed implementation head `700d800dbd9c657f6bd510faafedcbde4847fafd`; exact-head candidate `aba10b61c770ce319b1b67d960a4f0a1057e25f6`; [Backend CI #36](https://github.com/davoodmehraban89/Aram/actions/runs/32989551021) succeeded with 67 tests, migration round-trip, and compile; code, tests, scope, and protected-data boundary passed; final independent acceptance is pending only this durable-document reconciliation |
 | Post-Gate-2A control reconciliation | VERIFIED_AND_MERGED | [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b`; documentation only |
 | Durable post-merge acceptance record | VERIFIED_AND_MERGED | [PR #19](https://github.com/davoodmehraban89/Aram/pull/19), reviewed head `b9059592409606a0a4f11a71c30778cff158b6b6`, squash merge `77f9f595ccfe67a87b11024ff0f6143629dba438`; documentation only |
 | Role-based project operating model | VERIFIED_AND_MERGED | Permanent responsibilities and current assignments are defined in `docs/handoff/MASTER_RECOVERY_PROMPT.md` and ADR-011; introduced through [PR #20](https://github.com/davoodmehraban89/Aram/pull/20) |
@@ -74,8 +74,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 
 ## Next approved action
 
-1. Publish the two-file durable-document reconciliation requested by the independent reviewer on Draft PR #21 and trigger Backend CI on the resulting final head.
-2. The independent reviewer re-fetches that exact head and CI; if no change beyond the two documents exists, it marks the PR ready and squash-merges it.
+1. Publish this two-file durable-document reconciliation on Draft PR #21; exact-head [Backend CI #36](https://github.com/davoodmehraban89/Aram/actions/runs/32989551021) already succeeded on `aba10b61c770ce319b1b67d960a4f0a1057e25f6` with 67 tests, migration round-trip, and compile.
+2. The independent reviewer re-fetches the resulting documentation-only head, confirms that its comparison with `aba10b61c770ce319b1b67d960a4f0a1057e25f6` changes only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md`, then marks the PR ready and squash-merges it.
 3. Only after V1-01 is accepted, start the first focused Gate 3 Mapping import/persistence task from the new accepted head.
 
 ## Control documents
