@@ -158,3 +158,62 @@ def test_invalid_status_skip_is_rejected(session):
     year.status = FiscalYearStatus.LOCKED
     with pytest.raises(ValueError, match="Invalid fiscal-year transition"):
         session.commit()
+
+
+@pytest.mark.parametrize("status", [FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED])
+def test_protected_year_identity_cannot_be_mutated(session, status):
+    year = make_year(session)
+    year.status = FiscalYearStatus.APPROVED
+    session.commit()
+    if status is FiscalYearStatus.LOCKED:
+        year.status = FiscalYearStatus.LOCKED
+        session.commit()
+
+    year.year = 1405
+    with pytest.raises(ValueError, match="identity cannot be mutated"):
+        session.commit()
+
+
+@pytest.mark.parametrize("status", [FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED])
+def test_protected_year_cannot_be_deleted(session, status):
+    year = make_year(session)
+    year.status = FiscalYearStatus.APPROVED
+    session.commit()
+    if status is FiscalYearStatus.LOCKED:
+        year.status = FiscalYearStatus.LOCKED
+        session.commit()
+
+    session.delete(year)
+    with pytest.raises(ValueError, match="cannot be deleted"):
+        session.commit()
+
+
+def test_company_with_protected_year_cannot_be_mutated(session):
+    year = make_year(session)
+    year.status = FiscalYearStatus.APPROVED
+    session.commit()
+
+    year.company.name = "Changed after approval"
+    with pytest.raises(ValueError, match="cannot be mutated"):
+        session.commit()
+
+
+def test_company_with_protected_year_cannot_be_deleted(session):
+    year = make_year(session)
+    year.status = FiscalYearStatus.APPROVED
+    session.commit()
+
+    session.delete(year.company)
+    with pytest.raises(ValueError, match="cannot be deleted"):
+        session.commit()
+
+
+def test_draft_year_identity_and_deletion_remain_mutable(session):
+    year = make_year(session)
+    year.year = 1405
+    session.commit()
+    assert year.year == 1405
+
+    session.delete(year)
+    session.commit()
+    assert session.get(FiscalYear, year.id) is None

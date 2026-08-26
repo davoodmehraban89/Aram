@@ -153,3 +153,72 @@ def test_validation_does_not_persist_any_artifact(tmp_path, monkeypatch):
     before = set(tmp_path.iterdir())
     preflight_pilot_workbook(workbook_bytes(valid_rows()))
     assert set(tmp_path.iterdir()) == before
+
+
+def test_mapping_requires_a_real_target_and_valid_account_level():
+    rows = valid_rows()
+    mapping = list(rows["Mapping"][0])
+    mapping[4] = 99
+    mapping[11] = None
+    mapping[12] = None
+    mapping[13] = None
+    rows["Mapping"] = [tuple(mapping)]
+
+    codes = issue_codes(workbook_bytes(rows))
+    assert "INVALID_ACCOUNT_LEVEL" in codes
+    assert codes.count("REQUIRED_FIELD") >= 3
+
+
+def test_mapping_target_must_exist_in_notes():
+    rows = valid_rows()
+    mapping = list(rows["Mapping"][0])
+    mapping[14] = "999"
+    rows["Mapping"] = [tuple(mapping)]
+
+    assert "UNKNOWN_MAPPING_TARGET" in issue_codes(workbook_bytes(rows))
+
+
+def test_mapping_hierarchy_must_match_the_account_row():
+    rows = valid_rows()
+    mapping = list(rows["Mapping"][0])
+    mapping[5] = "99"
+    rows["Mapping"] = [tuple(mapping)]
+
+    assert "MAPPING_HIERARCHY_MISMATCH" in issue_codes(workbook_bytes(rows))
+
+
+def test_declared_closing_delta_must_match_computed_delta():
+    rows = valid_rows()
+    account = list(rows["Accounts"][0])
+    account[22] = 999
+    rows["Accounts"] = [tuple(account)]
+
+    assert "CLOSING_DELTA_MISMATCH" in issue_codes(workbook_bytes(rows))
+
+
+def test_code_formulas_are_rejected():
+    rows = valid_rows()
+    account = list(rows["Accounts"][0])
+    account[14] = '=TEXT(10,"0000")'
+    rows["Accounts"] = [tuple(account)]
+
+    assert "CODE_FORMULA_FORBIDDEN" in issue_codes(workbook_bytes(rows))
+
+
+def test_reviewed_and_approved_mappings_require_review_evidence():
+    rows = valid_rows()
+    mapping = list(rows["Mapping"][0])
+    mapping[16] = "Approved"
+    mapping[21] = "Pending"
+    rows["Mapping"] = [tuple(mapping)]
+
+    codes = issue_codes(workbook_bytes(rows))
+    assert codes.count("REVIEW_EVIDENCE_REQUIRED") == 2
+    assert "APPROVAL_REQUIRES_VALID_MAPPING" in codes
+
+
+def test_duplicate_note_target_is_rejected():
+    rows = valid_rows()
+    rows["Notes"].append(rows["Notes"][0])
+
+    assert "DUPLICATE_NOTE_TARGET" in issue_codes(workbook_bytes(rows))

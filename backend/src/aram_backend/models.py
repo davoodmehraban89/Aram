@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import enum
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -26,7 +26,7 @@ from aram_backend.database import Base
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class FiscalYearStatus(str, enum.Enum):
@@ -205,20 +205,71 @@ def _year_id_for(obj: object, session: Session) -> int | None:
     return None
 
 
+_PROTECTED_YEAR_STATUSES = {FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED}
+
+
+def _company_has_protected_year(session: Session, company_id: int) -> bool:
+    status = session.scalar(
+        select(FiscalYear.status).where(
+            FiscalYear.company_id == company_id,
+            FiscalYear.status.in_(_PROTECTED_YEAR_STATUSES),
+        ).limit(1)
+    )
+    return status is not None
+
+
 @event.listens_for(Session, "before_flush")
 def enforce_audit_invariants(session: Session, _flush_context, _instances) -> None:
+    for obj in session.deleted:
+        if isinstance(obj, FiscalYear) and obj.status in _PROTECTED_YEAR_STATUSES:
+            raise ValueError(
+                f"Fiscal year {obj.id} is {obj.status.value.lower()} and cannot be deleted"
+            )
+
     for obj in session.dirty:
-        if isinstance(obj, FiscalYear):
-            history = inspect(obj).attrs.status.history
-            if history.deleted:
-                old = history.deleted[0]
-                allowed = {
-                    FiscalYearStatus.DRAFT: {FiscalYearStatus.APPROVED},
-                    FiscalYearStatus.APPROVED: {FiscalYearStatus.LOCKED},
-                    FiscalYearStatus.LOCKED: set(),
-                }
-                if obj.status not in allowed[old]:
-                    raise ValueError(f"Invalid fiscal-year transition: {old.value} -> {obj.status.value}")
+        if (
+            isinstance(obj, Company)
+            and obj.id is not None
+            and _company_has_protected_year(session, obj.id)
+        ):
+            raise ValueError(
+                f"Company {obj.id} has approved or locked fiscal years and cannot be mutated"
+            )
+
+        if not isinstance(obj, FiscalYear):
+            continue
+
+        state = inspect(obj)
+        status_history = state.attrs.status.history
+        old_status = status_history.deleted[0] if status_history.deleted else obj.status
+        if status_history.deleted:
+            allowed = {
+                FiscalYearStatus.DRAFT: {FiscalYearStatus.APPROVED},
+                FiscalYearStatus.APPROVED: {FiscalYearStatus.LOCKED},
+                FiscalYearStatus.LOCKED: set(),
+            }
+            if obj.status not in allowed[old_status]:
+                raise ValueError(
+                    f"Invalid fiscal-year transition: {old_status.value} -> {obj.status.value}"
+                )
+
+        protected_metadata_changed = any(
+            state.attrs[field].history.has_changes() for field in ("company_id", "year")
+        )
+        if old_status in _PROTECTED_YEAR_STATUSES and protected_metadata_changed:
+            raise ValueError(
+                f"Fiscal year {obj.id} is {old_status.value.lower()} and its identity cannot be mutated"
+            )
+
+    for obj in session.deleted:
+        if (
+            isinstance(obj, Company)
+            and obj.id is not None
+            and _company_has_protected_year(session, obj.id)
+        ):
+            raise ValueError(
+                f"Company {obj.id} has approved or locked fiscal years and cannot be deleted"
+            )
 
     protected = (session.new | session.dirty | session.deleted)
     for obj in protected:

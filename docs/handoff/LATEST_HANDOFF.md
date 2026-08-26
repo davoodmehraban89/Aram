@@ -88,6 +88,16 @@
 - Green CI on an unmerged PR is not acceptance evidence.
 - No Gate 3 implementation candidate is accepted or active.
 
+## Active V1-01 safety-gate candidate
+
+- Verified base: `source-data-cleanup@b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`
+- Working branch: `codex/v1-01-safety-gate-hardening`
+- Purpose: close the independently reproduced protected-year deletion/mutation and Pilot-preflight false-negative defects before any Mapping/UI expansion.
+- Planned changed files: `index.html`, `PROJECT_STATUS.md`, `backend/src/aram_backend/models.py`, `backend/src/aram_backend/pilot_workbook.py`, `backend/tests/test_models.py`, `backend/tests/test_pilot_workbook.py`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`.
+- Local evidence at preparation: 66 pytest tests passed; isolated Alembic upgrade/downgrade and compileall passed; focused Ruff and mypy checks passed.
+- Protected boundary: no canonical financial data, workbook, PDF, database, financial value, binary, ZIP, EXE, tag, or release is in scope.
+- Status: `IN_PROGRESS`; remote commit, PR, CI, and independent review remain authoritative and pending.
+
 ## Single next action
 
-The Operational Coordinator fetches the live `source-data-cleanup` head and open-PR list, then prepares one focused Gate 3 / Gate 2B Mapping scope package for the Senior Technical Supervisor / Independent Reviewer. After scope review, Jules implements from that exact head through one focused Draft PR. Use PR #17 only as reference.
+Publish and independently review the focused V1-01 safety-gate candidate. Do not begin Gate 3 Mapping implementation until its final remote head, Backend CI, exact diff, and protected-data boundary are accepted.

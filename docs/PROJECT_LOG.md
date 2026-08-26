@@ -255,3 +255,26 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close PR #20 without merge; the accepted branch remains at `77f9f595ccfe67a87b11024ff0f6143629dba438`
 - Remaining risks: the accepted branch is unprotected; role assignments do not replace evidence gates; Gate 3 Mapping and all later V1 gates remain incomplete
 - Next action: finish the five-file remote candidate, independently review PR #20, and record one acceptance decision
+
+### 2026-08-26T15:36:29Z — V1-01 safety-gate hardening prepared
+
+- Actor: Codex Work authorized maintainer / implementation agent for the critical fix
+- Task/phase: V1-01 safety-gate hardening before Gate 3 Mapping
+- Base: `source-data-cleanup@b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`
+- Working branch: `codex/v1-01-safety-gate-hardening`
+- PR: `NOT_CREATED` at entry preparation; live GitHub state is authoritative
+- Candidate commit SHA: `NOT_PUBLISHED`
+- Exact planned changed files: `index.html`, `PROJECT_STATUS.md`, `backend/src/aram_backend/models.py`, `backend/src/aram_backend/pilot_workbook.py`, `backend/tests/test_models.py`, `backend/tests/test_pilot_workbook.py`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`
+- Implementation: prevent approved/locked fiscal-year identity mutation and deletion; prevent parent-company mutation/deletion when protected years exist; reject targetless, hierarchy-invalid, formula-code, review-evidence-deficient, and closing-delta-mismatched Pilot rows; replace the disconnected hard-coded root UI with an explicit quarantine page
+- Local tests: `cd backend && .venv/bin/pytest -q` -> 66 passed, 1 third-party deprecation warning
+- Focused static checks: `.venv/bin/ruff check src/aram_backend/models.py src/aram_backend/pilot_workbook.py` -> passed; `.venv/bin/mypy src/aram_backend/models.py src/aram_backend/pilot_workbook.py` -> passed
+- Migration / compile: isolated SQLite `alembic upgrade head` and `alembic downgrade base` passed; `python -m compileall -q src tests scripts` passed
+- Adversarial verification: the previously accepted targetless/`account_level=99`/`closing_delta=999` workbook is rejected; locked-year identity mutation and deletion are blocked
+- GitHub Actions: `NOT_VERIFIED` until remote publication
+- Artifacts/releases: `NONE`
+- Protected data: no canonical XLSX/PDF, `data/`, database, financial-source value, ZIP, EXE, tag, or release is changed
+- Acceptance: `IN_PROGRESS`; implementation author must not merge this PR
+- Reviewer: independent reviewer pending
+- Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
+- Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
+- Next action: publish the focused PR and obtain independent remote review after CI
