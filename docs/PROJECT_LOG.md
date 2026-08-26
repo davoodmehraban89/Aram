@@ -262,15 +262,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Task/phase: V1-01 safety-gate hardening before Gate 3 Mapping
 - Base: `source-data-cleanup@b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`
 - Working branch: `codex/v1-01-safety-gate-hardening`
-- PR: `NOT_CREATED` at entry preparation; live GitHub state is authoritative
-- Candidate commit SHA: `NOT_PUBLISHED`
+- PR: Draft [#21](https://github.com/davoodmehraban89/Aram/pull/21)
+- Initial implementation commit SHA: `6d774e5dd7afb00b04e523ba255aeee4f13bfccc`; final reviewed head remains remote-state dependent
 - Exact planned changed files: `index.html`, `PROJECT_STATUS.md`, `backend/src/aram_backend/models.py`, `backend/src/aram_backend/pilot_workbook.py`, `backend/tests/test_models.py`, `backend/tests/test_pilot_workbook.py`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`
 - Implementation: prevent approved/locked fiscal-year identity mutation and deletion; prevent parent-company mutation/deletion when protected years exist; reject targetless, hierarchy-invalid, formula-code, review-evidence-deficient, and closing-delta-mismatched Pilot rows; replace the disconnected hard-coded root UI with an explicit quarantine page
 - Local tests: `cd backend && .venv/bin/pytest -q` -> 66 passed, 1 third-party deprecation warning
 - Focused static checks: `.venv/bin/ruff check src/aram_backend/models.py src/aram_backend/pilot_workbook.py` -> passed; `.venv/bin/mypy src/aram_backend/models.py src/aram_backend/pilot_workbook.py` -> passed
 - Migration / compile: isolated SQLite `alembic upgrade head` and `alembic downgrade base` passed; `python -m compileall -q src tests scripts` passed
 - Adversarial verification: the previously accepted targetless/`account_level=99`/`closing_delta=999` workbook is rejected; locked-year identity mutation and deletion are blocked
-- GitHub Actions: `NOT_VERIFIED` until remote publication
+- GitHub Actions: pending for Draft PR #21
 - Artifacts/releases: `NONE`
 - Protected data: no canonical XLSX/PDF, `data/`, database, financial-source value, ZIP, EXE, tag, or release is changed
 - Acceptance: `IN_PROGRESS`; implementation author must not merge this PR
