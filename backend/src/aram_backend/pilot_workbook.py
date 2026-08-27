@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from io import BytesIO
 from typing import Any
@@ -9,7 +10,6 @@ from zipfile import BadZipFile
 
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
-
 
 SHEET_HEADERS: dict[str, tuple[str, ...]] = {
     "Company": (
@@ -56,14 +56,40 @@ _REQUIRED: dict[str, set[str]] = {
     "Accounts": {
         "company_code", "fiscal_year", "general_code", "general_name",
         "account_full_code", "account_name", "opening", "debit", "credit",
-        "closing", "source_row", "row_status",
+        "closing", "source_row", "row_status", "closing_delta",
     },
-    "Notes": {"company_code", "fiscal_year", "statement", "note_number", "note_title"},
+    "Notes": {
+        "company_code", "fiscal_year", "statement", "statement_section",
+        "note_number", "note_title",
+    },
     "Mapping": {
         "mapping_id", "company_code", "fiscal_year", "account_full_code",
-        "account_level", "mapping_version", "approval_status",
+        "account_level", "target_statement", "statement_section", "note_number",
+        "mapping_version", "approval_status", "source", "validation_status",
     },
 }
+
+_STATEMENTS = {"BS", "IS", "CF", "EQ"}
+_ACCOUNT_LEVELS: dict[str, tuple[str, ...]] = {
+    "General": ("general_code",),
+    "Subsidiary": ("general_code", "subsidiary_code"),
+    "Detail1": ("general_code", "subsidiary_code", "detail1_code"),
+    "Detail2": (
+        "general_code", "subsidiary_code", "detail1_code", "detail2_code",
+    ),
+    "Detail3": (
+        "general_code", "subsidiary_code", "detail1_code", "detail2_code",
+        "detail3_code",
+    ),
+    "Detail4": (
+        "general_code", "subsidiary_code", "detail1_code", "detail2_code",
+        "detail3_code", "detail4_code",
+    ),
+}
+_HIERARCHY_FIELDS = (
+    "general_code", "subsidiary_code", "detail1_code", "detail2_code",
+    "detail3_code", "detail4_code",
+)
 
 
 @dataclass(frozen=True)
@@ -100,7 +126,12 @@ def _text_code(value: Any, issues: list[PilotIssue], sheet: str, row: int,
         _issue(issues, "CODE_NOT_TEXT", sheet, row, field,
                "Code cells must use Excel text format; numeric coercion is forbidden.")
         return None
-    return value.strip()
+    code = value.strip()
+    if code.startswith("="):
+        _issue(issues, "CODE_FORMULA_FORBIDDEN", sheet, row, field,
+               "Code cells must contain literal text; formulas are forbidden.")
+        return None
+    return code
 
 
 def _positive_int(value: Any, issues: list[PilotIssue], sheet: str, row: int,
@@ -187,16 +218,17 @@ def preflight_pilot_workbook(workbook_bytes: bytes) -> PilotPreflightResult:
         code = _text_code(row["company_code"], [], "Company", row_number, "company_code")
         year = row["fiscal_year"] if isinstance(row["fiscal_year"], int) and not isinstance(row["fiscal_year"], bool) else None
         if code and year and year > 0:
-            key = (code, year)
-            if key in companies:
+            company_key = (code, year)
+            if company_key in companies:
                 _issue(issues, "DUPLICATE_COMPANY_YEAR", "Company", row_number,
                        "company_code", "Company/fiscal-year key must be unique.")
-            companies.add(key)
+            companies.add(company_key)
         if not _empty(row["status"]) and row["status"] not in {"Draft", "Approved", "Locked"}:
             _issue(issues, "INVALID_LIFECYCLE", "Company", row_number, "status",
                    "Allowed values are Draft, Approved, and Locked.")
 
     account_keys: set[tuple[str, int, str]] = set()
+    account_rows: dict[tuple[str, int, str], dict[str, Any]] = {}
     for row_number, row in parsed.get("Accounts", []):
         code = row["company_code"] if isinstance(row["company_code"], str) else None
         year = row["fiscal_year"] if isinstance(row["fiscal_year"], int) and not isinstance(row["fiscal_year"], bool) else None
@@ -205,22 +237,39 @@ def preflight_pilot_workbook(workbook_bytes: bytes) -> PilotPreflightResult:
             _issue(issues, "UNKNOWN_COMPANY_YEAR", "Accounts", row_number, "company_code",
                    "Referenced company/fiscal year is not defined in Company.")
         if code and year and account:
-            key = (code.strip(), year, account.strip())
-            if key in account_keys:
+            account_key = (code.strip(), year, account.strip())
+            if account_key in account_keys:
                 _issue(issues, "DUPLICATE_ACCOUNT", "Accounts", row_number,
                        "account_full_code", "Account key is duplicated within company/fiscal year.")
-            account_keys.add(key)
-        values = [_finite_decimal(row[field], issues, "Accounts", row_number, field)
-                  for field in ("opening", "debit", "credit", "closing")]
+            account_keys.add(account_key)
+            account_rows.setdefault(account_key, row)
+        opening, debit, credit, closing = (
+            _finite_decimal(row[field], issues, "Accounts", row_number, field)
+            for field in ("opening", "debit", "credit", "closing")
+        )
+        declared_delta = _finite_decimal(
+            row["closing_delta"], issues, "Accounts", row_number, "closing_delta"
+        )
         _positive_int(row["source_row"], issues, "Accounts", row_number, "source_row")
         if not _empty(row["row_status"]) and row["row_status"] not in {"Draft", "Reviewed", "Approved"}:
             _issue(issues, "INVALID_LIFECYCLE", "Accounts", row_number, "row_status",
                    "Allowed values are Draft, Reviewed, and Approved.")
-        if all(value is not None for value in values):
-            delta = values[0] + values[1] - values[2] - values[3]
+        if (
+            opening is not None
+            and debit is not None
+            and credit is not None
+            and closing is not None
+        ):
+            delta = opening + debit - credit - closing
             if delta != 0:
                 _issue(issues, "NON_ZERO_CLOSING_DELTA", "Accounts", row_number,
                        "closing_delta", f"opening + debit - credit - closing equals {delta}.")
+            if declared_delta is not None and declared_delta != delta:
+                _issue(
+                    issues, "CLOSING_DELTA_MISMATCH", "Accounts", row_number,
+                    "closing_delta",
+                    f"Declared closing_delta {declared_delta} does not equal computed delta {delta}.",
+                )
 
     for sheet_name in ("Notes", "Mapping"):
         for row_number, row in parsed.get(sheet_name, []):
@@ -229,6 +278,31 @@ def preflight_pilot_workbook(workbook_bytes: bytes) -> PilotPreflightResult:
             if code and year and (code.strip(), year) not in companies:
                 _issue(issues, "UNKNOWN_COMPANY_YEAR", sheet_name, row_number,
                        "company_code", "Referenced company/fiscal year is not defined in Company.")
+
+    note_keys: set[tuple[str, int, str, str, str, str]] = set()
+    for row_number, row in parsed.get("Notes", []):
+        statement = row["statement"]
+        if not _empty(statement) and statement not in _STATEMENTS:
+            _issue(
+                issues, "INVALID_STATEMENT", "Notes", row_number, "statement",
+                "Allowed statement values are BS, IS, CF, and EQ.",
+            )
+        code = row["company_code"] if isinstance(row["company_code"], str) else None
+        year = row["fiscal_year"] if isinstance(row["fiscal_year"], int) and not isinstance(row["fiscal_year"], bool) else None
+        note_number = row["note_number"] if isinstance(row["note_number"], str) else None
+        section = row["statement_section"] if isinstance(row["statement_section"], str) else None
+        subnote = row["subnote_code"] if isinstance(row["subnote_code"], str) else ""
+        if code and year and statement in _STATEMENTS and section and note_number:
+            note_key = (
+                code.strip(), year, statement, section.strip(), note_number.strip(),
+                subnote.strip(),
+            )
+            if note_key in note_keys:
+                _issue(
+                    issues, "DUPLICATE_NOTE_TARGET", "Notes", row_number,
+                    "note_number", "Note/sub-note target is duplicated.",
+                )
+            note_keys.add(note_key)
 
     mapping_ids: set[str] = set()
     for row_number, row in parsed.get("Mapping", []):
@@ -242,12 +316,103 @@ def preflight_pilot_workbook(workbook_bytes: bytes) -> PilotPreflightResult:
         if not _empty(row["approval_status"]) and row["approval_status"] not in {"Draft", "Reviewed", "Approved"}:
             _issue(issues, "INVALID_LIFECYCLE", "Mapping", row_number, "approval_status",
                    "Allowed values are Draft, Reviewed, and Approved.")
+        if not _empty(row["validation_status"]) and row["validation_status"] not in {"Valid", "Invalid", "Pending"}:
+            _issue(
+                issues, "INVALID_VALIDATION_STATUS", "Mapping", row_number,
+                "validation_status", "Allowed values are Valid, Invalid, and Pending.",
+            )
+        if not _empty(row["target_statement"]) and row["target_statement"] not in _STATEMENTS:
+            _issue(
+                issues, "INVALID_STATEMENT", "Mapping", row_number,
+                "target_statement", "Allowed statement values are BS, IS, CF, and EQ.",
+            )
+
+        level = row["account_level"]
+        if not _empty(level) and level not in _ACCOUNT_LEVELS:
+            _issue(
+                issues, "INVALID_ACCOUNT_LEVEL", "Mapping", row_number,
+                "account_level",
+                "Allowed levels are General, Subsidiary, Detail1, Detail2, Detail3, and Detail4.",
+            )
+        elif level in _ACCOUNT_LEVELS:
+            required_fields = set(_ACCOUNT_LEVELS[level])
+            for field in required_fields:
+                if _empty(row[field]):
+                    _issue(
+                        issues, "MAPPING_HIERARCHY_MISSING", "Mapping", row_number,
+                        field, f"{field} is required for account level {level}.",
+                    )
+            for field in _HIERARCHY_FIELDS[len(_ACCOUNT_LEVELS[level]):]:
+                if not _empty(row[field]):
+                    _issue(
+                        issues, "MAPPING_HIERARCHY_EXCESS", "Mapping", row_number,
+                        field, f"{field} must be empty for account level {level}.",
+                    )
+
+        approval_status = row["approval_status"]
+        if approval_status in {"Reviewed", "Approved"}:
+            if _empty(row["reviewer"]):
+                _issue(
+                    issues, "REVIEW_EVIDENCE_REQUIRED", "Mapping", row_number,
+                    "reviewer", "Reviewed and Approved mappings require a reviewer.",
+                )
+            review_date = row["review_date"]
+            if _empty(review_date):
+                _issue(
+                    issues, "REVIEW_EVIDENCE_REQUIRED", "Mapping", row_number,
+                    "review_date", "Reviewed and Approved mappings require a review date.",
+                )
+            elif not isinstance(review_date, (str, date, datetime)):
+                _issue(
+                    issues, "INVALID_REVIEW_DATE", "Mapping", row_number,
+                    "review_date", "Review date must be an Excel date or text date.",
+                )
+        if approval_status == "Approved" and row["validation_status"] != "Valid":
+            _issue(
+                issues, "APPROVAL_REQUIRES_VALID_MAPPING", "Mapping", row_number,
+                "validation_status", "Approved mappings must have validation_status Valid.",
+            )
+
         code = row["company_code"] if isinstance(row["company_code"], str) else None
         year = row["fiscal_year"] if isinstance(row["fiscal_year"], int) and not isinstance(row["fiscal_year"], bool) else None
         account = row["account_full_code"] if isinstance(row["account_full_code"], str) else None
-        if code and year and account and (code.strip(), year, account.strip()) not in account_keys:
-            _issue(issues, "UNKNOWN_MAPPING_ACCOUNT", "Mapping", row_number,
-                   "account_full_code", "Mapped account does not exist in Accounts for this company/fiscal year.")
+        mapping_account_key = (
+            (code.strip(), year, account.strip())
+            if code and year and account else None
+        )
+        if mapping_account_key and mapping_account_key not in account_keys:
+            _issue(
+                issues, "UNKNOWN_MAPPING_ACCOUNT", "Mapping", row_number,
+                "account_full_code",
+                "Mapped account does not exist in Accounts for this company/fiscal year.",
+            )
+        elif mapping_account_key:
+            source_account = account_rows[mapping_account_key]
+            for field in _HIERARCHY_FIELDS:
+                mapping_value = row[field].strip() if isinstance(row[field], str) else None
+                account_value = source_account[field].strip() if isinstance(source_account[field], str) else None
+                if mapping_value != account_value:
+                    _issue(
+                        issues, "MAPPING_HIERARCHY_MISMATCH", "Mapping", row_number,
+                        field,
+                        f"Mapping hierarchy does not match Accounts for {field}.",
+                    )
+
+        statement = row["target_statement"]
+        section = row["statement_section"] if isinstance(row["statement_section"], str) else None
+        note_number = row["note_number"] if isinstance(row["note_number"], str) else None
+        subnote = row["subnote_code"] if isinstance(row["subnote_code"], str) else ""
+        if code and year and statement in _STATEMENTS and section and note_number:
+            target_key = (
+                code.strip(), year, statement, section.strip(), note_number.strip(),
+                subnote.strip(),
+            )
+            if target_key not in note_keys:
+                _issue(
+                    issues, "UNKNOWN_MAPPING_TARGET", "Mapping", row_number,
+                    "note_number",
+                    "Mapped statement/note/sub-note target does not exist in Notes.",
+                )
 
     ordered = tuple(sorted(issues, key=lambda item: (
         _SHEET_ORDER.get(item.sheet, -1), item.row,

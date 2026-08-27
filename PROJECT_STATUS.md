@@ -35,6 +35,7 @@
 | Phase 2B ingestion foundation | VERIFIED_AND_MERGED | [PR #12](https://github.com/davoodmehraban89/Aram/pull/12), squash merge 7b5bd79b760d534dad34b3162f770e838616ebe9 |
 | Phase 2B control reconciliation | VERIFIED_AND_MERGED | [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), squash merge 7c7533ee87146dc8fc78b46ebf423be55532c7eb |
 | Gate 2A Pilot workbook contract/preflight | VERIFIED_AND_MERGED | [PR #15](https://github.com/davoodmehraban89/Aram/pull/15), reviewed head 74b6a6397a2a2c9199a5c7bcf818bb661b2ebe06, squash merge 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4, [Backend CI #24](https://github.com/davoodmehraban89/Aram/actions/runs/32712900800) |
+| V1-01 safety-gate hardening | IN_PROGRESS | Draft [PR #21](https://github.com/davoodmehraban89/Aram/pull/21) from exact base `b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`; independently reviewed implementation head `700d800dbd9c657f6bd510faafedcbde4847fafd`; CI-verified stabilized candidate `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`; [Backend CI #39](https://github.com/davoodmehraban89/Aram/actions/runs/33015277194) succeeded with 67 tests, migration round-trip, and compile after broadening one reparent-rejection assertion to accept either valid protection message; code, scope, and protected-data boundary remain unchanged; final independent acceptance is pending this durable-document reconciliation |
 | Post-Gate-2A control reconciliation | VERIFIED_AND_MERGED | [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b`; documentation only |
 | Durable post-merge acceptance record | VERIFIED_AND_MERGED | [PR #19](https://github.com/davoodmehraban89/Aram/pull/19), reviewed head `b9059592409606a0a4f11a71c30778cff158b6b6`, squash merge `77f9f595ccfe67a87b11024ff0f6143629dba438`; documentation only |
 | Role-based project operating model | VERIFIED_AND_MERGED | Permanent responsibilities and current assignments are defined in `docs/handoff/MASTER_RECOVERY_PROMPT.md` and ADR-011; introduced through [PR #20](https://github.com/davoodmehraban89/Aram/pull/20) |
@@ -63,6 +64,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## Current risks and blockers
 
 - The accepted branch is not protected by GitHub branch protection.
+- The accepted branch still permits direct identity mutation/deletion of approved or locked fiscal years and parent-company deletion; the V1-01 candidate fixes this but is not accepted yet.
+- The accepted Pilot preflight can still accept targetless or structurally invalid mappings and can ignore a declared closing-delta mismatch; the V1-01 candidate fixes this but is not accepted yet.
+- The accepted root `index.html` is still a disconnected hard-coded prototype; the V1-01 candidate replaces it with an explicit quarantine page.
 - PR #17 was closed without merge; its stale-base 12-file diff is reference material only, and its narrative listed only 9 files.
 - PR #17 CI was green on its own stale head, but compatibility with accepted Gate 2A was never proven.
 - Binary execution, release provenance, and clean Windows verification do not exist.
@@ -70,9 +74,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 
 ## Next approved action
 
-1. The Operational Coordinator fetches the live `source-data-cleanup` head and confirms that no open implementation PR exists.
-2. It defines one focused Gate 3 / Gate 2B Mapping task from that exact head and routes the scope package to the Senior Technical Supervisor / Independent Reviewer.
-3. After scope review, Jules implements through one focused Draft PR; closed PR #17 remains reference-only and must not be reopened or merged.
+1. Publish this two-file durable-document reconciliation on Draft PR #21; [Backend CI #39](https://github.com/davoodmehraban89/Aram/actions/runs/33015277194) succeeded on stabilized candidate `b3dc8b3a18934ffe63f615e4f650248be21a5f9c` with 67 tests, migration round-trip, and compile.
+2. The independent reviewer re-fetches the resulting documentation-only head, confirms that its comparison with `b3dc8b3a18934ffe63f615e4f650248be21a5f9c` changes only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md`, verifies the final workflow result, then marks the PR ready and squash-merges it.
+3. Only after V1-01 is accepted, start the first focused Gate 3 Mapping import/persistence task from the new accepted head.
 
 ## Control documents
 
