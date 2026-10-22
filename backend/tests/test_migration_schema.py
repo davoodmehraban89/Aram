@@ -43,6 +43,25 @@ def test_explicit_migration_schema_matches_metadata():
                 }
                 actual_unique = {tuple(c["column_names"]) for c in inspector.get_unique_constraints(table.name)}
                 assert expected_unique <= actual_unique, table.name
+                expected_indexes = {
+                    (tuple(idx.columns.keys()), bool(idx.unique)) for idx in table.indexes
+                }
+                actual_indexes = {
+                    (tuple(idx["column_names"]), bool(idx["unique"]))
+                    for idx in inspector.get_indexes(table.name)
+                }
+                assert expected_indexes == actual_indexes, table.name
+                expected_fks = {
+                    (tuple(fk.column_keys), tuple(col.name for col in fk.elements),
+                     fk.referred_table.name)
+                    for fk in table.foreign_key_constraints
+                }
+                actual_fks = {
+                    (tuple(fk["constrained_columns"]), tuple(fk["referred_columns"]),
+                     fk["referred_table"])
+                    for fk in inspector.get_foreign_keys(table.name)
+                }
+                assert expected_fks == actual_fks, table.name
             module.downgrade()
             assert inspect(connection).get_table_names() == []
         finally:
