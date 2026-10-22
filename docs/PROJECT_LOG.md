@@ -295,3 +295,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - CI: https://github.com/davoodmehraban89/Aram/actions/runs/39870308627 (candidate implementation run; conclusion to be verified before acceptance).
 - Financial XLSX/PDF, `data/`, credentials, artifacts and releases unchanged. Independent review pending; do not merge PR #27 until PR #26 is accepted and the stacked base reconciled.
 - Recovery: close Draft PR #27 without merge; accepted branch remains untouched.
+
+### CI regression correction (2026-10-23)
+- Initial [Backend CI #57](https://github.com/davoodmehraban89/Aram/actions/runs/39870308627) failed: 106 passed, 2 failed. Findings: SQLite legacy SAVEPOINT could persist despite caller rollback; archive safety-limit exception was incorrectly wrapped by broad ValueError handler.
+- Fixed both in commit `0fa921aa5e2cdce7150eb2c3a679022bea692c70`: explicit SQLite physical BEGIN before nested transaction when absent; preserve MappingValidationError on archive safety-limit failures. Exact-head CI verification pending.
