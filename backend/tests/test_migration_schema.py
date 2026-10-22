@@ -23,7 +23,7 @@ def test_explicit_migration_schema_matches_metadata():
     spec.loader.exec_module(module)
 
     engine = create_engine("sqlite:///:memory:")
-    with engine.begin() as connection:
+    with engine.connect() as connection:
         context = MigrationContext.configure(connection)
         operations = Operations(context)
         original = module.op
