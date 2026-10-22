@@ -286,3 +286,16 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Scope: mapping_service.py, test_mapping_service.py and governance records. Explicit draft-year mapping persistence, same-year account/note validation, idempotency, version conflicts, input bounds and rollback.
 - GitHub CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320; initial test evidence: 87 passed, migration upgrade/downgrade and compile succeeded.
 - Protected financial data unchanged. No release artifact. Independent acceptance pending. Recovery: close draft PR without merge.
+
+
+## 2026-10-23 — Gate 3 Mapping XLSX interchange candidate
+- Dependency: Draft PR #26, base `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403`; candidate: Draft PR #27 https://github.com/davoodmehraban89/Aram/pull/27.
+- Implementation: strict XLSX preview/export and atomic staging via nested transaction; explicit account/note identifiers only, no guessed financial mappings.
+- Changed code: `backend/src/aram_backend/mapping_excel.py`, `backend/tests/test_mapping_excel.py`; additional governance docs only. Tests cover round-trip, duplicate/idempotent import, rollback, cross-year notes, formulas, malformed headers, oversized/compressed archive and empty workbooks.
+- CI: https://github.com/davoodmehraban89/Aram/actions/runs/39870308627 (candidate implementation run; conclusion to be verified before acceptance).
+- Financial XLSX/PDF, `data/`, credentials, artifacts and releases unchanged. Independent review pending; do not merge PR #27 until PR #26 is accepted and the stacked base reconciled.
+- Recovery: close Draft PR #27 without merge; accepted branch remains untouched.
+
+### CI regression correction (2026-10-23)
+- Initial [Backend CI #57](https://github.com/davoodmehraban89/Aram/actions/runs/39870308627) failed: 106 passed, 2 failed. Findings: SQLite legacy SAVEPOINT could persist despite caller rollback; archive safety-limit exception was incorrectly wrapped by broad ValueError handler.
+- Fixed both in commit `0fa921aa5e2cdce7150eb2c3a679022bea692c70`: explicit SQLite physical BEGIN before nested transaction when absent; preserve MappingValidationError on archive safety-limit failures. Exact-head CI verification pending.

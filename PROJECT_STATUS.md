@@ -94,3 +94,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Explicit mapping persistence and regression tests are in a separate unmerged branch.
 - Initial CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320 (87 passed, Alembic round-trip and compile passed).
 - Not a complete Gate 3 import/export, unknown-account queue, carry-forward, notes UI or V1 release. Independent acceptance pending; protected data unchanged.
+
+
+## Gate 3 Mapping XLSX candidate — 2026-10-23
+- State: IN_PROGRESS; stacked Draft PR #27 (https://github.com/davoodmehraban89/Aram/pull/27) depends on unmerged PR #26, exact base `185e47f031902a8918c93c8dbb420122e7408403`.
+- Strict XLSX preview/export, formula safety, input-size checks and atomic mapping staging implemented in candidate; CI https://github.com/davoodmehraban89/Aram/actions/runs/39870308627 pending exact-head verification.
+- No canonical data change. Not accepted or merged; remaining Gate 3 features, full V1 UI/output/Windows packaging and independent reviews are incomplete.
