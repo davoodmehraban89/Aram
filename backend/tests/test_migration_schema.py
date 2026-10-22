@@ -52,7 +52,7 @@ def test_explicit_migration_schema_matches_metadata():
                 }
                 assert expected_indexes == actual_indexes, table.name
                 expected_fks = {
-                    (tuple(fk.column_keys), tuple(col.name for col in fk.elements),
+                    (tuple(fk.column_keys), tuple(element.column.name for element in fk.elements),
                      fk.referred_table.name)
                     for fk in table.foreign_key_constraints
                 }
