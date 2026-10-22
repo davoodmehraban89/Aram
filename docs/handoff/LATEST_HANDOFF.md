@@ -108,3 +108,12 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+## 2026-10-23 T1 handoff addendum (unmerged)
+
+- Verified accepted branch SHA: `7dc864fd032f0c4ae4d650d89304a01286a6d914` (GitHub compare identical).
+- PR #21 V1-01 was merged at that SHA; previous active-PR-21 instructions above are superseded.
+- T1 branch: `codex/t1-repo-hygiene-20261023`; README and status-document corrections are under preparation.
+- T2/T3/T6a branches were created from the same SHA, but no implementation or diagnostic results are claimed.
+- CI and tests for this new work: NOT_VERIFIED. No release or data/ mutation.
+- Next: review Draft PR, verify exact diff and tests; do not merge without acceptance gates.
