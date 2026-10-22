@@ -87,3 +87,7 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+## 2026-10-23 repository-hygiene correction (pending review)
+
+The accepted V1-01 safety-gate change was squash-merged as commit `7dc864fd032f0c4ae4d650d89304a01286a6d914` (PR #21). Earlier `IN_PROGRESS` references to PR #21 above are historical and superseded by this entry. The legacy root `index.html` is quarantined, not a functional production UI. This documentation correction is proposed on a separate Draft PR and is not accepted until merged.
