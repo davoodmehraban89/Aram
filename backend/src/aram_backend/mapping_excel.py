@@ -40,6 +40,8 @@ def _safe_archive(content: bytes) -> None:
                 raise MappingValidationError("XLSX archive exceeds safety limits")
             if any(i.flag_bits & 0x1 for i in infos):
                 raise MappingValidationError("Encrypted XLSX entries are not supported")
+    except MappingValidationError:
+        raise
     except (BadZipFile, ValueError) as exc:
         raise MappingValidationError("Invalid XLSX archive") from exc
 
@@ -139,6 +141,13 @@ def export_mapping_workbook(entries: tuple[MappingEntry, ...]) -> bytes:
 def import_mapping_workbook(session: Session, *, year_id: int, content: bytes) -> int:
     """Stage all valid mappings atomically, without committing the caller's transaction."""
     entries = preview_mapping_workbook(content)
+    # SQLite's legacy transaction mode does not issue a real BEGIN for a SAVEPOINT.
+    # Without an outer BEGIN, releasing the savepoint can persist rows despite
+    # session.rollback(). Start the physical transaction explicitly when absent.
+    if session.get_bind().dialect.name == "sqlite":
+        connection = session.connection()
+        if not connection.connection.driver_connection.in_transaction:
+            connection.exec_driver_sql("BEGIN")
     with session.begin_nested():
         for entry in entries:
             save_mapping_rule(
