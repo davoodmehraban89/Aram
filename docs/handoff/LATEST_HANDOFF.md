@@ -115,3 +115,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Implementation: explicit year-scoped mapping service and regression tests; no financial targets inferred. CI run https://github.com/davoodmehraban89/Aram/actions/runs/39869553320 reports 87 passed, migration round-trip and compile succeeded on implementation head 6cdd5e88960f3759995dfb475ae8a5e534e00d6c.
 - Subsequent documentation commits require exact-head verification. No protected data changes or release. Independent review and acceptance pending; do not merge automatically.
 - Remaining scope: Mapping Excel import/export, carry-forward, unknown-account queue, notes and UI, financial output, Windows package and real-user acceptance.
+
+
+## Gate 3 Mapping XLSX handoff — 2026-10-23
+- Stacked candidate Draft PR #27 https://github.com/davoodmehraban89/Aram/pull/27 on `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403` (Draft PR #26).
+- Source and tests: `backend/src/aram_backend/mapping_excel.py`, `backend/tests/test_mapping_excel.py`; read-only preview, forced-text export, formula/ZIP limits, atomic nested-savepoint import.
+- Initial CI run: https://github.com/davoodmehraban89/Aram/actions/runs/39870308627; verify conclusion on exact latest head after documentation commits.
+- No protected source files, binaries, release or secrets changed. Independent review, complete Gate 3 mapping, notes, Pilot UI/output and Windows package still pending.
+- Rollback: close unmerged PR #27. Do not merge stacked PR before PR #26 is accepted and branch/base are reconciled.
