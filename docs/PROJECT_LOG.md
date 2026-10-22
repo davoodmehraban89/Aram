@@ -278,3 +278,10 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+## 2026-10-23 — T3 explicit migration candidate
+- Base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`; branch: `codex/t3-explicit-migrations-20261023`; Draft PR: https://github.com/davoodmehraban89/Aram/pull/25
+- Scope: `backend/migrations/versions/20260820_01_initial_schema.py`, `backend/tests/test_migration_ddl.py`, `backend/tests/test_migration_schema.py`, `docs/T3_MIGRATION_REVIEW.md`, `docs/PROJECT_LOG.md`, `PROJECT_STATUS.md`, `docs/handoff/LATEST_HANDOFF.md`.
+- CI evidence: https://github.com/davoodmehraban89/Aram/actions/runs/39868963147 succeeded at implementation head `10dd7cc74b1b3a217eb75ddac65441629de79e7a` with pytest, migration round-trip, compile; documentation-only changes after that head require exact-head verification.
+- No canonical financial XLSX/PDF, `data/`, database, ZIP, EXE, tag, or release changed. No artifact. Acceptance pending independent review; no merge. Recovery: close draft PR without merge.
