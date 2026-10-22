@@ -278,3 +278,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+## 2026-10-23 — Gate 3 mapping core candidate
+- Exact base: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/26; branch: codex/gate3-mapping-core.
+- Scope: mapping_service.py, test_mapping_service.py and governance records. Explicit draft-year mapping persistence, same-year account/note validation, idempotency, version conflicts, input bounds and rollback.
+- GitHub CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320; initial test evidence: 87 passed, migration upgrade/downgrade and compile succeeded.
+- Protected financial data unchanged. No release artifact. Independent acceptance pending. Recovery: close draft PR without merge.

@@ -108,3 +108,10 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+
+## Gate 3 mapping core handoff (2026-10-23)
+- Exact base: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914; branch codex/gate3-mapping-core; Draft PR https://github.com/davoodmehraban89/Aram/pull/26.
+- Implementation: explicit year-scoped mapping service and regression tests; no financial targets inferred. CI run https://github.com/davoodmehraban89/Aram/actions/runs/39869553320 reports 87 passed, migration round-trip and compile succeeded on implementation head 6cdd5e88960f3759995dfb475ae8a5e534e00d6c.
+- Subsequent documentation commits require exact-head verification. No protected data changes or release. Independent review and acceptance pending; do not merge automatically.
+- Remaining scope: Mapping Excel import/export, carry-forward, unknown-account queue, notes and UI, financial output, Windows package and real-user acceptance.
