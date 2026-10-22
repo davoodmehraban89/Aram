@@ -32,5 +32,6 @@ jobs:
       - name: Install project and audit tooling
         run: python -m pip install -e '.[test]' 'pip-audit>=2.7,<3'
       - name: Audit installed dependencies
-        run: python -m pip freeze | grep -v '^aram-backend' > /tmp/aram-audit-requirements.txt
+        run: |
+          python -m pip freeze | grep -v '^aram-backend' > /tmp/aram-audit-requirements.txt
           python -m pip_audit -r /tmp/aram-audit-requirements.txt --strict
