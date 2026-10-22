@@ -34,7 +34,7 @@ def test_explicit_migration_schema_matches_metadata():
             assert set(inspector.get_table_names()) == set(Base.metadata.tables)
             for table in Base.metadata.tables.values():
                 actual = {c["name"]: c for c in inspector.get_columns(table.name)}
-                assert set(actual) == set(table.columns), table.name
+                assert set(actual) == {c.name for c in table.columns}, table.name
                 for column in table.columns:
                     assert actual[column.name]["nullable"] == column.nullable, (table.name, column.name)
                 expected_unique = {
