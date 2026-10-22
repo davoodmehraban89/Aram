@@ -24,8 +24,7 @@ def upgrade() -> None:
     op.create_table("companies",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("code", sa.String(64), nullable=False),
-        sa.Column("name", sa.String(255), nullable=False), *timestamps(),
-        sa.UniqueConstraint("code", name="uq_companies_code"))
+        sa.Column("name", sa.String(255), nullable=False), *timestamps())
     op.create_index("ix_companies_code", "companies", ["code"], unique=True)
     op.create_table("fiscal_years",
         sa.Column("id", sa.Integer(), primary_key=True),
