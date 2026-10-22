@@ -286,3 +286,12 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Scope: mapping_service.py, test_mapping_service.py and governance records. Explicit draft-year mapping persistence, same-year account/note validation, idempotency, version conflicts, input bounds and rollback.
 - GitHub CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320; initial test evidence: 87 passed, migration upgrade/downgrade and compile succeeded.
 - Protected financial data unchanged. No release artifact. Independent acceptance pending. Recovery: close draft PR without merge.
+
+
+## 2026-10-23 — Gate 3 read-only mapping coverage candidate
+- Base: `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403` (unmerged PR #26); Draft PR #28: https://github.com/davoodmehraban89/Aram/pull/28.
+- Scope: `backend/src/aram_backend/mapping_coverage.py`, `backend/tests/test_mapping_coverage.py`, project governance records. Coverage reports latest-version accounts and mapping rules, unmapped/ambiguous queues and orphan rules without writing data.
+- CI: verify exact-head Backend CI after publication. Independent review pending. Protected financial data and artifacts unchanged. Recovery: close PR #28 without merge.
+
+### Review correction — autoflush
+- Read-only security/quality review identified implicit SQLAlchemy autoflush as a possible write during diagnostics. Wrapped all queries in `session.no_autoflush` and added a regression test asserting pending unrelated objects remain unflushed. CI rerun required on corrected head.
