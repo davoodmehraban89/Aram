@@ -101,3 +101,14 @@ def test_coverage_does_not_change_rows(session):
     before = session.query(MappingRule).count()
     inspect_mapping_coverage(session, year_id=year.id)
     assert session.query(MappingRule).count() == before
+
+
+def test_diagnostic_does_not_flush_pending_unrelated_writes(session):
+    year, _ = year_with_accounts(session, "COVER-I", ("001",))
+    pending = AccountVersion(year_id=year.id, account_code="PENDING", account_name="Pending", version=1)
+    session.add(pending)
+    coverage = inspect_mapping_coverage(session, year_id=year.id)
+    assert pending in session.new
+    assert pending.id is None
+    assert coverage.total_accounts == 1
+    assert coverage.unmapped_accounts == ("001",)
