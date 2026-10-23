@@ -309,3 +309,16 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - This follow-up changes only `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`, and the plan publication checkbox. No application/test/protected path changes after the tested code head.
 - Final successor step: verify the resulting documentation-only commit and its CI, then perform independent remote acceptance. Author must not self-merge; status remains IN_PROGRESS.
 - Artifacts/releases: NONE. Protected financial data, schema, dependencies and workflow unchanged.
+
+### 2026-10-23T13:20:34Z — Proposed Peyvast connector/mapping discovery pack prepared
+
+- Actor: Codex, continuing the owner's Peyvast database and governed mapping direction.
+- Dedicated branch: `codex/payvast-mapping-discovery-20261023`; exact stacked base `codex/v1-year-isolation-followup-20261023@28d1c57882ec20fc17c2c133bbe62ff56e12973f`, unmerged PR #32.
+- Accepted branch remains `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`; neither draft is accepted by this task.
+- Exact changed files: `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`, `docs/superpowers/specs/2026-10-23-payvast-governed-mapping-design.md`, `docs/integrations/PAYVAST_SQLSERVER_DISCOVERY.md`, `docs/integrations/payvast-schema-discovery.sql`.
+- Deliverable: proposed source/snapshot and mapping approval contracts, Persian operator guide, six SQL Server system-metadata SELECT queries. No live connector or application behavior added.
+- Verification: independent read-only requirements-note review had no blocking findings; parent independently read all SQL and guide content. Relative links and whitespace checked. Application tests are not rerun for this documentation-only delta; exact stacked base has successful 110-test Backend CI 39959793328.
+- SQL Server runtime, customer version/schema/permission completeness and source extraction: NOT_RUN / NOT_VERIFIED. No customer database connection or credentials were available.
+- Protected boundary: no source financial values, `data/`, canonical XLSX/PDF, database, application/test code, schema/migration, dependency, workflow, binary or release changed.
+- Publication and explicit acceptance: pending in this preparation snapshot; candidate must stay Draft and be reconciled after PR #32 acceptance.
+- Artifacts/releases: NONE. Recovery: close the unmerged documentation candidate; no runtime or source data rollback needed.

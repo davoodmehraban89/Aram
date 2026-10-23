@@ -90,6 +90,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 2. Reconcile PR #22 documentation and PR #26/27 mapping candidates with the safety fix. Existing drafts do not yet implement the requested persisted old/new preview, user approval, identical-input coalescing or full account/dimension identity.
 3. Continue the owner-requested read-only Peyvast SQL Server integration and governed DB/Excel mapping design. The customer installation version, schema, supported interface and access remain unverified; no live connector or financial reconciliation is claimed.
 
+## Proposed Peyvast and mapping discovery — 2026-10-23
+
+- Separate candidate branch: `codex/payvast-mapping-discovery-20261023`, stacked on unmerged safety PR #32 at `28d1c57882ec20fc17c2c133bbe62ff56e12973f`.
+- Added a proposed shared DB/Excel snapshot and governed mapping design, including old/new preview, authorized approval, unchanged/coalesced duplicates, explicit conflicts, stale-preview rejection, audit and recovery.
+- Added a Persian DBA guide and six metadata-only SQL Server SELECT queries. They have not been run on SQL Server or a customer database; runtime, permissions, schema completeness and installation compatibility remain unverified.
+- These are design/discovery documents, not a connector, mapping implementation or accepted delivery. No existing candidate is accepted by this change; customer source semantics/access remain required.
+
 ## Control documents
 
 - [Project log](docs/PROJECT_LOG.md)
