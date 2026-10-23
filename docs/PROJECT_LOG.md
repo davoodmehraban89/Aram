@@ -293,3 +293,6 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - [Draft PR #31](https://github.com/davoodmehraban89/Aram/pull/31). Changed files: `backend/src/aram_backend/note_mapping_review.py`, `backend/tests/test_note_mapping_review.py`, `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`.
 - Tests: GitHub CI pending. Reviewer: pending. Artifact: NONE. Acceptance: IN_PROGRESS. Protected financial data unchanged.
 - Risk: depends on unmerged PR #26; no UI or financial calculation. Rollback: close PR. Next: verify CI and independent review.
+
+#### CI verification
+- [Backend CI #77](https://github.com/davoodmehraban89/Aram/actions/runs/39944993511) on `76c12ae4c8814d511ba5ca72b8d5ac395d4c34dc`: success; 98 pytest passed (1 warning), migration round-trip and compile successful. Documentation-only evidence update requires final-head review. Independent acceptance still pending.
