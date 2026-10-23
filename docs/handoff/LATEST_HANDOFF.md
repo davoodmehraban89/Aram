@@ -3,6 +3,23 @@
 > Durable accepted-state record with persistent role assignments and recovery workflow.
 > GitHub remote evidence remains authoritative. Always fetch the live branch head and open PRs before acting; recorded SHAs are verified events, not perpetual current-head claims.
 
+## Current correction and focused candidate — 2026-10-23
+
+This dated correction supersedes the older PR #21 candidate/single-next-action narrative below; earlier details remain historical evidence.
+
+- Live accepted base verified: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- PR #21 is merged (2026-08-27). Accepted-head [Backend CI](https://github.com/davoodmehraban89/Aram/actions/runs/33063001065) succeeded; 67 tests. The legacy UI is quarantined and the PR #21 validation/identity fixes are accepted.
+- New branch `codex/v1-year-isolation-followup-20261023` contains a focused, unaccepted follow-up for original-year ownership and relationship/FK reference validation.
+- Local follow-up evidence: 110 pytest tests passed, one existing third-party warning; migration round-trip, compile and whitespace checks passed. Original-owner regressions first produced 22 expected failures; effective-reference regressions first produced seven expected failures.
+- Exact application scope: `backend/src/aram_backend/models.py`, `backend/tests/test_models.py`. Control scope: `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, this handoff, and `docs/superpowers/{specs/2026-10-23-year-isolation-design.md,plans/2026-10-23-year-isolation.md}`.
+- Independent local review requested a pending-explicit-ID parent correction; eight regressions were added and all 110 tests passed after the fix. Final remote acceptance remains pending.
+- Remaining boundaries: graph-wide moves of clean referencing records, expired fiscal-year lifecycle/same-flush behavior, and bulk/raw/concurrent writes require separate focused acceptance before a financial release.
+- Published Draft [PR #32](https://github.com/davoodmehraban89/Aram/pull/32); initial code head `75f82fcbfa2d9745d4c8e358979fe4fe754a82b6`, [Backend CI](https://github.com/davoodmehraban89/Aram/actions/runs/39959519926) success. This reconciliation changes documentation only. Fetch the resulting final head and CI before acceptance. Independent remote acceptance remains required; author must not self-merge.
+- Draft PRs #22–31 are active and unaccepted. In particular #26/27 supply mapping foundations, but do not fulfill full account/dimension identity, persisted old/new preview, approval or identical-input duplicate coalescing.
+- Owner clarified Peyvast is the first database source, alongside Excel. Vendor FAQ identifies default Microsoft SQL Server, supports 2019/2022 and recommends 2022: https://payvast.com/نرم-افزار-حسابداری/ . The customer installation/schema/access have not been inspected; no live extraction is claimed.
+- Preserve canonical data. No migration, dependency, workflow, source XLSX/PDF, `data/`, financial-source value, ZIP/EXE, tag or release changed.
+- Next: independent safety review, reconcile dependent drafts, then shared DB/Excel and governed mapping work against documented customer source semantics. A separate design note exists in the task workspace, not as accepted repository functionality.
+
 ## Accepted repository state
 
 - Repository: davoodmehraban89/Aram
