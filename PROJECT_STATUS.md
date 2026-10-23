@@ -94,3 +94,7 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Explicit mapping persistence and regression tests are in a separate unmerged branch.
 - Initial CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320 (87 passed, Alembic round-trip and compile passed).
 - Not a complete Gate 3 import/export, unknown-account queue, carry-forward, notes UI or V1 release. Independent acceptance pending; protected data unchanged.
+
+
+## Gate 3 note mapping review candidate (2026-10-23)
+- Draft [PR #31](https://github.com/davoodmehraban89/Aram/pull/31) stacked on unmerged PR #26. Read-only note mapping assignments, unmapped and ambiguous accounts, orphan rules and stale note references. No financial totals or data edits. Pending independent review.
