@@ -115,3 +115,9 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Implementation: explicit year-scoped mapping service and regression tests; no financial targets inferred. CI run https://github.com/davoodmehraban89/Aram/actions/runs/39869553320 reports 87 passed, migration round-trip and compile succeeded on implementation head 6cdd5e88960f3759995dfb475ae8a5e534e00d6c.
 - Subsequent documentation commits require exact-head verification. No protected data changes or release. Independent review and acceptance pending; do not merge automatically.
 - Remaining scope: Mapping Excel import/export, carry-forward, unknown-account queue, notes and UI, financial output, Windows package and real-user acceptance.
+
+
+## Gate 3 carry-forward handoff — 2026-10-23
+- Draft [PR #30](https://github.com/davoodmehraban89/Aram/pull/30), branch `codex/gate3-carry-forward-preview-20261023`, base `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403`.
+- Files: `backend/src/aram_backend/mapping_carry_forward.py`, `backend/tests/test_mapping_carry_forward.py`, governance records. Preview only, no automatic carry-forward; exact note number and account existence required, source and target years must be same company and target Draft.
+- Check latest-head GitHub Actions and obtain independent review before acceptance; reconcile dependency on PR #26 before merging. No protected financial data or artifacts changed. Rollback: close Draft PR #30.

@@ -286,3 +286,13 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Scope: mapping_service.py, test_mapping_service.py and governance records. Explicit draft-year mapping persistence, same-year account/note validation, idempotency, version conflicts, input bounds and rollback.
 - GitHub CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320; initial test evidence: 87 passed, migration upgrade/downgrade and compile succeeded.
 - Protected financial data unchanged. No release artifact. Independent acceptance pending. Recovery: close draft PR without merge.
+
+
+### 2026-10-23 — Gate 3 mapping carry-forward preview
+- Owner: implementation coordinator; branch `codex/gate3-carry-forward-preview-20261023`, base `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403` (unmerged PR #26).
+- [Draft PR #30](https://github.com/davoodmehraban89/Aram/pull/30): read-only candidate and tests. New files: `backend/src/aram_backend/mapping_carry_forward.py`, `backend/tests/test_mapping_carry_forward.py`; governance docs updated.
+- Design: same company, later Draft year, latest source mapping version, target note matched by exact number; missing accounts/notes and existing rules skipped with reasons. No implicit mapping approval or source data modification.
+- Tests: pytest on PR CI pending; tests cover normal, skip, latest versions, protected year, cross-company, bad IDs, no autoflush. Independent review pending. Artifacts: NONE. Rollback: close unmerged PR #30.
+
+#### Verification evidence
+- [Backend CI #72](https://github.com/davoodmehraban89/Aram/actions/runs/39944577979) on commit `c246afe70e89195bf6d528efe5e95ffdcb88c2c3`: success, 102 pytest passed (1 warning), migration round-trip and compile succeeded. Final documentation-only head requires independent comparison; no independent reviewer approval claimed.
