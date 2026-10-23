@@ -115,3 +115,9 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Implementation: explicit year-scoped mapping service and regression tests; no financial targets inferred. CI run https://github.com/davoodmehraban89/Aram/actions/runs/39869553320 reports 87 passed, migration round-trip and compile succeeded on implementation head 6cdd5e88960f3759995dfb475ae8a5e534e00d6c.
 - Subsequent documentation commits require exact-head verification. No protected data changes or release. Independent review and acceptance pending; do not merge automatically.
 - Remaining scope: Mapping Excel import/export, carry-forward, unknown-account queue, notes and UI, financial output, Windows package and real-user acceptance.
+
+
+## Gate 3 note mapping review handoff — 2026-10-23
+- Draft [PR #31](https://github.com/davoodmehraban89/Aram/pull/31), branch `codex/gate3-note-mapping-review-20261023`, base `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403`.
+- Read-only per-note mapping review: unmapped and ambiguous accounts, orphan mapping keys and stale note-version references. Regression tests included. No automatic mapping, financial totals or protected data edits.
+- Independent review, final CI and dependency reconciliation with PR #26 are mandatory. Rollback: close PR #31.
