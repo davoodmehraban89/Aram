@@ -59,4 +59,4 @@
 - [x] Record exact changed paths, tests, risks, rollback and remaining Peyvast/mapping work; append the project log.
 - [x] Run isolated migration upgrade/downgrade, compile and `git diff --check`; expected success and no protected-path diff.
 - [x] Obtain independent whole-branch review and resolve material findings with regressions.
-- [ ] Publish a dedicated remote branch and focused Draft PR; verify final-head GitHub Actions and record its real URL. Do not self-merge.
+- [x] Publish a dedicated remote branch and focused Draft PR; verify final-head GitHub Actions and record its real URL. Do not self-merge.

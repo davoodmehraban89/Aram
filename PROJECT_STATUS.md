@@ -81,7 +81,7 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - RED evidence: original ownership regressions reproduced 22 missing rejections; reference-resolution regressions reproduced seven missing rejections before their respective fixes.
 - Independent local review found one pending-explicit-ID parent gap, addressed with eight additional direct-FK tests; four reproduced the missing behavior before the fix.
 - Graph-wide changes involving clean referencing records, expired fiscal-year lifecycle/same-flush behavior, and bulk/raw/concurrent writes are not certified by this focused ORM fix and require separate release gates.
-- Remote publication, final-head CI and independent acceptance must be verified from the live candidate; this preparation record is not acceptance evidence.
+- Published Draft [PR #32](https://github.com/davoodmehraban89/Aram/pull/32), initial reviewed-code head `75f82fcbfa2d9745d4c8e358979fe4fe754a82b6`. [Backend CI](https://github.com/davoodmehraban89/Aram/actions/runs/39959519926) succeeded on that head. This subsequent documentation-only reconciliation still requires final-head CI verification and independent remote acceptance; the PR remains unmerged.
 - Draft PRs #22–31 exist as of this inspection; Gate 3 candidates are active but remain unaccepted. Their older descriptions may predate current CI results.
 
 ## Next action

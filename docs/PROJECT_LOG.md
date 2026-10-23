@@ -298,3 +298,14 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 
 - Independent local review: one Important pending-explicit-ID parent-resolution gap was reproduced. Eight direct-FK cases were added, four failed before the fix, then the complete 110-test suite passed. The review report itself requested changes; this correction has TDD evidence, not a claim of final remote acceptance.
 - Explicit remaining boundaries: raw/bulk SQL and concurrent provider enforcement are outside this ORM hook. Graph-wide changes involving clean referencing records and expired fiscal-year lifecycle/same-flush behavior need separate focused acceptance work before a financial release.
+
+### 2026-10-23T13:15:46Z — Safety candidate published; code-head CI verified
+
+- PR: Draft [#32](https://github.com/davoodmehraban89/Aram/pull/32), base `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Remote branch: `codex/v1-year-isolation-followup-20261023`; published code head `75f82fcbfa2d9745d4c8e358979fe4fe754a82b6`.
+- Verified remote tree matches the locally tested tree: `356a3d8d6116dd8d5762017621851d35891db9f8`.
+- GitHub Actions: [Backend CI run 39959519926](https://github.com/davoodmehraban89/Aram/actions/runs/39959519926), completed with success on that exact head.
+- Local correction evidence: 110 passed, one existing external deprecation warning; isolated migration round-trip, compile and diff check passed.
+- This follow-up changes only `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`, and the plan publication checkbox. No application/test/protected path changes after the tested code head.
+- Final successor step: verify the resulting documentation-only commit and its CI, then perform independent remote acceptance. Author must not self-merge; status remains IN_PROGRESS.
+- Artifacts/releases: NONE. Protected financial data, schema, dependencies and workflow unchanged.
