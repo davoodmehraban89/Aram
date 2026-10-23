@@ -278,3 +278,13 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+### 2026-10-23 — ADR-012 future accounting connectors
+- Actor: ChatGPT; owner direction: keep Excel/CSV Pilot V1 unchanged; Peyvast first future integration.
+- Base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Branch: `codex/adr-future-connectors-pi-v1`; PR: [#29](https://github.com/davoodmehraban89/Aram/pull/29).
+- Changed files: `docs/adr/ADR-012-excel-first-future-connectors.md`, `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`.
+- Tests: documentation-only review; runtime tests not applicable. GitHub Actions: NOT_VERIFIED. Artifact: NONE.
+- Acceptance: IN_PROGRESS; reviewer: pending. Protected financial data, code and credentials unchanged.
+- Risk: Peyvast schema and authorized access unverified. Recovery: close unmerged PR #29. Next: independent review and resume Excel-first V1.

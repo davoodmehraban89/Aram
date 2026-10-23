@@ -87,3 +87,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+
+## 2026-10-23: Future connectors decision candidate
+- V1 remains Excel/CSV Pilot and Windows-first. Peyvast is the first proposed future integration; other accounting systems require vendor-specific adapters.
+- ADR-012 in draft PR #29 defines provider-neutral read-only snapshots. No live SQL connection or change to financial data. Independent review pending.
