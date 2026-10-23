@@ -293,3 +293,6 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - [Draft PR #30](https://github.com/davoodmehraban89/Aram/pull/30): read-only candidate and tests. New files: `backend/src/aram_backend/mapping_carry_forward.py`, `backend/tests/test_mapping_carry_forward.py`; governance docs updated.
 - Design: same company, later Draft year, latest source mapping version, target note matched by exact number; missing accounts/notes and existing rules skipped with reasons. No implicit mapping approval or source data modification.
 - Tests: pytest on PR CI pending; tests cover normal, skip, latest versions, protected year, cross-company, bad IDs, no autoflush. Independent review pending. Artifacts: NONE. Rollback: close unmerged PR #30.
+
+#### Verification evidence
+- [Backend CI #72](https://github.com/davoodmehraban89/Aram/actions/runs/39944577979) on commit `c246afe70e89195bf6d528efe5e95ffdcb88c2c3`: success, 102 pytest passed (1 warning), migration round-trip and compile succeeded. Final documentation-only head requires independent comparison; no independent reviewer approval claimed.
