@@ -184,13 +184,30 @@ class StatementLine(TimestampMixin, Base):
 def _resolve_parent_year_id(
     obj: Any, session: Session, rel_attr: str, fk_attr: str, parent_cls: type[Any]
 ) -> int | None:
-    parent = getattr(obj, rel_attr, None)
-    if parent is not None:
-        return parent.year_id
+    state = inspect(obj)
+    relationship_history = state.attrs[rel_attr].history
+    foreign_key_history = state.attrs[fk_attr].history
     fk_val = getattr(obj, fk_attr, None)
-    if fk_val is not None:
-        return session.scalar(select(parent_cls.year_id).where(parent_cls.id == fk_val))
-    return None
+    if relationship_history.has_changes():
+        parent = getattr(obj, rel_attr, None)
+        parent_id = parent.id if parent is not None else None
+        if foreign_key_history.has_changes() and fk_val != parent_id:
+            raise ValueError(f"Conflicting {rel_attr} relationship and {fk_attr}")
+    elif fk_val is not None:
+        # A raw FK assignment does not invalidate an already cached relationship.
+        parent = session.get(parent_cls, fk_val)
+        if parent is None:
+            # Pending explicit-ID parents are not in the Session identity map yet.
+            parent = next(
+                (
+                    candidate for candidate in session.new
+                    if isinstance(candidate, parent_cls) and candidate.id == fk_val
+                ),
+                None,
+            )
+    else:
+        parent = None
+    return parent.year_id if parent is not None else None
 
 
 def _year_id_for(obj: object, session: Session) -> int | None:
@@ -203,6 +220,31 @@ def _year_id_for(obj: object, session: Session) -> int | None:
     if isinstance(obj, StatementLine):
         return _resolve_parent_year_id(obj, session, "statement", "statement_id", FinancialStatement)
     return None
+
+
+def _persisted_year_id_for(obj: Any, session: Session) -> int | None:
+    """Read original ownership before flush, even when attributes are expired."""
+    identity = inspect(obj).identity
+    if identity is None:
+        return None
+    if isinstance(obj, YearOwnedMixin):
+        model = type(obj)
+        query = select(model.year_id).where(model.id == identity[0])
+    elif isinstance(obj, NoteRow):
+        query = (
+            select(NoteDefinition.year_id)
+            .join(NoteRow, NoteRow.note_id == NoteDefinition.id)
+            .where(NoteRow.id == identity[0])
+        )
+    elif isinstance(obj, StatementLine):
+        query = (
+            select(FinancialStatement.year_id)
+            .join(StatementLine, StatementLine.statement_id == FinancialStatement.id)
+            .where(StatementLine.id == identity[0])
+        )
+    else:
+        return None
+    return session.scalar(query)
 
 
 _PROTECTED_YEAR_STATUSES = {FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED}
@@ -276,19 +318,23 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
         if isinstance(obj, FiscalYear):
             continue
         year_id = _year_id_for(obj, session)
+        original_year_id = _persisted_year_id_for(obj, session)
+        for affected_year_id in {year_id, original_year_id} - {None}:
+            status = session.scalar(
+                select(FiscalYear.status).where(FiscalYear.id == affected_year_id)
+            )
+            if status in _PROTECTED_YEAR_STATUSES:
+                raise ValueError(
+                    f"Fiscal year {affected_year_id} is {status.value.lower()} and cannot be mutated"
+                )
         if year_id is None:
             continue
-        status = session.scalar(select(FiscalYear.status).where(FiscalYear.id == year_id))
-        if status in {FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED}:
-            raise ValueError(
-                f"Fiscal year {year_id} is {status.value.lower()} and cannot be mutated"
-            )
 
         if isinstance(obj, MappingRule):
             target_year_id = _resolve_parent_year_id(obj, session, "target_note", "target_note_id", NoteDefinition)
             if target_year_id != obj.year_id:
                 raise ValueError("Mapping rule and target note must belong to the same fiscal year")
-        if isinstance(obj, StatementLine) and obj.target_note_id is not None:
+        if isinstance(obj, StatementLine):
             target_year_id = _resolve_parent_year_id(obj, session, "target_note", "target_note_id", NoteDefinition)
-            if target_year_id != year_id:
+            if target_year_id is not None and target_year_id != year_id:
                 raise ValueError("Statement line and target note must belong to the same fiscal year")

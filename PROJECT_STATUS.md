@@ -35,7 +35,7 @@
 | Phase 2B ingestion foundation | VERIFIED_AND_MERGED | [PR #12](https://github.com/davoodmehraban89/Aram/pull/12), squash merge 7b5bd79b760d534dad34b3162f770e838616ebe9 |
 | Phase 2B control reconciliation | VERIFIED_AND_MERGED | [PR #13](https://github.com/davoodmehraban89/Aram/pull/13), squash merge 7c7533ee87146dc8fc78b46ebf423be55532c7eb |
 | Gate 2A Pilot workbook contract/preflight | VERIFIED_AND_MERGED | [PR #15](https://github.com/davoodmehraban89/Aram/pull/15), reviewed head 74b6a6397a2a2c9199a5c7bcf818bb661b2ebe06, squash merge 4ab54f4a3cf666827fa1ed30c4e43259ea79f2d4, [Backend CI #24](https://github.com/davoodmehraban89/Aram/actions/runs/32712900800) |
-| V1-01 safety-gate hardening | IN_PROGRESS | Draft [PR #21](https://github.com/davoodmehraban89/Aram/pull/21) from exact base `b1ddee87d31ee73b3a5aeac8f9953d0a604c206a`; independently reviewed implementation head `700d800dbd9c657f6bd510faafedcbde4847fafd`; CI-verified stabilized candidate `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`; [Backend CI #39](https://github.com/davoodmehraban89/Aram/actions/runs/33015277194) succeeded with 67 tests, migration round-trip, and compile after broadening one reparent-rejection assertion to accept either valid protection message; code, scope, and protected-data boundary remain unchanged; final independent acceptance is pending this durable-document reconciliation |
+| V1-01 safety-gate hardening | VERIFIED_AND_MERGED | [PR #21](https://github.com/davoodmehraban89/Aram/pull/21), merged 2026-08-27; squash commit `7dc864fd032f0c4ae4d650d89304a01286a6d914`; [accepted-head CI](https://github.com/davoodmehraban89/Aram/actions/runs/33063001065) succeeded with 67 tests |
 | Post-Gate-2A control reconciliation | VERIFIED_AND_MERGED | [PR #18](https://github.com/davoodmehraban89/Aram/pull/18), reviewed head `fcbeb7387218e9ab294318ae462ed59de717fc95`, squash merge `f213d321ff4cd7d3d6fa65ba78dc48f090ee846b`; documentation only |
 | Durable post-merge acceptance record | VERIFIED_AND_MERGED | [PR #19](https://github.com/davoodmehraban89/Aram/pull/19), reviewed head `b9059592409606a0a4f11a71c30778cff158b6b6`, squash merge `77f9f595ccfe67a87b11024ff0f6143629dba438`; documentation only |
 | Role-based project operating model | VERIFIED_AND_MERGED | Permanent responsibilities and current assignments are defined in `docs/handoff/MASTER_RECOVERY_PROMPT.md` and ADR-011; introduced through [PR #20](https://github.com/davoodmehraban89/Aram/pull/20) |
@@ -64,19 +64,31 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## Current risks and blockers
 
 - The accepted branch is not protected by GitHub branch protection.
-- The accepted branch still permits direct identity mutation/deletion of approved or locked fiscal years and parent-company deletion; the V1-01 candidate fixes this but is not accepted yet.
-- The accepted Pilot preflight can still accept targetless or structurally invalid mappings and can ignore a declared closing-delta mismatch; the V1-01 candidate fixes this but is not accepted yet.
-- The accepted root `index.html` is still a disconnected hard-coded prototype; the V1-01 candidate replaces it with an explicit quarantine page.
+- PR #21 is accepted and protects fiscal-year/company identity. A follow-up audit reproduced moving year-owned records out of protected years and relationship-based cross-year statement-note links; the focused candidate on `codex/v1-year-isolation-followup-20261023` addresses these gaps but is not accepted yet.
+- Accepted PR #21 rejects targetless/hierarchy-invalid mappings and declared closing-delta mismatches; these previously recorded candidate risks are resolved.
+- The accepted root `index.html` is an explicit quarantine page. A real Pilot UI remains unimplemented.
 - PR #17 was closed without merge; its stale-base 12-file diff is reference material only, and its narrative listed only 9 files.
 - PR #17 CI was green on its own stale head, but compatibility with accepted Gate 2A was never proven.
 - Binary execution, release provenance, and clean Windows verification do not exist.
 - Mapping, notes/sub-notes, Pilot UI, and end-to-end user acceptance remain incomplete.
 
-## Next approved action
+## Current focused follow-up — 2026-10-23
 
-1. Publish this two-file durable-document reconciliation on Draft PR #21; [Backend CI #39](https://github.com/davoodmehraban89/Aram/actions/runs/33015277194) succeeded on stabilized candidate `b3dc8b3a18934ffe63f615e4f650248be21a5f9c` with 67 tests, migration round-trip, and compile.
-2. The independent reviewer re-fetches the resulting documentation-only head, confirms that its comparison with `b3dc8b3a18934ffe63f615e4f650248be21a5f9c` changes only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md`, verifies the final workflow result, then marks the PR ready and squash-merges it.
-3. Only after V1-01 is accepted, start the first focused Gate 3 Mapping import/persistence task from the new accepted head.
+- Base verified against GitHub: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Candidate branch: `codex/v1-year-isolation-followup-20261023`; status `IN_PROGRESS`, not accepted.
+- Scope: original/proposed fiscal-year ownership checks, effective relationship/FK validation, and focused regression tests. No schema, dependency, workflow, canonical-data or release changes.
+- Local evidence: 110 tests passed, one existing third-party deprecation warning; isolated Alembic upgrade/downgrade, compilation and whitespace checks passed.
+- RED evidence: original ownership regressions reproduced 22 missing rejections; reference-resolution regressions reproduced seven missing rejections before their respective fixes.
+- Independent local review found one pending-explicit-ID parent gap, addressed with eight additional direct-FK tests; four reproduced the missing behavior before the fix.
+- Graph-wide changes involving clean referencing records, expired fiscal-year lifecycle/same-flush behavior, and bulk/raw/concurrent writes are not certified by this focused ORM fix and require separate release gates.
+- Remote publication, final-head CI and independent acceptance must be verified from the live candidate; this preparation record is not acceptance evidence.
+- Draft PRs #22–31 exist as of this inspection; Gate 3 candidates are active but remain unaccepted. Their older descriptions may predate current CI results.
+
+## Next action
+
+1. Independently review the focused isolation follow-up and its final remote CI before accepting it; the implementation author must not self-merge.
+2. Reconcile PR #22 documentation and PR #26/27 mapping candidates with the safety fix. Existing drafts do not yet implement the requested persisted old/new preview, user approval, identical-input coalescing or full account/dimension identity.
+3. Continue the owner-requested read-only Peyvast SQL Server integration and governed DB/Excel mapping design. The customer installation version, schema, supported interface and access remain unverified; no live connector or financial reconciliation is claimed.
 
 ## Control documents
 
