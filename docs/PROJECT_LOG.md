@@ -286,3 +286,10 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Scope: mapping_service.py, test_mapping_service.py and governance records. Explicit draft-year mapping persistence, same-year account/note validation, idempotency, version conflicts, input bounds and rollback.
 - GitHub CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320; initial test evidence: 87 passed, migration upgrade/downgrade and compile succeeded.
 - Protected financial data unchanged. No release artifact. Independent acceptance pending. Recovery: close draft PR without merge.
+
+
+### 2026-10-23 — Gate 3 note mapping review
+- Actor: ChatGPT implementation; base `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403`; branch `codex/gate3-note-mapping-review-20261023`.
+- [Draft PR #31](https://github.com/davoodmehraban89/Aram/pull/31). Changed files: `backend/src/aram_backend/note_mapping_review.py`, `backend/tests/test_note_mapping_review.py`, `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`.
+- Tests: GitHub CI pending. Reviewer: pending. Artifact: NONE. Acceptance: IN_PROGRESS. Protected financial data unchanged.
+- Risk: depends on unmerged PR #26; no UI or financial calculation. Rollback: close PR. Next: verify CI and independent review.
