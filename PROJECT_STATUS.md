@@ -92,7 +92,7 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 
 ## Proposed Peyvast and mapping discovery — 2026-10-23
 
-- Separate candidate branch: `codex/payvast-mapping-discovery-20261023`, stacked on unmerged safety PR #32 at `28d1c57882ec20fc17c2c133bbe62ff56e12973f`.
+- Published Draft [PR #33](https://github.com/davoodmehraban89/Aram/pull/33), branch `codex/payvast-mapping-discovery-20261023`, stacked on unmerged safety PR #32 at `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; initial documentation head `5209149f639c2c942fa654c859133b762a2c535b`.
 - Added a proposed shared DB/Excel snapshot and governed mapping design, including old/new preview, authorized approval, unchanged/coalesced duplicates, explicit conflicts, stale-preview rejection, audit and recovery.
 - Added a Persian DBA guide and six metadata-only SQL Server SELECT queries. They have not been run on SQL Server or a customer database; runtime, permissions, schema completeness and installation compatibility remain unverified.
 - These are design/discovery documents, not a connector, mapping implementation or accepted delivery. No existing candidate is accepted by this change; customer source semantics/access remain required.

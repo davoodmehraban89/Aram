@@ -322,3 +322,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Protected boundary: no source financial values, `data/`, canonical XLSX/PDF, database, application/test code, schema/migration, dependency, workflow, binary or release changed.
 - Publication and explicit acceptance: pending in this preparation snapshot; candidate must stay Draft and be reconciled after PR #32 acceptance.
 - Artifacts/releases: NONE. Recovery: close the unmerged documentation candidate; no runtime or source data rollback needed.
+
+### 2026-10-23T13:23:15Z — Peyvast discovery documentation published
+
+- Published Draft [PR #33](https://github.com/davoodmehraban89/Aram/pull/33), branch `codex/payvast-mapping-discovery-20261023`, initial head `5209149f639c2c942fa654c859133b762a2c535b`.
+- Exact stacked base remains unmerged PR #32 head `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; its Backend CI is successful. PR #33 remote metadata and exact six-path documentation/example diff were re-fetched and verified.
+- No GitHub Actions run was present for the initial docs-only head, consistent with Backend CI path filters; no application/runtime test claim is made. SQL Server execution: NOT_RUN.
+- This subsequent reconciliation changes only the three project records; design, guide and metadata SQL are unchanged after static review.
+- Final acceptance remains pending; do not merge this stack before safety acceptance/base reconciliation. No protected-data, financial-source, application, migration, dependency, workflow, binary, artifact or release change.
