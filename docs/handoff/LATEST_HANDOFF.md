@@ -108,3 +108,10 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+
+## 2026-10-23 owner scope decision
+- Current V1: governed Excel/CSV Pilot, mapping, notes, statements, Windows-first delivery; unchanged.
+- Later: Peyvast first, then vendor-specific Rahkaran, Sepidar and other accounting adapters through provider-neutral snapshots.
+- Candidate ADR-012 in [Draft PR #29](https://github.com/davoodmehraban89/Aram/pull/29), branch `codex/adr-future-connectors-pi-v1`, base `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- No live SQL connector, credentials, data edits or background worker in V1. Independent review pending; close PR #29 to roll back.
