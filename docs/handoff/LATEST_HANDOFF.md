@@ -20,6 +20,14 @@ This dated correction supersedes the older PR #21 candidate/single-next-action n
 - Preserve canonical data. No migration, dependency, workflow, source XLSX/PDF, `data/`, financial-source value, ZIP/EXE, tag or release changed.
 - Next: independent safety review, reconcile dependent drafts, then shared DB/Excel and governed mapping work against documented customer source semantics. A separate design note exists in the task workspace, not as accepted repository functionality.
 
+## Separate proposed discovery stack — 2026-10-23
+
+- Branch `codex/payvast-mapping-discovery-20261023` starts at unmerged PR #32 head `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; do not merge this documentation stack before safety acceptance and base reconciliation.
+- New files: `docs/superpowers/specs/2026-10-23-payvast-governed-mapping-design.md`, `docs/integrations/PAYVAST_SQLSERVER_DISCOVERY.md`, `docs/integrations/payvast-schema-discovery.sql`.
+- The proposed contract covers Peyvast+Excel provenance and explicit mapping preview/approval/deduplication. The six SQL statements read system metadata only, and were statically reviewed, not executed on SQL Server or customer systems.
+- No table/column names or financial classification were inferred. Live version/schema/access, extraction consistency and accounting semantics remain discovery inputs; no connector, source reconciliation, runtime SQL result, accepted implementation or release is claimed.
+- Published as Draft [PR #33](https://github.com/davoodmehraban89/Aram/pull/33), initial head `5209149f639c2c942fa654c859133b762a2c535b`. The six-path diff is documentation/metadata examples only; no Backend CI run was present for that docs-only head. SQL Server execution remains NOT_RUN. Fetch the final head and base before independent acceptance; keep unmerged pending PR #32 acceptance and reconciliation.
+
 ## Accepted repository state
 
 - Repository: davoodmehraban89/Aram
