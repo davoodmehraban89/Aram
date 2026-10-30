@@ -101,3 +101,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Actual Draft: https://github.com/davoodmehraban89/Aram/pull/60, from exact accepted base `7dc864fd032f0c4ae4d650d89304a01286a6d914`; no merge.
 - Adds safe local CLI and synthetic CLI tests to read-only coverage engine; further hardens hidden helper and extra sheet handling. Earlier CI https://github.com/davoodmehraban89/Aram/actions/runs/41126235147 succeeded, **but final-head acceptance remains pending a new run**.
 - Never treat workbook `Approved` labels as corporate approval. All output is advisory, non-releasable, no official financial values posted.
+
+## Draft Gate 3 — note exposure reconciliation candidate (2026-10-31)
+- Branch `codex/aram-reconciliation-review-gate-20261031` is based on unmerged coverage PR #60 head `8f0e9e400c63237e00ae6d0b9847a473cb758d6e`.
+- Adds `reconciliation_review.py`, synthetic tests and `docs/NOTE_RECONCILIATION_REVIEW.md` for exact per-note candidate/reference comparisons.
+- No financial statement, authenticated approval, mapped account write, release, canonical XLSX/PDF change, or accepted-branch merge. Status: DRAFT / NOT ACCEPTED. Independent C1/C2/C3 reviews required.
