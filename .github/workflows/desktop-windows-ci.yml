@@ -43,10 +43,10 @@ jobs:
         shell: pwsh
         run: |
           $exe = ".\dist\AramPilot-UNRELEASED.exe"
-          & $exe --self-test
-          if ($LASTEXITCODE -ne 0) { throw "Frozen EXE headless test failed: $LASTEXITCODE" }
-          & $exe --ui-smoke
-          if ($LASTEXITCODE -ne 0) { throw "Frozen EXE native Tk menu/button callback smoke failed: $LASTEXITCODE" }
+          $headless = Start-Process -FilePath $exe -ArgumentList "--self-test" -PassThru -Wait
+          if ($headless.ExitCode -ne 0) { throw "Frozen EXE headless test failed: $($headless.ExitCode)" }
+          $gui = Start-Process -FilePath $exe -ArgumentList "--ui-smoke" -PassThru -Wait
+          if ($gui.ExitCode -ne 0) { throw "Frozen EXE Tk callback smoke failed: $($gui.ExitCode)" }
       - name: Upload NON-PRODUCTION unsigned pilot for inspection only
         uses: actions/upload-artifact@v4
         with:
