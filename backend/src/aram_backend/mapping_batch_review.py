@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from hashlib import sha256
 import json
+from unicodedata import category
 
 from sqlalchemy.orm import Session
 
@@ -68,7 +69,10 @@ class MappingBatchPreview:
 
 
 def _row_content(row: ProposedMappingRow) -> tuple[object, ...]:
-    return (row.account_code, row.target_note_id, row.mapping_type, row.expected_base_version)
+    # Python considers True == 1. Financial identity comparisons must not
+    # coalesce malformed booleans with valid numeric IDs or versions.
+    values = (row.account_code, row.target_note_id, row.mapping_type, row.expected_base_version)
+    return tuple((type(value).__name__, value) for value in values)
 
 
 def _validate_envelope(rows: object) -> tuple[ProposedMappingRow, ...]:
@@ -80,7 +84,8 @@ def _validate_envelope(rows: object) -> tuple[ProposedMappingRow, ...]:
             raise MappingValidationError("mapping batch entries must be typed proposals")
         locator = row.source_locator
         if (not isinstance(locator, str) or not locator or
-                len(locator) > MAX_LOCATOR_LENGTH or locator != locator.strip()):
+                len(locator) > MAX_LOCATOR_LENGTH or locator != locator.strip()
+                or any(category(char) in ("Cc", "Cf", "Cs") for char in locator)):
             raise MappingValidationError("invalid source locator")
         if locator in locators:
             raise MappingValidationError("duplicate source locator")
