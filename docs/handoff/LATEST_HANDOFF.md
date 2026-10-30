@@ -134,3 +134,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Independent reviewers C1/C2/C3 not established. Parent PR #32 is not accepted. Graph-wide, raw SQL and concurrent DB writes remain outside this patch.
 - No canonical financial data, application database, migration, workflow, ZIP, EXE or release was modified. This record is documentation about an unmerged candidate, not evidence of acceptance.
 - Next action: obtain independent exact-SHA review, then reconcile PR #35 onto an accepted parent only after PR #32 passes its own controls. No merge while blocked.
+
+## 2026-10-30 — Cross-year clean-reference regression candidate (unaccepted)
+
+- Draft [PR #41](https://github.com/davoodmehraban89/Aram/pull/41) depends on unmerged Draft PR #35 `dab37e544e441a6111d7e88a53bae4d193f10de2` and ultimately unmerged PR #32; do not merge a child before its accepted parent is verified.
+- Reproduction: clean MappingRule and StatementLine references become inconsistent when their NoteDefinition or FinancialStatement parent changes year. RED [CI 41060564954](https://github.com/davoodmehraban89/Aram/actions/runs/41060564954) showed **6 expected failures, 123 passes**.
+- First corrective CI [41060729930](https://github.com/davoodmehraban89/Aram/actions/runs/41060729930) was green (129 passed); expanded valid-path CI [41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585) also succeeded on code/test SHA `78ff0dd5a8ee35b621ae901be39f6a11d37ea063`: **132 passed, one warning**; migration and compile succeeded.
+- Exact final head after documentation updates requires a fresh GitHub verification. No protected data, schema, dependencies, workflows, binaries, production databases or releases changed.
+- Remaining: raw/bulk SQL, concurrency and provider-specific database safety are not covered. Three genuinely independent reviewer controls remain `BLOCKED`; neither this child nor its parents has been accepted.
+- Next action: independently review final PR #32, #35 and #41 SHAs, reconcile dependent bases after each acceptance, and address DB-level isolation/performance as separately scoped work.
