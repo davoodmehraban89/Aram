@@ -323,3 +323,18 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Important exclusions: clean-referencing graph moves, raw/bulk SQL, external connectors and concurrent writes require separately tested defenses. No claim of database-level immutability.
 - Decision: `IN_PROGRESS`, **independent C1/C2/C3 review not supplied**. Branch is stacked, Draft, and must not self-merge. Any later head SHA requires exact-head verification.
 - Recovery: close PR #35 without merge; PR #32 and accepted source branch are unaffected. After an authorized merge, use a reviewed revert PR instead of force-push.
+
+### 2026-10-30 — Clean-reference financial-year safety candidate (PR #41; Draft only)
+
+- Author: ChatGPT operational coordinator, **not** independent acceptance reviewer.
+- Unmodified accepted branch: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`. Stacked parent: unmerged PR #35 `dab37e544e441a6111d7e88a53bae4d193f10de2`; grandparent PR #32 unmerged.
+- Dedicated branch: `codex/aram-clean-reference-year-integrity-20261030`; Draft [PR #41](https://github.com/davoodmehraban89/Aram/pull/41).
+- Reproduced defect: moving a Draft NoteDefinition or FinancialStatement across years did not re-evaluate stored MappingRule and StatementLine references, since dependent rows remained outside `session.dirty`. This could create cross-year reporting links.
+- RED code-independent test commit `0994232dfb48eac4d448cf4ea09b8ba770ae0cf0`: [CI 41060564954](https://github.com/davoodmehraban89/Aram/actions/runs/41060564954), **6 failed, 123 passed, 1 warning**; failures were missing expected ValueErrors.
+- Corrective code commit `c3df2611fdcf20812ca9d9a8c794f1b31d9fcddf`: [CI 41060729930](https://github.com/davoodmehraban89/Aram/actions/runs/41060729930), **129 passed, 1 warning**, migration round-trip and compile successful.
+- Follow-up valid-path tests commit `78ff0dd5a8ee35b621ae901be39f6a11d37ea063`: [CI 41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585), **132 passed, 1 warning**, migration round-trip and compile successful.
+- Exact code scope: `backend/src/aram_backend/models.py`, `backend/tests/test_models.py`. Additional control record changes: `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`. Check final GitHub head and full diff after this entry.
+- Correctness: detects persisted dependents with unchanged references when NoteDefinition or FinancialStatement ownership moves; tests both same-company and cross-company years, rollback unchanged, valid unreferenced parent moves, same-flush coordinated mapping/parent moves, moved-note retargeting and moved statement+note.
+- Boundaries: no direct SQL/bulk/external writer protection; no concurrent transactions or production-db proof; non-indexed target-note FK may need performance profiling on realistic synthetic scale. Full financial source-to-report reconciliation is not proven.
+- Data safety: no canonical financial XLSX/PDF, `data/`, persisted database, actual Peyvast SQL Server, migration, dependencies, workflow, tag, ZIP, EXE, or release touched.
+- Decision: `IN_PROGRESS`; author-run checks cannot count as independent C1/C2/C3 review. No merge/acceptance. Recovery: close unmerged PR without touching source branch; after authorized merge, revert through an independently reviewed PR.
