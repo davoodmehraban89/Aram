@@ -298,7 +298,10 @@ def test_wrong_company_year_or_role_is_denied(auth_client, keys, session, signed
         response = _scope_request(
             auth_client, keys[0], year.id, aram_scopes=[signed_grant],
         )
-        assert response.status_code == 403
+        # Role mismatches inside signed claims are an invalid credential
+        # (401); a valid token for a different company/year is forbidden (403).
+        expected = 401 if signed_grant["role"] != "mapping_proposer" else 403
+        assert response.status_code == expected
         assert "company_code" not in response.text
     finally:
         app.dependency_overrides.pop(get_session, None)
@@ -335,7 +338,7 @@ def test_reviewer_must_possess_explicit_reviewer_grant(auth_client, keys, sessio
         assert _scope_request(
             auth_client, keys[0], year.id,
             aram_roles=["mapping_reviewer"], aram_scopes=[_scope(role="mapping_proposer")],
-        ).status_code == 403
+        ).status_code == 401
         assert auth_client.post("/api/v1/mapping/approve").status_code == 404
     finally:
         app.dependency_overrides.pop(get_session, None)
@@ -460,3 +463,21 @@ def test_access_check_rejects_uncommitted_fiscal_changes_without_flush(session, 
     )
     assert scope.company_code == "FIN-OPERATIONS"
     assert pending in session.new and pending.id is None
+
+
+def test_valid_proposer_cannot_assume_reviewer_role_with_scope_check(session, keys):
+    from fastapi import HTTPException
+    from aram_backend.authenticated_identity import verify_access_token
+    from aram_backend.mapping_year_authorization import require_year_access
+    year = _year(session)
+    principal = verify_access_token(
+        token(keys[0], aram_scopes=[_scope()]),
+        settings=Settings(auth_issuer=ISSUER, auth_audience=AUDIENCE,
+                          auth_public_key_pem=keys[1]),
+    )
+    with pytest.raises(HTTPException) as denied:
+        require_year_access(
+            session, principal=principal, year_id=year.id,
+            required_role="mapping_reviewer",
+        )
+    assert denied.value.status_code == 403
