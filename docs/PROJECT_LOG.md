@@ -307,3 +307,9 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Add pure in-memory note reconciliation, synthetic tests, explicit nonapproval documentation and durable records. Exact CI result must be verified at final SHA after PR publication.
 - Artifacts/releases: NONE. Finance owner signoff and independent C1/C2/C3: PENDING. No `data/` XLSX/PDF, original migrations, secrets, real SQL, accepted branch or customer facts modified.
 - Next: inspect remote exact-head GitHub Actions results, remediate failures, obtain independent review; do not merge yet.
+
+### 2026-10-31 — unsigned BS presentation proposal
+- Actor: ChatGPT engineering. Branch `codex/aram-bs-candidate-statement-20261031`, parent Draft PR #61 (SHA `736193905d8b041a938e7285610ff207b4cd4487`), ultimately accepted `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Isolated changes: `backend/src/aram_backend/balance_sheet_candidate.py`, `backend/tests/test_balance_sheet_candidate.py`, `docs/BALANCE_SHEET_CANDIDATE.md`, append-only governance records.
+- Amounts are never official or approved; source workbook and signed accounting policy authority are missing. No real customer test data, canonical XLSX/PDF, SQL persistence, migrations or released EXE touched.
+- Verify final remote SHA, full CI, source diff and three independent reviews before acceptance. Do not merge without review.
