@@ -125,3 +125,12 @@ This dated correction supersedes the older PR #21 candidate/single-next-action n
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+## 2026-10-30 — Same-flush protected-year candidate, not accepted
+
+- Stacked Draft [PR #35](https://github.com/davoodmehraban89/Aram/pull/35) from Draft PR #32 SHA `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; base accepted branch remains unchanged at `7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Candidate fixes the pending-approval/same-flush ORM validation gap and tests seven record kinds, new source, Company edit, rollback and valid separate-transaction Draft editing.
+- Code commit `f5f9257563f382f6663bc7b1eb0433a43482e9fd`; verified [Backend CI 41059384195](https://github.com/davoodmehraban89/Aram/actions/runs/41059384195) passed **120 tests, one warning**, Alembic round-trip and compile.
+- Independent reviewers C1/C2/C3 not established. Parent PR #32 is not accepted. Graph-wide, raw SQL and concurrent DB writes remain outside this patch.
+- No canonical financial data, application database, migration, workflow, ZIP, EXE or release was modified. This record is documentation about an unmerged candidate, not evidence of acceptance.
+- Next action: obtain independent exact-SHA review, then reconcile PR #35 onto an accepted parent only after PR #32 passes its own controls. No merge while blocked.
