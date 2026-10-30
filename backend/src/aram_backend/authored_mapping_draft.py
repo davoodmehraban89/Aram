@@ -143,8 +143,23 @@ def stage_authored_unreviewed_batch(
         session, principal=principal, year_id=snapshot.year_id,
         required_role="mapping_proposer",
     )
-    # The legacy saver intentionally remains an internal API; an existing
-    # legacy draft is not assigned an author retroactively.
+    # Refuse retroactive authorship on legacy proposals. A draft may have
+    # existed before the authenticated staging request, so identifying its ID
+    # *after* the saver would allow a caller to take ownership of history.
+    existing = session.execute(select(mapping_review_drafts.c.id).where(
+        mapping_review_drafts.c.year_id == snapshot.year_id,
+        mapping_review_drafts.c.request_key == request_key,
+    )).scalar_one_or_none()
+    if existing is not None:
+        previous_author = get_draft_author(
+            session, draft_id=existing, year_id=snapshot.year_id,
+        )
+        if (previous_author.issuer, previous_author.subject) != (
+            principal.issuer, principal.subject,
+        ):
+            raise MappingAuthorConflict(
+                "Mapping draft request key belongs to another author"
+            )
     saved = save_unreviewed_batch(session, snapshot, request_key=request_key)
     values = _values(
         draft_id=saved.id, year_id=snapshot.year_id,
@@ -164,12 +179,8 @@ def stage_authored_unreviewed_batch(
         ):
             raise MappingAuthorConflict("Mapping draft request key belongs to another author")
         return saved
-    # No old author evidence means this is either a genuinely new staged
-    # draft or a legacy unbound request. The latter must NEVER be adopted.
-    # Inspect a freshly created draft's system event in this transaction:
-    # the caller's request key may have existed before this call. Passing
-    # only the current saved ID is insufficient; detect preexistence BEFORE
-    # the legacy saver in the next revision.
+    # The request-key lookup above proved this is a new record; do not
+    # retrofit authenticated authorship onto legacy unbound drafts.
     _insert_author_evidence(session, values)
     return saved
 
