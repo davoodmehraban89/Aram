@@ -107,13 +107,13 @@
 
 ## Single next action
 
-Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+Resolve the remaining fiscal-year isolation gaps before accepting [PR #32](https://github.com/davoodmehraban89/Aram/pull/32): complete [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36), re-run final-head Backend CI, and obtain independent C1/C2/C3 reviews. Then reconcile the mapping core [PR #26](https://github.com/davoodmehraban89/Aram/pull/26) with stacked PRs #27, #28, #30 and #31; resolve hidden-workbook and stale-source-note findings in Issues #38 and #37. Establish distinct reviewers and verify branch protection through [Issue #39](https://github.com/davoodmehraban89/Aram/issues/39). No Draft PR is accepted by CI alone.
 
 ## 2026-10-23 T1 handoff addendum (unmerged)
 
 - Verified accepted branch SHA: `7dc864fd032f0c4ae4d650d89304a01286a6d914` (GitHub compare identical).
 - PR #21 V1-01 was merged at that SHA; previous active-PR-21 instructions above are superseded.
-- T1 branch: `codex/t1-repo-hygiene-20261023`; README and status-document corrections are under preparation.
-- T2/T3/T6a branches were created from the same SHA, but no implementation or diagnostic results are claimed.
-- CI and tests for this new work: NOT_VERIFIED. No release or data/ mutation.
-- Next: review Draft PR, verify exact diff and tests; do not merge without acceptance gates.
+- T1 branch: `codex/t1-repo-hygiene-20261023`; README and status-document corrections are published in [Draft PR #22](https://github.com/davoodmehraban89/Aram/pull/22), still unmerged.
+- T2/T3/T6a branches were created from the same SHA; re-fetch their live PRs and dependencies before sequencing.
+- Documentation checks on PR #22: five README relative links resolve; added-line whitespace scan is clean; no Backend CI run was returned because the PR is documentation-only. No local `git diff --check` is claimed. No release or canonical financial-data mutation.
+- Next: obtain independent review of PR #22 and reconcile the current recovery state; do not merge without acceptance gates.
