@@ -247,6 +247,63 @@ def _persisted_year_id_for(obj: Any, session: Session) -> int | None:
     return session.scalar(query)
 
 
+def _check_clean_references_after_parent_year_move(session: Session, parent: Any) -> None:
+    """Reject cross-year links hidden in unchanged dependent ORM rows.
+
+    This guard is only for persisted NoteDefinition and FinancialStatement
+    ownership moves. References already modified or newly created are checked
+    by the main before_flush invariant below; here we additionally inspect
+    existing rows whose foreign keys point at the moved parent.
+    """
+    if inspect(parent).identity is None:
+        return
+    if parent.year_id == _persisted_year_id_for(parent, session):
+        return
+
+    if isinstance(parent, NoteDefinition):
+        for rule in session.scalars(
+            select(MappingRule).where(MappingRule.target_note_id == parent.id)
+        ):
+            if rule in session.deleted:
+                continue
+            target_year = _resolve_parent_year_id(
+                rule, session, "target_note", "target_note_id", NoteDefinition
+            )
+            if target_year != rule.year_id:
+                raise ValueError(
+                    "Mapping rule and target note must belong to the same fiscal year"
+                )
+
+        for line in session.scalars(
+            select(StatementLine).where(StatementLine.target_note_id == parent.id)
+        ):
+            if line in session.deleted:
+                continue
+            statement_year = _year_id_for(line, session)
+            target_year = _resolve_parent_year_id(
+                line, session, "target_note", "target_note_id", NoteDefinition
+            )
+            if target_year is not None and target_year != statement_year:
+                raise ValueError(
+                    "Statement line and target note must belong to the same fiscal year"
+                )
+
+    if isinstance(parent, FinancialStatement):
+        for line in session.scalars(
+            select(StatementLine).where(StatementLine.statement_id == parent.id)
+        ):
+            if line in session.deleted:
+                continue
+            statement_year = _year_id_for(line, session)
+            target_year = _resolve_parent_year_id(
+                line, session, "target_note", "target_note_id", NoteDefinition
+            )
+            if target_year is not None and target_year != statement_year:
+                raise ValueError(
+                    "Statement line and target note must belong to the same fiscal year"
+                )
+
+
 _PROTECTED_YEAR_STATUSES = {FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED}
 
 
@@ -364,3 +421,8 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
             target_year_id = _resolve_parent_year_id(obj, session, "target_note", "target_note_id", NoteDefinition)
             if target_year_id is not None and target_year_id != year_id:
                 raise ValueError("Statement line and target note must belong to the same fiscal year")
+
+    # Parent moves may invalidate clean child rows that never enter session.dirty.
+    for parent in session.dirty:
+        if isinstance(parent, (NoteDefinition, FinancialStatement)):
+            _check_clean_references_after_parent_year_move(session, parent)
