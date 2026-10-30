@@ -144,3 +144,58 @@ def test_reject_duplicate_export():
 def test_reject_empty_export():
     with pytest.raises(MappingValidationError, match="1 to 10000"):
         export_mapping_workbook(())
+
+
+def workbook_with_hidden_mapping(kind, note_id=1):
+    book = Workbook()
+    sheet = book.active
+    sheet.title = "Mapping"
+    sheet.append(("rule_key", "account_code", "target_note_id", "mapping_type", "version"))
+    sheet.append(("cash", "001", note_id, "direct", 1))
+    if kind == "row":
+        sheet.row_dimensions[2].hidden = True
+    elif kind == "header":
+        sheet.row_dimensions[1].hidden = True
+    elif kind == "column":
+        sheet.column_dimensions["B"].hidden = True
+    elif kind == "last_column":
+        sheet.column_dimensions["E"].hidden = True
+    elif kind != "sheet":
+        raise AssertionError("unknown test variant")
+    stream = BytesIO()
+    book.save(stream)
+    if kind != "sheet":
+        return stream.getvalue()
+
+    # Excel/openpyxl forbids saving a workbook with its *only* sheet hidden.
+    # Mutate workbook metadata in a valid single-worksheet ZIP to reproduce
+    # an adversarial file without adding an extra worksheet.
+    altered = BytesIO()
+    with ZipFile(BytesIO(stream.getvalue()), "r") as source:
+        with ZipFile(altered, "w") as dest:
+            for item in source.infolist():
+                content = source.read(item.filename)
+                if item.filename == "xl/workbook.xml":
+                    assert b'state="visible"' in content
+                    content = content.replace(b'state="visible"', b'state="hidden"', 1)
+                dest.writestr(item, content)
+    return altered.getvalue()
+
+
+@pytest.mark.parametrize("kind", ["sheet", "row", "header", "column", "last_column"])
+def test_reject_hidden_mapping_sheet_or_data(kind):
+    with pytest.raises(MappingValidationError, match="[Hh]idden"):
+        preview_mapping_workbook(workbook_with_hidden_mapping(kind))
+
+
+@pytest.mark.parametrize("kind", ["sheet", "row", "column"])
+def test_hidden_mapping_import_never_stages_rules(session, kind):
+    year, note = make_year(session, "HIDDEN-" + kind)
+    content = workbook_with_hidden_mapping(kind, note.id)
+    with pytest.raises(MappingValidationError, match="[Hh]idden"):
+        import_mapping_workbook(session, year_id=year.id, content=content)
+    assert session.scalars(select(MappingRule)).all() == []
+
+def test_visible_mapping_workbook_still_accepted():
+    assert preview_mapping_workbook(xlsx([("cash", "001", 1, "direct", 1)])) == (
+        entry(1),)
