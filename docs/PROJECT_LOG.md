@@ -278,3 +278,19 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+### 2026-10-30 — Phase agreement reconstructed and V1 progress dashboard proposed
+
+- Actor: ChatGPT operational coordinator; **not** independent C1/C2/C3 reviewer.
+- Trigger: owner's request for comprehensive phase inventory and the following continuation to standardize and retain progress evidence.
+- Verified accepted branch: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`; no accepted-branch mutation.
+- Scope: new `docs/ROADMAP_DASHBOARD.md` and this append-only project-log record. Dedicated branch `docs/aram-roadmap-dashboard-20261030`; [Draft PR #44](https://github.com/davoodmehraban89/Aram/pull/44), base `source-data-cleanup`.
+- Formal V1 roadmap: [Issue #11](https://github.com/davoodmehraban89/Aram/issues/11), Gate 0 through 6. Historical Phase 1B-1/1B-2/2A/2B and V1-01 are separately shown and **not added twice**.
+- Report distinguishes three measures: **3/7** accepted gates; proposed **30% weighted accepted**; proposed **~42% weighted technical**. Neither weights nor 40% Gate 3 technical subscore is an approved accounting/contract decision. V1 Windows release and end-user acceptance remain unverified/unimplemented.
+- Scoring assertions checked before publication: proposed weights sum to 100; Gate 3 technical subscores total 2.75/7 = 39.29%; weighted technical = 42; weighted accepted = 30; all seven Gate rows present.
+- Live GitHub PR #21 previously accepted despite stale status text; PRs #26, #32, #35 and Governance #34 remain Draft. Dependent issues and blocked independent reviewers are linked explicitly.
+- Financial source boundary: historical accepted 1404 diagnostic counts are cited only as audit findings, **not recomputed** and not represented as implementation percentages.
+- Protected scope: no canonical XLSX/PDF, `data/`, customer SQL, DB file, migration, dependency, workflow, source code, tests, binary, ZIP, EXE, release or secrets changed.
+- GitHub Actions: `NOT_VERIFIED` at this log-writing moment; documentation-only changes normally do not trigger Backend CI, and no successful CI run is invented. Final remote diff, head SHA, link checks and reviewer disposition remain required.
+- Reviewer / acceptance: author-only initial mathematical validation; actual independent approval **BLOCKED** pending qualified reviewer identities under [Issue #39](https://github.com/davoodmehraban89/Aram/issues/39). Do not merge PR #44 or treat its proposed weights as adopted.
+- Recovery: close PR #44 unmerged, or later undo an accepted change via separately reviewed revert PR; do not force push.
