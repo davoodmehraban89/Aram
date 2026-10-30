@@ -160,11 +160,13 @@ def workbook_with_hidden_mapping(kind, note_id=1):
         sheet.column_dimensions["B"].hidden = True
     elif kind == "last_column":
         sheet.column_dimensions["E"].hidden = True
-    elif kind != "sheet":
+    elif kind == "range":
+        sheet.column_dimensions.group("B", "D", hidden=True)
+    elif kind not in ("sheet", "veryHidden"):
         raise AssertionError("unknown test variant")
     stream = BytesIO()
     book.save(stream)
-    if kind != "sheet":
+    if kind not in ("sheet", "veryHidden"):
         return stream.getvalue()
 
     # Excel/openpyxl forbids saving a workbook with its *only* sheet hidden.
@@ -177,18 +179,19 @@ def workbook_with_hidden_mapping(kind, note_id=1):
                 content = source.read(item.filename)
                 if item.filename == "xl/workbook.xml":
                     assert b'state="visible"' in content
-                    content = content.replace(b'state="visible"', b'state="hidden"', 1)
+                    new_state = b'state="veryHidden"' if kind == "veryHidden" else b'state="hidden"'
+                    content = content.replace(b'state="visible"', new_state, 1)
                 dest.writestr(item, content)
     return altered.getvalue()
 
 
-@pytest.mark.parametrize("kind", ["sheet", "row", "header", "column", "last_column"])
+@pytest.mark.parametrize("kind", ["sheet", "veryHidden", "row", "header", "column", "last_column", "range"])
 def test_reject_hidden_mapping_sheet_or_data(kind):
     with pytest.raises(MappingValidationError, match="[Hh]idden"):
         preview_mapping_workbook(workbook_with_hidden_mapping(kind))
 
 
-@pytest.mark.parametrize("kind", ["sheet", "row", "column"])
+@pytest.mark.parametrize("kind", ["sheet", "veryHidden", "row", "column"])
 def test_hidden_mapping_import_never_stages_rules(session, kind):
     year, note = make_year(session, "HIDDEN-" + kind)
     content = workbook_with_hidden_mapping(kind, note.id)
