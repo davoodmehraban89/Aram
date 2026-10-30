@@ -72,11 +72,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Binary execution, release provenance, and clean Windows verification do not exist.
 - Mapping, notes/sub-notes, Pilot UI, and end-to-end user acceptance remain incomplete.
 
-## Next approved action
+## Next execution priorities — all candidate PRs remain unaccepted
 
-1. Publish this two-file durable-document reconciliation on Draft PR #21; [Backend CI #39](https://github.com/davoodmehraban89/Aram/actions/runs/33015277194) succeeded on stabilized candidate `b3dc8b3a18934ffe63f615e4f650248be21a5f9c` with 67 tests, migration round-trip, and compile.
-2. The independent reviewer re-fetches the resulting documentation-only head, confirms that its comparison with `b3dc8b3a18934ffe63f615e4f650248be21a5f9c` changes only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md`, verifies the final workflow result, then marks the PR ready and squash-merges it.
-3. Only after V1-01 is accepted, start the first focused Gate 3 Mapping import/persistence task from the new accepted head.
+1. **Fiscal-year safety:** complete [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36) against Draft [PR #32](https://github.com/davoodmehraban89/Aram/pull/32), then rerun Backend CI on the exact final head. PR #33 is stacked on #32 and must be reconciled after parent acceptance.
+2. **Mapping core and dependents:** independently review [PR #26](https://github.com/davoodmehraban89/Aram/pull/26), then reconcile stacked #27, #28, #30 and #31. Resolve [Issue #38](https://github.com/davoodmehraban89/Aram/issues/38) (hidden XLSX content) before accepting import, and [Issue #37](https://github.com/davoodmehraban89/Aram/issues/37) (stale source-note carry-forward) before accepting carry-forward.
+3. **Independent governance:** establish three distinct qualified reviewers and verify branch-protection/ruleset state through [Issue #39](https://github.com/davoodmehraban89/Aram/issues/39). Only then can Draft [PR #34](https://github.com/davoodmehraban89/Aram/pull/34) and other pending governance proposals receive valid independent acceptance.
+
+Existing PR #23 (dependency audit) and PR #25 (explicit migration) have successful exact-head CI evidence, but remain Draft and have no independent review. CI success alone does not authorize merge or production use.
 
 ## Control documents
 
