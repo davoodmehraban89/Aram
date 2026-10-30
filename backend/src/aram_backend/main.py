@@ -1,5 +1,8 @@
 from fastapi import Depends, FastAPI
 from aram_backend.authenticated_identity import VerifiedPrincipal, require_verified_principal
+from sqlalchemy.orm import Session
+from aram_backend.database import get_session
+from aram_backend.mapping_year_authorization import require_year_access
 
 from aram_backend import __version__
 from aram_backend.config import get_settings
@@ -20,6 +23,27 @@ def authenticated_identity(
         "subject": principal.subject,
         "roles": list(principal.roles),
         "expires_at": principal.expires_at,
+    }
+
+
+@app.get("/api/v1/auth/year-access/{year_id}", tags=["identity"])
+def authenticated_year_access(
+    year_id: int,
+    principal: VerifiedPrincipal = Depends(require_verified_principal),
+    session: Session = Depends(get_session),
+) -> dict[str, object]:
+    """Read-only company/year role preflight; NOT approval or apply authority."""
+    role = principal.roles[0]
+    grant = require_year_access(
+        session, principal=principal, year_id=year_id,
+        required_role=role,
+    )
+    return {
+        "year_id": year_id,
+        "company_code": grant.company_code,
+        "fiscal_year": grant.fiscal_year,
+        "role": grant.role,
+        "verified_scope": True,
     }
 
 

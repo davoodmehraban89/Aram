@@ -20,8 +20,18 @@ from aram_backend.config import Settings, get_settings
 
 MAX_TOKEN_LENGTH = 8192
 MAX_LIFETIME_SECONDS = 900
+MAX_SIGNED_YEAR_SCOPES = 32
 TRUSTED_ROLES = frozenset(("mapping_proposer", "mapping_reviewer"))
 bearer_scheme = HTTPBearer(auto_error=False)
+
+
+@dataclass(frozen=True)
+class SignedYearScope:
+    """Exact signed company, fiscal-year and role boundary; no wildcards."""
+
+    company_code: str
+    fiscal_year: int
+    role: str
 
 
 @dataclass(frozen=True)
@@ -32,6 +42,9 @@ class VerifiedPrincipal:
     subject: str
     roles: tuple[str, ...]
     expires_at: int
+    # Older valid tokens with no explicit grants may authenticate, but can
+    # NEVER authorize year-specific Mapping operations.
+    year_scopes: tuple[SignedYearScope, ...] = ()
 
 
 def _fail_invalid() -> None:
@@ -47,6 +60,30 @@ def _is_safe_string(value: object, limit: int) -> bool:
         and value == value.strip()
         and not any(category(char) in ("Cc", "Cf", "Cs") for char in value)
     )
+
+
+def _validated_signed_scopes(raw: object, *, permitted_role: str) -> tuple[SignedYearScope, ...]:
+    if type(raw) is not list or len(raw) > MAX_SIGNED_YEAR_SCOPES:
+        _fail_invalid()
+    seen: set[SignedYearScope] = set()
+    result: list[SignedYearScope] = []
+    for item in raw:
+        if type(item) is not dict or set(item) != {"company_code", "fiscal_year", "role"}:
+            _fail_invalid()
+        code, year, role = item["company_code"], item["fiscal_year"], item["role"]
+        if (
+            not _is_safe_string(code, 64)
+            or "*" in code or "?" in code
+            or type(year) is not int or year <= 0 or year > 9999
+            or type(role) is not str or role != permitted_role
+        ):
+            _fail_invalid()
+        scope = SignedYearScope(company_code=code, fiscal_year=year, role=role)
+        if scope in seen:
+            _fail_invalid()
+        seen.add(scope)
+        result.append(scope)
+    return tuple(result)
 
 
 def _trusted_public_key(settings: Settings) -> RSAPublicKey:
@@ -115,9 +152,12 @@ def verify_access_token(token: str, *, settings: Settings) -> VerifiedPrincipal:
         or len(roles) > 1
     ):
         _fail_invalid()
+    scopes = _validated_signed_scopes(
+        claims.get("aram_scopes", []), permitted_role=roles[0],
+    )
     return VerifiedPrincipal(
         issuer=claims["iss"], subject=claims["sub"],
-        roles=tuple(sorted(roles)), expires_at=exp,
+        roles=tuple(sorted(roles)), expires_at=exp, year_scopes=scopes,
     )
 
 
