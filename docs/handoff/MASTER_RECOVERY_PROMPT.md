@@ -239,3 +239,13 @@ End with exactly one:
 - `BLOCKED — AUTHENTICATED GITHUB ACCESS OR EXPORTED EVIDENCE REQUIRED`
 
 ## END COPY
+
+## Pending governance proposal: 5+1+3 (ADR-013, Draft PR #34)
+
+**Do not treat this proposal as merged or binding until GitHub confirms the accepted merge on `source-data-cleanup`.** Existing ADR-011 duties, assignments, authority and review separation remain in force. Read [proposed ADR-013](../adr/ADR-013-aram-5plus1plus3-delivery-governance.md) and [PR #34](https://github.com/davoodmehraban89/Aram/pull/34) when recovering project governance.
+
+Upon an independently approved merge, retain a project manager and five specialist accountabilities: A1 Financial Accounting, A2 Data Engineering/Excel, A3 Architecture/Backend, A4 Frontend/Reporting, A5 QA/DevSecOps. Assign a named executor to each applicable responsibility for each focused work item. Jules remains the primary implementation agent; Codex Work retains ADR-011 technical oversight and delegated routine maintenance only if actually available and separate from the implementation author. Never imply live execution of five distinct agents without execution evidence.
+
+The new mandatory acceptance protocol, **only after ADR-013 becomes accepted**, requires exactly three real reviewer decisions on the final candidate SHA: (1) technical/security `PASS/FAIL/BLOCKED`, (2) financial/integrity `PASS/FAIL/BLOCKED`, or justified independently recorded N/A, and (3) release/acceptance `ACCEPT/REVISE/REJECT/BLOCKED`. C1, C2 and C3 require three distinct, verifiable reviewers, independent of the change authors and each other. A single model's sequential three audits are useful but not independent. Any gate failure, missing reviewer, or changed SHA blocks acceptance and merge. Maintain original-owner financial authority, protected-data rules, prior decisions, rollback discipline and source lineage.
+
+For each task: recover live state and dependent PRs; scope one exact-base/allowlisted item; assign execution roles; test and publish one Draft PR; obtain the independent controls; repair and recheck on any new SHA; merge only under existing delegation when gates pass; verify the post-merge SHA/CI/docs and select one next task. Treat PR #32's ORM safety fix and PR #26's mapping core as separate unaccepted Drafts until independently approved. Do not create duplicate Mapping implementation PRs.

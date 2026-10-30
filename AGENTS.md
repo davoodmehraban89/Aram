@@ -53,3 +53,16 @@ An agent's written success report is not acceptance evidence.
 Return the verified base SHA, remote branch, full head SHA, PR number and URL, exact changed files, test commands/results, GitHub Actions URLs/results, artifact/release evidence or `NONE`, protected-data confirmation, and remaining risks.
 
 End with: `Ready for independent GitHub review; not merged.`
+
+## ARAM 5+1+3 operating extension (ADR-013)
+
+This extension is **proposed** in [PR #34](https://github.com/davoodmehraban89/Aram/pull/34) and becomes binding **only if accepted and merged**. Existing ADR-011 assignments and permissions remain in force until then.
+
+- Project manager: ChatGPT operational coordinator or an authorized successor; live remote recovery and dependency scoping before work.
+- Five specialist execution responsibilities: A1 Financial Accounting; A2 Data Engineering/Excel; A3 Backend/Architecture; A4 Frontend/Reporting; A5 QA/DevSecOps. They are **roles**, not a claim of five running independent agents. Jules remains the primary implementation agent under ADR-011 unless an authorized successor is recorded.
+- Before accepting any focused task, require evidence-bound C1 technical/security, C2 financial/data integrity, and C3 acceptance/release controls. Each record identifies its real reviewer, reviewed exact head SHA, decision and evidence. Any head change invalidates affected reviews.
+- C1, C2 and C3 must identify **three distinct, traceable reviewers**, each independent of the change authors and of the other gate reviewers; a simulated role is not an independent identity. An implementation author cannot approve their own change; one model performing three sequential checks must not call those checks three independent reviewers. If qualified reviewers are unavailable, report `BLOCKED` and keep the PR Draft/unmerged.
+- C1/C2 decisions: `PASS`, `FAIL`, or `BLOCKED`. C3 decisions: `ACCEPT`, `REVISE`, `REJECT`, or `BLOCKED`. For genuinely nonfinancial changes C2 may be `PASS (NOT_APPLICABLE)` only with independent reviewer identity and reason.
+- Continue to respect protected financial data, source-to-report traceability, company/year isolation, original base SHA, PR dependencies, tests, reproducible CI, reviewer separation, and reserved owner decisions.
+- Codex Work retains ADR-011's standing delegated **routine** merge authority once the required gates actually pass; no automatic Production release or protected-data change.
+- Required record format and exact gates are in `docs/adr/ADR-013-aram-5plus1plus3-delivery-governance.md` and `docs/ACCEPTANCE_POLICY.md`.

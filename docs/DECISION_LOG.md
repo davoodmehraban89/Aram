@@ -66,3 +66,8 @@ Accepted decisions are immutable. To change one, add a new ADR that explicitly s
 - Decision: If a tool or model changes, responsibility boundaries remain in force until an accepted governance change records the new assignment.
 - Decision: An implementation report is never acceptance evidence. Every acceptance action requires a fresh remote verification against the exact candidate head.
 - Rationale: Explicit current assignments remove ambiguity for successors, while durable role boundaries preserve the workflow when tools or models change.
+
+## Pending proposals — not accepted decisions
+
+- **ADR-012 (proposed in Draft PR #29):** Excel-first V1 and future provider-neutral connectors; its unmerged proposal is not a live policy.
+- **ADR-013 (proposed in Draft PR #34):** [ARAM 5+1+3 delivery and three independent review controls](adr/ADR-013-aram-5plus1plus3-delivery-governance.md). This is a nonbinding proposal until independently reviewed and merged. It extends ADR-011 without revoking existing roles or routine merge delegation. Reconcile the proposed ADR-012 and ADR-013 numbering and their states before accepting either.
