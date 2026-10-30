@@ -221,3 +221,38 @@ def test_malformed_row_is_diagnostic_not_parser_crash(session):
     ])
     assert result.counts == {"invalid": 1, "new": 1}
     assert result.ready_for_review is False
+
+
+def test_bool_target_id_cannot_coalesce_with_integer_id(session):
+    year, cash, _ = setup_year(session, "BATCH-TYPE-ID")
+    result = preview_mapping_batch(session, year_id=year.id, rows=[
+        row("M!2", "cash", cash),
+        row("M!3", "cash", cash, target_note_id=True),
+    ])
+    assert [item.status for item in result.rows] == ["conflict", "conflict"]
+    assert result.ready_for_review is False
+    assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_bool_base_version_cannot_coalesce_with_integer_version(session):
+    year, cash, other = setup_year(session, "BATCH-TYPE-VERSION")
+    save_mapping_rule(
+        session, year_id=year.id, rule_key="cash", account_code="001",
+        target_note_id=cash.id, mapping_type="manual", version=1,
+    )
+    session.commit()
+    result = preview_mapping_batch(session, year_id=year.id, rows=[
+        row("M!2", "cash", other, expected_base_version=1),
+        row("M!3", "cash", other, expected_base_version=True),
+    ])
+    assert [item.status for item in result.rows] == ["conflict", "conflict"]
+    assert result.ready_for_review is False
+
+
+@pytest.mark.parametrize("locator", ["M!2\nM!3", "M!2\rM!3", "M!2\tsecret", "M!2\x00hidden"])
+def test_control_characters_in_source_locator_are_rejected(session, locator):
+    year, cash, _ = setup_year(session, "BATCH-CTRL")
+    with pytest.raises(MappingValidationError, match="source locator"):
+        preview_mapping_batch(session, year_id=year.id, rows=[
+            row(locator, "cash", cash),
+        ])
