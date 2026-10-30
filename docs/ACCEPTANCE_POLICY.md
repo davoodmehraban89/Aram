@@ -56,7 +56,7 @@ Qualified independent financial reviewer checks relevant debits/credits, opening
 
 Separate non-author reviewer checks requirement coverage, the base and final head SHA, complete changed files, PR and job provenance, C1/C2 evidence, unresolved risks, issue/handoff consistency, rollback and authorized merge/release boundaries. No accepted or production-ready claim without the applicable evidence.
 
-**Separation and failure rule:** an LLM's successive internal audits do **not** count as three independent reviewers. No self-approval. If any gate fails, evidence is incomplete, reviewer identities cannot be established, or a checked SHA changes, the item is **not accepted**. Route fixes to the author; repeat every affected gate on the new SHA. No override by green CI, PR author, or manager. Existing ADR-011 routine merge delegation applies only after successful gates.
+**Separation and failure rule:** C1, C2 and C3 require **three separate, verifiable reviewer identities**, each independent of the change authors and of the other two reviewers. An LLM's successive internal audits do **not** count as three independent reviewers. No self-approval. If any gate fails, evidence is incomplete, reviewer identities cannot be established, or a checked SHA changes, the item is **not accepted**. Route fixes to the author; repeat every affected gate on the new SHA. No override by green CI, PR author, or manager. Existing ADR-011 routine merge delegation applies only after successful gates.
 
 ### Required work-item evidence
 
