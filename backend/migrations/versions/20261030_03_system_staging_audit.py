@@ -24,6 +24,17 @@ def _require_sqlite() -> None:
 
 def upgrade() -> None:
     _require_sqlite()
+    # PR #53 may already contain real Unreviewed drafts. Creating an empty
+    # event table would orphan their evidence and make future reads fail.
+    # Do not invent historical system events: require a separately approved
+    # documented backfill/recovery plan before upgrading such a database.
+    if op.get_bind().execute(
+        sa.text("SELECT 1 FROM mapping_review_drafts LIMIT 1")
+    ).first() is not None:
+        raise RuntimeError(
+            "existing Unreviewed drafts require reviewed audit backfill "
+            "or recovery before this migration"
+        )
     op.create_table(
         "mapping_draft_events",
         sa.Column("id", sa.Integer(), primary_key=True),
