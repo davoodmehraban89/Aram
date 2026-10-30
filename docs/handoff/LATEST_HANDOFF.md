@@ -117,3 +117,10 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - This work is not the full financial statement engine. No company financial values are created or altered.
 - Candidate remains unmerged until exact-head CI + independent accounting, QA and security acceptance. Do not infer approval from workbook cells or green unit tests.
 - Keep pending PR #59 and other drafts separate from this branch; do not silently merge the unapproved stack.
+
+### 2026-10-30 — PR #60 current candidate evidence
+
+- Read-only mapping coverage preview + safe local CLI at https://github.com/davoodmehraban89/Aram/pull/60.
+- Prior CI https://github.com/davoodmehraban89/Aram/actions/runs/41126235147 passed, but subsequent hidden-worksheet protections were committed after that run. Re-run and verify final exact-head CI. Never cite an older green run as a final-head result.
+- Protected `data/`, legacy signed statements, original XLSX/PDF, server secrets, source-data-cleanup, releases: unchanged.
+- This is only a non-releasable exposure diagnostic; no accounting-signoff, report generation, real IdP, CAS approvals or GUI integration.
