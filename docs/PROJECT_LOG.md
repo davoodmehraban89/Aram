@@ -298,3 +298,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Eight-file allowlist: modified `backend/src/aram_backend/mapping_service.py`, `backend/tests/test_mapping_service.py`; new `backend/src/aram_backend/mapping_change_preview.py`, `backend/tests/test_mapping_change_preview.py`, this spec and plan, plus append-only project log/handoff.
 - Safety: no protected canonical XLSX/PDF, `data/`, financial amounts, production DB, migrations, dependencies, workflows, binaries, tags, secrets or releases changed. No whole-project completion, Windows app, authentic human approval, permanent audit or transactional concurrency guarantee claimed. These remain under Issues #49, #39, #43.
 - Scope is **Draft/unmerged** pending parent reconciliation and three real independent technical/accounting/acceptance reviews on exact final SHA. Rollback before acceptance: close Draft unmerged; after any authorized merge: reviewed revert PR.
+
+### 2026-10-30 — Adversarial two-session review freshness regression, Draft PR #50
+
+- Additional test-only SHA `6a998a82274a7526fedc5404197efa80eb7fd602`: an external Session updates MappingRule content or FiscalYear status while preview Session holds cached identities.
+- [RED CI 41071505361](https://github.com/davoodmehraban89/Aram/actions/runs/41071505361) verified **2 intended stale-preview failures and 117 passes, one warning**; this was an actual stale-read bypass in current SQLAlchemy identity-map use, not a provider-level concurrency test.
+- Fix SHA `f69dfa81e9a938836570a8ef2300fc8e410ce69a` refreshes relevant persisted objects with `populate_existing`, without flushing pending ORM changes.
+- [GREEN CI 41071670008](https://github.com/davoodmehraban89/Aram/actions/runs/41071670008) **119 passed, 1 warning**, Alembic upgrade/downgrade and compileall succeeded. Final docs SHA needs separate CI/allowlist verification.
+- No actual user financial data, production databases, authentication, approval authority, DB-level compare-and-set, dependencies, workflows, migrations or releases changed; independent C1/C2/C3 remain unrecorded and parent #26 unmerged.
