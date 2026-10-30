@@ -45,3 +45,33 @@ assert not candidate.official_financial_statement
 - Full: `cd backend && pytest -q`, `alembic upgrade head`, `alembic downgrade base`, `python -m compileall -q src tests migrations`.
 - No modification to canonical `data/`, no DB writes, no migrations, no enterprise IdP, no HTML/GUI/export/print functionality in this PR.
 - A real finance owner must specify the required Iranian financial-statement classification and sign policies, verify trial balance and note disclosures, and approve fiscal-year controls. Real C1/C2/C3 reviewers must independently sign off. This preview does not substitute for those controls.
+
+
+## Offline user-facing CLI (read-only)
+
+Create two **local and synthetic/authorized** JSON manifests. The note reference manifest is described in `docs/NOTE_RECONCILIATION_REVIEW.md`. The presentation manifest must contain a strict version and the same company/year scope:
+
+```json
+{
+  "schema_version": 1,
+  "company_code": "001",
+  "fiscal_year": 1404,
+  "policies": [
+    {"statement_section":"Assets","note_number":"A1","subnote_code":"","category":"ASSETS","sign_multiplier":1,"line_label":"Synthetic assets","policy_evidence_ref":"SYNTH-POLICY-A"},
+    {"statement_section":"Liabilities","note_number":"L1","subnote_code":"","category":"LIABILITIES","sign_multiplier":-1,"line_label":"Synthetic liabilities","policy_evidence_ref":"SYNTH-POLICY-L"},
+    {"statement_section":"Equity","note_number":"E1","subnote_code":"","category":"EQUITY","sign_multiplier":-1,"line_label":"Synthetic equity","policy_evidence_ref":"SYNTH-POLICY-E"}
+  ]
+}
+```
+
+```bash
+cd backend
+python -m aram_backend.balance_sheet_candidate_cli \
+  --file ./synthetic.xlsx \
+  --references ./synthetic_references.json \
+  --policies ./synthetic_presentation.json
+```
+
+Exit status `0` means mathematically balanced for **analyst preview only**; `3` means unbalanced or other blocking findings; `2` means invalid/unsafe input. No official statement, XLSX/PDF document, database record or approval is ever created. Data is printed to stdout as JSON only. Never save real financial files in the public repository.
+
+Both JSON files and XLSX are read using bounded, no-symlink local readers; duplicate or unknown JSON keys and mismatched company/year scopes block. Security and CLI tests are in `backend/tests/test_balance_sheet_candidate_cli.py`.
