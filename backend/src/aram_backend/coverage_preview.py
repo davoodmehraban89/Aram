@@ -294,7 +294,7 @@ def preview_mapping_coverage(
             ))
 
         # Exact decimal aggregation, including mixed tiny and huge balances.
-        positive_digits = max(1, *(amount.adjusted() + 1 for amount in all_amounts if amount))
+        positive_digits = max((amount.adjusted() + 1 for amount in all_amounts if amount), default=1)
         fractional_digits = max(0, *(-amount.as_tuple().exponent for amount in all_amounts))
         precision = max(100, positive_digits + fractional_digits + len(str(len(all_amounts))) + 4)
         with localcontext() as ctx:
