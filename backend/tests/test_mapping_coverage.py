@@ -112,3 +112,78 @@ def test_diagnostic_does_not_flush_pending_unrelated_writes(session):
     assert pending.id is None
     assert coverage.total_accounts == 1
     assert coverage.unmapped_accounts == ("001",)
+
+
+def test_stale_same_year_note_is_not_counted_as_mapped(session):
+    year, notes = year_with_accounts(session, "STALE-A", ("001",))
+    rule(session, year, "old_note", "001", notes[0].id)
+    session.add(NoteDefinition(
+        year_id=year.id, note_number=notes[0].note_number,
+        title="Current version", version=2,
+    ))
+    session.commit()
+
+    result = inspect_mapping_coverage(session, year_id=year.id)
+
+    assert result.mapped_accounts == ()
+    assert result.unmapped_accounts == ("001",)
+    assert result.invalid_target_rules == (("old_note", "001", "target_note_stale"),)
+
+
+def test_cross_year_note_target_is_not_counted_as_mapped(session):
+    from sqlalchemy import update
+
+    year, notes = year_with_accounts(session, "FOREIGN-A", ("001",))
+    foreign, foreign_notes = year_with_accounts(session, "FOREIGN-B", ("001",))
+    rule(session, year, "foreign", "001", notes[0].id)
+    session.commit()
+    # This is intentionally an ORM event bypass via SQLAlchemy Core SQL.
+    session.execute(
+        update(MappingRule)
+        .where(MappingRule.year_id == year.id, MappingRule.rule_key == "foreign")
+        .values(target_note_id=foreign_notes[0].id)
+    )
+    session.commit()
+    session.expire_all()
+
+    result = inspect_mapping_coverage(session, year_id=year.id)
+
+    assert result.mapped_accounts == ()
+    assert result.unmapped_accounts == ("001",)
+    assert result.invalid_target_rules == (("foreign", "001", "target_note_wrong_year"),)
+
+
+def test_one_valid_and_one_stale_rule_does_not_count_as_clean_mapping(session):
+    year, notes = year_with_accounts(session, "MIXED-A", ("001",))
+    rule(session, year, "valid", "001", notes[1].id)
+    rule(session, year, "stale", "001", notes[0].id)
+    session.add(NoteDefinition(
+        year_id=year.id, note_number=notes[0].note_number,
+        title="Current version", version=2,
+    ))
+    session.commit()
+
+    result = inspect_mapping_coverage(session, year_id=year.id)
+
+    assert result.mapped_accounts == ()
+    assert result.unmapped_accounts == ("001",)
+    assert result.ambiguous_accounts == ()
+    assert result.invalid_target_rules == (("stale", "001", "target_note_stale"),)
+
+
+def test_latest_note_version_target_is_clean_and_read_only(session):
+    year, notes = year_with_accounts(session, "LATEST-A", ("001",))
+    current = NoteDefinition(year_id=year.id, note_number=notes[0].note_number, title="Current", version=2)
+    session.add(current)
+    session.flush()
+    rule(session, year, "ok", "001", current.id)
+    session.commit()
+
+    pending = AccountVersion(year_id=year.id, account_code="X", account_name="Pending", version=1)
+    session.add(pending)
+    result = inspect_mapping_coverage(session, year_id=year.id)
+
+    assert result.mapped_accounts == ("001",)
+    assert result.invalid_target_rules == ()
+    assert pending in session.new
+    assert pending.id is None
