@@ -1,0 +1,30 @@
+# ARAM Gate 3 — fail-closed, pinned RS256 identity verification boundary
+
+**Status:** PROPOSED in unmerged [Draft PR #55](https://github.com/davoodmehraban89/Aram/pull/55). Exact parent is unmerged [Draft PR #54](https://github.com/davoodmehraban89/Aram/pull/54) at SHA `c5e3fb7f8917433a1075ece8ad1ee95a1695dad5`. Upstream #53→#52→#51→#50→#26 and migration design PR #25 remain unmerged. Accepted branch `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914` is unchanged.
+
+## Scope and threat model
+
+Previous Gate 3 drafts and system `DraftStaged` events have **NO verified human author or reviewer identity**. Treating a JSON field, client-supplied reviewer name or `X-User`/role header as authentication is unacceptable for financial approval. This PR adds a **read-only, fail-closed authenticated-principal boundary**, not a finance approval service.
+
+- New `authenticated_identity.py` uses PyJWT with its crypto extra to verify a **pinned, operator-configured RSA PUBLIC key**, with a fixed `RS256` algorithm allowlist. Never accept `none`, HMAC, caller-provided key, JWKS URL, token header key material, or signature-disabled decode. Public-key parsing requires an actual RSA public key, minimum 2048 bits; private-key PEM and malformed PEM are refused.
+- `Settings` supports `ARAM_AUTH_ISSUER`, `ARAM_AUTH_AUDIENCE` and `ARAM_AUTH_PUBLIC_KEY_PEM`. All default to empty (DISABLED). Issuer must be a configured HTTPS URL; audience must be nonempty; public key must be an actual RSA *verification* key. Misconfiguration yields HTTP 503. This is an **operator trust anchor**, not an external IdP automatically discovered or provisioned by the project.
+- Tokens require signed `iss`, `aud`, `sub`, `exp`, `iat`, `nbf`, `token_use=access`, and `aram_roles`. Verify exact issuer and audience, temporal validity with zero leeway, numeric date claim types and maximum lifetime of **900 seconds**. Invalid, expired, future, missing or malformed claims return 401 with `WWW-Authenticate: Bearer`. Claims are never read before signature validation for authorization decisions.
+- Only two currently recognized role strings: `mapping_proposer` and `mapping_reviewer`, and token must carry exactly one. Disallow unknown/duplicate or both roles simultaneously. The roles are *trusted only if in a verified RSA-signed token issued by the selected enterprise IdP*. These are **preparatory transport claims**, not actual database author/reviewer entitlements or proof of approvals.
+- `VerifiedPrincipal` is a frozen, internal snapshot of issuer, subject, role and expiry. The server derives it only after verifying token signature and claims; the HTTP client cannot set it via headers. Python objects are not security boundaries in themselves; a future sensitive API must obtain this value through `Depends(require_verified_principal)`, not accept a client-supplied object.
+- `GET /api/v1/auth/me` returns **only** verified identity facts for diagnostics. No token/private key is echoed; no POST on this route. The existing health and read-only schema catalog remain usable as before.
+- No `POST approve`, reject, review, MappingRule apply or financial statement write endpoint is introduced. `mapping_draft_store` still has no author_id; do **not** infer that future author/reviewer separation is implemented.
+
+## Deployment requirements before any real use
+
+1. Owner must select an actual enterprise identity provider authorized to issue ARAM API access tokens, provision aud/iss, configure a correct trusted RSA verification public key via a protected deployment secret/configuration channel, and define company/year scopes. **No private signing key should be present in this repository or backend environment.**
+2. Enterprise IdP must actually assign/attest the intended `aram_roles`, support timely revocation, public-key rotation and identity lifecycle, and produce short-lived signed access tokens. This PR uses a single pinned key only: **no JWKS refresh/rotation, token revocation, account directory sync, SSO login flow or delegated authorization**.
+3. Authenticate end-user identity in a future proposal submission API, store immutable `issuer+subject` of author under a reviewed migration, verify reviewer is a **different actual subject** under a separate policy, preserve year/company scoping and write authenticated audit. These services **do not exist yet**.
+4. Only after correct database transaction isolation, compare-and-set and source financial reconciliation can a human-approved proposal be applied. Existing low-level Mapping and Excel import write paths bypass that future workflow and remain unresolved in Issues #49, #43. Real C1/C2/C3 independent reviewers remain Issue #39.
+
+## Synthetic acceptance cases
+
+Generate ephemeral 2048-bit RSA keys in CI only (no real production credentials). Positive: valid 5-minute signed proposer/reviewer tokens on a read-only whoami route. Negative: missing Bearer, forged identity and reviewer HTTP headers, wrong signer, wrong issuer/audience, expiration and future time, lifetime greater than 15 min, malformed subjects, wrong token_use, unknown/dual/duplicate/non-list roles, missing required signed claims, HMAC/unsigned tokens, token payload tampering, malformed PEM, private key in public slot, 1024-bit key, oversized tokens, unconfigured key/aud/issuer. No approval endpoints created. Run exact-final-SHA remote CI, reversible disposable Alembic migrations and compileall, inspect scoped patch and reviewer state.
+
+**No canonical accounting XLSX/PDF, `data/`, actual client DB, schema migration, prior migration revision, workflows, binary or release touched.** A new cryptographic dependency requires independent security/dependency review before merging.
+
+**Acceptance:** this PR remains Draft/unmerged until upstream parents and **three genuine independent non-author C1/C2/C3** signoffs are recorded. A valid test token is not a finance officer signature or approval; no actual external IdP connection was configured or tested here.
