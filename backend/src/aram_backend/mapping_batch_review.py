@@ -48,6 +48,9 @@ class MappingBatchPreview:
     year_id: int
     rows: tuple[MappingBatchRowResult, ...]
     fingerprint: str
+    # Exact submitted typed evidence, not an authentication token.
+    # Required to replay and revalidate every row before later review.
+    source_rows: tuple[ProposedMappingRow, ...]
 
     @property
     def counts(self) -> dict[str, int]:
@@ -156,17 +159,32 @@ def preview_mapping_batch(
                         target_note_id=entry.target_note_id,
                         mapping_type=entry.mapping_type,
                         expected_base_version=entry.expected_base_version,
+                        allow_unchanged=True,
                     )
                 except MappingNoChange:
-                    result = MappingBatchRowResult(source, str(entry.rule_key), "unchanged")
+                    # Defensive compatibility: only the single-item API is
+                    # expected to raise no-change with allow_unchanged=False.
+                    result = MappingBatchRowResult(source, str(entry.rule_key), "invalid",
+                                                   reason="missing unchanged state evidence")
                 except MappingValidationError as exc:
                     result = MappingBatchRowResult(
                         source, str(entry.rule_key), "invalid", reason=str(exc),
                     )
                 else:
+                    unchanged = preview.before is not None and (
+                        preview.before.account_code, preview.before.target_note_id,
+                        preview.before.mapping_type,
+                    ) == (
+                        preview.proposed.account_code, preview.proposed.target_note_id,
+                        preview.proposed.mapping_type,
+                    )
                     result = MappingBatchRowResult(
                         source, entry.rule_key,
-                        "new" if preview.before is None else "changed",
+                        "unchanged" if unchanged else (
+                            "new" if preview.before is None else "changed"
+                        ),
+                        # Keep full catalog and rule version snapshot even for
+                        # unchanged rows so later changes cannot go unnoticed.
                         preview=preview,
                     )
             if isinstance(entry.rule_key, str):
@@ -190,4 +208,28 @@ def preview_mapping_batch(
                 sort_keys=True, separators=(",", ":"), ensure_ascii=True,
             ).encode("utf-8")
         ).hexdigest()
-        return MappingBatchPreview(year_id=year_id, rows=tuple(results), fingerprint=fingerprint)
+        return MappingBatchPreview(
+            year_id=year_id, rows=tuple(results), fingerprint=fingerprint,
+            source_rows=entries,
+        )
+
+
+def verify_mapping_batch_current(session: Session, snapshot: MappingBatchPreview) -> None:
+    """Fail closed if ANY source row, catalog or result changed after preview.
+
+    Read-only verifier; it is neither authenticated approval nor authorization
+    to write. Never replace a reviewed snapshot with a refreshed one silently.
+    """
+    if not isinstance(snapshot, MappingBatchPreview):
+        raise MappingValidationError("invalid mapping batch snapshot")
+    if not snapshot.ready_for_review:
+        raise MappingValidationError("mapping batch is not ready for review")
+    try:
+        current = preview_mapping_batch(
+            session, year_id=snapshot.year_id, rows=snapshot.source_rows,
+        )
+    except (MappingValidationError, TypeError, ValueError) as exc:
+        raise MappingValidationError("mapping batch review is stale or invalid") from exc
+    if current != snapshot or not current.ready_for_review:
+        raise MappingValidationError("mapping batch review is stale or altered")
+
