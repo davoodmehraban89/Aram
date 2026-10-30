@@ -36,3 +36,10 @@ Outputs include per-row reason, stable locators, optional `MappingChangePreview`
 Synthetic cases: first-time batch without writes; identical duplicates coalesced; conflicting duplicates poison every row; valid old/new diff and no-op; stale version rejects only affected row and blocks all approval; foreign-year and unknown accounts; obsolete same-year target; all-noop no approval delta; deterministic digest and unrelated no-autoflush; pending dirty MappingRule rejected; empty/malformed/oversized batch; repeated locator; Approved/Locked year; malformed row fail closed. Exact-final-SHA remote GitHub CI, migration round-trip and compile needed. Do not read/change canonical financial XLSX/PDF, `data/`, customer databases, migrations, dependencies, workflows or releases.
 
 Rollback: close this unmerged Draft, or use an independently reviewed revert after authorized merge.
+
+
+## Additional financial identity and provenance hardening
+
+- Python treats `True == 1`; a malformed Boolean `target_note_id=True` or `expected_base_version=True` must never coalesce with a valid integer `1`. Comparison signatures preserve **actual Python type** for each identifier/value; differing types yield explicit conflicting-source results, not a false "coalesced" success.
+- A `source_locator` is an auditable provenance label; reject Unicode category `Cc`, `Cf`, and `Cs` (including newline, tab, NUL, bidi overrides and invisible format characters) rather than allowing log/row-spoofing. Source file hashes and actual cell coordinates must still be verified by the later Excel adapter.
+- These are fail-closed **pre-review** rules only. They do not confer authenticated ownership, signed review, or ability to apply any Mapping proposal.
