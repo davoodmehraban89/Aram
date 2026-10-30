@@ -1,0 +1,52 @@
+name: Windows Desktop Pilot CI (UNRELEASED)
+
+on:
+  pull_request:
+    paths:
+      - "backend/src/aram_backend/desktop_pilot*.py"
+      - "backend/tests/test_desktop_pilot.py"
+      - "backend/desktop/**"
+      - ".github/workflows/desktop-windows-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-native-pilot:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - name: Install backend and frozen-app tooling
+        shell: pwsh
+        run: python -m pip install -e ".[test]" "pyinstaller>=6.10,<7"
+      - name: Run desktop controller safety tests
+        shell: pwsh
+        run: python -m pytest tests/test_desktop_pilot.py
+      - name: Compile native Windows EXE (no release or signing)
+        shell: pwsh
+        run: .\desktop\build_windows_exe.ps1
+      - name: Smoke test frozen EXE headless and actual Tk callbacks
+        shell: pwsh
+        run: |
+          $exe = ".\dist\AramPilot-UNRELEASED.exe"
+          & $exe --self-test
+          if ($LASTEXITCODE -ne 0) { throw "Frozen EXE headless test failed: $LASTEXITCODE" }
+          & $exe --ui-smoke
+          if ($LASTEXITCODE -ne 0) { throw "Frozen EXE native Tk menu/button callback smoke failed: $LASTEXITCODE" }
+      - name: Upload NON-PRODUCTION unsigned pilot for inspection only
+        uses: actions/upload-artifact@v4
+        with:
+          name: AramPilot-UNRELEASED-Windows-x64
+          path: backend/dist/AramPilot-UNRELEASED.exe
+          if-no-files-found: error
+          retention-days: 7
