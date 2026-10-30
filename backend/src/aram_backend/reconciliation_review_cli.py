@@ -95,7 +95,9 @@ def parse_manifest(content: bytes) -> tuple[str, int, tuple[NoteReference, ...]]
         raise CoverageError("INVALID_MANIFEST_SCHEMA")
     if type(document["schema_version"]) is not int or document["schema_version"] != 1:
         raise CoverageError("INVALID_MANIFEST_VERSION")
-    if not isinstance(document["company_code"], str) or not document["company_code"].strip():
+    company = document["company_code"]
+    if (not isinstance(company, str) or not company or company != company.strip()
+            or len(company) > 64 or any(ord(ch) < 32 for ch in company)):
         raise CoverageError("INVALID_MANIFEST_COMPANY")
     if type(document["fiscal_year"]) is not int or document["fiscal_year"] <= 0:
         raise CoverageError("INVALID_MANIFEST_YEAR")
