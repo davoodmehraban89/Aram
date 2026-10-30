@@ -91,7 +91,7 @@ def preview_mapping_change(
     )
     with session.no_autoflush:
         _require_clean_mapping_state(session)
-        year = session.get(FiscalYear, year_id)
+        year = session.get(FiscalYear, year_id, populate_existing=True)
         if year is None or year.status is not FiscalYearStatus.DRAFT:
             raise MappingValidationError("fiscal year must exist and be Draft")
 
@@ -100,12 +100,13 @@ def preview_mapping_change(
             .where(MappingRule.year_id == year_id, MappingRule.rule_key == rule_key)
             .order_by(MappingRule.version.desc(), MappingRule.id.desc())
             .limit(1)
+            .execution_options(populate_existing=True)
         )
         prior_version = previous_rule.version if previous_rule is not None else 0
         if expected_base_version != prior_version:
             raise MappingValidationError("stale base mapping version; regenerate review preview")
 
-        target = session.get(NoteDefinition, target_note_id)
+        target = session.get(NoteDefinition, target_note_id, populate_existing=True)
         if target is None or target.year_id != year_id:
             raise MappingValidationError("target note must belong to the same fiscal year")
         latest_note = session.scalar(
@@ -113,6 +114,7 @@ def preview_mapping_change(
                 NoteDefinition.year_id == year_id,
                 NoteDefinition.note_number == target.note_number,
             ).order_by(NoteDefinition.version.desc(), NoteDefinition.id.desc()).limit(1)
+            .execution_options(populate_existing=True)
         )
         if latest_note is None or latest_note.id != target_note_id:
             raise MappingValidationError("target must reference latest note version")
@@ -121,6 +123,7 @@ def preview_mapping_change(
             select(AccountVersion).where(
                 AccountVersion.year_id == year_id, AccountVersion.account_code == account_code,
             ).order_by(AccountVersion.version.desc(), AccountVersion.id.desc()).limit(1)
+            .execution_options(populate_existing=True)
         )
         if account is None:
             raise MappingValidationError("account code must exist in the same fiscal year")
