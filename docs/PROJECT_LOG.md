@@ -299,3 +299,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Corrected test and verified a later exact-head CI: https://github.com/davoodmehraban89/Aram/actions/runs/41126115327 (success); subsequent CLI CI https://github.com/davoodmehraban89/Aram/actions/runs/41126235147 (success).
 - Additional security review found that hidden auxiliary and unexpected sheets were not all checked; added fail-closed validation and two regression tests. **The final revised head requires another exact-head CI result before acceptance.**
 - Formal C1/C2/C3 independent approvals: NONE. Release artifact: NONE. No real finance data, canonical files, production DB or accepted branch modified. Draft only, no merge.
+
+### 2026-10-31 — Gate 3 review-only reconciliation candidate
+- Actor: ChatGPT Principal Engineering.
+- Parent branch: `codex/aram-readonly-mapping-coverage-20261031@8f0e9e400c63237e00ae6d0b9847a473cb758d6e`, Draft PR #60; ultimate accepted base `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `codex/aram-reconciliation-review-gate-20261031`.
+- Add pure in-memory note reconciliation, synthetic tests, explicit nonapproval documentation and durable records. Exact CI result must be verified at final SHA after PR publication.
+- Artifacts/releases: NONE. Finance owner signoff and independent C1/C2/C3: PENDING. No `data/` XLSX/PDF, original migrations, secrets, real SQL, accepted branch or customer facts modified.
+- Next: inspect remote exact-head GitHub Actions results, remediate failures, obtain independent review; do not merge yet.
