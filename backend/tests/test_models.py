@@ -786,3 +786,59 @@ def test_draft_statement_move_with_clean_unlinked_line_is_allowed(session):
     session.expire_all()
     assert session.get(FinancialStatement, statement.id).year_id == second.id
     assert session.get(StatementLine, line.id).target_note_id is None
+
+
+@pytest.mark.parametrize("ref_kind", ["mapping", "statement_line"])
+def test_note_year_move_with_explicit_reference_retarget_is_valid(session, ref_kind):
+    first = make_year(session, 1403)
+    second = make_year(session, 1404)
+    moved_note = NoteDefinition(
+        year_id=first.id, note_number="10", title="Moved"
+    )
+    remaining_note = NoteDefinition(
+        year_id=first.id, note_number="11", title="Remaining"
+    )
+    session.add_all([moved_note, remaining_note])
+    if ref_kind == "mapping":
+        dependent = MappingRule(
+            year_id=first.id, rule_key="cash", account_code="1000",
+            mapping_type="O", target_note=moved_note,
+        )
+    else:
+        statement = FinancialStatement(
+            year_id=first.id, statement_type=StatementType.BALANCE_SHEET
+        )
+        dependent = StatementLine(
+            statement=statement, target_note=moved_note,
+            line_order=0, line_label="Assets",
+        )
+        session.add(statement)
+    session.add(dependent)
+    session.commit()
+    moved_note.year_id = second.id
+    dependent.target_note = remaining_note
+    session.commit()
+    session.expire_all()
+    assert session.get(NoteDefinition, moved_note.id).year_id == second.id
+    assert session.get(type(dependent), dependent.id).target_note_id == remaining_note.id
+
+
+def test_move_note_and_statement_together_preserves_same_year_line(session):
+    first = make_year(session, 1403)
+    second = make_year(session, 1404)
+    note = NoteDefinition(year_id=first.id, note_number="10", title="Assets")
+    statement = FinancialStatement(
+        year_id=first.id, statement_type=StatementType.BALANCE_SHEET
+    )
+    line = StatementLine(
+        statement=statement, target_note=note, line_order=0, line_label="Assets"
+    )
+    session.add_all([note, statement, line])
+    session.commit()
+    note.year_id = second.id
+    statement.year_id = second.id
+    session.commit()
+    session.expire_all()
+    assert session.get(NoteDefinition, note.id).year_id == second.id
+    assert session.get(FinancialStatement, statement.id).year_id == second.id
+    assert session.get(StatementLine, line.id).target_note_id == note.id
