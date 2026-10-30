@@ -9,6 +9,9 @@ from aram_backend.mapping_draft_store import (
     get_unreviewed_batch, validate_unreviewed_batch_current,
 )
 from aram_backend.mapping_service import MappingValidationError, save_mapping_rule
+from aram_backend.mapping_draft_audit import (
+    mapping_draft_events, verify_draft_staging_event, SQLITE_AUDIT_GUARD_DDL,
+)
 from aram_backend.models import (
     Company, FiscalYear, FiscalYearStatus, NoteDefinition, AccountVersion, MappingRule,
 )
@@ -19,6 +22,10 @@ def setup(session):
     # Deliberately NOT part of Base.metadata. Migration creates this table
     # after initial metadata-driven migration to prevent double-create.
     mapping_review_drafts.create(session.get_bind())
+    mapping_draft_events.create(session.get_bind())
+    with session.get_bind().begin() as connection:
+        for statement in SQLITE_AUDIT_GUARD_DDL:
+            connection.exec_driver_sql(statement)
     company = Company(code="DRAFT-STORE", name="Synthetic")
     year = FiscalYear(company=company, year=1404)
     session.add(year)
@@ -36,6 +43,7 @@ def setup(session):
         # This table deliberately lives outside Base.metadata. It MUST be
         # removed before the outer session fixture drops FiscalYear tables.
         session.rollback()
+        mapping_draft_events.drop(session.get_bind())
         mapping_review_drafts.drop(session.get_bind())
 
 
@@ -251,3 +259,195 @@ def test_proposal_table_has_independent_metadata_and_fk(setup):
     assert "mapping_review_drafts" in inspect(session.get_bind()).get_table_names()
     names = {fk["referred_table"] for fk in inspect(session.get_bind()).get_foreign_keys("mapping_review_drafts")}
     assert "fiscal_years" in names
+
+
+def test_staging_has_exactly_one_atomic_system_audit_event(setup):
+    session, year, note, _ = setup
+    staged = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-01",
+    )
+    events = session.execute(
+        select(mapping_draft_events).where(mapping_draft_events.c.draft_id == staged.id)
+    ).mappings().all()
+    assert len(events) == 1
+    assert events[0]["event_type"] == "DraftStaged"
+    assert events[0]["year_id"] == year.id
+    assert events[0]["payload_hash"] == staged.checksum
+    assert verify_draft_staging_event(session, draft_id=staged.id, year_id=year.id) is None
+    assert session.scalars(select(MappingRule)).all() == []
+    session.commit()
+    assert verify_draft_staging_event(session, draft_id=staged.id, year_id=year.id) is None
+
+
+def test_staged_draft_rollback_discards_audit_and_proposal_together(setup):
+    session, year, note, _ = setup
+    save_unreviewed_batch(session, proposal(session, year, note), request_key="audit-02")
+    assert len(session.execute(select(mapping_draft_events)).all()) == 1
+    session.rollback()
+    assert session.execute(select(mapping_draft_events)).all() == []
+    assert session.execute(select(mapping_review_drafts)).all() == []
+
+
+def test_idempotent_replay_does_not_append_another_audit_event(setup):
+    session, year, note, _ = setup
+    snapshot = proposal(session, year, note)
+    initial = save_unreviewed_batch(session, snapshot, request_key="audit-03")
+    session.commit()
+    repeated = save_unreviewed_batch(session, snapshot, request_key="audit-03")
+    session.commit()
+    assert initial == repeated
+    assert len(session.execute(select(mapping_draft_events)).all()) == 1
+
+
+def test_sqlite_event_audit_update_and_delete_are_denied_by_triggers(setup):
+    session, year, note, _ = setup
+    saved = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-04",
+    )
+    session.commit()
+    with pytest.raises(IntegrityError):
+        session.execute(
+            update(mapping_draft_events)
+            .where(mapping_draft_events.c.draft_id == saved.id)
+            .values(payload_hash="0" * 64)
+        )
+    session.rollback()
+    from sqlalchemy import delete
+    with pytest.raises(IntegrityError):
+        session.execute(
+            delete(mapping_draft_events)
+            .where(mapping_draft_events.c.draft_id == saved.id)
+        )
+    session.rollback()
+    assert verify_draft_staging_event(session, draft_id=saved.id, year_id=year.id) is None
+
+
+def test_draft_read_rejects_modified_payload_even_if_draft_hash_is_recomputed(setup):
+    session, year, note, _ = setup
+    saved = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-05",
+    )
+    session.commit()
+    from hashlib import sha256
+    import json
+    corrupted = {"batch": {"source_rows": []}}
+    replacement_hash = sha256(json.dumps(
+        corrupted, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")).hexdigest()
+    session.execute(
+        update(mapping_review_drafts)
+        .where(mapping_review_drafts.c.id == saved.id)
+        .values(payload_json=corrupted, payload_hash=replacement_hash)
+    )
+    session.commit()
+    with pytest.raises(MappingValidationError, match="audit|tamper|corrupt"):
+        get_unreviewed_batch(session, draft_id=saved.id, year_id=year.id)
+
+
+def test_draft_event_foreign_year_is_not_readable(setup):
+    session, year, note, _ = setup
+    saved = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-06",
+    )
+    session.commit()
+    with pytest.raises(MappingValidationError, match="not found"):
+        verify_draft_staging_event(session, draft_id=saved.id, year_id=year.id + 1)
+
+
+def test_raw_sql_cannot_insert_second_event_for_same_draft(setup):
+    session, year, note, _ = setup
+    saved = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-07",
+    )
+    session.commit()
+    event = session.execute(select(mapping_draft_events)).mappings().one()
+    with pytest.raises(IntegrityError):
+        session.execute(
+            insert(mapping_draft_events).values(
+                draft_id=saved.id, year_id=year.id,
+                event_type="DraftStaged",
+                payload_hash=event["payload_hash"],
+                event_hash=event["event_hash"],
+            )
+        )
+    session.rollback()
+    assert len(session.execute(select(mapping_draft_events)).all()) == 1
+
+
+def test_draft_event_is_system_staging_not_user_approval(setup):
+    session, year, note, _ = setup
+    saved = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-08",
+    )
+    event = session.execute(select(mapping_draft_events)).mappings().one()
+    assert event["event_type"] == "DraftStaged"
+    assert "approved_by" not in mapping_draft_events.c
+    assert "reviewer_id" not in mapping_draft_events.c
+    assert not hasattr(saved, "approve")
+    assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_sqlite_parent_draft_cannot_be_deleted_while_audit_event_exists(setup):
+    from sqlalchemy import delete
+    session, year, note, _ = setup
+    staged = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-09",
+    )
+    session.commit()
+    with pytest.raises(IntegrityError):
+        session.execute(
+            delete(mapping_review_drafts).where(mapping_review_drafts.c.id == staged.id)
+        )
+    session.rollback()
+    assert verify_draft_staging_event(
+        session, draft_id=staged.id, year_id=year.id
+    ) is None
+
+
+def test_separate_drafts_get_separate_insert_only_events(setup):
+    session, year, cash, other = setup
+    a = save_unreviewed_batch(
+        session, proposal(session, year, cash, key="cash"), request_key="audit-10",
+    )
+    b = save_unreviewed_batch(
+        session, proposal(session, year, other, key="ar"), request_key="audit-11",
+    )
+    session.commit()
+    assert a.id != b.id
+    events = session.execute(select(mapping_draft_events)).mappings().all()
+    assert len(events) == 2
+    assert {x["draft_id"] for x in events} == {a.id, b.id}
+    assert {x["event_hash"] for x in events} != {a.checksum}
+    assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_audit_migration_refuses_legacy_drafts_without_backfill(setup, monkeypatch):
+    # A database that has run only the preceding PR #53 migration can already
+    # contain drafts. Adding an empty audit table must NOT make their readback
+    # silently fail; block the upgrade until explicit owner-approved recovery.
+    from importlib.util import module_from_spec, spec_from_file_location
+    from pathlib import Path
+    import alembic.op as op
+
+    session, year, note, _ = setup
+    save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-12",
+    )
+    session.commit()
+
+    path = (
+        Path(__file__).resolve().parents[1] / "migrations" / "versions"
+        / "20261030_03_system_staging_audit.py"
+    )
+    spec = spec_from_file_location("audit_migration_test", path)
+    assert spec is not None and spec.loader is not None
+    migration = module_from_spec(spec)
+    spec.loader.exec_module(migration)
+    monkeypatch.setattr(op, "get_bind", lambda: session.connection())
+    def unexpected_ddl(*args, **kwargs):
+        raise AssertionError("migration must stop before any DDL on nonempty drafts")
+    monkeypatch.setattr(op, "create_table", unexpected_ddl)
+
+    with pytest.raises(RuntimeError, match="existing.*draft|backfill"):
+        migration.upgrade()
+    assert len(session.execute(select(mapping_draft_events)).all()) == 1

@@ -102,6 +102,9 @@ def _read_row(session: Session, *, draft_id: int, year_id: int):
             not isinstance(row["payload_json"], dict) or
             _digest(row["payload_json"]) != row["payload_hash"]):
         raise MappingValidationError("stored unreviewed Mapping draft corrupted")
+    # Import locally: the audit schema refers to this module's own Core Table.
+    from aram_backend.mapping_draft_audit import verify_draft_staging_event
+    verify_draft_staging_event(session, draft_id=draft_id, year_id=year_id)
     return row
 
 
@@ -134,6 +137,12 @@ def save_unreviewed_batch(
                 raise MappingValidationError("stored idempotency request key is corrupted")
             if checksum != existing["payload_hash"] or payload != existing["payload_json"]:
                 raise MappingValidationError("idempotency request key already used for another proposal")
+            # Existing request must have its original system event; never
+            # append a second event on an idempotent replay.
+            from aram_backend.mapping_draft_audit import verify_draft_staging_event
+            verify_draft_staging_event(
+                session, draft_id=existing["id"], year_id=snapshot.year_id,
+            )
             return _from_row(existing)
         result = session.execute(
             insert(mapping_review_drafts).values(
@@ -145,6 +154,11 @@ def save_unreviewed_batch(
         # identical keys on independent DB connections. On IntegrityError the
         # caller must rollback; do not recover by unguarded replay.
         draft_id = result.inserted_primary_key[0]
+        from aram_backend.mapping_draft_audit import record_draft_staging_event
+        record_draft_staging_event(
+            session, draft_id=draft_id, year_id=snapshot.year_id,
+            request_key=request_key, payload_hash=checksum,
+        )
         row = _read_row(session, draft_id=draft_id, year_id=snapshot.year_id)
         return _from_row(row)
 
