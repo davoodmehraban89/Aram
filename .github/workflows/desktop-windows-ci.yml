@@ -36,6 +36,9 @@ jobs:
       - name: Run desktop controller safety tests
         shell: pwsh
         run: python -m pytest tests/test_desktop_pilot.py
+      - name: Invoke all Tk menus, buttons and tabs from Python on Windows
+        shell: pwsh
+        run: python -m aram_backend.desktop_pilot --ui-smoke
       - name: Compile native Windows EXE (no release or signing)
         shell: pwsh
         run: .\desktop\build_windows_exe.ps1
