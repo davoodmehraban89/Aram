@@ -118,7 +118,7 @@ def _key(
 def _sum_exact(amounts: Sequence[Decimal]) -> Decimal:
     if not amounts:
         return Decimal(0)
-    integer_digits = max(1, *(amount.adjusted() + 1 for amount in amounts if amount))
+    integer_digits = max((amount.adjusted() + 1 for amount in amounts if amount), default=1)
     decimal_places = max(0, *(-amount.as_tuple().exponent for amount in amounts))
     with localcontext() as context:
         context.prec = max(100, integer_digits + decimal_places + len(str(len(amounts))) + 8)
