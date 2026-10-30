@@ -90,14 +90,6 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 2. Reconcile PR #22 documentation and PR #26/27 mapping candidates with the safety fix. Existing drafts do not yet implement the requested persisted old/new preview, user approval, identical-input coalescing or full account/dimension identity.
 3. Continue the owner-requested read-only Peyvast SQL Server integration and governed DB/Excel mapping design. The customer installation version, schema, supported interface and access remain unverified; no live connector or financial reconciliation is claimed.
 
-## Pending child safety fix — 2026-10-30
-
-- Draft [PR #35](https://github.com/davoodmehraban89/Aram/pull/35) is stacked on unmerged PR #32 at `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; neither is accepted or merged.
-- Scope: reject simultaneous Draft→Approved fiscal-year transition and mutations/new registrations within that year's ORM Session; reject same-flush Company edits. Separate Draft edit followed by approval remains valid.
-- Code/testing candidate `f5f9257563f382f6663bc7b1eb0433a43482e9fd`: [Backend CI run 41059384195](https://github.com/davoodmehraban89/Aram/actions/runs/41059384195) completed successfully, 120 passed, one warning; migration round-trip and compile passed. Later documentation-only SHA must be checked anew.
-- Scope limitations remain: raw/bulk SQL, external database writers, concurrency, graph-wide parent moves and database-level integrity are **not** certified or fixed here.
-- Do not treat the pending ORM fix as V1 financial release acceptance. All independent controls and parent merge/rebase gates remain mandatory.
-
 ## Control documents
 
 - [Project log](docs/PROJECT_LOG.md)
