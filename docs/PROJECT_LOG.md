@@ -296,3 +296,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 
 #### Verification evidence
 - [Backend CI #72](https://github.com/davoodmehraban89/Aram/actions/runs/39944577979) on commit `c246afe70e89195bf6d528efe5e95ffdcb88c2c3`: success, 102 pytest passed (1 warning), migration round-trip and compile succeeded. Final documentation-only head requires independent comparison; no independent reviewer approval claimed.
+
+### 2026-10-30 — Gate 3 stale-note carry-forward hardening, PR #45 (Draft)
+
+- Parent PR #30 exact unmerged SHA `dfcf3f008df54498759243001bdfcd98669a8f23`; inherited parent PR #26 unmerged. Owner requested Gate 3 hardening; author ChatGPT is NOT an independent reviewer.
+- Issue #37: prevent historical rule targeting an obsolete source NoteDefinition version from being silently carried forward as a valid current note.
+- Test-only RED `109f43c263f6a78600ce57f8b943f34d1adea8ad`, [CI 41067133189](https://github.com/davoodmehraban89/Aram/actions/runs/41067133189), **3 expected failures / 103 passed**. Fix `ee16035d85d35fe4dfb69ab2381ecb3f876e1fbc`, [CI 41067277084](https://github.com/davoodmehraban89/Aram/actions/runs/41067277084): **106 passed, 1 warning**, migration upgrade/downgrade and compile succeeded.
+- Changes scoped to `mapping_carry_forward.py`, its tests, new spec/plan, this log and handoff. Protected source XLSX/PDF, `data/`, production databases, migrations, dependencies, workflow and release remain unchanged.
+- No qualified independent C1/C2/C3 review or merge. Exact final documentation SHA requires fresh CI. Rollback: close unmerged Draft or use a later reviewed revert after authorized acceptance.
