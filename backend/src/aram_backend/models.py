@@ -250,7 +250,35 @@ def _persisted_year_id_for(obj: Any, session: Session) -> int | None:
 _PROTECTED_YEAR_STATUSES = {FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED}
 
 
+def _protected_year_status(session: Session, year_id: int) -> FiscalYearStatus | None:
+    """Protect both persisted status and an in-flight approval/locking transition.
+
+    A database SELECT alone sees Draft until the pending FiscalYear status is
+    flushed, allowing a second dirty object to change in the approval flush.
+    """
+    for candidate in session.new | session.dirty | session.deleted:
+        if (
+            isinstance(candidate, FiscalYear)
+            and candidate.id == year_id
+            and candidate.status in _PROTECTED_YEAR_STATUSES
+        ):
+            return candidate.status
+
+    persisted = session.scalar(select(FiscalYear.status).where(FiscalYear.id == year_id))
+    return persisted if persisted in _PROTECTED_YEAR_STATUSES else None
+
+
+
 def _company_has_protected_year(session: Session, company_id: int) -> bool:
+    # A Company edit in the same transaction as Draft -> Approved is forbidden.
+    for candidate in session.new | session.dirty:
+        if isinstance(candidate, FiscalYear) and candidate.status in _PROTECTED_YEAR_STATUSES:
+            linked_id = candidate.company_id
+            if linked_id is None and candidate.company is not None:
+                linked_id = candidate.company.id
+            if linked_id == company_id:
+                return True
+
     status = session.scalar(
         select(FiscalYear.status).where(
             FiscalYear.company_id == company_id,
@@ -320,10 +348,8 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
         year_id = _year_id_for(obj, session)
         original_year_id = _persisted_year_id_for(obj, session)
         for affected_year_id in {year_id, original_year_id} - {None}:
-            status = session.scalar(
-                select(FiscalYear.status).where(FiscalYear.id == affected_year_id)
-            )
-            if status in _PROTECTED_YEAR_STATUSES:
+            status = _protected_year_status(session, affected_year_id)
+            if status is not None:
                 raise ValueError(
                     f"Fiscal year {affected_year_id} is {status.value.lower()} and cannot be mutated"
                 )
