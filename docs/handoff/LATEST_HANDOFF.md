@@ -103,11 +103,11 @@
 - Local evidence at preparation: 67 pytest tests passed; isolated Alembic upgrade/downgrade and compileall passed; focused Ruff and mypy checks passed.
 - Protected boundary: no canonical financial data, workbook, PDF, database, financial value, binary, ZIP, EXE, tag, or release is in scope.
 - Independent-review decision: code, scope, diff, and protected-data boundary passed. CI #38 later revealed only a nondeterministic error-message assertion; CI #39 passed after the one-line assertion stabilization.
-- Status: `IN_PROGRESS`; this durable-document reconciliation records the complete CI sequence. The resulting documentation-only head must be re-fetched and compared with `b3dc8b3a18934ffe63f615e4f650248be21a5f9c` before Ready/Squash Merge.
+- Status: `ACCEPTED` for V1-01 through PR #21 at `7dc864fd032f0c4ae4d650d89304a01286a6d914`. This PR #21 handoff entry is historical and no longer an active merge instruction; the separate repository-hygiene correction is Draft PR #22.
 
 ## Single next action
 
-Resolve the remaining fiscal-year isolation gaps before accepting [PR #32](https://github.com/davoodmehraban89/Aram/pull/32): complete [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36), re-run final-head Backend CI, and obtain independent C1/C2/C3 reviews. Then reconcile the mapping core [PR #26](https://github.com/davoodmehraban89/Aram/pull/26) with stacked PRs #27, #28, #30 and #31; resolve hidden-workbook and stale-source-note findings in Issues #38 and #37. Establish distinct reviewers and verify branch protection through [Issue #39](https://github.com/davoodmehraban89/Aram/issues/39). No Draft PR is accepted by CI alone.
+Resolve the remaining fiscal-year isolation gaps before accepting [PR #32](https://github.com/davoodmehraban89/Aram/pull/32): complete [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36), re-run final-head Backend CI, and obtain independent C1/C2/C3 reviews. Then reconcile the mapping core [PR #26](https://github.com/davoodmehraban89/Aram/pull/26) with stacked PRs #27, #28, #30 and #31; resolve hidden-workbook and stale-source-note findings in [Issue #38](https://github.com/davoodmehraban89/Aram/issues/38) and [Issue #37](https://github.com/davoodmehraban89/Aram/issues/37). Establish distinct reviewers and verify branch protection through [Issue #39](https://github.com/davoodmehraban89/Aram/issues/39). No Draft PR is accepted by CI alone.
 
 ## 2026-10-23 T1 handoff addendum (unmerged)
 
