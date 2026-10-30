@@ -338,3 +338,12 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Boundaries: no direct SQL/bulk/external writer protection; no concurrent transactions or production-db proof; non-indexed target-note FK may need performance profiling on realistic synthetic scale. Full financial source-to-report reconciliation is not proven.
 - Data safety: no canonical financial XLSX/PDF, `data/`, persisted database, actual Peyvast SQL Server, migration, dependencies, workflow, tag, ZIP, EXE, or release touched.
 - Decision: `IN_PROGRESS`; author-run checks cannot count as independent C1/C2/C3 review. No merge/acceptance. Recovery: close unmerged PR without touching source branch; after authorized merge, revert through an independently reviewed PR.
+
+### 2026-10-30 — Issue #36 consolidation into one parent-based Draft PR
+
+- Newly discovered existing project [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36) explicitly requires both same-flush fiscal status and clean graph-reference safety in one focused PR targeting PR #32, with a six-path allowlist.
+- Corrected branch coordination: PR #35 (direct parent PR #32) now contains both tested code changes and all 132 tests; separate Draft PR #41 is **superseded** and must be closed unmerged only after the combined PR's exact-head CI succeeds. Previous PR #41 experiment, RED/GREEN evidence and test references remain as historical proof, not a second acceptance candidate.
+- Removed the previously modified `PROJECT_STATUS.md` from PR #35's diff by restoring the exact parent PR #32 content; no accepted project status was changed.
+- Added Issue #36 required `docs/superpowers/specs/2026-10-30-fiscal-year-graph-integrity.md` and `docs/superpowers/plans/2026-10-30-fiscal-year-graph-integrity.md`. No database migration, dependency, workflow, canonical financial data or binaries touched.
+- Verified pre-consolidation code/test source SHA `78ff0dd5a8ee35b621ae901be39f6a11d37ea063` passed [CI 41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585): 132 tests; *the consolidated PR #35 requires a separately verified final-head workflow run*.
+- Remains Draft/UNVERIFIED for independent C1/C2/C3, even if CI passes. The accepted `source-data-cleanup` branch remains untouched.
