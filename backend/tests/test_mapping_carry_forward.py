@@ -112,3 +112,66 @@ def test_preview_does_not_autoflush_unrelated_changes(session):
     preview_mapping_carry_forward(session, source_year_id=source.id, target_year_id=target.id)
     assert pending in session.new
     assert pending.id is None
+
+
+def test_stale_source_note_version_must_not_be_carried_forward(session):
+    source, target, old_notes, _ = fixture_years(session)
+    newer = NoteDefinition(year_id=source.id, note_number="1", title="Version 2", version=2)
+    session.add(newer)
+    session.commit()
+    before = session.query(MappingRule).count()
+
+    result = preview_mapping_carry_forward(session, source_year_id=source.id, target_year_id=target.id)
+
+    assert result.candidates == ()
+    assert result.skipped == (("cash", "source_note_stale"),)
+    assert session.query(MappingRule).count() == before
+    assert old_notes[0].id != newer.id
+
+
+def test_latest_source_note_and_latest_rule_are_valid(session):
+    source, target, old_notes, new_notes = fixture_years(session)
+    newer = NoteDefinition(year_id=source.id, note_number="1", title="Updated source", version=2)
+    session.add(newer)
+    session.flush()
+    session.add(MappingRule(
+        year_id=source.id, rule_key="cash", account_code="001",
+        target_note_id=newer.id, mapping_type="reviewed", version=2,
+    ))
+    session.commit()
+
+    result = preview_mapping_carry_forward(session, source_year_id=source.id, target_year_id=target.id)
+
+    assert result.skipped == ()
+    assert len(result.candidates) == 1
+    assert result.candidates[0].source_version == 2
+    assert result.candidates[0].target_note_id == new_notes[0].id
+
+
+def test_equal_version_source_note_uses_latest_id(session):
+    source, target, _, _ = fixture_years(session)
+    # Deterministic tie-breaker is version DESC, then id DESC.
+    same_version = NoteDefinition(
+        year_id=source.id, note_number="1", title="Tie-breaker", version=1
+    )
+    session.add(same_version)
+    session.commit()
+
+    result = preview_mapping_carry_forward(session, source_year_id=source.id, target_year_id=target.id)
+    assert result.candidates == ()
+    assert result.skipped == (("cash", "source_note_stale"),)
+
+
+def test_stale_note_preview_does_not_flush_pending_changes(session):
+    source, target, _, _ = fixture_years(session)
+    session.add(NoteDefinition(year_id=source.id, note_number="1", title="New version", version=2))
+    session.commit()
+    pending = AccountVersion(
+        year_id=target.id, account_code="PENDING", account_name="Pending", version=1
+    )
+    session.add(pending)
+    result = preview_mapping_carry_forward(session, source_year_id=source.id, target_year_id=target.id)
+    assert result.candidates == ()
+    assert result.skipped == (("cash", "source_note_stale"),)
+    assert pending in session.new
+    assert pending.id is None
