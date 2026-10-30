@@ -30,7 +30,13 @@ def setup(session):
     )
     session.add_all([note1, note2, account])
     session.commit()
-    return session, year, note1, note2
+    try:
+        yield session, year, note1, note2
+    finally:
+        # This table deliberately lives outside Base.metadata. It MUST be
+        # removed before the outer session fixture drops FiscalYear tables.
+        session.rollback()
+        mapping_review_drafts.drop(session.get_bind())
 
 
 def proposal(session, year, note, key="cash"):
