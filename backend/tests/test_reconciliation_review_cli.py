@@ -143,7 +143,7 @@ def test_no_snapshot_written_or_input_edited_on_mismatch(tmp_path, capsys):
     assert json.loads(controls.read_text()) == manifest(expected="-100.00")
 
 
-@pytest.mark.parametrize("company", [" 001", "001 ", "001\\t", "x" * 65])
+@pytest.mark.parametrize("company", [" 001", "001 ", "001" + chr(9), "x" * 65])
 def test_company_scope_is_never_silently_normalized(company):
     payload = manifest(company=company)
     with pytest.raises(CoverageError) as error:
