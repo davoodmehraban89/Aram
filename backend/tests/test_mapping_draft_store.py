@@ -9,7 +9,9 @@ from aram_backend.mapping_draft_store import (
     get_unreviewed_batch, validate_unreviewed_batch_current,
 )
 from aram_backend.mapping_service import MappingValidationError, save_mapping_rule
-from aram_backend.mapping_draft_audit import mapping_draft_events, verify_draft_staging_event
+from aram_backend.mapping_draft_audit import (
+    mapping_draft_events, verify_draft_staging_event, SQLITE_AUDIT_GUARD_DDL,
+)
 from aram_backend.models import (
     Company, FiscalYear, FiscalYearStatus, NoteDefinition, AccountVersion, MappingRule,
 )
@@ -20,6 +22,10 @@ def setup(session):
     # Deliberately NOT part of Base.metadata. Migration creates this table
     # after initial metadata-driven migration to prevent double-create.
     mapping_review_drafts.create(session.get_bind())
+    mapping_draft_events.create(session.get_bind())
+    with session.get_bind().begin() as connection:
+        for statement in SQLITE_AUDIT_GUARD_DDL:
+            connection.exec_driver_sql(statement)
     company = Company(code="DRAFT-STORE", name="Synthetic")
     year = FiscalYear(company=company, year=1404)
     session.add(year)
@@ -37,6 +43,7 @@ def setup(session):
         # This table deliberately lives outside Base.metadata. It MUST be
         # removed before the outer session fixture drops FiscalYear tables.
         session.rollback()
+        mapping_draft_events.drop(session.get_bind())
         mapping_review_drafts.drop(session.get_bind())
 
 
