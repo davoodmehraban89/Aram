@@ -151,3 +151,10 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - `PROJECT_STATUS.md` reverted to parent #32 content on PR #35, keeping the exact Issue #36 allowlist. Any older references in this handoff to PR #41 as the next candidate are superseded by this entry.
 - Verify the new exact PR #35 final SHA and its GitHub Actions before closing PR #41 without merge. Do not merge PR #35, PR #32 or PR #33 until their independent financial/technical/governance controls pass.
 - ORM-only boundary: raw/bulk SQL, external database writers, concurrency and target-note scan performance remain pending separate evidence. No original accounting source data or production database changed.
+
+## 2026-10-30 — Consolidated candidate and duplicate cleanup verified
+
+- [PR #35](https://github.com/davoodmehraban89/Aram/pull/35) now has both Issue #36 ORM fixes, 132 tests and the six-file allowed diff. Code/docs SHA `8bd5817b324e1585aca88b72285a4fc00187369d` passed [Backend CI 41061793756](https://github.com/davoodmehraban89/Aram/actions/runs/41061793756): SUCCESS, **132 passed, 1 warning**, migration round-trip and compile succeeded.
+- Duplicate [PR #41](https://github.com/davoodmehraban89/Aram/pull/41) was **closed unmerged** after successful consolidation. The previous handoff's description of #41 as a pending child is superseded; its CI remains historical test evidence.
+- `PROJECT_STATUS.md` is unchanged relative to PR #32; PR #35's changed paths are the six permitted by [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36).
+- Final documentation SHA will differ; verify the live PR head and exact-head CI before review. No independent C1/C2/C3 approvals; acceptance remains BLOCKED. The accepted branch remains unchanged and no protected data/source files were modified.
