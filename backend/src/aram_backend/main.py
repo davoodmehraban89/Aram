@@ -10,6 +10,19 @@ settings = get_settings()
 app = FastAPI(title=settings.app_name, version=__version__)
 
 
+@app.get("/api/v1/auth/me", tags=["identity"])
+def authenticated_identity(
+    principal: VerifiedPrincipal = Depends(require_verified_principal),
+) -> dict[str, object]:
+    """Read-only proof of a verified token; no Mapping decision is made."""
+    return {
+        "issuer": principal.issuer,
+        "subject": principal.subject,
+        "roles": list(principal.roles),
+        "expires_at": principal.expires_at,
+    }
+
+
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["system"])
 def health() -> HealthResponse:
     return HealthResponse(status="ok", service=settings.app_name, version=__version__)
