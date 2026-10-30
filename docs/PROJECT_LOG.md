@@ -281,7 +281,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 
 ### 2026-10-23 — T1 repository hygiene (pending review)
 
-- Actor: ChatGPT / authorized maintainer
+- Actor: ChatGPT operational coordinator via the connected GitHub integration; not an independent reviewer or Codex Work maintainer.
 - Base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`
 - Working branch: `codex/t1-repo-hygiene-20261023`
 - Task: root README, accepted V1-01 status correction, branch-protection guidance
