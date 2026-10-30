@@ -347,3 +347,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Added Issue #36 required `docs/superpowers/specs/2026-10-30-fiscal-year-graph-integrity.md` and `docs/superpowers/plans/2026-10-30-fiscal-year-graph-integrity.md`. No database migration, dependency, workflow, canonical financial data or binaries touched.
 - Verified pre-consolidation code/test source SHA `78ff0dd5a8ee35b621ae901be39f6a11d37ea063` passed [CI 41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585): 132 tests; *the consolidated PR #35 requires a separately verified final-head workflow run*.
 - Remains Draft/UNVERIFIED for independent C1/C2/C3, even if CI passes. The accepted `source-data-cleanup` branch remains untouched.
+
+### 2026-10-30 — Consolidated issue #36 candidate passed GitHub CI; duplicate PR closed
+
+- Final consolidated code/docs candidate at the time of this log: PR #35 head `8bd5817b324e1585aca88b72285a4fc00187369d`.
+- [Backend CI 41061793756](https://github.com/davoodmehraban89/Aram/actions/runs/41061793756) on that exact SHA: SUCCESS; **132 passed, 1 warning**, isolated Alembic upgrade/downgrade and compile steps passed.
+- Exactly six Issue #36 allowlisted paths were verified in PR #35; `PROJECT_STATUS.md` has no diff relative to parent #32; neither canonical XLSX/PDF nor source `data/` nor migration/dependency/workflow changed.
+- Experimental PR #41 was [closed without merge](https://github.com/davoodmehraban89/Aram/pull/41) only after the consolidated candidate passed. Its RED/GREEN runs remain linked for audit, and its code/tests are now present in PR #35.
+- This documentation-only update creates a later SHA; verify its own CI before any acceptance. No C1/C2/C3 qualified independent reviewers have approved. Parent #32 also remains unmerged.
