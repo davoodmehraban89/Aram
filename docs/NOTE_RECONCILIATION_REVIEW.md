@@ -50,3 +50,37 @@ Statement generation and financial-sign policy, authenticated reviewer identitie
 ## Verification
 
 Run `cd backend && pytest tests/test_reconciliation_review.py` and then full Backend CI (all tests, SQLite migration round trip, bytecode compilation) on the exact last commit. Review against the accepted parent, keep accounting sources untouched, and obtain real external C1/C2/C3 reviews before any merge. Use the linked PR's CI instead of agent-written counts for acceptance.
+
+
+## Safe offline command
+
+Create a **local**, authorized reference file (never commit financial data):
+
+```json
+{
+  "schema_version": 1,
+  "company_code": "001",
+  "fiscal_year": 1404,
+  "references": [
+    {
+      "statement": "BS",
+      "section": "Assets",
+      "note_number": "N01",
+      "subnote_code": "",
+      "expected_closing_exposure": "126.00",
+      "evidence_ref": "SYNTHETIC-TB-1"
+    }
+  ]
+}
+```
+
+```bash
+cd backend
+python -m aram_backend.reconciliation_review_cli --file ./synthetic.xlsx --references ./synthetic_references.json
+```
+
+The manifest must be strict schema version 1; extra or duplicate JSON keys fail closed. Reference amounts must be strings, not floats. Both input files must be local regular files, never symlinks, with bounded reads and file-identity checks; reference JSON is limited to 512 KiB.
+
+Exit status: `0` for exact note exposure match **for analyst review only**; `3` for a valid but blocked/mismatched comparison (JSON findings are still printed); `2` for an invalid or unsafe input. No file is saved and no output is a statutory financial statement. Do not share source or reference files in a public GitHub repository.
+
+Run `pytest tests/test_reconciliation_review.py tests/test_reconciliation_review_cli.py` plus full Backend CI.
