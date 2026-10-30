@@ -108,3 +108,19 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+
+## 2026-10-31 — current read-only coverage candidate
+
+- Active candidate branch: `codex/aram-readonly-mapping-coverage-20261031`, based directly on accepted SHA `7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- `backend/src/aram_backend/coverage_preview.py` adds fail-closed structural Mapping coverage analysis and explicit non-releasable provenance. See `docs/READONLY_MAPPING_COVERAGE.md`.
+- This work is not the full financial statement engine. No company financial values are created or altered.
+- Candidate remains unmerged until exact-head CI + independent accounting, QA and security acceptance. Do not infer approval from workbook cells or green unit tests.
+- Keep pending PR #59 and other drafts separate from this branch; do not silently merge the unapproved stack.
+
+### 2026-10-30 — PR #60 current candidate evidence
+
+- Read-only mapping coverage preview + safe local CLI at https://github.com/davoodmehraban89/Aram/pull/60.
+- Prior CI https://github.com/davoodmehraban89/Aram/actions/runs/41126235147 passed, but subsequent hidden-worksheet protections were committed after that run. Re-run and verify final exact-head CI. Never cite an older green run as a final-head result.
+- Protected `data/`, legacy signed statements, original XLSX/PDF, server secrets, source-data-cleanup, releases: unchanged.
+- This is only a non-releasable exposure diagnostic; no accounting-signoff, report generation, real IdP, CAS approvals or GUI integration.

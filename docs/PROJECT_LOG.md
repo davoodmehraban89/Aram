@@ -278,3 +278,24 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+### 2026-10-31 — read-only Mapping coverage proposal (unmerged)
+
+- Actor: ChatGPT engineering implementation.
+- Accepted base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `codex/aram-readonly-mapping-coverage-20261031`.
+- Scope: new `backend/src/aram_backend/coverage_preview.py`, synthetic regression tests, `docs/READONLY_MAPPING_COVERAGE.md`, branch-local control records.
+- Formal independent approval, owner sign-off, production artifact and release: **NONE**.
+- Protected canonical `data/` XLSX/PDF, sample templates, DB, external credentials: unchanged.
+- Acceptance: **NOT MERGED / IN_PROGRESS**. Exact CI/PR references must be appended after fresh remote verification.
+- Next: verify exact-head CI, review security and financial semantics and keep Draft until independent acceptance.
+
+### 2026-10-30T20:50Z — PR #60 integration and adversarial follow-up
+
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/60; accepted base SHA `7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Exact proposed paths: `PROJECT_STATUS.md`, `backend/src/aram_backend/coverage_preview.py`, `backend/src/aram_backend/coverage_preview_cli.py`, `backend/tests/test_coverage_preview.py`, `backend/tests/test_coverage_preview_cli.py`, `docs/PROJECT_LOG.md`, `docs/READONLY_MAPPING_COVERAGE.md`, `docs/handoff/LATEST_HANDOFF.md`.
+- First actual CI run https://github.com/davoodmehraban89/Aram/actions/runs/41125963031 failed one assertion that expected a specific rejection layer for malformed merged cells. The workbook was rejected safely by existing preflight.
+- Corrected test and verified a later exact-head CI: https://github.com/davoodmehraban89/Aram/actions/runs/41126115327 (success); subsequent CLI CI https://github.com/davoodmehraban89/Aram/actions/runs/41126235147 (success).
+- Additional security review found that hidden auxiliary and unexpected sheets were not all checked; added fail-closed validation and two regression tests. **The final revised head requires another exact-head CI result before acceptance.**
+- Formal C1/C2/C3 independent approvals: NONE. Release artifact: NONE. No real finance data, canonical files, production DB or accepted branch modified. Draft only, no merge.
