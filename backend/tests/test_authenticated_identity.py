@@ -226,3 +226,237 @@ def test_invalid_or_non_rsa_public_key_disables_identity(auth_client, keys):
         auth_public_key_pem="not a PEM public key",
     )
     assert request(auth_client, token(keys[0])).status_code == 503
+
+
+def _year(session, *, company_code="FIN-OPERATIONS", year_number=1404):
+    from aram_backend.models import Company, FiscalYear
+    company = Company(code=company_code, name="Synthetic scope")
+    year = FiscalYear(company=company, year=year_number)
+    session.add(year)
+    session.commit()
+    return year
+
+
+def _scope(company_code="FIN-OPERATIONS", fiscal_year=1404, role="mapping_proposer"):
+    return {
+        "company_code": company_code, "fiscal_year": fiscal_year, "role": role,
+    }
+
+
+def _scope_request(auth_client, signing_key, year_id, **claim_overrides):
+    return auth_client.get(
+        f"/api/v1/auth/year-access/{year_id}",
+        headers={"Authorization": f"Bearer {token(signing_key, **claim_overrides)}"},
+    )
+
+
+def test_scoped_proposer_can_query_only_matching_draft_year(auth_client, keys, session):
+    from aram_backend.database import get_session
+    from aram_backend.main import app
+    from aram_backend.models import MappingRule
+    from sqlalchemy import select
+    year = _year(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        response = _scope_request(
+            auth_client, keys[0], year.id, aram_scopes=[_scope()],
+        )
+        assert response.status_code == 200
+        assert response.json() == {
+            "year_id": year.id,
+            "company_code": "FIN-OPERATIONS", "fiscal_year": 1404,
+            "role": "mapping_proposer", "verified_scope": True,
+        }
+        assert session.scalars(select(MappingRule)).all() == []
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+def test_role_only_token_without_explicit_company_year_grant_is_denied(
+    auth_client, keys, session,
+):
+    from aram_backend.database import get_session
+    year = _year(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        assert _scope_request(auth_client, keys[0], year.id).status_code == 403
+        assert request(auth_client, token(keys[0])).status_code == 200
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+@pytest.mark.parametrize("signed_grant", [
+    _scope(company_code="DIFFERENT"),
+    _scope(fiscal_year=1403),
+    _scope(role="mapping_reviewer"),
+])
+def test_wrong_company_year_or_role_is_denied(auth_client, keys, session, signed_grant):
+    from aram_backend.database import get_session
+    year = _year(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        response = _scope_request(
+            auth_client, keys[0], year.id, aram_scopes=[signed_grant],
+        )
+        assert response.status_code == 403
+        assert "company_code" not in response.text
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+def test_two_years_of_same_company_are_distinct_permissions(auth_client, keys, session):
+    from aram_backend.database import get_session
+    from aram_backend.models import FiscalYear
+    first = _year(session)
+    second = FiscalYear(company_id=first.company_id, year=1403)
+    session.add(second)
+    session.commit()
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        assert _scope_request(
+            auth_client, keys[0], first.id, aram_scopes=[_scope()],
+        ).status_code == 200
+        assert _scope_request(
+            auth_client, keys[0], second.id, aram_scopes=[_scope()],
+        ).status_code == 403
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+def test_reviewer_must_possess_explicit_reviewer_grant(auth_client, keys, session):
+    from aram_backend.database import get_session
+    year = _year(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        assert _scope_request(
+            auth_client, keys[0], year.id,
+            aram_roles=["mapping_reviewer"], aram_scopes=[_scope(role="mapping_reviewer")],
+        ).status_code == 200
+        assert _scope_request(
+            auth_client, keys[0], year.id,
+            aram_roles=["mapping_reviewer"], aram_scopes=[_scope(role="mapping_proposer")],
+        ).status_code == 403
+        assert auth_client.post("/api/v1/mapping/approve").status_code == 404
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+@pytest.mark.parametrize("bad_scope", [
+    True, "all", 5, {}, {"company_code": "*", "fiscal_year": 1404,
+                         "role": "mapping_proposer"},
+    {"company_code": "FIN-OPERATIONS", "fiscal_year": True,
+     "role": "mapping_proposer"},
+    {"company_code": "FIN-OPERATIONS", "fiscal_year": 0,
+     "role": "mapping_proposer"},
+    {"company_code": "FIN-OPERATIONS", "fiscal_year": 1404,
+     "role": "mapping_admin"},
+    {"company_code": "FIN-OPERATIONS", "fiscal_year": 1404,
+     "role": "mapping_proposer", "admin": True},
+    {"company_code": "FIN-OPERATIONS", "fiscal_year": 1404,
+     "role": "mapping_reviewer"},
+    {"company_code": " FIN-OPERATIONS ", "fiscal_year": 1404,
+     "role": "mapping_proposer"},
+])
+def test_malformed_or_untrusted_signed_scope_fails_token_verification(
+    auth_client, keys, bad_scope,
+):
+    # A scope entry in a verified token must be fully typed, exact and
+    # compatible with its sole token role; never silently ignore bad items.
+    assert request(
+        auth_client, token(keys[0], aram_scopes=[bad_scope]),
+    ).status_code == 401
+
+
+@pytest.mark.parametrize("bad_scopes", [
+    {}, "all", True, [123], [_scope(), _scope()], [_scope()] * 33,
+])
+def test_invalid_scopes_collection_or_duplicates_fail_closed(auth_client, keys, bad_scopes):
+    assert request(auth_client, token(keys[0], aram_scopes=bad_scopes)).status_code == 401
+
+
+def test_signed_scopes_do_not_accept_forged_role_or_company_headers(
+    auth_client, keys, session,
+):
+    from aram_backend.database import get_session
+    year = _year(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        response = auth_client.get(
+            f"/api/v1/auth/year-access/{year.id}",
+            headers={
+                "Authorization": f"Bearer {token(keys[0], aram_scopes=[_scope(company_code='OTHER')])}",
+                "X-ARAM-Company": "FIN-OPERATIONS",
+                "X-ARAM-Roles": "mapping_reviewer",
+                "X-ARAM-Year": "1404",
+            },
+        )
+        assert response.status_code == 403
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+def test_year_protection_change_in_second_db_session_is_rechecked(auth_client, keys, session):
+    from sqlalchemy import update
+    from sqlalchemy.orm import Session
+    from aram_backend.database import get_session
+    from aram_backend.models import FiscalYear, FiscalYearStatus
+    year = _year(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        valid = token(keys[0], aram_scopes=[_scope()])
+        assert auth_client.get(
+            f"/api/v1/auth/year-access/{year.id}",
+            headers={"Authorization": f"Bearer {valid}"},
+        ).status_code == 200
+        with Session(session.get_bind()) as other:
+            other.execute(
+                update(FiscalYear).where(FiscalYear.id == year.id)
+                .values(status=FiscalYearStatus.APPROVED)
+            )
+            other.commit()
+        assert auth_client.get(
+            f"/api/v1/auth/year-access/{year.id}",
+            headers={"Authorization": f"Bearer {valid}"},
+        ).status_code == 403
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+def test_not_found_and_bool_year_identifiers_are_denied(auth_client, keys, session):
+    from aram_backend.database import get_session
+    _year(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        assert _scope_request(
+            auth_client, keys[0], 999999, aram_scopes=[_scope()],
+        ).status_code == 403
+        assert _scope_request(
+            auth_client, keys[0], 0, aram_scopes=[_scope()],
+        ).status_code == 403
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+
+
+def test_access_check_rejects_uncommitted_fiscal_changes_without_flush(session, keys):
+    from aram_backend.authenticated_identity import verify_access_token
+    from aram_backend.mapping_year_authorization import require_year_access
+    from aram_backend.config import Settings
+    from aram_backend.models import AccountVersion
+    private, public, _ = keys
+    year = _year(session)
+    settings = Settings(auth_issuer=ISSUER, auth_audience=AUDIENCE,
+                        auth_public_key_pem=public)
+    principal = verify_access_token(
+        token(private, aram_scopes=[_scope()]), settings=settings,
+    )
+    pending = AccountVersion(
+        year_id=year.id, account_code="0001", account_name="Pending", version=1,
+    )
+    session.add(pending)
+    # Unrelated uncommitted accounting entities are never automatically saved.
+    scope = require_year_access(
+        session, principal=principal, year_id=year.id,
+        required_role="mapping_proposer",
+    )
+    assert scope.company_code == "FIN-OPERATIONS"
+    assert pending in session.new and pending.id is None
