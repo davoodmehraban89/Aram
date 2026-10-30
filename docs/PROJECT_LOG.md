@@ -309,3 +309,17 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - This follow-up changes only `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`, and the plan publication checkbox. No application/test/protected path changes after the tested code head.
 - Final successor step: verify the resulting documentation-only commit and its CI, then perform independent remote acceptance. Author must not self-merge; status remains IN_PROGRESS.
 - Artifacts/releases: NONE. Protected financial data, schema, dependencies and workflow unchanged.
+
+### 2026-10-30 — Same-flush fiscal approval safety follow-up (stacked Draft candidate)
+
+- Actor: ChatGPT operational coordinator acting as code author; **not** an independent acceptance reviewer.
+- Accepted branch remains `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Parent: Draft [PR #32](https://github.com/davoodmehraban89/Aram/pull/32) at `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; no parent merge or acceptance claimed.
+- New Draft [PR #35](https://github.com/davoodmehraban89/Aram/pull/35), branch `codex/aram-same-flush-fiscal-lock-20261030`.
+- Reproduced-risk hypothesis from existing source review: SQLAlchemy `before_flush` consulted only persisted Draft status, so a pending Draft→Approved transition could be accompanied by year-owned or parent Company modifications in the same transaction.
+- Focused changes: pending-session protected-year status resolution; same-flush Company guard; seven parametrized existing-record cases, one new-source case, one company edit case and one valid separate-transaction case.
+- Code/test commit `f5f9257563f382f6663bc7b1eb0433a43482e9fd`; [GitHub Actions Backend CI run 41059384195](https://github.com/davoodmehraban89/Aram/actions/runs/41059384195) completed SUCCESS: **120 passed, 1 warning**; Alembic upgrade/downgrade and Python compile steps successful.
+- Original accepted files, canonical XLSX/PDF, `data/`, persisted databases, schema, migration, dependency and workflow not modified. No ZIP/EXE, artifacts, release, or customer data.
+- Important exclusions: clean-referencing graph moves, raw/bulk SQL, external connectors and concurrent writes require separately tested defenses. No claim of database-level immutability.
+- Decision: `IN_PROGRESS`, **independent C1/C2/C3 review not supplied**. Branch is stacked, Draft, and must not self-merge. Any later head SHA requires exact-head verification.
+- Recovery: close PR #35 without merge; PR #32 and accepted source branch are unaffected. After an authorized merge, use a reviewed revert PR instead of force-push.
