@@ -148,15 +148,13 @@ def test_latest_source_note_and_latest_rule_are_valid(session):
     assert result.candidates[0].target_note_id == new_notes[0].id
 
 
-def test_equal_version_source_note_uses_latest_id(session):
+def test_multiple_obsolete_source_versions_remain_unapproved(session):
     source, target, _, _ = fixture_years(session)
-    # Deterministic tie-breaker is version DESC, then id DESC.
-    same_version = NoteDefinition(
-        year_id=source.id, note_number="1", title="Tie-breaker", version=1
-    )
-    session.add(same_version)
+    session.add_all([
+        NoteDefinition(year_id=source.id, note_number="1", title="Updated v2", version=2),
+        NoteDefinition(year_id=source.id, note_number="1", title="Updated v3", version=3),
+    ])
     session.commit()
-
     result = preview_mapping_carry_forward(session, source_year_id=source.id, target_year_id=target.id)
     assert result.candidates == ()
     assert result.skipped == (("cash", "source_note_stale"),)
