@@ -151,3 +151,37 @@ def test_all_enabled_controls_are_backed_by_implemented_callbacks():
     }
     for action, method_name in PILOT_ACTIONS.items():
         assert callable(getattr(PilotWindow, method_name)), action
+
+
+def test_bounded_zip_metadata_rejects_expansion_and_many_entries():
+    from types import SimpleNamespace
+    from aram_backend.desktop_pilot_core import (
+        MAX_ZIP_ENTRIES, MAX_UNCOMPRESSED_BYTES, _check_archive_limits,
+    )
+    with pytest.raises(PilotInputError):
+        _check_archive_limits([
+            SimpleNamespace(file_size=MAX_UNCOMPRESSED_BYTES + 1),
+        ])
+    with pytest.raises(PilotInputError):
+        _check_archive_limits([
+            SimpleNamespace(file_size=1) for _ in range(MAX_ZIP_ENTRIES + 1)
+        ])
+    with pytest.raises(PilotInputError):
+        _check_archive_limits([
+            SimpleNamespace(file_size=MAX_UNCOMPRESSED_BYTES // 2 + 1),
+            SimpleNamespace(file_size=MAX_UNCOMPRESSED_BYTES // 2 + 1),
+        ])
+
+
+def test_symlink_cannot_be_selected_for_financial_preflight(tmp_path):
+    target = tmp_path / "trusted.xlsx"
+    target.write_bytes(workbook_bytes())
+    link = tmp_path / "untrusted.xlsx"
+    try:
+        link.symlink_to(target)
+    except (NotImplementedError, OSError):
+        pytest.skip("Symlinks are not available on this test filesystem")
+    controller = DesktopPilotController()
+    with pytest.raises(PilotInputError):
+        controller.choose_file(link)
+    assert controller.state == "EMPTY"
