@@ -87,3 +87,11 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+
+## 2026-10-31 — unmerged read-only Mapping coverage candidate
+
+- Development-only branch: `codex/aram-readonly-mapping-coverage-20261031`, based on accepted `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- New `coverage_preview.py` and synthetic tests check account-to-note exposure, exceptions and bounded untrusted XLSX inputs, with no DB or statement output.
+- Status: **IN_PROGRESS / NOT ACCEPTED**. No financial approval, released EXE, merge or real-data reconciliation is claimed.
+- This entry is a branch-local candidate record; historical stale PR #21 status in this file is superseded by live GitHub evidence.
