@@ -99,7 +99,10 @@ def test_existing_unchanged_and_changed_show_old_and_new(session):
         row("Mapping!3", "ar", other, account_code="002", expected_base_version=1),
     ])
     assert [x.status for x in result.rows] == ["unchanged", "changed"]
-    assert result.rows[0].preview is None
+    # An unchanged decision is not approvable but must retain exact
+    # account/note/rule catalog evidence for later staleness checks.
+    assert result.rows[0].preview is not None
+    assert result.rows[0].preview.before.target_note_id == cash.id
     assert result.rows[1].preview.before.target_note_id == cash.id
     assert result.rows[1].preview.proposed.target_note_id == other.id
     assert result.rows[1].preview.proposed.version == 2
