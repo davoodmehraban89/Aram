@@ -63,10 +63,10 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 
 ## Current risks and blockers
 
-- The accepted branch is not protected by GitHub branch protection.
-- The accepted branch still permits direct identity mutation/deletion of approved or locked fiscal years and parent-company deletion; the V1-01 candidate fixes this but is not accepted yet.
-- The accepted Pilot preflight can still accept targetless or structurally invalid mappings and can ignore a declared closing-delta mismatch; the V1-01 candidate fixes this but is not accepted yet.
-- The accepted root `index.html` is still a disconnected hard-coded prototype; the V1-01 candidate replaces it with an explicit quarantine page.
+- Branch-protection state for `source-data-cleanup` has not been re-verified in the current session: the connected GitHub API returned HTTP 403. The previous PR #21 record stated the branch was unprotected; treat current enforcement as unknown until the owner verifies it. See [Issue #39](https://github.com/davoodmehraban89/Aram/issues/39).
+- V1-01 was squash-merged by PR #21 at accepted commit `7dc864fd032f0c4ae4d650d89304a01286a6d914`. The accepted baseline includes protected fiscal-year identity/deletion and company guards, Pilot preflight validation for mapping hierarchy/targets/lifecycle/closing-delta, and a quarantined root `index.html`.
+- Residual isolation gaps remain: the accepted ORM hook can miss moving existing year-owned records out of Approved/Locked years and certain cached/relationship-based cross-year references. Draft PR #32 adds persisted-origin and relationship checks (110 passed on its exact head), but same-flush approval and graph-wide parent moves remain open in [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36). Do not describe PR #32 as accepted or database-level enforcement.
+- The root `index.html` is a quarantine notice, not a functional Pilot UI. A real accountant-facing UI, reporting workflow, packaging and user acceptance remain incomplete.
 - PR #17 was closed without merge; its stale-base 12-file diff is reference material only, and its narrative listed only 9 files.
 - PR #17 CI was green on its own stale head, but compatibility with accepted Gate 2A was never proven.
 - Binary execution, release provenance, and clean Windows verification do not exist.
