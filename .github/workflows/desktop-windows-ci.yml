@@ -9,6 +9,10 @@ on:
       - ".github/workflows/desktop-windows-ci.yml"
   workflow_dispatch:
 
+concurrency:
+  group: aram-windows-desktop-pilot-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
