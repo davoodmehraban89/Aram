@@ -299,3 +299,19 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### CI regression correction (2026-10-23)
 - Initial [Backend CI #57](https://github.com/davoodmehraban89/Aram/actions/runs/39870308627) failed: 106 passed, 2 failed. Findings: SQLite legacy SAVEPOINT could persist despite caller rollback; archive safety-limit exception was incorrectly wrapped by broad ValueError handler.
 - Fixed both in commit `0fa921aa5e2cdce7150eb2c3a679022bea692c70`: explicit SQLite physical BEGIN before nested transaction when absent; preserve MappingValidationError on archive safety-limit failures. Exact-head CI verification pending.
+
+### 2026-10-30 — Gate 3 hidden Mapping workbook guard, PR #46 (Draft)
+
+- Parent Draft PR #27 base `6c0068a660a3834f042b89d41d62bba82cb3a498`; inherited parent PR #26 also Draft/unmerged.
+- Author: ChatGPT implementation coordinator, not an independent security/financial reviewer.
+- Issue #38: reject hidden worksheet, data/header rows, or Mapping contract columns before mapping import opens a database savepoint.
+- Test-only RED SHA `e266906686a265d32dfdf8032c0cafec32ff3a73`, [CI 41067372049](https://github.com/davoodmehraban89/Aram/actions/runs/41067372049): **8 expected failures, 109 passes, 1 warning**. Fix SHA `34500e8f0ba877f5f19839be8946790f5c163599`, [CI 41067615098](https://github.com/davoodmehraban89/Aram/actions/runs/41067615098): **117 passes, 1 warning**, Alembic migration upgrade/downgrade and compileall succeeded.
+- Retained read-only/openpyxl parser for bounded XLSX and used streaming worksheet XML for visibility dimensions. No canonical financial XLSX/PDF, `data/`, DB, migration, dependency, workflow, binary or release changed.
+- Final documentation SHA must receive exact-head CI and review. Independent C1/C2/C3 qualified identities absent; PR #46 is Draft, unmerged, not user-ready.
+- Residual risk: visibility metadata is not every possible Excel presentation trick; unusual worksheet XML/provider performance and real workbooks need separate security testing. Rollback before merge: close Draft, no source changes.
+
+### 2026-10-30 — Extra XLSX visibility regressions, Draft PR #46
+
+- Follow-up test SHA `0e78c2241ddf373bd9a1beac8db21d3b44686f09` adds `veryHidden` and hidden column-range scenarios to the synthetic XLSX suite.
+- [Backend CI 41069448589](https://github.com/davoodmehraban89/Aram/actions/runs/41069448589) SUCCESS on that exact SHA: **120 passed, 1 warning**, migrations and compile successful.
+- This result supersedes only the previous test-count snapshot (117) for progress reporting; prior RED/GREEN runs remain valid historical records. Final docs SHA awaits verification. Still Draft, independent C1/C2/C3 blocked, original financial files unchanged.
