@@ -103,7 +103,7 @@ def _policies(
         _required_text(policy.subnote_code, "SUBNOTE", blank_ok=True)
         _required_text(policy.line_label, "LABEL")
         _required_text(policy.policy_evidence_ref, "EVIDENCE")
-        if policy.category not in CATEGORIES:
+        if not isinstance(policy.category, str) or policy.category not in CATEGORIES:
             raise CoverageError("INVALID_PRESENTATION_CATEGORY")
         if type(policy.sign_multiplier) is not int or policy.sign_multiplier not in {-1, 1}:
             raise CoverageError("INVALID_PRESENTATION_SIGN")
