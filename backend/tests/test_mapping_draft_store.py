@@ -385,3 +385,69 @@ def test_draft_event_is_system_staging_not_user_approval(setup):
     assert "reviewer_id" not in mapping_draft_events.c
     assert not hasattr(saved, "approve")
     assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_sqlite_parent_draft_cannot_be_deleted_while_audit_event_exists(setup):
+    from sqlalchemy import delete
+    session, year, note, _ = setup
+    staged = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-09",
+    )
+    session.commit()
+    with pytest.raises(IntegrityError):
+        session.execute(
+            delete(mapping_review_drafts).where(mapping_review_drafts.c.id == staged.id)
+        )
+    session.rollback()
+    assert verify_draft_staging_event(
+        session, draft_id=staged.id, year_id=year.id
+    ) is None
+
+
+def test_separate_drafts_get_separate_insert_only_events(setup):
+    session, year, cash, other = setup
+    a = save_unreviewed_batch(
+        session, proposal(session, year, cash, key="cash"), request_key="audit-10",
+    )
+    b = save_unreviewed_batch(
+        session, proposal(session, year, other, key="ar"), request_key="audit-11",
+    )
+    session.commit()
+    assert a.id != b.id
+    events = session.execute(select(mapping_draft_events)).mappings().all()
+    assert len(events) == 2
+    assert {x["draft_id"] for x in events} == {a.id, b.id}
+    assert {x["event_hash"] for x in events} != {a.checksum}
+    assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_audit_migration_refuses_legacy_drafts_without_backfill(setup, monkeypatch):
+    # A database that has run only the preceding PR #53 migration can already
+    # contain drafts. Adding an empty audit table must NOT make their readback
+    # silently fail; block the upgrade until explicit owner-approved recovery.
+    from importlib.util import module_from_spec, spec_from_file_location
+    from pathlib import Path
+    import alembic.op as op
+
+    session, year, note, _ = setup
+    save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="audit-12",
+    )
+    session.commit()
+
+    path = (
+        Path(__file__).resolve().parents[1] / "migrations" / "versions"
+        / "20261030_03_system_staging_audit.py"
+    )
+    spec = spec_from_file_location("audit_migration_test", path)
+    assert spec is not None and spec.loader is not None
+    migration = module_from_spec(spec)
+    spec.loader.exec_module(migration)
+    monkeypatch.setattr(op, "get_bind", lambda: session.connection())
+    def unexpected_ddl(*args, **kwargs):
+        raise AssertionError("migration must stop before any DDL on nonempty drafts")
+    monkeypatch.setattr(op, "create_table", unexpected_ddl)
+
+    with pytest.raises(RuntimeError, match="existing.*draft|backfill"):
+        migration.upgrade()
+    assert len(session.execute(select(mapping_draft_events)).all()) == 1
