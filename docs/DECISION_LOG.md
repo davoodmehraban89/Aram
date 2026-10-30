@@ -66,3 +66,12 @@ Accepted decisions are immutable. To change one, add a new ADR that explicitly s
 - Decision: If a tool or model changes, responsibility boundaries remain in force until an accepted governance change records the new assignment.
 - Decision: An implementation report is never acceptance evidence. Every acceptance action requires a fresh remote verification against the exact candidate head.
 - Rationale: Explicit current assignments remove ambiguity for successors, while durable role boundaries preserve the workflow when tools or models change.
+
+## ADR-012 — Native Windows EXE delivery target and non-production Pilot GUI
+
+- Status: **Proposed, NOT ACCEPTED**. Owner clarified on 2026-10-30 that ARAM must ultimately ship as a Windows desktop **EXE**, not an unrelated mobile interface or placeholder website.
+- Proposed candidate: Native desktop UI layer backed by the governed `aram_backend` financial engine. Use standard-library Tkinter/ttk for the **first limited and testable, read-only Pilot** with explicit disabled workflow descriptions; this is not the final UX toolkit choice. Evaluate Qt/PySide6 and commercial/technical licensing, accessibility, high-DPI support, Persian RTL finance tables and packaging for the long-term professional version before approval.
+- Never resurrect quarantined `index.html`, wrap an unrelated website as if it were native financial software, or offer fake functional approval, statement export or financial reconciliation controls.
+- Native Windows PyInstaller one-file EXE must be built and tested on an actual Windows runner; this candidate may create an **unsigned, clearly UNRELEASED, 7-day GitHub Actions artifact** for review, but cannot tag, publish or call it production. Clean Windows security review, installer, code signing, backup/restore, update path and certified reviewer testing remain necessary.
+- Rationale: user explicitly needs an installable Windows product; genuinely native controls can be automated before wider finance workflows are safely enabled. A green Python test suite is not GUI acceptance.
+- Implementation candidate: [Draft PR #59](https://github.com/davoodmehraban89/Aram/pull/59), stacked on unmerged Draft #57. Independent technical/financial/Windows acceptance pending; no claim of merge or final release.
