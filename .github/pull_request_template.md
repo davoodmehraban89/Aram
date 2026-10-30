@@ -72,3 +72,21 @@
 - [ ] Explicit acceptance decision recorded
 
 **Agent reports are not acceptance evidence. Do not merge until remote evidence is independently reviewed.**
+
+## Proposed ADR-013 5+1+3 evidence fields (Draft PR #34)
+
+This block becomes mandatory **only when ADR-013 is accepted and merged**.
+
+- Operational manager / actual implementation agent:
+- Applicable specialist roles A1–A5 and actual executors:
+- Base SHA / final head SHA / dependent PRs:
+- Exact original source-to-output trace and financial fixtures (when relevant):
+- Scope exceptions and owner approvals (if any):
+
+| Independent gate | Actual reviewer (not author) | Reviewed full SHA | Evidence URLs | Decision / unresolved findings |
+|---|---|---|---|---|
+| C1 technical/security | | | | PASS / FAIL / BLOCKED |
+| C2 financial/integrity | | | | PASS / FAIL / BLOCKED; justified N/A if applicable |
+| C3 acceptance/release | | | | ACCEPT / REVISE / REJECT / BLOCKED |
+
+A green check does not replace reviewer independence. A change to head SHA requires re-verification. Missing reviewer or evidence = `BLOCKED`, not `PASS`. No self-merge, unapproved Production release or canonical-data change.
