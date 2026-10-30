@@ -31,3 +31,16 @@ Run `cd backend && python -m pytest tests/test_coverage_preview.py -q` and then 
 - Real GUI, clean Windows installation, end-to-end testing and independent C1/C2/C3 review.
 
 These are not implemented by this preview.
+
+## Read-only local CLI
+
+An optional CLI analyzes a local XLSX without changing it:
+
+```bash
+cd backend
+python -m aram_backend.coverage_preview_cli --file ./pilot.xlsx --company-code 001 --fiscal-year 1404
+```
+
+Only JSON diagnostic data is printed on stdout; errors return status 2 and print a safe error code on stderr. Nothing is automatically saved, uploaded, approved, or printed as an official financial statement. The CLI rejects symbolic links, oversized/nonregular files and file replacement/modification during a bounded read. On systems lacking `O_NOFOLLOW`, inode and post-read file checks remain mandatory. Keep original source workbooks private. Use this only with authorized test data.
+
+Run focused regression tests: `pytest tests/test_coverage_preview.py tests/test_coverage_preview_cli.py`.
