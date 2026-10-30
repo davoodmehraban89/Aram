@@ -141,3 +141,11 @@ def test_no_snapshot_written_or_input_edited_on_mismatch(tmp_path, capsys):
     ]
     assert xlsx.read_bytes() == source_bytes
     assert json.loads(controls.read_text()) == manifest(expected="-100.00")
+
+
+@pytest.mark.parametrize("company", [" 001", "001 ", "001\\t", "x" * 65])
+def test_company_scope_is_never_silently_normalized(company):
+    payload = manifest(company=company)
+    with pytest.raises(CoverageError) as error:
+        parse_manifest(json.dumps(payload).encode("utf-8"))
+    assert error.value.code == "INVALID_MANIFEST_COMPANY"
