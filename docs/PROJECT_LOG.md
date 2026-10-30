@@ -278,3 +278,17 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+### 2026-10-23 — T1 repository hygiene (pending review)
+
+- Actor: ChatGPT operational coordinator via the connected GitHub integration; not an independent reviewer or Codex Work maintainer.
+- Base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`
+- Working branch: `codex/t1-repo-hygiene-20261023`
+- Task: root README, accepted V1-01 status correction, branch-protection guidance
+- PR: [Draft PR #22](https://github.com/davoodmehraban89/Aram/pull/22), current branch `codex/t1-repo-hygiene-20261023`.
+- Documentation checks (2026-10-30): all five relative README links resolve at the branch head; remote PR patch added-line whitespace scan found no trailing whitespace; changed-file inventory contains no `data/` or application paths.
+- CI: no Backend CI run was returned for the documentation-only head; its workflow is path-filtered to `backend/**` and the workflow file. No local `git diff --check` command is claimed.
+- Artifacts / releases: NONE.
+- Acceptance: NOT_ACCEPTED; independent review pending.
+- Protected data: exact four-file diff contains no canonical financial data, database, `data/`, binary or release changes.
+- Next action: independent review of the exact final head and reconciliation with the current live project status before merge.
