@@ -202,7 +202,7 @@ def test_invalid_policy_collection_is_rejected(invalid):
     BalanceSheetLinePolicy("Assets", "A1", "", "ASSETS", 0, "Synthetic assets", "P"),
     BalanceSheetLinePolicy("Assets", "A1", "", "OTHER", 1, "Synthetic assets", "P"),
     BalanceSheetLinePolicy("Assets", "", "", "ASSETS", 1, "Synthetic assets", "P"),
-    BalanceSheetLinePolicy("Assets", "A1", "", "ASSETS", 1, "Bad\\nLine", "P"),
+    BalanceSheetLinePolicy("Assets", "A1", "", "ASSETS", 1, "Bad" + chr(10) + "Line", "P"),
     BalanceSheetLinePolicy("Assets", "A1", "", "ASSETS", 1, " ", "P"),
     BalanceSheetLinePolicy("Assets", "A1", "", "ASSETS", 1, "Synthetic assets", ""),
 ])
