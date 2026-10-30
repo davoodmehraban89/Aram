@@ -143,3 +143,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Exact final head after documentation updates requires a fresh GitHub verification. No protected data, schema, dependencies, workflows, binaries, production databases or releases changed.
 - Remaining: raw/bulk SQL, concurrency and provider-specific database safety are not covered. Three genuinely independent reviewer controls remain `BLOCKED`; neither this child nor its parents has been accepted.
 - Next action: independently review final PR #32, #35 and #41 SHAs, reconcile dependent bases after each acceptance, and address DB-level isolation/performance as separately scoped work.
+
+## 2026-10-30 — Follow-up: Issue #36 consolidation, single review candidate
+
+- Existing [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36) requires both ORM gaps together, with six explicit allowed files and parent PR #32 SHA `28d1c57882ec20fc17c2c133bbe62ff56e12973f`.
+- Consolidated [Draft PR #35](https://github.com/davoodmehraban89/Aram/pull/35) now implements both fixes using the previously proven 132-test code, design/plan, and append-only evidence; earlier [Draft PR #41](https://github.com/davoodmehraban89/Aram/pull/41) is a superseded experimental child, not a second approval path.
+- `PROJECT_STATUS.md` reverted to parent #32 content on PR #35, keeping the exact Issue #36 allowlist. Any older references in this handoff to PR #41 as the next candidate are superseded by this entry.
+- Verify the new exact PR #35 final SHA and its GitHub Actions before closing PR #41 without merge. Do not merge PR #35, PR #32 or PR #33 until their independent financial/technical/governance controls pass.
+- ORM-only boundary: raw/bulk SQL, external database writers, concurrency and target-note scan performance remain pending separate evidence. No original accounting source data or production database changed.
