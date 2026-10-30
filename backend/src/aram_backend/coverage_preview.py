@@ -187,13 +187,15 @@ def preview_mapping_coverage(
         raise CoverageError("WORKBOOK_INVALID") from exc
 
     try:
-        for name in ("Company", "Accounts", "Notes", "Mapping"):
+        # The read-only preview must not ignore concealed data in helper
+        # sheets or unexpected extra tabs, even when Pilot preflight does.
+        for sheet in book.worksheets:
+            _assert_visible(sheet)
+        for name, expected in SHEET_HEADERS.items():
             if name not in book:
                 raise CoverageError("WORKBOOK_INVALID")
-            sheet = book[name]
-            _assert_visible(sheet)
-            headers = tuple(cell.value for cell in sheet[1])
-            if headers != SHEET_HEADERS[name]:
+            headers = tuple(cell.value for cell in book[name][1])
+            if headers != expected:
                 raise CoverageError("WORKBOOK_INVALID")
 
         company_rows = [
