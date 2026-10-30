@@ -278,3 +278,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+### 2026-10-31 — read-only Mapping coverage proposal (unmerged)
+
+- Actor: ChatGPT engineering implementation.
+- Accepted base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `codex/aram-readonly-mapping-coverage-20261031`.
+- Scope: new `backend/src/aram_backend/coverage_preview.py`, synthetic regression tests, `docs/READONLY_MAPPING_COVERAGE.md`, branch-local control records.
+- Formal independent approval, owner sign-off, production artifact and release: **NONE**.
+- Protected canonical `data/` XLSX/PDF, sample templates, DB, external credentials: unchanged.
+- Acceptance: **NOT MERGED / IN_PROGRESS**. Exact CI/PR references must be appended after fresh remote verification.
+- Next: verify exact-head CI, review security and financial semantics and keep Draft until independent acceptance.
