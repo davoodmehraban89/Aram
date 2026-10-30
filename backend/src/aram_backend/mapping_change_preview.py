@@ -13,6 +13,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from aram_backend.mapping_service import MappingValidationError
+
+
+class MappingNoChange(MappingValidationError):
+    """Preview is valid, but proposed Mapping content is unchanged."""
 from aram_backend.models import (
     AccountVersion, FiscalYear, FiscalYearStatus, MappingRule, NoteDefinition,
 )
@@ -144,7 +148,7 @@ def preview_mapping_change(
         ) == (
             proposed.account_code, proposed.target_note_id, proposed.mapping_type
         ):
-            raise MappingValidationError("no mapping change to review")
+            raise MappingNoChange("no mapping change to review")
 
         data = {
             "year_id": year_id,
