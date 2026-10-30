@@ -309,3 +309,9 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Retained read-only/openpyxl parser for bounded XLSX and used streaming worksheet XML for visibility dimensions. No canonical financial XLSX/PDF, `data/`, DB, migration, dependency, workflow, binary or release changed.
 - Final documentation SHA must receive exact-head CI and review. Independent C1/C2/C3 qualified identities absent; PR #46 is Draft, unmerged, not user-ready.
 - Residual risk: visibility metadata is not every possible Excel presentation trick; unusual worksheet XML/provider performance and real workbooks need separate security testing. Rollback before merge: close Draft, no source changes.
+
+### 2026-10-30 — Extra XLSX visibility regressions, Draft PR #46
+
+- Follow-up test SHA `0e78c2241ddf373bd9a1beac8db21d3b44686f09` adds `veryHidden` and hidden column-range scenarios to the synthetic XLSX suite.
+- [Backend CI 41069448589](https://github.com/davoodmehraban89/Aram/actions/runs/41069448589) SUCCESS on that exact SHA: **120 passed, 1 warning**, migrations and compile successful.
+- This result supersedes only the previous test-count snapshot (117) for progress reporting; prior RED/GREEN runs remain valid historical records. Final docs SHA awaits verification. Still Draft, independent C1/C2/C3 blocked, original financial files unchanged.
