@@ -215,3 +215,13 @@ def test_unmatched_cents_do_not_disappear_in_decimal_context():
     reviewed = evaluate(references=[ref("126.000000000000001")])
     assert reviewed.notes[0].difference == "-1E-15"
     assert not reviewed.matched_for_analyst_review
+
+
+def test_zero_note_reference_does_not_crash_exact_decimal_difference():
+    reviewed = evaluate(
+        content=workbook(second_amount="0"),
+        references=[ref("110.25")],
+    )
+    assert reviewed.matched_for_analyst_review
+    assert reviewed.notes[0].difference == "0.00"
+    assert reviewed.candidate_closing_exposure == "110.25"
