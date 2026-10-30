@@ -39,6 +39,14 @@ def save_mapping_rule(
     note = session.get(NoteDefinition, target_note_id)
     if note is None or note.year_id != year_id:
         raise MappingValidationError("target note must belong to the same fiscal year")
+    current_note_id = session.scalar(
+        select(NoteDefinition.id)
+        .where(NoteDefinition.year_id == year_id, NoteDefinition.note_number == note.note_number)
+        .order_by(NoteDefinition.version.desc(), NoteDefinition.id.desc())
+        .limit(1)
+    )
+    if current_note_id != target_note_id:
+        raise MappingValidationError("target note must reference the latest note version")
     account = session.scalar(select(AccountVersion.id).where(
         AccountVersion.year_id == year_id, AccountVersion.account_code == account_code,
     ).limit(1))

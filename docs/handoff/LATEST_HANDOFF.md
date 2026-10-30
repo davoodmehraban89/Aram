@@ -115,3 +115,17 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Implementation: explicit year-scoped mapping service and regression tests; no financial targets inferred. CI run https://github.com/davoodmehraban89/Aram/actions/runs/39869553320 reports 87 passed, migration round-trip and compile succeeded on implementation head 6cdd5e88960f3759995dfb475ae8a5e534e00d6c.
 - Subsequent documentation commits require exact-head verification. No protected data changes or release. Independent review and acceptance pending; do not merge automatically.
 - Remaining scope: Mapping Excel import/export, carry-forward, unknown-account queue, notes and UI, financial output, Windows package and real-user acceptance.
+
+## 2026-10-30 — Gate 3 Mapping review-preparation candidate, Draft PR #50
+
+- Accepted `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914` unchanged; child [PR #50](https://github.com/davoodmehraban89/Aram/pull/50) is stacked on Draft parent PR #26 exact `185e47f031902a8918c93c8dbb420122e7408403`.
+- [RED CI 41070855173](https://github.com/davoodmehraban89/Aram/actions/runs/41070855173): 2 expected failures (obsolete note-target persistence), 88 passes. Fix adds latest-note check **before idempotent replay**.
+- Added `mapping_change_preview.py` for read-only old/new snapshots, expected version, current account/note checks and stale-preview fingerprint; no actual mapping approval, actor identity, audit write or authorization.
+- [GREEN CI 41071138346](https://github.com/davoodmehraban89/Aram/actions/runs/41071138346) on pre-docs code head: 117 passed, 1 warning. **Verify final docs-head CI** before citing as final evidence.
+- No canonical financial file/customer database, schema migration, workflow, dependency, release or accepted branch was changed. C1/C2/C3 actual independent reviewer identities and source-to-statement financial reconciliation remain blocked; Gate 3 not accepted. Future work in [Issue #49](https://github.com/davoodmehraban89/Aram/issues/49).
+
+## 2026-10-30 — Parallel-Session stale-review fix, Draft PR #50
+
+- A second synthetic adversarial scenario found the preview validator reused SQLAlchemy identity-map objects after separate Session updates to MappingRule or FiscalYear. [RED CI 41071505361](https://github.com/davoodmehraban89/Aram/actions/runs/41071505361): 2 expected failures, 117 passed.
+- `populate_existing` refreshes scoped persisted objects on each preview/verify call. [GREEN CI 41071670008](https://github.com/davoodmehraban89/Aram/actions/runs/41071670008): 119 passed, 1 warning; migration/compile passed. Confirm final docs-head CI after this append.
+- No actual approval, signed token, human reviewer, immutable audit, provider-level transaction lock or production DB guarantees. [PR #50](https://github.com/davoodmehraban89/Aram/pull/50) stays Draft on unmerged #26; Issue #49 Gate 3 completion work and independent C1/C2/C3 review remain outstanding.

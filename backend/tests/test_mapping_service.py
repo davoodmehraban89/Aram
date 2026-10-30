@@ -91,3 +91,38 @@ def test_caller_controls_commit_and_rollback(session):
     save_mapping_rule(session, **arguments(year, note))
     session.rollback()
     assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_reject_mapping_to_superseded_note_version(session):
+    year, old_note = setup_year(session, "MAP-STALE")
+    session.add(NoteDefinition(
+        year_id=year.id, note_number="1", title="Revised Cash", version=2,
+    ))
+    session.commit()
+
+    with pytest.raises(MappingValidationError, match="latest note version"):
+        save_mapping_rule(session, **arguments(year, old_note))
+    assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_latest_note_version_can_be_explicitly_mapped(session):
+    year, _ = setup_year(session, "MAP-CURRENT")
+    latest = NoteDefinition(year_id=year.id, note_number="1", title="Latest", version=2)
+    session.add(latest)
+    session.commit()
+
+    saved = save_mapping_rule(session, **(arguments(year, latest) | {"version": 1}))
+    session.commit()
+    assert saved.target_note_id == latest.id
+
+
+def test_idempotent_replay_does_not_reaffirm_obsolete_target(session):
+    year, note = setup_year(session, "MAP-REPLAY")
+    save_mapping_rule(session, **arguments(year, note))
+    session.commit()
+    session.add(NoteDefinition(year_id=year.id, note_number="1", title="Reissued", version=2))
+    session.commit()
+
+    with pytest.raises(MappingValidationError, match="latest note version"):
+        save_mapping_rule(session, **arguments(year, note))
+    assert len(session.scalars(select(MappingRule)).all()) == 1
