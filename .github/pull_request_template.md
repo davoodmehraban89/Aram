@@ -89,4 +89,4 @@ This block becomes mandatory **only when ADR-013 is accepted and merged**.
 | C2 financial/integrity | | | | PASS / FAIL / BLOCKED; justified N/A if applicable |
 | C3 acceptance/release | | | | ACCEPT / REVISE / REJECT / BLOCKED |
 
-A green check does not replace reviewer independence. A change to head SHA requires re-verification. Missing reviewer or evidence = `BLOCKED`, not `PASS`. No self-merge, unapproved Production release or canonical-data change.
+C1/C2/C3 must be reviewed by **three distinct, verifiable identities**, none of whom authored the change. A green check does not replace reviewer independence. A change to head SHA requires re-verification. Missing reviewer or evidence = `BLOCKED`, not `PASS`. No self-merge, unapproved Production release or canonical-data change.
