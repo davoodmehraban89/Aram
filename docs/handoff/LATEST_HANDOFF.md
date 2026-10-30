@@ -130,3 +130,9 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Candidate child branch: `codex/aram-reconciliation-review-gate-20261031`.
 - Adds strict comparison against explicit per-note closing-balance references; source and reference SHA-256 hashes, bounded Decimal inputs and blocking unmapped/duplicate/inconsistent cases.
 - This is NOT a financial-statement calculation, real reconciliation signoff, signed approval, or release. Leave Draft until exact-head CI, independent C1/C2/C3 reviews, and finance-specific policy acceptance.
+
+## 2026-10-31 — BS candidate preview follow-on
+- Parent: Draft PR #61, head `736193905d8b041a938e7285610ff207b4cd4487`.
+- Child working branch `codex/aram-bs-candidate-statement-20261031` adds pure read-only explicit-policy balance-sheet candidate; docs: `docs/BALANCE_SHEET_CANDIDATE.md`.
+- A zero arithmetic difference is **not accounting authorization**, audited sign policy, accepted note disclosure, or a released report. No real company financial source changed.
+- Independent C1/C2/C3, accepted parent chain, financial owner review, complete UI/installer and release validation remain pending.
