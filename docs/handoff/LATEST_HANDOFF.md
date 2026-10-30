@@ -121,3 +121,10 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Draft PR #28 https://github.com/davoodmehraban89/Aram/pull/28; branch `codex/gate3-mapping-coverage-20261023`, base `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403`.
 - Source/test: `backend/src/aram_backend/mapping_coverage.py`, `backend/tests/test_mapping_coverage.py`. Read-only per-year queues, latest version and cross-year isolation; CI/independent review pending.
 - No protected data changes, no artifacts or release. Recovery: close Draft PR #28 without merge; do not merge until PR #26 accepted and dependency reconciled.
+
+## 2026-10-30 — Mapping coverage target integrity, Draft PR #47
+
+- [PR #47](https://github.com/davoodmehraban89/Aram/pull/47) is a child of Draft PR #28 at `02128c54109c7f1407b920a0027938029b9e1ae8`, which depends on Draft PR #26. No parent has been merged.
+- [RED CI 41067478817](https://github.com/davoodmehraban89/Aram/actions/runs/41067478817): 4 expected regressions failed; [GREEN CI 41067749994](https://github.com/davoodmehraban89/Aram/actions/runs/41067749994): 105 passed, 1 warning, migration and compile successful.
+- Read-only diagnostic now treats stale, foreign-year or missing note targets as invalid; separate sorted `invalid_target_rules` queue. Mixed valid/invalid account cannot be marked cleanly mapped.
+- No real source financial data or DB changes; no production/provider or concurrency claims. Final docs-head CI and 3 genuine non-author C1/C2/C3 approvals are still required. Keep Draft/unmerged, parent hierarchy intact.

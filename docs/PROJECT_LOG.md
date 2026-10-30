@@ -295,3 +295,12 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 
 ### Review correction — autoflush
 - Read-only security/quality review identified implicit SQLAlchemy autoflush as a possible write during diagnostics. Wrapped all queries in `session.no_autoflush` and added a regression test asserting pending unrelated objects remain unflushed. CI rerun required on corrected head.
+
+### 2026-10-30 — Gate 3 Mapping coverage invalid target protection, PR #47 (Draft)
+
+- Parent Draft PR #28 exact `02128c54109c7f1407b920a0027938029b9e1ae8`; PR #28 inherits Draft #26. Child [PR #47](https://github.com/davoodmehraban89/Aram/pull/47) correctly targets parent PR #28 branch.
+- Author: ChatGPT implementation coordinator, not independent reviewer. Issue #42 is a deterministic **read-only** diagnostic correctness gap, not proof that ORM writes allow invalid mapping.
+- Test-only RED SHA `f832c6d085b31190eacfaebbe92c0c806f3d3f94`, [CI 41067478817](https://github.com/davoodmehraban89/Aram/actions/runs/41067478817): **4 expected failures, 101 passed, 1 warning**. Fix `f858b44b3a3f79bcc7bd00b264ffdf11272fb1a9`, [CI 41067749994](https://github.com/davoodmehraban89/Aram/actions/runs/41067749994): **105 passed, one warning**, migrations and compile succeeded.
+- Exposes `invalid_target_rules` queue; never counts stale/foreign/missing target notes as successful mappings. Mixed valid/invalid accounts are reported for review, not declared clean.
+- Scope strictly code `mapping_coverage.py`, its tests, new spec/plan, this append-only log and handoff. Canonical Excel/PDF, `data/`, real financial database, migration, dependencies, workflows, packages and releases untouched.
+- Final documentation SHA CI still required; genuinely separate independent C1/C2/C3 reviews BLOCKED, parent #28/#26 unmerged. No implicit production/accounting approval.
