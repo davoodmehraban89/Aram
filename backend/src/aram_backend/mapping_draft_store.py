@@ -22,6 +22,7 @@ from aram_backend.mapping_batch_review import (
     verify_mapping_batch_current,
 )
 from aram_backend.mapping_service import MappingValidationError
+from aram_backend.mapping_change_preview import _require_clean_mapping_state
 from aram_backend.models import FiscalYear
 
 # Deliberately distinct from Base.metadata. Never create this table with the
@@ -117,6 +118,7 @@ def save_unreviewed_batch(
     if not isinstance(snapshot, MappingBatchPreview) or not snapshot.ready_for_review:
         raise MappingValidationError("mapping batch is not ready for unreviewed staging")
     with session.no_autoflush:
+        _require_clean_mapping_state(session)
         verify_mapping_batch_current(session, snapshot)
         payload = _payload(snapshot)
         checksum = _digest(payload)
