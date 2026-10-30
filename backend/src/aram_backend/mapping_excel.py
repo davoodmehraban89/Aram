@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from io import BytesIO
 from zipfile import BadZipFile, ZipFile
+from xml.etree import ElementTree
 
 from openpyxl import Workbook, load_workbook
 from sqlalchemy.orm import Session
@@ -46,6 +47,47 @@ def _safe_archive(content: bytes) -> None:
         raise MappingValidationError("Invalid XLSX archive") from exc
 
 
+def _reject_hidden_dimensions(content: bytes, worksheet_path: str) -> None:
+    """Stream worksheet XML to detect hidden row/column metadata safely.
+
+    openpyxl's read-only worksheet deliberately lacks row_dimensions and
+    column_dimensions. Loading arbitrary XLSX in full-memory mode merely to
+    inspect visibility would defeat the bounded streaming parser.
+    """
+    try:
+        with ZipFile(BytesIO(content)) as archive:
+            with archive.open(worksheet_path.lstrip("/")) as worksheet:
+                for action, element in ElementTree.iterparse(
+                    worksheet, events=("start", "end")
+                ):
+                    if action == "start":
+                        kind = element.tag.rsplit("}", 1)[-1]
+                        if element.attrib.get("hidden", "").lower() not in ("1", "true"):
+                            continue
+                        if kind == "row":
+                            # Any hidden row can conceal Mapping decisions, including
+                            # a header or a visually empty spacer.
+                            raise MappingValidationError("Hidden Mapping row is prohibited")
+                        if kind == "col":
+                            try:
+                                first = int(element.attrib["min"])
+                                last = int(element.attrib["max"])
+                            except (ValueError, KeyError) as exc:
+                                raise MappingValidationError(
+                                    "Hidden Mapping column range is invalid"
+                                ) from exc
+                            if first <= len(HEADERS) and last >= 1:
+                                raise MappingValidationError(
+                                    "Hidden Mapping column is prohibited"
+                                )
+                    else:
+                        element.clear()
+    except MappingValidationError:
+        raise
+    except (BadZipFile, KeyError, OSError, ValueError, ElementTree.ParseError) as exc:
+        raise MappingValidationError("Unreadable XLSX worksheet visibility metadata") from exc
+
+
 def _parse_int(value: object, label: str, row_number: int) -> int:
     if type(value) is not int or value <= 0:
         raise MappingValidationError(f"Row {row_number}: {label} must be a positive integer")
@@ -69,6 +111,11 @@ def preview_mapping_workbook(content: bytes) -> tuple[MappingEntry, ...]:
         if book.sheetnames != [SHEET]:
             raise MappingValidationError("Workbook must contain only a Mapping sheet")
         sheet = book[SHEET]
+        if sheet.sheet_state != "visible":
+            raise MappingValidationError("Hidden Mapping sheet is prohibited")
+        # Visibility is checked from the same bounded workbook archive, before
+        # any mapping entry is parsed or a database transaction can be staged.
+        _reject_hidden_dimensions(content, sheet._worksheet_path)
         if sheet.max_row is not None and sheet.max_row > MAX_ROWS + 1:
             raise MappingValidationError("Too many mapping rows")
         if sheet.max_column is not None and sheet.max_column > len(HEADERS):
