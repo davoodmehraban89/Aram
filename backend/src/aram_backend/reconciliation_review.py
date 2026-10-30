@@ -100,7 +100,9 @@ def _money(value: object) -> Decimal:
         number = Decimal(value)
     except (InvalidOperation, ValueError) as exc:
         raise CoverageError("INVALID_REFERENCE_AMOUNT") from exc
-    if not number.is_finite() or (number != 0 and abs(number.adjusted()) > 70):
+    # Prevent giant-context denial of service even for zero exponent values.
+    if (not number.is_finite() or abs(number.as_tuple().exponent) > 140
+            or (number != 0 and abs(number.adjusted()) > 70)):
         raise CoverageError("INVALID_REFERENCE_AMOUNT")
     if len(number.as_tuple().digits) > 150:
         raise CoverageError("INVALID_REFERENCE_AMOUNT")
