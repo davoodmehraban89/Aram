@@ -108,3 +108,14 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+## 2026-10-30 — ARAM 5+1+3 governance proposal (Draft PR #34)
+
+- Live accepted base recovered: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Draft [PR #34](https://github.com/davoodmehraban89/Aram/pull/34) proposes ADR-013 and adds documentation-only rules for five specialist execution responsibilities, one manager and **three truly independent** controls. Its initial published commit was `0032f6bbbd8a42ecd5e2104fdbc9372b02c8a2bb`; always fetch the final live PR head after documentation commits.
+- ADR-011 remains the effective authority; ADR-012 is unaccepted in Draft PR #29; proposed ADR-013 is **not policy** until independently reviewed and merged.
+- Actual Jules/Codex execution or separate financial reviewers were not available in this coordinator session; sequential model checks must not be presented as independent acceptance. The author must not self-approve.
+- PR #32 (head `28d1c57882ec20fc17c2c133bbe62ff56e12973f`) has current-head CI with 110 passed and one warning, but its guard is ORM-scoped and independent controls remain pending; first-pass risk note was posted on PR #32.
+- PR #26 (head `185e47f031902a8918c93c8dbb420122e7408403`) has current-head CI with 87 passed, but is Draft/unmerged and its dependent mapping PRs remain unaccepted.
+- No original financial files, databases or production releases were modified by this governance work.
+- Next action: obtain a non-author independent technical review of the final PR #32 SHA; independently review PR #34 and reconcile overlapping control-file Drafts before any governance merge.
