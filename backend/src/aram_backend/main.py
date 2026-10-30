@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+from aram_backend.authenticated_identity import VerifiedPrincipal, require_verified_principal
 
 from aram_backend import __version__
 from aram_backend.config import get_settings
