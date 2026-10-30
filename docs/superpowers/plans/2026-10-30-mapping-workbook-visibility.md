@@ -10,3 +10,10 @@
 - [ ] Later: adversarial workload performance, unusual XML namespace/encoding and workbook presentation edge cases under independent review. This change does not prove all Excel display semantics or Windows compatibility.
 
 **Allowed:** `mapping_excel.py`, its test file, this spec/plan, append-only `docs/PROJECT_LOG.md` and `docs/handoff/LATEST_HANDOFF.md`. No financial XLSX/PDF, `data/`, real database, migration, dependency, workflows, binary/release. Rollback while Draft: close unmerged PR; after acceptance: reviewed revert PR.
+
+
+## Additional adversarial visibility cases (2026-10-30)
+
+- Follow-up tests-only commit `0e78c2241ddf373bd9a1beac8db21d3b44686f09` checks Excel `veryHidden` sheet state, hidden column group spanning the contract, and attempted import of a veryHidden-only Mapping workbook.
+- [Backend CI 41069448589](https://github.com/davoodmehraban89/Aram/actions/runs/41069448589) on this head: **120 passed, 1 warning**, isolated Alembic upgrade/downgrade and compile successful. These are incremental proof beyond the initial 117-test GREEN run, not replacement for historical regression evidence.
+- A final documentation-head CI is required once this record and handoff are appended. The Draft remains unapproved and unmerged.
