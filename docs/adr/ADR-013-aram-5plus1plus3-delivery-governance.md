@@ -41,7 +41,7 @@ Roles may be performed sequentially or by multiple authorized agents, but report
 
 **C3 — Acceptance & Release Governance:** independent acceptance reviewer cross-checks original task, accepted base, full file inventory, exact SHA, outcomes and identities from C1/C2, PR and CI provenance, protected paths, rollback, durable docs, remaining risks, and merge/release delegation. Decision: `ACCEPT | REVISE | REJECT | BLOCKED`.
 
-A sequential three-pass assessment by one LLM can provide useful QA observations but **does not meet independent-review requirements**. Independence is about real reviewer identities and non-authorship, not section names. A model may not approve its own work. If no qualified independent reviewers are available, C1/C2/C3 remain `BLOCKED` and the PR stays Draft/unmerged.
+**C1, C2 and C3 must have three distinct, traceable reviewer identities, each independent of every author of the checked change and of one another.** A sequential three-pass assessment by one LLM can provide useful QA observations but **does not meet independent-review requirements**. Independence is about real reviewer identities and non-authorship, not section names. A model may not approve its own work. If no qualified independent reviewers are available, C1/C2/C3 remain `BLOCKED` and the PR stays Draft/unmerged.
 
 ### Work-item protocol
 
