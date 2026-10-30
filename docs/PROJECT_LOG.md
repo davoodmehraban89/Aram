@@ -278,3 +278,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+### 2026-10-30 — Governance architecture 5+1+3 candidate (proposal only)
+
+- Actor: ChatGPT operational coordinator, acting as implementation author of governance documentation; **not** independent reviewer.
+- Base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Branch: `governance/aram-5-1-3-controls-20261030`.
+- Draft PR: [#34](https://github.com/davoodmehraban89/Aram/pull/34) (PR #34). Initial published commit: `0032f6bbbd8a42ecd5e2104fdbc9372b02c8a2bb`. Inspect the **live final head** after later documentation edits.
+- Scope: Proposed ADR-013; governing role and three-control evidence language in agent, acceptance, master recovery, decision and PR-template documents; append-only project log and handoff. No backend, database, canonical financial data, workflow, build or release changes.
+- Tests: documentation assertions and actual remote file inventory/diff to be checked at final head; no backend-test outcome claimed. Independent C1/C2/C3 reviews pending and not self-attested.
+- Dependencies: ADR-011 remains accepted; Draft PR #29 proposes ADR-012, not yet accepted. Drafts #22–#33 remain independent work and must be reconciled before merging conflicting governance files.
+- Acceptance: `BLOCKED` pending actual independent review, SHA-bound applicable checks and authorized merge; **proposed, not effective**.
+- Recovery: close this unmerged Draft to discard proposal; never force-push or rewrite accepted decisions.
