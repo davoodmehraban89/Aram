@@ -1,8 +1,14 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from aram_backend.authenticated_identity import VerifiedPrincipal, require_verified_principal
 from sqlalchemy.orm import Session
 from aram_backend.database import get_session
 from aram_backend.mapping_year_authorization import require_year_access
+from aram_backend.mapping_batch_review import ProposedMappingRow, preview_mapping_batch
+from aram_backend.authored_mapping_draft import (
+    MappingAuthorConflict, stage_authored_unreviewed_batch,
+)
+from aram_backend.mapping_service import MappingValidationError
 
 from aram_backend import __version__
 from aram_backend.config import get_settings
@@ -45,6 +51,65 @@ def authenticated_year_access(
         "role": grant.role,
         "verified_scope": True,
     }
+
+
+class MappingStagingRow(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    source_locator: StrictStr
+    rule_key: StrictStr
+    account_code: StrictStr
+    target_note_id: StrictInt
+    mapping_type: StrictStr
+    expected_base_version: StrictInt
+
+
+class MappingStagingRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    year_id: StrictInt = Field(gt=0)
+    request_key: StrictStr
+    rows: list[MappingStagingRow] = Field(min_length=1, max_length=10000)
+
+
+@app.post("/api/v1/mapping/unreviewed-drafts", status_code=201, tags=["mapping"])
+def stage_unreviewed_mapping_proposal(
+    request: MappingStagingRequest,
+    principal: VerifiedPrincipal = Depends(require_verified_principal),
+    session: Session = Depends(get_session),
+) -> dict[str, object]:
+    """Verified signer+year-scoped proposal staging; NEVER a financial apply.
+
+    All three records (draft, system staging event, signed author evidence)
+    are committed together or rolled back together. Request-supplied actor
+    identity is forbidden by the strict body model.
+    """
+    try:
+        with session.begin():
+            # Security order: check company/year scope BEFORE even classifying
+            # user-supplied Mapping data, to avoid cross-entity information leaks.
+            require_year_access(
+                session, principal=principal, year_id=request.year_id,
+                required_role="mapping_proposer",
+            )
+            snapshot = preview_mapping_batch(
+                session, year_id=request.year_id,
+                rows=tuple(
+                    ProposedMappingRow(**row.model_dump()) for row in request.rows
+                ),
+            )
+            saved = stage_authored_unreviewed_batch(
+                session, snapshot=snapshot, request_key=request.request_key,
+                principal=principal,
+            )
+        return {
+            "draft_id": saved.id, "year_id": saved.year_id,
+            "state": saved.state, "request_key": saved.request_key,
+        }
+    except MappingAuthorConflict as exc:
+        raise HTTPException(
+            status_code=409, detail="Mapping proposal request identity conflict"
+        ) from exc
+    except MappingValidationError as exc:
+        raise HTTPException(status_code=422, detail="Invalid Mapping proposal") from exc
 
 
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["system"])
