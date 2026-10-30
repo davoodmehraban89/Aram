@@ -125,3 +125,36 @@ This dated correction supersedes the older PR #21 candidate/single-next-action n
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+## 2026-10-30 — Same-flush protected-year candidate, not accepted
+
+- Stacked Draft [PR #35](https://github.com/davoodmehraban89/Aram/pull/35) from Draft PR #32 SHA `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; base accepted branch remains unchanged at `7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Candidate fixes the pending-approval/same-flush ORM validation gap and tests seven record kinds, new source, Company edit, rollback and valid separate-transaction Draft editing.
+- Code commit `f5f9257563f382f6663bc7b1eb0433a43482e9fd`; verified [Backend CI 41059384195](https://github.com/davoodmehraban89/Aram/actions/runs/41059384195) passed **120 tests, one warning**, Alembic round-trip and compile.
+- Independent reviewers C1/C2/C3 not established. Parent PR #32 is not accepted. Graph-wide, raw SQL and concurrent DB writes remain outside this patch.
+- No canonical financial data, application database, migration, workflow, ZIP, EXE or release was modified. This record is documentation about an unmerged candidate, not evidence of acceptance.
+- Next action: obtain independent exact-SHA review, then reconcile PR #35 onto an accepted parent only after PR #32 passes its own controls. No merge while blocked.
+
+## 2026-10-30 — Cross-year clean-reference regression candidate (unaccepted)
+
+- Draft [PR #41](https://github.com/davoodmehraban89/Aram/pull/41) depends on unmerged Draft PR #35 `dab37e544e441a6111d7e88a53bae4d193f10de2` and ultimately unmerged PR #32; do not merge a child before its accepted parent is verified.
+- Reproduction: clean MappingRule and StatementLine references become inconsistent when their NoteDefinition or FinancialStatement parent changes year. RED [CI 41060564954](https://github.com/davoodmehraban89/Aram/actions/runs/41060564954) showed **6 expected failures, 123 passes**.
+- First corrective CI [41060729930](https://github.com/davoodmehraban89/Aram/actions/runs/41060729930) was green (129 passed); expanded valid-path CI [41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585) also succeeded on code/test SHA `78ff0dd5a8ee35b621ae901be39f6a11d37ea063`: **132 passed, one warning**; migration and compile succeeded.
+- Exact final head after documentation updates requires a fresh GitHub verification. No protected data, schema, dependencies, workflows, binaries, production databases or releases changed.
+- Remaining: raw/bulk SQL, concurrency and provider-specific database safety are not covered. Three genuinely independent reviewer controls remain `BLOCKED`; neither this child nor its parents has been accepted.
+- Next action: independently review final PR #32, #35 and #41 SHAs, reconcile dependent bases after each acceptance, and address DB-level isolation/performance as separately scoped work.
+
+## 2026-10-30 — Follow-up: Issue #36 consolidation, single review candidate
+
+- Existing [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36) requires both ORM gaps together, with six explicit allowed files and parent PR #32 SHA `28d1c57882ec20fc17c2c133bbe62ff56e12973f`.
+- Consolidated [Draft PR #35](https://github.com/davoodmehraban89/Aram/pull/35) now implements both fixes using the previously proven 132-test code, design/plan, and append-only evidence; earlier [Draft PR #41](https://github.com/davoodmehraban89/Aram/pull/41) is a superseded experimental child, not a second approval path.
+- `PROJECT_STATUS.md` reverted to parent #32 content on PR #35, keeping the exact Issue #36 allowlist. Any older references in this handoff to PR #41 as the next candidate are superseded by this entry.
+- Verify the new exact PR #35 final SHA and its GitHub Actions before closing PR #41 without merge. Do not merge PR #35, PR #32 or PR #33 until their independent financial/technical/governance controls pass.
+- ORM-only boundary: raw/bulk SQL, external database writers, concurrency and target-note scan performance remain pending separate evidence. No original accounting source data or production database changed.
+
+## 2026-10-30 — Consolidated candidate and duplicate cleanup verified
+
+- [PR #35](https://github.com/davoodmehraban89/Aram/pull/35) now has both Issue #36 ORM fixes, 132 tests and the six-file allowed diff. Code/docs SHA `8bd5817b324e1585aca88b72285a4fc00187369d` passed [Backend CI 41061793756](https://github.com/davoodmehraban89/Aram/actions/runs/41061793756): SUCCESS, **132 passed, 1 warning**, migration round-trip and compile succeeded.
+- Duplicate [PR #41](https://github.com/davoodmehraban89/Aram/pull/41) was **closed unmerged** after successful consolidation. The previous handoff's description of #41 as a pending child is superseded; its CI remains historical test evidence.
+- `PROJECT_STATUS.md` is unchanged relative to PR #32; PR #35's changed paths are the six permitted by [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36).
+- Final documentation SHA will differ; verify the live PR head and exact-head CI before review. No independent C1/C2/C3 approvals; acceptance remains BLOCKED. The accepted branch remains unchanged and no protected data/source files were modified.

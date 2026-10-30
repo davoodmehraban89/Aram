@@ -309,3 +309,49 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - This follow-up changes only `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`, and the plan publication checkbox. No application/test/protected path changes after the tested code head.
 - Final successor step: verify the resulting documentation-only commit and its CI, then perform independent remote acceptance. Author must not self-merge; status remains IN_PROGRESS.
 - Artifacts/releases: NONE. Protected financial data, schema, dependencies and workflow unchanged.
+
+### 2026-10-30 — Same-flush fiscal approval safety follow-up (stacked Draft candidate)
+
+- Actor: ChatGPT operational coordinator acting as code author; **not** an independent acceptance reviewer.
+- Accepted branch remains `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Parent: Draft [PR #32](https://github.com/davoodmehraban89/Aram/pull/32) at `28d1c57882ec20fc17c2c133bbe62ff56e12973f`; no parent merge or acceptance claimed.
+- New Draft [PR #35](https://github.com/davoodmehraban89/Aram/pull/35), branch `codex/aram-same-flush-fiscal-lock-20261030`.
+- Reproduced-risk hypothesis from existing source review: SQLAlchemy `before_flush` consulted only persisted Draft status, so a pending Draft→Approved transition could be accompanied by year-owned or parent Company modifications in the same transaction.
+- Focused changes: pending-session protected-year status resolution; same-flush Company guard; seven parametrized existing-record cases, one new-source case, one company edit case and one valid separate-transaction case.
+- Code/test commit `f5f9257563f382f6663bc7b1eb0433a43482e9fd`; [GitHub Actions Backend CI run 41059384195](https://github.com/davoodmehraban89/Aram/actions/runs/41059384195) completed SUCCESS: **120 passed, 1 warning**; Alembic upgrade/downgrade and Python compile steps successful.
+- Original accepted files, canonical XLSX/PDF, `data/`, persisted databases, schema, migration, dependency and workflow not modified. No ZIP/EXE, artifacts, release, or customer data.
+- Important exclusions: clean-referencing graph moves, raw/bulk SQL, external connectors and concurrent writes require separately tested defenses. No claim of database-level immutability.
+- Decision: `IN_PROGRESS`, **independent C1/C2/C3 review not supplied**. Branch is stacked, Draft, and must not self-merge. Any later head SHA requires exact-head verification.
+- Recovery: close PR #35 without merge; PR #32 and accepted source branch are unaffected. After an authorized merge, use a reviewed revert PR instead of force-push.
+
+### 2026-10-30 — Clean-reference financial-year safety candidate (PR #41; Draft only)
+
+- Author: ChatGPT operational coordinator, **not** independent acceptance reviewer.
+- Unmodified accepted branch: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`. Stacked parent: unmerged PR #35 `dab37e544e441a6111d7e88a53bae4d193f10de2`; grandparent PR #32 unmerged.
+- Dedicated branch: `codex/aram-clean-reference-year-integrity-20261030`; Draft [PR #41](https://github.com/davoodmehraban89/Aram/pull/41).
+- Reproduced defect: moving a Draft NoteDefinition or FinancialStatement across years did not re-evaluate stored MappingRule and StatementLine references, since dependent rows remained outside `session.dirty`. This could create cross-year reporting links.
+- RED code-independent test commit `0994232dfb48eac4d448cf4ea09b8ba770ae0cf0`: [CI 41060564954](https://github.com/davoodmehraban89/Aram/actions/runs/41060564954), **6 failed, 123 passed, 1 warning**; failures were missing expected ValueErrors.
+- Corrective code commit `c3df2611fdcf20812ca9d9a8c794f1b31d9fcddf`: [CI 41060729930](https://github.com/davoodmehraban89/Aram/actions/runs/41060729930), **129 passed, 1 warning**, migration round-trip and compile successful.
+- Follow-up valid-path tests commit `78ff0dd5a8ee35b621ae901be39f6a11d37ea063`: [CI 41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585), **132 passed, 1 warning**, migration round-trip and compile successful.
+- Exact code scope: `backend/src/aram_backend/models.py`, `backend/tests/test_models.py`. Additional control record changes: `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`. Check final GitHub head and full diff after this entry.
+- Correctness: detects persisted dependents with unchanged references when NoteDefinition or FinancialStatement ownership moves; tests both same-company and cross-company years, rollback unchanged, valid unreferenced parent moves, same-flush coordinated mapping/parent moves, moved-note retargeting and moved statement+note.
+- Boundaries: no direct SQL/bulk/external writer protection; no concurrent transactions or production-db proof; non-indexed target-note FK may need performance profiling on realistic synthetic scale. Full financial source-to-report reconciliation is not proven.
+- Data safety: no canonical financial XLSX/PDF, `data/`, persisted database, actual Peyvast SQL Server, migration, dependencies, workflow, tag, ZIP, EXE, or release touched.
+- Decision: `IN_PROGRESS`; author-run checks cannot count as independent C1/C2/C3 review. No merge/acceptance. Recovery: close unmerged PR without touching source branch; after authorized merge, revert through an independently reviewed PR.
+
+### 2026-10-30 — Issue #36 consolidation into one parent-based Draft PR
+
+- Newly discovered existing project [Issue #36](https://github.com/davoodmehraban89/Aram/issues/36) explicitly requires both same-flush fiscal status and clean graph-reference safety in one focused PR targeting PR #32, with a six-path allowlist.
+- Corrected branch coordination: PR #35 (direct parent PR #32) now contains both tested code changes and all 132 tests; separate Draft PR #41 is **superseded** and must be closed unmerged only after the combined PR's exact-head CI succeeds. Previous PR #41 experiment, RED/GREEN evidence and test references remain as historical proof, not a second acceptance candidate.
+- Removed the previously modified `PROJECT_STATUS.md` from PR #35's diff by restoring the exact parent PR #32 content; no accepted project status was changed.
+- Added Issue #36 required `docs/superpowers/specs/2026-10-30-fiscal-year-graph-integrity.md` and `docs/superpowers/plans/2026-10-30-fiscal-year-graph-integrity.md`. No database migration, dependency, workflow, canonical financial data or binaries touched.
+- Verified pre-consolidation code/test source SHA `78ff0dd5a8ee35b621ae901be39f6a11d37ea063` passed [CI 41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585): 132 tests; *the consolidated PR #35 requires a separately verified final-head workflow run*.
+- Remains Draft/UNVERIFIED for independent C1/C2/C3, even if CI passes. The accepted `source-data-cleanup` branch remains untouched.
+
+### 2026-10-30 — Consolidated issue #36 candidate passed GitHub CI; duplicate PR closed
+
+- Final consolidated code/docs candidate at the time of this log: PR #35 head `8bd5817b324e1585aca88b72285a4fc00187369d`.
+- [Backend CI 41061793756](https://github.com/davoodmehraban89/Aram/actions/runs/41061793756) on that exact SHA: SUCCESS; **132 passed, 1 warning**, isolated Alembic upgrade/downgrade and compile steps passed.
+- Exactly six Issue #36 allowlisted paths were verified in PR #35; `PROJECT_STATUS.md` has no diff relative to parent #32; neither canonical XLSX/PDF nor source `data/` nor migration/dependency/workflow changed.
+- Experimental PR #41 was [closed without merge](https://github.com/davoodmehraban89/Aram/pull/41) only after the consolidated candidate passed. Its RED/GREEN runs remain linked for audit, and its code/tests are now present in PR #35.
+- This documentation-only update creates a later SHA; verify its own CI before any acceptance. No C1/C2/C3 qualified independent reviewers have approved. Parent #32 also remains unmerged.

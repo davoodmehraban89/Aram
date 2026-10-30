@@ -247,10 +247,95 @@ def _persisted_year_id_for(obj: Any, session: Session) -> int | None:
     return session.scalar(query)
 
 
+def _check_clean_references_after_parent_year_move(session: Session, parent: Any) -> None:
+    """Reject cross-year links hidden in unchanged dependent ORM rows.
+
+    This guard is only for persisted NoteDefinition and FinancialStatement
+    ownership moves. References already modified or newly created are checked
+    by the main before_flush invariant below; here we additionally inspect
+    existing rows whose foreign keys point at the moved parent.
+    """
+    if inspect(parent).identity is None:
+        return
+    if parent.year_id == _persisted_year_id_for(parent, session):
+        return
+
+    if isinstance(parent, NoteDefinition):
+        for rule in session.scalars(
+            select(MappingRule).where(MappingRule.target_note_id == parent.id)
+        ):
+            if rule in session.deleted:
+                continue
+            target_year = _resolve_parent_year_id(
+                rule, session, "target_note", "target_note_id", NoteDefinition
+            )
+            if target_year != rule.year_id:
+                raise ValueError(
+                    "Mapping rule and target note must belong to the same fiscal year"
+                )
+
+        for line in session.scalars(
+            select(StatementLine).where(StatementLine.target_note_id == parent.id)
+        ):
+            if line in session.deleted:
+                continue
+            statement_year = _year_id_for(line, session)
+            target_year = _resolve_parent_year_id(
+                line, session, "target_note", "target_note_id", NoteDefinition
+            )
+            if target_year is not None and target_year != statement_year:
+                raise ValueError(
+                    "Statement line and target note must belong to the same fiscal year"
+                )
+
+    if isinstance(parent, FinancialStatement):
+        for line in session.scalars(
+            select(StatementLine).where(StatementLine.statement_id == parent.id)
+        ):
+            if line in session.deleted:
+                continue
+            statement_year = _year_id_for(line, session)
+            target_year = _resolve_parent_year_id(
+                line, session, "target_note", "target_note_id", NoteDefinition
+            )
+            if target_year is not None and target_year != statement_year:
+                raise ValueError(
+                    "Statement line and target note must belong to the same fiscal year"
+                )
+
+
 _PROTECTED_YEAR_STATUSES = {FiscalYearStatus.APPROVED, FiscalYearStatus.LOCKED}
 
 
+def _protected_year_status(session: Session, year_id: int) -> FiscalYearStatus | None:
+    """Protect both persisted status and an in-flight approval/locking transition.
+
+    A database SELECT alone sees Draft until the pending FiscalYear status is
+    flushed, allowing a second dirty object to change in the approval flush.
+    """
+    for candidate in session.new | session.dirty | session.deleted:
+        if (
+            isinstance(candidate, FiscalYear)
+            and candidate.id == year_id
+            and candidate.status in _PROTECTED_YEAR_STATUSES
+        ):
+            return candidate.status
+
+    persisted = session.scalar(select(FiscalYear.status).where(FiscalYear.id == year_id))
+    return persisted if persisted in _PROTECTED_YEAR_STATUSES else None
+
+
+
 def _company_has_protected_year(session: Session, company_id: int) -> bool:
+    # A Company edit in the same transaction as Draft -> Approved is forbidden.
+    for candidate in session.new | session.dirty:
+        if isinstance(candidate, FiscalYear) and candidate.status in _PROTECTED_YEAR_STATUSES:
+            linked_id = candidate.company_id
+            if linked_id is None and candidate.company is not None:
+                linked_id = candidate.company.id
+            if linked_id == company_id:
+                return True
+
     status = session.scalar(
         select(FiscalYear.status).where(
             FiscalYear.company_id == company_id,
@@ -320,10 +405,8 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
         year_id = _year_id_for(obj, session)
         original_year_id = _persisted_year_id_for(obj, session)
         for affected_year_id in {year_id, original_year_id} - {None}:
-            status = session.scalar(
-                select(FiscalYear.status).where(FiscalYear.id == affected_year_id)
-            )
-            if status in _PROTECTED_YEAR_STATUSES:
+            status = _protected_year_status(session, affected_year_id)
+            if status is not None:
                 raise ValueError(
                     f"Fiscal year {affected_year_id} is {status.value.lower()} and cannot be mutated"
                 )
@@ -338,3 +421,8 @@ def enforce_audit_invariants(session: Session, _flush_context, _instances) -> No
             target_year_id = _resolve_parent_year_id(obj, session, "target_note", "target_note_id", NoteDefinition)
             if target_year_id is not None and target_year_id != year_id:
                 raise ValueError("Statement line and target note must belong to the same fiscal year")
+
+    # Parent moves may invalidate clean child rows that never enter session.dirty.
+    for parent in session.dirty:
+        if isinstance(parent, (NoteDefinition, FinancialStatement)):
+            _check_clean_references_after_parent_year_move(session, parent)
