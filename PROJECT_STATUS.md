@@ -95,3 +95,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - New `coverage_preview.py` and synthetic tests check account-to-note exposure, exceptions and bounded untrusted XLSX inputs, with no DB or statement output.
 - Status: **IN_PROGRESS / NOT ACCEPTED**. No financial approval, released EXE, merge or real-data reconciliation is claimed.
 - This entry is a branch-local candidate record; historical stale PR #21 status in this file is superseded by live GitHub evidence.
+
+### PR #60 evidence checkpoint (2026-10-30)
+
+- Actual Draft: https://github.com/davoodmehraban89/Aram/pull/60, from exact accepted base `7dc864fd032f0c4ae4d650d89304a01286a6d914`; no merge.
+- Adds safe local CLI and synthetic CLI tests to read-only coverage engine; further hardens hidden helper and extra sheet handling. Earlier CI https://github.com/davoodmehraban89/Aram/actions/runs/41126235147 succeeded, **but final-head acceptance remains pending a new run**.
+- Never treat workbook `Approved` labels as corporate approval. All output is advisory, non-releasable, no official financial values posted.
