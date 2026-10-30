@@ -98,6 +98,15 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Scope limitations remain: raw/bulk SQL, external database writers, concurrency, graph-wide parent moves and database-level integrity are **not** certified or fixed here.
 - Do not treat the pending ORM fix as V1 financial release acceptance. All independent controls and parent merge/rebase gates remain mandatory.
 
+## Pending graph-wide isolation follow-up — 2026-10-30
+
+- Stacked Draft [PR #41](https://github.com/davoodmehraban89/Aram/pull/41) is based on unmerged PR #35 at `dab37e544e441a6111d7e88a53bae4d193f10de2`; PR #35 depends on unmerged PR #32. No acceptance or merge is claimed.
+- Scope: detect Draft `NoteDefinition` or `FinancialStatement` year moves that would leave unmodified `MappingRule` or `StatementLine` references crossing fiscal years. Allow valid coordinated Draft moves and reference retargeting.
+- RED test-only commit `0994232dfb48eac4d448cf4ea09b8ba770ae0cf0`: [Backend CI 41060564954](https://github.com/davoodmehraban89/Aram/actions/runs/41060564954): **6 failed, 123 passed**. These failures reproduced the clean-reference bypass.
+- GREEN code-plus-regressions commit `78ff0dd5a8ee35b621ae901be39f6a11d37ea063`: [Backend CI 41060899585](https://github.com/davoodmehraban89/Aram/actions/runs/41060899585): **132 passed, 1 warning**, Alembic upgrade/downgrade and compile passed. Later documentation commits must have exact-head CI independently verified.
+- Limits: only affected existing references are scanned at ORM before-flush time. Database-level raw/bulk/concurrent enforcement, all races, performance at scale and provider-level constraints remain unverified.
+- Protected financial sources, `data/`, customer databases, migrations, dependencies, workflows, builds and releases were not modified. C1/C2/C3 independent approvals are pending. Draft/unmerged.
+
 ## Control documents
 
 - [Project log](docs/PROJECT_LOG.md)
