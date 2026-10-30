@@ -191,3 +191,17 @@ def test_hidden_unknown_extra_sheet_is_not_silently_ignored():
     with pytest.raises(CoverageError) as exc:
         preview(content)
     assert exc.value.code == "HIDDEN_INPUT"
+
+
+def test_all_zero_accounts_do_not_crash_decimal_aggregation():
+    def zero_accounts(book):
+        for row in book["Accounts"].iter_rows(min_row=2):
+            row[16].value = "0"  # opening
+            row[19].value = "0"  # closing
+
+    result = preview(make_change(sample_workbook(), zero_accounts))
+    assert result.source_closing_exposure == "0"
+    assert result.candidate_closing_exposure == "0"
+    assert result.blocked_closing_exposure == "0"
+    assert result.blocked_accounts == 1
+    assert not result.financial_statement
