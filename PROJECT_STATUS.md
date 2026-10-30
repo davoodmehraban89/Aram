@@ -106,3 +106,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Branch `codex/aram-reconciliation-review-gate-20261031` is based on unmerged coverage PR #60 head `8f0e9e400c63237e00ae6d0b9847a473cb758d6e`.
 - Adds `reconciliation_review.py`, synthetic tests and `docs/NOTE_RECONCILIATION_REVIEW.md` for exact per-note candidate/reference comparisons.
 - No financial statement, authenticated approval, mapped account write, release, canonical XLSX/PDF change, or accepted-branch merge. Status: DRAFT / NOT ACCEPTED. Independent C1/C2/C3 reviews required.
+
+## 2026-10-31 — unsigned balance-sheet candidate (Draft)
+- New dependent branch `codex/aram-bs-candidate-statement-20261031` based on Draft PR #61 exact head `736193905d8b041a938e7285610ff207b4cd4487`.
+- Adds explicit-policy BS candidate and synthetic security/accounting tests. The equity equation is an arithmetic **diagnostic**, never a verified statutory balance sheet. No data source, migration, release or accepted branch touched.
+- PR and exact-head CI must be verified separately. Independent C1/C2/C3 and accounting-owner acceptance **not completed**. Status: NOT ACCEPTED / UNMERGED.
