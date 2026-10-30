@@ -8,7 +8,7 @@ An independently authorized finance owner must still approve each policy.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from decimal import Decimal
+from decimal import Decimal, localcontext
 from hashlib import sha256
 import json
 from typing import Any, Sequence
@@ -170,7 +170,7 @@ def build_balance_sheet_candidate(
             continue
         # Display amount uses an explicit sign; never guessed from account codes.
         exposure = _money(note.candidate_closing_exposure)
-        with __import__("decimal").localcontext() as context:
+        with localcontext() as context:
             context.prec = 256
             displayed = exposure * policy.sign_multiplier
         buckets[policy.category].append(displayed)
