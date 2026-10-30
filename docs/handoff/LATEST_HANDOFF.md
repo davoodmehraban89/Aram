@@ -130,3 +130,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - [RED CI 41067372049](https://github.com/davoodmehraban89/Aram/actions/runs/41067372049): 8 expected failures for sheet, header/data row and contract-column visibility. [GREEN CI 41067615098](https://github.com/davoodmehraban89/Aram/actions/runs/41067615098): 117 passed, 1 warning; isolated migration and compile passed.
 - Read-only preview now checks bounded ZIP worksheet XML visibility; import is rejected before staging. Review XML edge cases and performance, and verify final documentation SHA CI before any acceptance.
 - No actual financial XLSX/PDF, `data/`, persisted customer database, migration or release changed. Three distinct non-author C1/C2/C3 reviews and parent acceptance remain BLOCKED. Do not merge or imply Gate 3 complete.
+
+## 2026-10-30 — Expanded visibility checks in Draft #46
+
+- Added adversarial `veryHidden` single-sheet and hidden column group cases; code itself unchanged. Test SHA `0e78c2241ddf373bd9a1beac8db21d3b44686f09`, [CI 41069448589](https://github.com/davoodmehraban89/Aram/actions/runs/41069448589): **120 passed, one warning**, migration/compile successful.
+- Supersedes the earlier 117-test snapshot as the most recent code-and-tests proof. Verify new final documentation SHA CI. PR #46 is unmerged Draft on #27; C1/C2/C3 reviewer identities pending, no protected source workbooks or real DB touched.
