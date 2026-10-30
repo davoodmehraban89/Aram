@@ -2,7 +2,8 @@
 from dataclasses import replace
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import select, update
+from sqlalchemy.orm import Session
 
 from aram_backend.mapping_change_preview import (
     MappingChangePreview, preview_mapping_change, verify_mapping_change_preview_current,
@@ -210,3 +211,40 @@ def test_preview_never_commits_even_when_explicitly_verified(session):
     verify_mapping_change_preview_current(session, original)
     session.rollback()
     assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_parallel_update_of_same_rule_invalidates_cached_review_snapshot(session):
+    year, note, other = setup_year(session, "PREVIEW-PARALLEL-RULE")
+    saved = save_mapping_rule(
+        session, year_id=year.id, rule_key="cash", account_code="001",
+        target_note_id=note.id, mapping_type="direct",
+    )
+    session.commit()
+    observed = preview(session, year, other, mapping_type="manual", expected_base_version=1)
+    assert observed.before is not None and observed.before.id == saved.id
+
+    # A separate database writer updates a persisted rule without changing its
+    # version. An identity-map-cached ORM object must not mask that modification.
+    with Session(session.get_bind(), expire_on_commit=False) as other_session:
+        other_session.execute(
+            update(MappingRule).where(MappingRule.id == saved.id).values(mapping_type="external")
+        )
+        other_session.commit()
+
+    with pytest.raises(MappingValidationError, match="stale"):
+        verify_mapping_change_preview_current(session, observed)
+
+
+def test_parallel_year_status_transition_invalidates_cached_review_snapshot(session):
+    year, note, _ = setup_year(session, "PREVIEW-PARALLEL-YEAR")
+    observed = preview(session, year, note)
+
+    with Session(session.get_bind(), expire_on_commit=False) as other_session:
+        other_session.execute(
+            update(FiscalYear).where(FiscalYear.id == year.id)
+            .values(status=FiscalYearStatus.APPROVED)
+        )
+        other_session.commit()
+
+    with pytest.raises(MappingValidationError, match="stale"):
+        verify_mapping_change_preview_current(session, observed)
