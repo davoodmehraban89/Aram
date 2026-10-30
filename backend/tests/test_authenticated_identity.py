@@ -179,3 +179,50 @@ def test_only_a_read_only_identity_endpoint_is_exposed(auth_client, keys):
         "/api/v1/auth/me", headers={"Authorization": f"Bearer {token(keys[0])}"}
     ).status_code == 405
     assert auth_client.get("/api/v1/health").status_code == 200
+
+
+def test_signed_reviewer_role_is_accepted_but_no_approval_action_exists(auth_client, keys):
+    response = request(
+        auth_client, token(keys[0], sub="independent-reviewer-22",
+                           aram_roles=["mapping_reviewer"]),
+    )
+    assert response.status_code == 200
+    assert response.json()["roles"] == ["mapping_reviewer"]
+    assert auth_client.post(
+        "/api/v1/mapping/approve",
+        headers={"Authorization": f"Bearer {token(keys[0], aram_roles=['mapping_reviewer'])}"},
+    ).status_code == 404
+
+
+def test_token_payload_tampering_invalidates_signature(auth_client, keys):
+    import base64
+    import json
+    signed = token(keys[0])
+    header, payload, signature = signed.split(".")
+    decoded = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+    decoded["aram_roles"] = ["mapping_reviewer"]
+    tampered_payload = base64.urlsafe_b64encode(
+        json.dumps(decoded, separators=(",", ":")).encode()
+    ).rstrip(b"=").decode()
+    assert request(auth_client, f"{header}.{tampered_payload}.{signature}").status_code == 401
+
+
+def test_weak_rsa_verification_key_is_not_accepted(auth_client, keys):
+    weak = rsa.generate_private_key(public_exponent=65537, key_size=1024)
+    weak_public_pem = weak.public_key().public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+    ).decode("ascii")
+    app.dependency_overrides[get_settings] = lambda: Settings(
+        auth_issuer=ISSUER, auth_audience=AUDIENCE,
+        auth_public_key_pem=weak_public_pem,
+    )
+    assert request(auth_client, token(keys[0])).status_code == 503
+
+
+def test_invalid_or_non_rsa_public_key_disables_identity(auth_client, keys):
+    app.dependency_overrides[get_settings] = lambda: Settings(
+        auth_issuer=ISSUER, auth_audience=AUDIENCE,
+        auth_public_key_pem="not a PEM public key",
+    )
+    assert request(auth_client, token(keys[0])).status_code == 503
