@@ -1,6 +1,6 @@
 """Synthetic DB-backed *unreviewed* proposal persistence; not approval or apply."""
 import pytest
-from sqlalchemy import select, update
+from sqlalchemy import select, update, insert, inspect
 from sqlalchemy.exc import IntegrityError
 
 from aram_backend.mapping_batch_review import ProposedMappingRow, preview_mapping_batch
@@ -202,3 +202,52 @@ def test_draft_state_is_unreviewed_not_authenticated_approval(setup):
     assert not hasattr(draft, "approved_at")
     assert not hasattr(draft, "apply")
     assert draft.state == "Unreviewed"
+
+
+def test_stored_proposal_checksum_detects_direct_sql_payload_change(setup):
+    session, year, note, _ = setup
+    saved = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="request-0014",
+    )
+    session.commit()
+    session.execute(
+        update(mapping_review_drafts)
+        .where(mapping_review_drafts.c.id == saved.id)
+        .values(payload_json={"batch": {"source_rows": []}})
+    )
+    session.commit()
+    with pytest.raises(MappingValidationError, match="corrupted"):
+        get_unreviewed_batch(session, draft_id=saved.id, year_id=year.id)
+    with pytest.raises(MappingValidationError, match="corrupted"):
+        validate_unreviewed_batch_current(session, draft_id=saved.id, year_id=year.id)
+
+
+def test_database_unique_constraint_rejects_duplicate_request_identity(setup):
+    session, year, note, _ = setup
+    first = save_unreviewed_batch(
+        session, proposal(session, year, note), request_key="request-0015",
+    )
+    session.commit()
+    existing = session.execute(
+        select(mapping_review_drafts).where(mapping_review_drafts.c.id == first.id)
+    ).mappings().one()
+    with pytest.raises(IntegrityError):
+        session.execute(
+            insert(mapping_review_drafts).values(
+                year_id=year.id, request_key=first.request_key,
+                payload_json=existing["payload_json"],
+                payload_hash=existing["payload_hash"], state="Unreviewed",
+            )
+        )
+        session.commit()
+    session.rollback()
+    assert len(session.execute(select(mapping_review_drafts)).all()) == 1
+
+
+def test_proposal_table_has_independent_metadata_and_fk(setup):
+    from aram_backend.database import Base
+    session, year, note, _ = setup
+    assert "mapping_review_drafts" not in Base.metadata.tables
+    assert "mapping_review_drafts" in inspect(session.get_bind()).get_table_names()
+    names = {fk["referred_table"] for fk in inspect(session.get_bind()).get_foreign_keys("mapping_review_drafts")}
+    assert "fiscal_years" in names
