@@ -1,9 +1,12 @@
 """Synthetic evidence-only batch Mapping review: never apply proposals."""
+from dataclasses import replace
+
 import pytest
-from sqlalchemy import select
+from sqlalchemy import select, update
+from sqlalchemy.orm import Session
 
 from aram_backend.mapping_batch_review import (
-    ProposedMappingRow, preview_mapping_batch,
+    ProposedMappingRow, preview_mapping_batch, verify_mapping_batch_current,
 )
 from aram_backend.mapping_service import MappingValidationError, save_mapping_rule
 from aram_backend.models import (
@@ -256,3 +259,153 @@ def test_control_characters_in_source_locator_are_rejected(session, locator):
         preview_mapping_batch(session, year_id=year.id, rows=[
             row(locator, "cash", cash),
         ])
+
+
+def test_verify_fresh_two_rule_batch_without_db_writes(session):
+    year, cash, other = setup_year(session, "VERIFY-BASE")
+    rows = (row("M!2", "cash", cash), row("M!3", "ar", other, account_code="002"))
+    result = preview_mapping_batch(session, year_id=year.id, rows=rows)
+    assert result.ready_for_review
+    assert result.source_rows == rows
+    assert verify_mapping_batch_current(session, result) is None
+    assert session.scalars(select(MappingRule)).all() == []
+
+
+def test_verify_rejects_version_change_after_initial_batch(session):
+    year, cash, other = setup_year(session, "VERIFY-VERSION")
+    rows = (row("M!2", "cash", cash),)
+    original = preview_mapping_batch(session, year_id=year.id, rows=rows)
+    save_mapping_rule(
+        session, year_id=year.id, rule_key="cash", account_code="001",
+        target_note_id=other.id, mapping_type="manual", version=1,
+    )
+    session.commit()
+    with pytest.raises(MappingValidationError, match="stale"):
+        verify_mapping_batch_current(session, original)
+
+
+def test_verify_rejects_external_same_version_rule_update(session):
+    year, cash, other = setup_year(session, "VERIFY-EXTERNAL-RULE")
+    saved = save_mapping_rule(
+        session, year_id=year.id, rule_key="cash", account_code="001",
+        target_note_id=cash.id, mapping_type="manual", version=1,
+    )
+    session.commit()
+    original = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "cash", other, expected_base_version=1),
+    ))
+    with Session(session.get_bind(), expire_on_commit=False) as remote:
+        remote.execute(update(MappingRule).where(MappingRule.id == saved.id).values(mapping_type="external"))
+        remote.commit()
+    with pytest.raises(MappingValidationError, match="stale"):
+        verify_mapping_batch_current(session, original)
+
+
+def test_verify_rejects_year_approval_after_batch(session):
+    year, cash, _ = setup_year(session, "VERIFY-YEAR")
+    original = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "cash", cash),
+    ))
+    with Session(session.get_bind(), expire_on_commit=False) as remote:
+        remote.execute(update(FiscalYear).where(FiscalYear.id == year.id).values(
+            status=FiscalYearStatus.APPROVED,
+        ))
+        remote.commit()
+    with pytest.raises(MappingValidationError, match="stale"):
+        verify_mapping_batch_current(session, original)
+
+
+def test_verify_rejects_catalog_change_to_latest_note(session):
+    year, cash, _ = setup_year(session, "VERIFY-NOTE")
+    original = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "cash", cash),
+    ))
+    session.add(NoteDefinition(year_id=year.id, note_number="1", title="Updated", version=2))
+    session.commit()
+    with pytest.raises(MappingValidationError, match="stale"):
+        verify_mapping_batch_current(session, original)
+
+
+def test_verify_rejects_changed_latest_account_even_for_noop_row(session):
+    year, cash, other = setup_year(session, "VERIFY-NOOP-ACCOUNT")
+    save_mapping_rule(
+        session, year_id=year.id, rule_key="existing", account_code="001",
+        target_note_id=cash.id, mapping_type="manual", version=1,
+    )
+    session.commit()
+    original = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "existing", cash, expected_base_version=1),
+        row("M!3", "new", other),
+    ))
+    assert [item.status for item in original.rows] == ["unchanged", "new"]
+    session.add(AccountVersion(
+        year_id=year.id, account_code="001", account_name="Updated", version=2,
+    ))
+    session.commit()
+    with pytest.raises(MappingValidationError, match="stale"):
+        verify_mapping_batch_current(session, original)
+
+
+@pytest.mark.parametrize("tamper", ["source", "result", "fingerprint", "status", "year"])
+def test_verify_rejects_modified_batch_evidence(session, tamper):
+    year, cash, other = setup_year(session, "VERIFY-TAMPER")
+    original = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "cash", cash),
+    ))
+    if tamper == "source":
+        altered = replace(original, source_rows=(row("M!2", "cash", other),))
+    elif tamper == "result":
+        altered = replace(
+            original, rows=(replace(original.rows[0], source_locator="M!999"),)
+        )
+    elif tamper == "fingerprint":
+        altered = replace(original, fingerprint="0" * 64)
+    elif tamper == "status":
+        altered = replace(
+            original, rows=(replace(original.rows[0], status="changed"),)
+        )
+    else:
+        altered = replace(original, year_id=year.id + 1)
+    with pytest.raises(MappingValidationError, match="stale|invalid"):
+        verify_mapping_batch_current(session, altered)
+
+
+def test_verify_refuses_conflicted_batch_even_when_snapshot_unchanged(session):
+    year, cash, other = setup_year(session, "VERIFY-CONFLICT")
+    snapshot = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "cash", cash), row("M!3", "cash", other),
+    ))
+    assert not snapshot.ready_for_review
+    with pytest.raises(MappingValidationError, match="not ready"):
+        verify_mapping_batch_current(session, snapshot)
+
+
+def test_verify_refuses_all_noop_batch(session):
+    year, cash, _ = setup_year(session, "VERIFY-NOOP")
+    save_mapping_rule(
+        session, year_id=year.id, rule_key="cash", account_code="001",
+        target_note_id=cash.id, mapping_type="manual", version=1,
+    )
+    session.commit()
+    original = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "cash", cash, expected_base_version=1),
+    ))
+    assert not original.ready_for_review
+    with pytest.raises(MappingValidationError, match="not ready"):
+        verify_mapping_batch_current(session, original)
+
+
+def test_verify_does_not_autoflush_unrelated_pending_company(session):
+    year, cash, _ = setup_year(session, "VERIFY-NOFLUSH")
+    original = preview_mapping_batch(session, year_id=year.id, rows=(
+        row("M!2", "cash", cash),
+    ))
+    company = Company(code="PENDING-RECHECK", name="Pending")
+    session.add(company)
+    verify_mapping_batch_current(session, original)
+    assert company in session.new and company.id is None
+
+
+def test_verify_rejects_non_batch_object(session):
+    with pytest.raises(MappingValidationError, match="invalid"):
+        verify_mapping_batch_current(session, {"year_id": 1})
