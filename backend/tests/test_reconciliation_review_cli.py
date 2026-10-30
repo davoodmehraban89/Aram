@@ -36,7 +36,8 @@ def run(tmp_path, capsys, *, expected="126.00", company="001", data=None):
 
 
 def test_cli_matched_is_still_unapproved(tmp_path, capsys):
-    code, captured, xlsx, controls = run(tmp_path, capsys)
+    source_bytes = workbook()
+    code, captured, xlsx, controls = run(tmp_path, capsys, data=source_bytes)
     assert code == 0
     result = json.loads(captured.out)
     assert result["matched_for_analyst_review"]
@@ -44,7 +45,7 @@ def test_cli_matched_is_still_unapproved(tmp_path, capsys):
     assert not result["releasable"]
     assert len(result["reference_sha256"]) == 64
     assert captured.err == ""
-    assert xlsx.read_bytes() == workbook()
+    assert xlsx.read_bytes() == source_bytes
     assert json.loads(controls.read_text()) == manifest()
 
 
@@ -132,10 +133,11 @@ def test_manifest_size_checked_before_read(tmp_path):
 
 
 def test_no_snapshot_written_or_input_edited_on_mismatch(tmp_path, capsys):
-    code, _, xlsx, controls = run(tmp_path, capsys, expected="-100.00")
+    source_bytes = workbook()
+    code, _, xlsx, controls = run(tmp_path, capsys, expected="-100.00", data=source_bytes)
     assert code == 3
     assert sorted(path.name for path in tmp_path.iterdir()) == [
         "synthetic.json", "synthetic.xlsx",
     ]
-    assert xlsx.read_bytes() == workbook()
+    assert xlsx.read_bytes() == source_bytes
     assert json.loads(controls.read_text()) == manifest(expected="-100.00")
