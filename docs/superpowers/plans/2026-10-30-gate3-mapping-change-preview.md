@@ -22,3 +22,12 @@
 - This spec and plan, append-only `docs/PROJECT_LOG.md` and `docs/handoff/LATEST_HANDOFF.md`.
 
 No schema migrations, dependencies, workflows, customer or canonical financial XLSX/PDF, `data/`, production DB, API credentials, binary or Windows release. **Do not merge** until independently accepted.
+
+
+## Adversarial follow-up: cached ORM identities after a parallel commit
+
+- [x] Additional **test-only** SHA `6a998a82274a7526fedc5404197efa80eb7fd602`: two new synthetic tests update an existing MappingRule or FiscalYear in an **independent SQLAlchemy Session** while the review Session holds cached instances.
+- [x] [RED CI 41071505361](https://github.com/davoodmehraban89/Aram/actions/runs/41071505361): **2 expected failures, 117 passing, 1 warning**; prior verifier erroneously accepted a stale snapshot in both cases.
+- [x] Implementation SHA `f69dfa81e9a938836570a8ef2300fc8e410ce69a`: refresh cached ORM objects through `populate_existing` for scoped year, note, prior MappingRule and latest account/note query rows.
+- [x] [GREEN CI 41071670008](https://github.com/davoodmehraban89/Aram/actions/runs/41071670008): **119 passed, 1 warning**, disposable Alembic upgrade/downgrade and compileall succeeded. This is an additional scoped SQLite synthetic proof, **not** full concurrency/provider guarantee.
+- [ ] Run and inspect CI again on the **final documentation head**, then confirm changed-path allowlist, no protected-data edits, real review state, and append-only records. Do not cite prior SHA as the final.
