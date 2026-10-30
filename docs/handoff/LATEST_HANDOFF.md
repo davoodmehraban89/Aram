@@ -124,3 +124,9 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Prior CI https://github.com/davoodmehraban89/Aram/actions/runs/41126235147 passed, but subsequent hidden-worksheet protections were committed after that run. Re-run and verify final exact-head CI. Never cite an older green run as a final-head result.
 - Protected `data/`, legacy signed statements, original XLSX/PDF, server secrets, source-data-cleanup, releases: unchanged.
 - This is only a non-releasable exposure diagnostic; no accounting-signoff, report generation, real IdP, CAS approvals or GUI integration.
+
+## 2026-10-31 — downstream read-only reconciliation work
+- Parent work: Draft PR #60, exact SHA `8f0e9e400c63237e00ae6d0b9847a473cb758d6e`.
+- Candidate child branch: `codex/aram-reconciliation-review-gate-20261031`.
+- Adds strict comparison against explicit per-note closing-balance references; source and reference SHA-256 hashes, bounded Decimal inputs and blocking unmapped/duplicate/inconsistent cases.
+- This is NOT a financial-statement calculation, real reconciliation signoff, signed approval, or release. Leave Draft until exact-head CI, independent C1/C2/C3 reviews, and finance-specific policy acceptance.
