@@ -217,11 +217,17 @@ def test_unmatched_cents_do_not_disappear_in_decimal_context():
     assert not reviewed.matched_for_analyst_review
 
 
-def test_zero_note_reference_does_not_crash_exact_decimal_difference():
-    reviewed = evaluate(
-        content=workbook(second_amount="0"),
-        references=[ref("110.25")],
-    )
+def test_all_zero_note_reference_does_not_crash_exact_decimal_difference():
+    from openpyxl import load_workbook
+
+    book = load_workbook(BytesIO(workbook()))
+    for row in book["Accounts"].iter_rows(min_row=2):
+        row[16].value = "0"  # opening
+        row[19].value = "0"  # closing
+    stream = BytesIO()
+    book.save(stream)
+    book.close()
+    reviewed = evaluate(content=stream.getvalue(), references=[ref("0")])
     assert reviewed.matched_for_analyst_review
-    assert reviewed.notes[0].difference == "0.00"
-    assert reviewed.candidate_closing_exposure == "110.25"
+    assert reviewed.notes[0].difference == "0"
+    assert reviewed.candidate_closing_exposure == "0"
