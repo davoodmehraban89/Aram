@@ -664,3 +664,125 @@ def test_draft_edit_committed_before_approval_is_still_allowed(session):
     session.expire_all()
     assert session.get(AccountVersion, account.id).account_name == "Validated"
     assert session.get(FiscalYear, year.id).status is FiscalYearStatus.APPROVED
+
+
+# A parent's fiscal-year movement must not silently invalidate rows that
+# were not themselves dirty and therefore escaped the ORM before_flush loop.
+@pytest.mark.parametrize("same_company", [False, True])
+@pytest.mark.parametrize("ref_kind", ["mapping", "statement_line"])
+def test_draft_note_move_rejects_clean_cross_year_references(session, same_company, ref_kind):
+    first = make_year(session, 1403)
+    if same_company:
+        second = FiscalYear(company=first.company, year=1404)
+        session.add(second)
+        session.commit()
+    else:
+        second = make_year(session, 1404)
+    note = NoteDefinition(year_id=first.id, note_number="10", title="Synthetic note")
+    if ref_kind == "mapping":
+        dependent = MappingRule(
+            year_id=first.id, rule_key="cash", account_code="1000",
+            mapping_type="O", target_note=note,
+        )
+    else:
+        statement = FinancialStatement(
+            year_id=first.id, statement_type=StatementType.BALANCE_SHEET,
+        )
+        dependent = StatementLine(
+            statement=statement, target_note=note,
+            line_order=0, line_label="Linked assets",
+        )
+        session.add(statement)
+    session.add_all([note, dependent])
+    session.commit()
+    original_year_id, note_id, dependent_id = first.id, note.id, dependent.id
+
+    note.year_id = second.id
+    with pytest.raises(ValueError, match="same fiscal year"):
+        session.commit()
+    session.rollback()
+    session.expire_all()
+    assert session.get(NoteDefinition, note_id).year_id == original_year_id
+    assert session.get(type(dependent), dependent_id) is not None
+
+
+@pytest.mark.parametrize("same_company", [False, True])
+def test_draft_statement_move_rejects_clean_note_link(session, same_company):
+    first = make_year(session, 1403)
+    if same_company:
+        second = FiscalYear(company=first.company, year=1404)
+        session.add(second)
+        session.commit()
+    else:
+        second = make_year(session, 1404)
+    note = NoteDefinition(year_id=first.id, note_number="10", title="Existing note")
+    statement = FinancialStatement(
+        year_id=first.id, statement_type=StatementType.BALANCE_SHEET,
+    )
+    line = StatementLine(
+        statement=statement, target_note=note,
+        line_order=0, line_label="Assets",
+    )
+    session.add_all([note, statement, line])
+    session.commit()
+    original_id, statement_id, line_id = first.id, statement.id, line.id
+
+    statement.year_id = second.id
+    with pytest.raises(ValueError, match="same fiscal year"):
+        session.commit()
+    session.rollback()
+    session.expire_all()
+    assert session.get(FinancialStatement, statement_id).year_id == original_id
+    assert session.get(StatementLine, line_id).statement_id == statement_id
+
+
+def test_unreferenced_draft_parents_can_change_year(session):
+    first = make_year(session, 1403)
+    second = make_year(session, 1404)
+    note = NoteDefinition(year_id=first.id, note_number="10", title="Free note")
+    statement = FinancialStatement(
+        year_id=first.id, statement_type=StatementType.BALANCE_SHEET,
+    )
+    session.add_all([note, statement])
+    session.commit()
+    note.year_id = second.id
+    statement.year_id = second.id
+    session.commit()
+    session.expire_all()
+    assert session.get(NoteDefinition, note.id).year_id == second.id
+    assert session.get(FinancialStatement, statement.id).year_id == second.id
+
+
+def test_draft_note_move_and_mapping_owner_move_in_one_flush(session):
+    first = make_year(session, 1403)
+    second = make_year(session, 1404)
+    note = NoteDefinition(year_id=first.id, note_number="10", title="Synthetic note")
+    mapping = MappingRule(
+        year_id=first.id, rule_key="cash", account_code="1000",
+        mapping_type="O", target_note=note,
+    )
+    session.add_all([note, mapping])
+    session.commit()
+    note.year_id = second.id
+    mapping.year_id = second.id
+    session.commit()
+    session.expire_all()
+    assert session.get(NoteDefinition, note.id).year_id == second.id
+    assert session.get(MappingRule, mapping.id).year_id == second.id
+
+
+def test_draft_statement_move_with_clean_unlinked_line_is_allowed(session):
+    first = make_year(session, 1403)
+    second = make_year(session, 1404)
+    statement = FinancialStatement(
+        year_id=first.id, statement_type=StatementType.BALANCE_SHEET,
+    )
+    line = StatementLine(statement=statement, line_order=0, line_label="Subtotal")
+    session.add_all([statement, line])
+    session.commit()
+
+    statement.year_id = second.id
+    session.commit()
+    session.expire_all()
+    assert session.get(FinancialStatement, statement.id).year_id == second.id
+    assert session.get(StatementLine, line.id).target_note_id is None
