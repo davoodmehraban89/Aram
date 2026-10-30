@@ -559,3 +559,108 @@ def test_mapping_direct_fk_resolves_pending_note(session, same_year):
             session.commit()
         session.rollback()
         assert session.query(MappingRule).count() == 0
+
+
+# Same-flush approval must atomically freeze the entire fiscal-year aggregate.
+# Prior to this regression, checking only persisted FiscalYear.status returned DRAFT
+# while a pending APPROVED transition was in the same SQLAlchemy flush.
+@pytest.mark.parametrize("record_kind", [
+    "account", "source", "note", "statement", "mapping", "note_row", "statement_line",
+])
+def test_approval_and_existing_year_record_edit_in_one_flush_are_rejected(session, record_kind):
+    year = make_year(session, 1403)
+    note = NoteDefinition(year_id=year.id, note_number="10", title="Existing note")
+    statement = FinancialStatement(
+        year_id=year.id, statement_type=StatementType.BALANCE_SHEET
+    )
+    account = AccountVersion(
+        year_id=year.id, account_code="1000", account_name="Existing account"
+    )
+    source = SourceDocument(
+        year_id=year.id, filename="synthetic.xlsx",
+        file_hash="synthetic-sha", document_type="general_ledger",
+    )
+    mapping = MappingRule(
+        year_id=year.id, rule_key="existing", account_code="1000",
+        target_note=note, mapping_type="O",
+    )
+    note_row = NoteRow(note=note, row_order=0, label="Existing row")
+    statement_line = StatementLine(
+        statement=statement, target_note=note,
+        line_order=0, line_label="Existing statement row",
+    )
+    session.add_all([
+        note, statement, account, source, mapping, note_row, statement_line
+    ])
+    session.commit()
+    records = {
+        "account": (account, "account_name"),
+        "source": (source, "filename"),
+        "note": (note, "title"),
+        "statement": (statement, "version"),
+        "mapping": (mapping, "rule_key"),
+        "note_row": (note_row, "label"),
+        "statement_line": (statement_line, "line_label"),
+    }
+    record, field = records[record_kind]
+    original = getattr(record, field)
+    year_id = year.id
+    record_id = record.id
+    year.status = FiscalYearStatus.APPROVED
+    setattr(record, field, original + "-edited" if isinstance(original, str) else original + 1)
+
+    with pytest.raises(ValueError, match="cannot be mutated"):
+        session.commit()
+    session.rollback()
+    session.expire_all()
+    assert session.get(FiscalYear, year_id).status is FiscalYearStatus.DRAFT
+    assert getattr(session.get(type(record), record_id), field) == original
+
+
+def test_approval_and_new_source_registration_in_one_flush_are_rejected(session):
+    year = make_year(session, 1403)
+    year_id = year.id
+    year.status = FiscalYearStatus.APPROVED
+    session.add(SourceDocument(
+        year_id=year_id, filename="new.xlsx", file_hash="synthetic-new",
+        document_type="general_ledger",
+    ))
+
+    with pytest.raises(ValueError, match="cannot be mutated"):
+        session.commit()
+    session.rollback()
+    session.expire_all()
+    assert session.get(FiscalYear, year_id).status is FiscalYearStatus.DRAFT
+    assert session.query(SourceDocument).filter_by(year_id=year_id).count() == 0
+
+
+def test_approval_and_company_edit_in_one_flush_are_rejected(session):
+    year = make_year(session, 1403)
+    company_id = year.company_id
+    original = year.company.name
+    year_id = year.id
+    year.status = FiscalYearStatus.APPROVED
+    year.company.name = "Company changed during approval"
+
+    with pytest.raises(ValueError, match="cannot be mutated"):
+        session.commit()
+    session.rollback()
+    session.expire_all()
+    assert session.get(FiscalYear, year_id).status is FiscalYearStatus.DRAFT
+    assert session.get(Company, company_id).name == original
+
+
+def test_draft_edit_committed_before_approval_is_still_allowed(session):
+    year = make_year(session, 1403)
+    account = AccountVersion(
+        year_id=year.id, account_code="1000", account_name="Initial"
+    )
+    session.add(account)
+    session.commit()
+    account.account_name = "Validated"
+    session.commit()
+    year.status = FiscalYearStatus.APPROVED
+    session.commit()
+    session.expire_all()
+    assert session.get(AccountVersion, account.id).account_name == "Validated"
+    assert session.get(FiscalYear, year.id).status is FiscalYearStatus.APPROVED
