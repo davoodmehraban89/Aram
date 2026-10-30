@@ -33,3 +33,12 @@ Those outstanding deliverables remain tracked by [Issue #49](https://github.com/
 Synthetic-only regression: stale same-year note rejected on save and on attempted idempotent replay; latest note allowed. Read-only preview: creation, current old/new, version increments, no-op, stale expected version, changed source rule, changed note, changed account, year lock, wrong-year target, falsified comparison fields, invalid inputs, fail-closed pending writes, no autoflush and no DB mutation. Full pytest, disposable Alembic round-trip, compileall and final-head CI; independent finance acceptance required. No customer XLSX/PDF or production database touched.
 
 **Rollback:** close the unmerged Draft, or revert with separately reviewed PR after authorized merge.
+
+
+## Explicit external-writer / identity-map stale-read control
+
+A Session identity map may hold objects loaded before an independent connection updated a Rule or FiscalYear. Calling `Session.get` without refresh, or executing an ORM select without refreshing existing identity-map objects, can **return stale object fields** even when a SQL SELECT runs. Merely recalculating a fingerprint against those cached objects is inadequate.
+
+- For the fiscal-year row and requested NoteDefinition use `Session.get(..., populate_existing=True)`; for the latest Rule, latest NoteDefinition and latest AccountVersion queries use `.execution_options(populate_existing=True)`. All remain within `Session.no_autoflush` and the clean-related-Session precondition.
+- Synthetic two-session tests prove the former implementation wrongly accepted the old preview after an independent SQL UPDATE of the same Rule content or FiscalYear status.
+- This improvement refreshes visible committed state under the **test SQLite transaction behavior**. It is **not** an isolation-level guarantee for every provider, not a lock, and cannot prevent a concurrent transaction that commits *after* verification. Provider-specific transaction/compare-and-set enforcement and human approval remain separate.
