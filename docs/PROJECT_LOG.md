@@ -286,3 +286,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Scope: mapping_service.py, test_mapping_service.py and governance records. Explicit draft-year mapping persistence, same-year account/note validation, idempotency, version conflicts, input bounds and rollback.
 - GitHub CI: https://github.com/davoodmehraban89/Aram/actions/runs/39869553320; initial test evidence: 87 passed, migration upgrade/downgrade and compile succeeded.
 - Protected financial data unchanged. No release artifact. Independent acceptance pending. Recovery: close draft PR without merge.
+
+### 2026-10-30 — Gate 3 current-note safety and change-review preview, Draft PR #50
+
+- Owner direction: advance Gate 3 without misrepresenting Draft/tested code as accepted. Implementation author: ChatGPT; independent C1/C2/C3 reviewers **NOT** created, authorized or simulated.
+- Accepted baseline checked: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914` unchanged. Child candidate is stacked on unmerged Draft PR #26 exact `185e47f031902a8918c93c8dbb420122e7408403`; [PR #50](https://github.com/davoodmehraban89/Aram/pull/50).
+- Discovered existing `save_mapping_rule` allowed an **obsolete version of the same-year target note** even though read-only coverage/notes diagnostics flag it stale. Test-only RED `5190535bf2e735f741bc65b61bb2ae8492cd1c61`: [GitHub CI 41070855173](https://github.com/davoodmehraban89/Aram/actions/runs/41070855173) **2 expected failures, 88 passes, one warning**.
+- Fixed before replay check at `0d7f2cbad255b44eccd326c9255b9787c65f4385`: require latest note version per fiscal year/number, preventing stale new writes and silent idempotent reaffirmation.
+- New read-only `mapping_change_preview.py`: explicit expected-base-version check, deterministic before/proposed rule values, current year/account/note identity and unsigned SHA-256 snapshot. Separate verifier detects rule, account, note or lifecycle drift; it neither mutates nor authenticates/approves.
+- First composite code+test GREEN SHA `494af5d0f8442d193591542e1076727f892ebc87`: [CI 41071138346](https://github.com/davoodmehraban89/Aram/actions/runs/41071138346), **117 passed, 1 warning**. Final HEAD after documents must be rechecked.
+- Eight-file allowlist: modified `backend/src/aram_backend/mapping_service.py`, `backend/tests/test_mapping_service.py`; new `backend/src/aram_backend/mapping_change_preview.py`, `backend/tests/test_mapping_change_preview.py`, this spec and plan, plus append-only project log/handoff.
+- Safety: no protected canonical XLSX/PDF, `data/`, financial amounts, production DB, migrations, dependencies, workflows, binaries, tags, secrets or releases changed. No whole-project completion, Windows app, authentic human approval, permanent audit or transactional concurrency guarantee claimed. These remain under Issues #49, #39, #43.
+- Scope is **Draft/unmerged** pending parent reconciliation and three real independent technical/accounting/acceptance reviews on exact final SHA. Rollback before acceptance: close Draft unmerged; after any authorized merge: reviewed revert PR.
