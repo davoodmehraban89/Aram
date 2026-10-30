@@ -67,9 +67,17 @@ def preview_mapping_carry_forward(
         for rule in source_rules:
             latest_rules.setdefault(rule.rule_key, rule)
 
-        source_notes = {note.id: note for note in session.scalars(
+        # Only the latest version of a source note number can authorize
+        # carry-forward. An old MappingRule target is not the current note,
+        # even when the note number happens to remain unchanged.
+        source_note_rows = session.scalars(
             select(NoteDefinition).where(NoteDefinition.year_id == source_year_id)
-        )}
+            .order_by(NoteDefinition.note_number, NoteDefinition.version.desc(), NoteDefinition.id.desc())
+        ).all()
+        source_notes = {note.id: note for note in source_note_rows}
+        latest_source_notes: dict[str, NoteDefinition] = {}
+        for note in source_note_rows:
+            latest_source_notes.setdefault(note.note_number, note)
         target_notes = session.scalars(
             select(NoteDefinition).where(NoteDefinition.year_id == target_year_id)
             .order_by(NoteDefinition.note_number, NoteDefinition.version.desc(), NoteDefinition.id.desc())
@@ -91,6 +99,8 @@ def preview_mapping_carry_forward(
             source_note = source_notes.get(rule.target_note_id)
             if source_note is None:
                 skipped.append((key, "source_note_missing"))
+            elif latest_source_notes[source_note.note_number].id != source_note.id:
+                skipped.append((key, "source_note_stale"))
             elif rule.account_code not in target_accounts:
                 skipped.append((key, "target_account_missing"))
             elif source_note.note_number not in latest_target_notes:
