@@ -121,3 +121,9 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Draft [PR #30](https://github.com/davoodmehraban89/Aram/pull/30), branch `codex/gate3-carry-forward-preview-20261023`, base `codex/gate3-mapping-core@185e47f031902a8918c93c8dbb420122e7408403`.
 - Files: `backend/src/aram_backend/mapping_carry_forward.py`, `backend/tests/test_mapping_carry_forward.py`, governance records. Preview only, no automatic carry-forward; exact note number and account existence required, source and target years must be same company and target Draft.
 - Check latest-head GitHub Actions and obtain independent review before acceptance; reconcile dependency on PR #26 before merging. No protected financial data or artifacts changed. Rollback: close Draft PR #30.
+
+## 2026-10-30 — Gate 3 follow-up: stale-note guard in Draft PR #45
+
+- Parent Draft #30 `dfcf3f008df54498759243001bdfcd98669a8f23`; child [PR #45](https://github.com/davoodmehraban89/Aram/pull/45). All dependent Mapping work ultimately needs parent Draft #26 accepted.
+- Regression [RED CI 41067133189](https://github.com/davoodmehraban89/Aram/actions/runs/41067133189), 3 expected failures, 103 passes; source-note-stale guard fixed, [GREEN CI 41067277084](https://github.com/davoodmehraban89/Aram/actions/runs/41067277084), 106 passes, one warning, Alembic and compile success.
+- Checks only ORM read-only preview, never saves new mapping decisions. No customer workbooks or real accounting figures changed. Final SHA after docs needs CI. Unmerged and C1/C2/C3 independent review BLOCKED, not accepted.
