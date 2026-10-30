@@ -26,7 +26,7 @@
 1. [x] Copy the verified graph-integrity code and regressions into PR #35's branch, which targets PR #32's exact head.
 2. [x] Restore `PROJECT_STATUS.md` from PR #32 to honor Issue #36's file allowlist.
 3. [x] Add this design/plan pair; preserve append-only project log and handoff entries with explicit supersession of PR #41.
-4. [ ] **Verify CI on the combined PR #35 exact final head** after all consolidation docs have been committed. Required commands in backend:
+4. [x] **Verified CI for consolidated PR #35 at head `8bd5817b324e1585aca88b72285a4fc00187369d`**: [Backend CI 41061793756](https://github.com/davoodmehraban89/Aram/actions/runs/41061793756) SUCCESS, **132 passed, 1 warning**, isolated Alembic upgrade/downgrade and compile. Further record-only edits require one more final-head check. Required commands in backend:
    - `python -m pip install -e '.[test]'`
    - `pytest`
    - `ARAM_DATABASE_URL=sqlite:///./ci-migration.db alembic upgrade head`
@@ -34,7 +34,7 @@
    - `python -m compileall -q src tests migrations`
    - `git diff --check` (local when available or inspect complete GitHub patch; do not invent it as executed).
 5. [ ] Inspect exact 6-file diff, document performance and concurrency limitations, compare main SHA, and obtain genuine non-author C1/C2/C3 review. All reviewer names and signed-off SHAs must be visible remotely.
-6. [ ] Only after consolidated PR #35 has successful final-head tests, close superseded PR #41 *without merge*, link it and the original RED/GREEN evidence in #35.
+6. [x] After consolidated #35 succeeded at `8bd5817b324e1585aca88b72285a4fc00187369d`, closed superseded [PR #41](https://github.com/davoodmehraban89/Aram/pull/41) **without merge**; retained its RED/GREEN CI and recorded supersession in PR #41's final comment. Only PR #35 remains a candidate.
 7. [ ] After the parent #32 itself is independently accepted, rebase/retarget onto the new accepted head and rerun every mandatory check. No routine merge while controls are blocked.
 
 ## Acceptance and rollback
