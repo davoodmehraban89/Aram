@@ -82,6 +82,7 @@ def _validate_inputs(
 def preview_mapping_change(
     session: Session, *, year_id: int, rule_key: str, account_code: str,
     target_note_id: int, mapping_type: str, expected_base_version: int,
+    allow_unchanged: bool = False,
 ) -> MappingChangePreview:
     """Describe a proposed NEXT version without writing or accepting it.
 
@@ -89,6 +90,8 @@ def preview_mapping_change(
     Otherwise it must equal the latest persisted rule version. An old version,
     non-current note, cross-year target or unchanged proposal is rejected.
     """
+    if type(allow_unchanged) is not bool:
+        raise MappingValidationError("allow_unchanged must be Boolean")
     _validate_inputs(
         year_id, rule_key, account_code, target_note_id, mapping_type,
         expected_base_version,
@@ -143,12 +146,11 @@ def preview_mapping_change(
             id=None, version=prior_version + 1, account_code=account_code,
             target_note_id=target_note_id, mapping_type=mapping_type,
         )
-        if before is not None and (
+        is_unchanged = before is not None and (
             before.account_code, before.target_note_id, before.mapping_type
         ) == (
             proposed.account_code, proposed.target_note_id, proposed.mapping_type
-        ):
-            raise MappingNoChange("no mapping change to review")
+        )
 
         data = {
             "year_id": year_id,
@@ -166,7 +168,7 @@ def preview_mapping_change(
         fingerprint = sha256(
             json.dumps(data, sort_keys=True, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
-        return MappingChangePreview(
+        preview = MappingChangePreview(
             year_id=year_id, company_id=year.company_id, fiscal_year_number=year.year,
             rule_key=rule_key, expected_base_version=expected_base_version,
             before=before, proposed=proposed,
@@ -175,6 +177,9 @@ def preview_mapping_change(
             account_version_id=account.id, account_version=account.version,
             fingerprint=fingerprint,
         )
+        if is_unchanged and not allow_unchanged:
+            raise MappingNoChange("no mapping change to review")
+        return preview
 
 
 def verify_mapping_change_preview_current(
