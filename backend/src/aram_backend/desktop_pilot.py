@@ -364,6 +364,13 @@ def ui_smoke_test() -> int:
         try:
             window.withdraw()
             window.update_idletasks()
+            for tab_index in range(window.tabs.index("end")):
+                window.tabs.select(tab_index)
+                if window.tabs.index(window.tabs.select()) != tab_index:
+                    return 17
+            for key in ("<Control-o>", "<Control-r>", "<Control-l>", "<Control-q>", "<F1>"):
+                if not window.bind_all(key):
+                    return 18
             if str(window.validate_button.cget("state")) != "disabled":
                 return 10
             window.file_menu.invoke(0)  # open (real Tk menu callback)
@@ -378,10 +385,12 @@ def ui_smoke_test() -> int:
             window.help_menu.invoke(0)  # about (injected safe dialog)
             if len(info_calls) != 1:
                 return 14
-            window.clear_button.invoke()  # clear
+            window.clear_button.invoke()  # clear button
             if window.controller.selected_path is not None:
                 return 15
-            window.file_menu.invoke(0)  # open again
+            window.open_button.invoke()  # open button, not just menu
+            if window.controller.selected_path != path:
+                return 19
             window.file_menu.invoke(2)  # clear via menu
             if window.controller.selected_path is not None:
                 return 16
