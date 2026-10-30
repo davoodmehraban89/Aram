@@ -171,3 +171,23 @@ def test_empty_scoped_accounts_fail_closed():
     with pytest.raises(CoverageError) as exc:
         preview(content)
     assert exc.value.code == "NO_ACCOUNTS_IN_SCOPE"
+
+
+def test_hidden_auxiliary_sheet_is_rejected_even_if_financial_tables_are_visible():
+    content = make_change(
+        sample_workbook(),
+        lambda book: setattr(book["Checks"], "sheet_state", "hidden"),
+    )
+    with pytest.raises(CoverageError) as exc:
+        preview(content)
+    assert exc.value.code == "HIDDEN_INPUT"
+
+
+def test_hidden_unknown_extra_sheet_is_not_silently_ignored():
+    def add_hidden_sheet(book):
+        book.create_sheet("UntrustedExtra").sheet_state = "hidden"
+
+    content = make_change(sample_workbook(), add_hidden_sheet)
+    with pytest.raises(CoverageError) as exc:
+        preview(content)
+    assert exc.value.code == "HIDDEN_INPUT"
