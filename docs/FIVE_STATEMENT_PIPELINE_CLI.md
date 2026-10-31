@@ -27,6 +27,11 @@ The root object must contain exactly:
 - Monetary amounts in reference controls and journal transaction rows must be **decimal strings**, not JSON numeric literals or booleans. NaN, Infinity, excessive exponents and out-of-range precision are rejected.
 - Presentation sign multipliers must be exactly the JSON integers `1` or `-1`. Numeric booleans and floating-point `1.0` are invalid.
 - Identity, category, activity, label and evidence fields must be nonempty strings without leading/trailing whitespace, control characters or excessive length. An explicitly blank `subnote_code` remains supported.
+- Every note reference is unique by `(statement, section, note_number, subnote_code)`; supported statements are BS, IS, EQ and CF.
+- Every BS/IS/EQ policy key must match an existing reference of the same statement and cannot appear twice. Missing presentation policies are still allowed through parsing so the analyst engines can report them as *blocked review findings*, rather than silently inventing policies.
+- Every selected balance-sheet cash note must be unique, have a matching BS reference and an explicitly categorized `ASSETS` presentation policy. This does not prove the cash-equivalents selection is complete or finance-owner approved.
+- The cash-account registry and counterpart-account policies cannot contain duplicate account codes or overlap. Each transaction line ID must be unique; its cash account must be registered and its counterpart must be another cash account or explicitly classified counterpart. An account cannot be paired with itself.
+- All of these structural referential controls run **before opening the XLSX**; they validate consistency of user-provided references, not their accounting truth.
 - References use the same fields as the note reconciliation manifest.
 - BS/IS/EQ policy rows use the exact dataclass fields of their respective policy classes.
 - Cash-account, counterpart and transaction rows use the exact fields of `CashAccountPolicy`, `CashCounterpartPolicy` and `CashFlowEntry`.

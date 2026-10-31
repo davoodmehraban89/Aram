@@ -85,6 +85,7 @@ def _rows(
     string_fields: tuple[str, ...] = (),
     sign_field: str | None = None,
     amount_fields: tuple[str, ...] = (),
+    optional_text_fields: tuple[str, ...] = (),
 ) -> tuple[Any, ...]:
     items = payload[key]
     if (not isinstance(items, list) or len(items) < minimum
@@ -98,6 +99,14 @@ def _rows(
             value = item[field]
             if (not isinstance(value, str) or not value
                     or value != value.strip() or len(value) > 256
+                    or any(ord(char) < 32 or ord(char) == 127 for char in value)):
+                raise CoverageError(
+                    "PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID"
+                )
+        for field in optional_text_fields:
+            value = item[field]
+            if (not isinstance(value, str) or value != value.strip()
+                    or len(value) > 256
                     or any(ord(char) < 32 or ord(char) == 127 for char in value)):
                 raise CoverageError(
                     "PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID"
@@ -125,6 +134,85 @@ def _rows(
                 "PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID"
             ) from exc
     return tuple(result)
+
+
+def _validate_manifest_references(manifest: ParsedPipelineManifest) -> ParsedPipelineManifest:
+    """Fail closed on misleading cross-links before any XLSX is opened.
+
+    The caller supplies a reference/policy graph, not an authenticated approval.
+    Missing policies are left to the engines as *blocked preview findings*,
+    while duplicate or dangling input links are malformed manifest errors.
+    """
+    refs: dict[tuple[str, str, str, str], NoteReference] = {}
+    for item in manifest.references:
+        if item.statement not in {"BS", "IS", "EQ", "CF"}:
+            raise CoverageError("PIPELINE_MANIFEST_REFERENCE_STATEMENT_INVALID")
+        key = (item.statement, item.section, item.note_number, item.subnote_code)
+        if key in refs:
+            raise CoverageError("PIPELINE_MANIFEST_DUPLICATE_NOTE_REFERENCE")
+        refs[key] = item
+
+    policies_by_statement: dict[str, dict[tuple[str, str, str, str], object]] = {}
+    for statement, policies in (
+        ("BS", manifest.balance_sheet_policies),
+        ("IS", manifest.income_statement_policies),
+        ("EQ", manifest.equity_movement_policies),
+    ):
+        policy_by_key: dict[tuple[str, str, str, str], object] = {}
+        for item in policies:
+            key = (
+                statement, item.statement_section, item.note_number,
+                item.subnote_code,
+            )
+            if key in policy_by_key:
+                raise CoverageError("PIPELINE_MANIFEST_DUPLICATE_" + statement + "_POLICY")
+            if key not in refs:
+                raise CoverageError("PIPELINE_MANIFEST_ORPHAN_" + statement + "_POLICY")
+            policy_by_key[key] = item
+        policies_by_statement[statement] = policy_by_key
+
+    cash_note_keys: set[tuple[str, str, str, str]] = set()
+    for selection in manifest.cash_balance_notes:
+        key = (
+            "BS", selection.statement_section, selection.note_number,
+            selection.subnote_code,
+        )
+        if key in cash_note_keys:
+            raise CoverageError("PIPELINE_MANIFEST_DUPLICATE_CASH_NOTE_SELECTION")
+        cash_note_keys.add(key)
+        if key not in refs:
+            raise CoverageError("PIPELINE_MANIFEST_CASH_NOTE_REFERENCE_MISSING")
+        policy = policies_by_statement["BS"].get(key)
+        if policy is None or policy.category != "ASSETS":
+            raise CoverageError("PIPELINE_MANIFEST_CASH_NOTE_NOT_ASSET")
+
+    cash_codes: set[str] = set()
+    for item in manifest.cash_accounts:
+        if item.account_code in cash_codes:
+            raise CoverageError("PIPELINE_MANIFEST_DUPLICATE_CASH_ACCOUNT")
+        cash_codes.add(item.account_code)
+
+    counterpart_codes: set[str] = set()
+    for item in manifest.counterpart_policies:
+        if item.account_code in cash_codes:
+            raise CoverageError("PIPELINE_MANIFEST_CASH_COUNTERPART_OVERLAP")
+        if item.account_code in counterpart_codes:
+            raise CoverageError("PIPELINE_MANIFEST_DUPLICATE_COUNTERPART_POLICY")
+        counterpart_codes.add(item.account_code)
+
+    line_ids: set[str] = set()
+    for item in manifest.transactions:
+        if item.line_id in line_ids:
+            raise CoverageError("PIPELINE_MANIFEST_DUPLICATE_TRANSACTION_LINE")
+        line_ids.add(item.line_id)
+        if item.cash_account_code not in cash_codes:
+            raise CoverageError("PIPELINE_MANIFEST_UNKNOWN_CASH_ACCOUNT")
+        if item.cash_account_code == item.counterpart_account_code:
+            raise CoverageError("PIPELINE_MANIFEST_SAME_ACCOUNT_PAIR")
+        if (item.counterpart_account_code not in counterpart_codes
+                and item.counterpart_account_code not in cash_codes):
+            raise CoverageError("PIPELINE_MANIFEST_UNKNOWN_COUNTERPART_ACCOUNT")
+    return manifest
 
 
 def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
@@ -168,7 +256,7 @@ def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
                  or item.get("fiscal_year") != year)):
             raise CoverageError("PIPELINE_MANIFEST_TRANSACTION_SCOPE_MISMATCH")
 
-    return ParsedPipelineManifest(
+    manifest = ParsedPipelineManifest(
         company_code=company,
         fiscal_year=year,
         currency=currency,
@@ -178,24 +266,28 @@ def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
             MAX_POLICY_ROWS, minimum=1,
             string_fields=("statement", "section", "note_number", "evidence_ref"),
             amount_fields=("expected_closing_exposure",),
+            optional_text_fields=("subnote_code",),
         ),
         balance_sheet_policies=_rows(
             payload, "balance_sheet_policies", BS_POLICY_FIELDS,
             BalanceSheetLinePolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
             string_fields=("statement_section", "note_number", "category",
                            "line_label", "policy_evidence_ref"),
+            optional_text_fields=("subnote_code",),
         ),
         income_statement_policies=_rows(
             payload, "income_statement_policies", IS_POLICY_FIELDS,
             IncomeStatementLinePolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
             string_fields=("statement_section", "note_number", "category",
                            "line_label", "policy_evidence_ref"),
+            optional_text_fields=("subnote_code",),
         ),
         equity_movement_policies=_rows(
             payload, "equity_movement_policies", EQ_POLICY_FIELDS,
             EquityMovementPolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
             string_fields=("statement_section", "note_number", "equity_component",
                            "movement_category", "line_label", "policy_evidence_ref"),
+            optional_text_fields=("subnote_code",),
         ),
         cash_accounts=_rows(
             payload, "cash_accounts", CASH_ACCOUNT_FIELDS,
@@ -220,8 +312,10 @@ def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
             payload, "cash_balance_notes", CASH_NOTE_FIELDS,
             CashBalanceNoteSelection, MAX_POLICY_ROWS, minimum=1,
             string_fields=("statement_section", "note_number", "evidence_ref"),
+            optional_text_fields=("subnote_code",),
         ),
     )
+    return _validate_manifest_references(manifest)
 
 
 def run_pipeline_cli(workbook_path: str, manifest_path: str) -> FiveStatementPipelineResult:
