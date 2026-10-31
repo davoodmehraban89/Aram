@@ -23,6 +23,10 @@ The root object must contain exactly:
 `schema_version`, `company_code`, `fiscal_year`, `currency`, `unit`, `references`, `balance_sheet_policies`, `income_statement_policies`, `equity_movement_policies`, `cash_accounts`, `counterpart_policies`, `transactions`, `cash_balance_notes`.
 
 - Schema version is integer `1`; duplicate keys and unknown fields are rejected.
+- Currency, units, source company code and year must be explicit; each transaction's company/year must match the root scope before execution.
+- Monetary amounts in reference controls and journal transaction rows must be **decimal strings**, not JSON numeric literals or booleans. NaN, Infinity, excessive exponents and out-of-range precision are rejected.
+- Presentation sign multipliers must be exactly the JSON integers `1` or `-1`. Numeric booleans and floating-point `1.0` are invalid.
+- Identity, category, activity, label and evidence fields must be nonempty strings without leading/trailing whitespace, control characters or excessive length. An explicitly blank `subnote_code` remains supported.
 - References use the same fields as the note reconciliation manifest.
 - BS/IS/EQ policy rows use the exact dataclass fields of their respective policy classes.
 - Cash-account, counterpart and transaction rows use the exact fields of `CashAccountPolicy`, `CashCounterpartPolicy` and `CashFlowEntry`.
