@@ -240,3 +240,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Backend CI #41229238766: 565 passed; one Windows-only skip on Linux. Windows CI #41229238757: 95 passed; native Tk and frozen EXE verified detail drill-down and paging. Artifact ID 13052698865, 7-day retention.
 - Detail UI displays source note lines, EQ movements, CF transactions/cash account roll-forward and TB accounts, with search, statement filter, 200-row paging, 75k cap, source/policy evidence and strict Decimal/provenance checks.
 - PR remains Draft/unmerged. No finance owner signoff, real source completeness, independent C1/C2/C3, official export, signed installer or production release.
+
+
+## 2026-10-31 — async detail search handoff (verification pending)
+- Branch `codex/aram-windows-background-detail-search-20261031`, Draft PR child of #78. `filter_preview_details` validates bounded rows/query and runs in a daemon worker; Tk receives results via generation-token queue, so clear/file changes cannot repaint stale results. Search input max 256 chars; unsafe Unicode controls rejected; current page remains visible while searching; UI only renders 200 rows.
+- Exact 75,000-row boundary covered in pure helper test and Windows frozen EXE smoke. Exact-head Backend/Windows CI required before acceptance. No real company data or production release.
