@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 from io import BytesIO
+from decimal import Decimal, localcontext
 import json
 
 import pytest
@@ -47,7 +48,7 @@ def workbook(*, costs="110", missing_mapping=False, include_bs=False,
     if include_bs:
         items += (("AST", "0", "Assets", "A01", "BS", 1),)
     for index, (code, amount, section, note, category, sign) in enumerate(items, 2):
-        closing = str(-__import__("decimal").Decimal(amount)) if sign == -1 else amount
+        closing = str(-Decimal(amount)) if sign == -1 else amount
         add("Accounts", company_code="001", fiscal_year=1404,
             general_code=code, general_name=section, account_full_code=code,
             account_name="Synthetic " + section, opening=closing, debit="0",
@@ -75,7 +76,7 @@ def references(*, costs="110", include_bs=False, revenue="200"):
     result = []
     for code, amount, section, note, category, sign in ITEMS:
         replacement = revenue if code == "REV" else costs if code == "COS" else amount
-        closing = str(-__import__("decimal").Decimal(replacement)) if sign == -1 else replacement
+        closing = str(-Decimal(replacement)) if sign == -1 else replacement
         result.append(NoteReference("IS", section, note, "", closing, "SYNTH-" + code))
     if include_bs:
         result.append(NoteReference("BS", "Assets", "A01", "", "0", "SYNTH-BS"))
@@ -131,7 +132,7 @@ def test_real_loss_is_not_false_positive_if_expense_exceeds_income():
     assert not result.findings
 
 
-def test_no_tax_is_a_valid_zero_amount_with_explicit_reference():
+def test_zero_cost_of_revenue_is_valid_with_explicit_reference():
     # Source and reference keep the same input amount; no unseen tax estimate.
     result = build(data=workbook(costs="0"), refs=references(costs="0"))
     assert result.cost_of_revenue_total == "0"
@@ -283,4 +284,7 @@ def test_tiny_exact_decimal_is_not_rounded_away():
     )
     assert result.eligible_for_analyst_review
     assert result.cost_of_revenue_total == small
-    assert result.net_result == str(__import__("decimal").Decimal("155") - __import__("decimal").Decimal(small))
+    with localcontext() as context:
+        context.prec = 400
+        expected = str(Decimal("155") - Decimal(small))
+    assert result.net_result == expected
