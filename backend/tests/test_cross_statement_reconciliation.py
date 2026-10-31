@@ -187,6 +187,49 @@ def trial(*, balanced=True):
     )
 
 
+
+def cash_with_transfer():
+    base = cash()
+    cash_one = replace(
+        base.account_reconciliations[0],
+        source_credit_turnover="30", closing_balance="40",
+        transaction_credit_turnover="30",
+    )
+    cash_two = CashAccountReconciliation(
+        account_code="CASH2", account_name="Cash two", source_row=6,
+        opening_balance="0", source_debit_turnover="10",
+        source_credit_turnover="0", closing_balance="10",
+        transaction_debit_turnover="10", transaction_credit_turnover="0",
+        debit_difference="0", credit_difference="0",
+        rollforward_difference="0", policy_evidence_ref="CASH2-POLICY",
+    )
+    transfer = CashFlowLine(
+        "L3", "V3", "1404-01-03", "CASH1", "CASH2",
+        "CASH_TRANSFER", "0", "10", "SRC3", "CASH2-POLICY",
+    )
+    return replace(
+        base, cash_account_count=2, transaction_count=3,
+        internal_transfer_inflows="10", internal_transfer_outflows="10",
+        account_reconciliations=(cash_one, cash_two),
+        cash_flow_lines=base.cash_flow_lines + (transfer,),
+    )
+
+
+def trial_with_transfer():
+    base = trial()
+    rows = list(base.accounts)
+    rows[0] = replace(
+        rows[0], credit="30", closing="40", debit_net_movement="0",
+    )
+    rows.append(
+        TrialBalanceAccount("CASH2", "Cash two", 7, 6, "0", "10", "0", "10", "10")
+    )
+    return replace(
+        base, account_count=6, debit_turnover_total="100",
+        credit_turnover_total="100", accounts=tuple(rows),
+    )
+
+
 def reconcile(**overrides):
     inputs = {
         "balance_sheet": bs(),
@@ -491,3 +534,11 @@ def test_equity_account_movement_must_match_trial_balance_source_row():
     result = reconcile(trial_balance=replace(source, accounts=tuple(rows)))
     assert not result.equity_rollforward_valid
     assert "EQUITY_STATEMENT_ROLLFORWARD_INVALID" in result.findings
+
+
+def test_internal_cash_transfer_line_ties_both_cash_accounts_to_trial_balance():
+    result = reconcile(cash_flow=cash_with_transfer(), trial_balance=trial_with_transfer())
+    assert result.eligible_for_analyst_review, result.findings
+    assert result.cash_flow_bridge_valid
+    assert result.cash_accounts_match_trial_balance
+    assert result.cash_account_totals_valid
