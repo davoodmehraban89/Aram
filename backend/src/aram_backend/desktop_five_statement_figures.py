@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.five_statement_pipeline import FiveStatementPipelineResult
 from aram_backend.reconciliation_review import _money
+from aram_backend.desktop_five_statement_integrity import validate_desktop_pipeline_result
 
 @dataclass(frozen=True)
 class PreviewFigure:
@@ -44,8 +45,7 @@ SPECS = (
 )
 
 def build_preview_figures(result: FiveStatementPipelineResult) -> tuple[PreviewFigure, ...]:
-    if type(result) is not FiveStatementPipelineResult:
-        raise CoverageError("DESKTOP_FIGURES_INVALID_RESULT")
+    validate_desktop_pipeline_result(result)
     if any((
         result.official_financial_statement, result.accounting_policy_authorized,
         result.independently_reviewed, result.export_authorized, result.releasable,

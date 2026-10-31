@@ -406,3 +406,18 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — native five-statement financial figures
 - Branch `codex/aram-windows-statement-figures-20261031`, parent Draft PR #76. Added a pure figure presentation layer with 28 explicit BS/IS/EQ/CF/TB and cross-statement numeric fields; uses the exact Decimal parser and never rounds. New Tk amounts tab marks blocked figures clearly and wipes values on input changes, processing failure or clear action.
 - Added positive/blocked and malformed-amount tests, actual Windows Tk assertions, and frozen executable valid GUI smoke with exact figures. Full CI pending. No accounting approval or official reporting authority.
+
+
+
+### 2026-10-31 — searchable five-statement detail drill-down
+- Branch `codex/aram-windows-detail-review-20261031`, child Draft PR #78 of #77. Added 75k-bounded, fail-closed detail mapping for BS/IS note lines, equity note/account movements, cash transactions/account rollforward and trial-balance accounts, with evidence/policy references.
+- New Tk tab has five-statement filter, search, 200-row paging and two-axis scrolling. Detail mapping and provenance checks execute on worker thread. Clearing or selecting new files clears every row and amount.
+- Added exact candidate/reconciliation type, approval-flag, source-hash, company/year, note-snapshot and critical bridge validation before figures/details render. Numeric exposure/presentation/movement fields are checked as bounded Decimals.
+- Synthetic tests cover valid/blocked outputs, tampered amount/text, row cap, forged approvals, source hash mismatch and cross-tie tampering. Windows native/frozen EXE verification pending.
+
+
+
+### 2026-10-31 — searchable detail drill-down exact-head verification
+- PR #78 head `b5b93213e65c02c514180cece8936874577e9954` passed [Backend CI 41229238766](https://github.com/davoodmehraban89/Aram/actions/runs/41229238766): 565 tests, one Windows-only skip on Linux, one existing third-party warning; Alembic upgrade/downgrade and compileall passed.
+- [Windows CI 41229238757](https://github.com/davoodmehraban89/Aram/actions/runs/41229238757): 95 tests passed; frozen EXE generated and native GUI verified summary figures, detail filtering/search, page transitions and reset. Artifact ID 13052698865 expires 2026-11-07 18:25 UTC.
+- Three sequential internal engineering review passes completed. This is still an unsigned, unreleased pilot; no real financial source completeness, finance owner approval, independent C1/C2/C3 or production release.

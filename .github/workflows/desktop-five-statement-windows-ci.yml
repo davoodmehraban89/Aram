@@ -36,7 +36,7 @@ jobs:
         run: python -m pip install -e ".[test]" "pyinstaller>=6.10,<7"
       - name: Run desktop, synthetic demo and full pipeline integration tests
         shell: pwsh
-        run: python -m pytest tests/test_desktop_five_statement.py tests/test_synthetic_five_statement_demo.py tests/test_five_statement_pipeline_integration.py tests/test_cross_statement_reconciliation.py
+        run: python -m pytest tests/test_desktop_five_statement.py tests/test_desktop_five_statement_figures.py tests/test_desktop_five_statement_details.py tests/test_synthetic_five_statement_demo.py tests/test_five_statement_pipeline_integration.py tests/test_cross_statement_reconciliation.py
       - name: Generate clearly labeled synthetic inspection inputs
         shell: pwsh
         run: python -m aram_backend.synthetic_five_statement_demo --output-dir dist/DEMO-SYNTHETIC-ONLY

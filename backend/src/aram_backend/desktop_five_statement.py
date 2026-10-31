@@ -19,6 +19,7 @@ from aram_backend.desktop_five_statement_core import (
     DesktopFiveInputError, DesktopFiveStatementController,
 )
 from aram_backend.desktop_five_statement_figures import build_preview_figures
+from aram_backend.desktop_five_statement_details import PreviewDetail, build_preview_details
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.synthetic_five_statement_demo import (
     pipeline_manifest, source_workbook,
@@ -34,7 +35,7 @@ ACTIONS = {
     "help.about": "show_about",
 }
 MAX_VISIBLE_FINDINGS = 2000
-TAB_NAMES = ("بررسی پنج صورت مالی", "خلاصه مبالغ", "محدودیت‌ها", "راهنما")
+TAB_NAMES = ("بررسی پنج صورت مالی", "خلاصه مبالغ", "ریز اقلام", "محدودیت‌ها", "راهنما")
 CANDIDATE_NAMES = (
     ("balance_sheet", "ترازنامه"),
     ("income_statement", "سود و زیان"),
@@ -60,6 +61,10 @@ class FiveStatementWindow(tk.Tk):
         )
         self._events: Queue[tuple[int, object, str | None]] = Queue()
         self._busy = False
+        self._detail_rows: tuple[PreviewDetail, ...] = ()
+        self._filtered_detail_rows: tuple[PreviewDetail, ...] = ()
+        self._detail_page = 0
+        self._detail_page_size = 200
         self.title(TITLE)
         self.geometry("1060x730")
         self.minsize(840, 610)
@@ -144,9 +149,10 @@ class FiveStatementWindow(tk.Tk):
         self.tabs.pack(fill="both", expand=True)
         main = ttk.Frame(self.tabs, padding=12)
         figures = ttk.Frame(self.tabs, padding=12)
+        details = ttk.Frame(self.tabs, padding=12)
         limitations = ttk.Frame(self.tabs, padding=18)
         help_tab = ttk.Frame(self.tabs, padding=18)
-        for tab, title in zip((main, figures, limitations, help_tab), TAB_NAMES):
+        for tab, title in zip((main, figures, details, limitations, help_tab), TAB_NAMES):
             self.tabs.add(tab, text=title)
 
         ttk.Label(main, textvariable=self.workbook_label, anchor="e").pack(
@@ -238,6 +244,95 @@ class FiveStatementWindow(tk.Tk):
         figure_area.grid_columnconfigure(0, weight=1)
         figure_area.grid_rowconfigure(0, weight=1)
 
+        ttk.Label(
+            details,
+            text="ریز اقلام و ردگیری منبع — فقط خواندنی و غیررسمی",
+            font=("Tahoma", 11, "bold"), anchor="e",
+        ).pack(fill="x", pady=(0, 7))
+        controls = ttk.Frame(details)
+        controls.pack(fill="x", pady=(0, 8))
+        self.detail_filter_var = tk.StringVar(value="همه")
+        self.detail_filter_combo = ttk.Combobox(
+            controls, textvariable=self.detail_filter_var, state="readonly",
+            values=(
+                "همه", "ترازنامه", "سود و زیان",
+                "تغییرات حقوق مالکانه", "جریان وجوه نقد", "تراز آزمایشی",
+            ),
+            width=22,
+        )
+        self.detail_filter_combo.pack(side="right", padx=4)
+        self.detail_filter_combo.bind(
+            "<<ComboboxSelected>>", lambda event: self._apply_detail_filter(),
+        )
+        self.detail_search_var = tk.StringVar(value="")
+        self.detail_search_entry = ttk.Entry(
+            controls, textvariable=self.detail_search_var, width=28,
+        )
+        self.detail_search_entry.pack(side="right", padx=4)
+        self.detail_search_entry.bind(
+            "<Return>", lambda event: self._apply_detail_filter(),
+        )
+        self.detail_search_button = ttk.Button(
+            controls, text="جستجو", command=self._apply_detail_filter,
+        )
+        self.detail_search_button.pack(side="right", padx=4)
+        self.detail_status = tk.StringVar(value="پس از اجرای کنترل، ریز اقلام نمایش داده می‌شود")
+        ttk.Label(details, textvariable=self.detail_status, anchor="e").pack(
+            fill="x", pady=(0, 6),
+        )
+        detail_area = ttk.Frame(details)
+        detail_area.pack(fill="both", expand=True)
+        detail_columns = (
+            "statement", "item", "reference", "source", "opening",
+            "debit", "credit", "movement", "closing", "trace", "state",
+        )
+        self.detail_tree = ttk.Treeview(
+            detail_area, columns=detail_columns, show="headings",
+            style="Aram.Treeview",
+        )
+        detail_headers = (
+            ("statement", "صورت مالی", 150),
+            ("item", "شرح / حساب / فعالیت", 190),
+            ("reference", "یادداشت / شناسه", 190),
+            ("source", "مواجهه / ردیف منبع", 180),
+            ("opening", "افتتاحیه / منبع", 130),
+            ("debit", "بدهکار / ورودی", 130),
+            ("credit", "بستانکار / خروجی", 130),
+            ("movement", "تغییر", 130),
+            ("closing", "اختتامیه / ارائه", 150),
+            ("trace", "مدرک / سیاست / ردگیری", 330),
+            ("state", "وضعیت", 160),
+        )
+        for key, heading, width in detail_headers:
+            self.detail_tree.heading(key, text=heading)
+            self.detail_tree.column(key, width=width, minwidth=80, anchor="e")
+        detail_y = ttk.Scrollbar(
+            detail_area, orient="vertical", command=self.detail_tree.yview,
+        )
+        detail_x = ttk.Scrollbar(
+            detail_area, orient="horizontal", command=self.detail_tree.xview,
+        )
+        self.detail_tree.configure(
+            yscrollcommand=detail_y.set, xscrollcommand=detail_x.set,
+        )
+        self.detail_tree.grid(row=0, column=0, sticky="nsew")
+        detail_y.grid(row=0, column=1, sticky="ns")
+        detail_x.grid(row=1, column=0, sticky="ew")
+        detail_area.grid_columnconfigure(0, weight=1)
+        detail_area.grid_rowconfigure(0, weight=1)
+        paging = ttk.Frame(details)
+        paging.pack(fill="x", pady=(7, 0))
+        self.detail_prev_button = ttk.Button(
+            paging, text="صفحه قبل", command=lambda: self._change_detail_page(-1),
+            state="disabled",
+        )
+        self.detail_prev_button.pack(side="right", padx=4)
+        self.detail_next_button = ttk.Button(
+            paging, text="صفحه بعد", command=lambda: self._change_detail_page(1),
+            state="disabled",
+        )
+        self.detail_next_button.pack(side="right", padx=4)
+
         for item in (
             "• موفقیت آزمون به‌معنای کامل‌بودن سندها، مانده‌ها یا نگاشت‌های حسابداری نیست.",
             "• طبقه‌بندی جریان نقد به ریزاسناد جفت‌شده و فهرست حساب‌های نقد نیاز دارد.",
@@ -290,16 +385,72 @@ class FiveStatementWindow(tk.Tk):
         self.manifest_button.configure(state=selectable)
         self.clear_button.configure(state=selectable)
         self.run_button.configure(state=executable)
+        self.detail_filter_combo.configure(state="disabled" if self._busy else "readonly")
+        self.detail_search_entry.configure(state=selectable)
+        self.detail_search_button.configure(state=selectable)
         for i in (0, 1, 3):
             self.file_menu.entryconfigure(i, state=selectable)
         self.file_menu.entryconfigure(2, state=executable)
+        self._render_detail_page()
+
+    def _apply_detail_filter(self) -> None:
+        statement = self.detail_filter_var.get()
+        query = self.detail_search_var.get().strip().casefold()
+        self._filtered_detail_rows = tuple(
+            row for row in self._detail_rows
+            if (statement == "همه" or row.statement == statement)
+            and (not query or query in " ".join(row.values()).casefold())
+        )
+        self._detail_page = 0
+        self._render_detail_page()
+
+    def _render_detail_page(self) -> None:
+        if not hasattr(self, "detail_tree") or not self.detail_tree.winfo_exists():
+            return
+        children = self.detail_tree.get_children()
+        if children:
+            self.detail_tree.delete(*children)
+        total = len(self._filtered_detail_rows)
+        pages = max(1, (total + self._detail_page_size - 1) // self._detail_page_size)
+        self._detail_page = min(max(0, self._detail_page), pages - 1)
+        start = self._detail_page * self._detail_page_size
+        end = min(start + self._detail_page_size, total)
+        for row in self._filtered_detail_rows[start:end]:
+            self.detail_tree.insert("", "end", values=row.values())
+        if total:
+            self.detail_status.set(
+                f"نمایش {start + 1} تا {end} از {total} ردیف | "
+                f"صفحه {self._detail_page + 1} از {pages} | هر صفحه حداکثر ۲۰۰ ردیف"
+            )
+        else:
+            self.detail_status.set("ردیفی با این فیلتر پیدا نشد")
+        button_state = "disabled" if self._busy else "normal"
+        self.detail_prev_button.configure(
+            state=(button_state if self._detail_page > 0 else "disabled"),
+        )
+        self.detail_next_button.configure(
+            state=(button_state if self._detail_page + 1 < pages else "disabled"),
+        )
+
+    def _change_detail_page(self, delta: int) -> None:
+        if self._busy:
+            return
+        self._detail_page += delta
+        self._render_detail_page()
 
     def _clear_rows(self) -> None:
-        for tree in (self.outcome_tree, self.figures_tree):
+        for tree in (self.outcome_tree, self.figures_tree, self.detail_tree):
             children = tree.get_children()
             if children:
                 tree.delete(*children)
+        self._detail_rows = ()
+        self._filtered_detail_rows = ()
+        self._detail_page = 0
+        self.detail_filter_var.set("همه")
+        self.detail_search_var.set("")
+        self.detail_status.set("پس از اجرای کنترل، ریز اقلام نمایش داده می‌شود")
         self.amount_units.set("واحد: طبق داده‌های ورودی | هنوز محاسبه نشده")
+        self._render_detail_page()
 
     def select_workbook(self) -> None:
         if self._busy:
@@ -349,14 +500,16 @@ class FiveStatementWindow(tk.Tk):
 
         def worker() -> None:
             try:
-                result = self.controller.validate()
-            except DesktopFiveInputError as exc:
+                outcome = self.controller.validate()
+                figures = build_preview_figures(outcome)
+                details = build_preview_details(outcome)
+            except (DesktopFiveInputError, CoverageError) as exc:
                 self._events.put((generation, None, str(exc)))
             except Exception:
                 # Do not disclose a private filesystem or financial traceback.
                 self._events.put((generation, None, "INTERNAL_REVIEW_FAILED"))
             else:
-                self._events.put((generation, result, None))
+                self._events.put((generation, (outcome, figures, details), None))
 
         Thread(target=worker, daemon=True).start()
         self.after(80, self._poll)
@@ -380,27 +533,9 @@ class FiveStatementWindow(tk.Tk):
             self.overview.set("ورودی نامعتبر یا کنترل ناموفق")
             self.status.set("کد خطا: " + error)
         else:
-            outcome = result
-            try:
-                if (
-                    outcome.balance_sheet.equity_total
-                    != outcome.reconciliation.balance_sheet_equity_total
-                    or outcome.income_statement.net_result
-                    != outcome.reconciliation.income_statement_net_result
-                    or outcome.cash_flow.closing_cash_and_equivalents
-                    != outcome.reconciliation.cash_flow_closing_cash
-                ):
-                    raise CoverageError("DESKTOP_FIGURES_SUMMARY_MISMATCH")
-                figure_rows = build_preview_figures(outcome)
-            except (CoverageError, AttributeError, TypeError, ValueError):
-                # Refuse to render unverified numeric data as a green preview.
-                self.controller.result = None
-                self.controller.state = "INPUT_ERROR"
-                self._clear_rows()
-                self.overview.set("نمایش مبالغ نامعتبر؛ پیش‌نمایش مسدود شد")
-                self.status.set("DESKTOP_FIGURES_INVALID")
-                self._refresh()
-                return
+            outcome, figure_rows, detail_rows = result
+            self._detail_rows = detail_rows
+            self._apply_detail_filter()
             self.amount_units.set(
                 "شرکت " + outcome.company_code
                 + " | سال " + str(outcome.fiscal_year)
@@ -578,13 +713,54 @@ def ui_valid_smoke_test() -> int:
                 and row[2] == "20" for row in amount_rows
             ):
                 return 29
+            detail_rows = window.detail_tree.get_children()
+            if not window._detail_rows or not detail_rows:
+                return 30
+            if not any(
+                row.item == "Revenue" and row.statement == "سود و زیان"
+                for row in window._detail_rows
+            ):
+                return 31
+            window.detail_filter_var.set("سود و زیان")
+            window.detail_search_var.set("یادداشت R01")
+            window._apply_detail_filter()
+            filtered = window.detail_tree.get_children()
+            if len(filtered) != 1:
+                return 32
+            values = window.detail_tree.item(filtered[0], "values")
+            if values[1] != "Revenue" or values[0] != "سود و زیان":
+                return 33
+            window.detail_filter_var.set("همه")
+            window.detail_search_var.set("")
+            original_details = window._detail_rows
+            if not original_details:
+                return 34
+            repeats = 200 // len(original_details) + 1
+            window._detail_rows = original_details * repeats
+            window._apply_detail_filter()
+            if len(window.detail_tree.get_children()) != 200:
+                return 35
+            if str(window.detail_next_button.cget("state")) != "normal":
+                return 36
+            window._change_detail_page(1)
+            if len(window.detail_tree.get_children()) != len(window._detail_rows) - 200:
+                return 37
+            if str(window.detail_prev_button.cget("state")) != "normal":
+                return 38
+            window._change_detail_page(-1)
+            if len(window.detail_tree.get_children()) != 200:
+                return 39
+            window._detail_rows = original_details
+            window._apply_detail_filter()
             if any(
                 window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
                 for row in rows
             ):
                 return 25
             window.clear_button.invoke()
-            if window.controller.result is not None or window.outcome_tree.get_children():
+            if (window.controller.result is not None or window.outcome_tree.get_children()
+                    or window.figures_tree.get_children() or window.detail_tree.get_children()
+                    or window._detail_rows):
                 return 26
             if str(window.run_button.cget("state")) != "disabled":
                 return 27
