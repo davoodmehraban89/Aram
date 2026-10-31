@@ -421,3 +421,8 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - PR #78 head `b5b93213e65c02c514180cece8936874577e9954` passed [Backend CI 41229238766](https://github.com/davoodmehraban89/Aram/actions/runs/41229238766): 565 tests, one Windows-only skip on Linux, one existing third-party warning; Alembic upgrade/downgrade and compileall passed.
 - [Windows CI 41229238757](https://github.com/davoodmehraban89/Aram/actions/runs/41229238757): 95 tests passed; frozen EXE generated and native GUI verified summary figures, detail filtering/search, page transitions and reset. Artifact ID 13052698865 expires 2026-11-07 18:25 UTC.
 - Three sequential internal engineering review passes completed. This is still an unsigned, unreleased pilot; no real financial source completeness, finance owner approval, independent C1/C2/C3 or production release.
+
+
+### 2026-10-31 — responsive 75k-row detail search
+- Branch `codex/aram-windows-background-detail-search-20261031`, child of Draft PR #78. Found synchronous 75k-row filtering on Tk event loop. Moved search/filter to a background worker with generation-token stale-result protection, queue-based result handoff and bounded query validation; UI retains the existing page while searching and renders at most 200 rows.
+- Added pure helper tests for exact 75k row boundary, statement and cross-column search, no-match, casefold, oversized/control/bidi query, malformed rows; updated native/frozen EXE smoke to test responsive controls and 75k-row filter/page navigation. CI pending.
