@@ -106,8 +106,8 @@ def equity(*, closing="100", profit="40", eligible=True):
     profit_value = Decimal(profit)
     rollforward = Decimal("60") + profit_value - closing_value
     account = EquityAccountMovement(
-        account_code="EQ1", account_name="Equity", source_excel_row=2,
-        source_row=1, statement_section="Equity", note_number="E01",
+        account_code="EQ1", account_name="Equity", source_excel_row=3,
+        source_row=2, statement_section="Equity", note_number="E01",
         subnote_code="", equity_component="RETAINED_EARNINGS",
         movement_category="NET_PROFIT_LOSS", sign_multiplier=-1,
         opening_balance="60", debit_turnover="0", credit_turnover=profit,
@@ -172,14 +172,15 @@ def cash(*, closing="50", net="10", eligible=True):
 def trial(*, balanced=True):
     accounts = (
         TrialBalanceAccount("CASH1", "Cash", 2, 1, "40", "30", "20", "50", "10"),
-        TrialBalanceAccount("REV", "Revenue", 3, 2, "0", "0", "30", "-30", "-30"),
-        TrialBalanceAccount("EXP", "Expense", 4, 3, "0", "20", "0", "20", "20"),
-        TrialBalanceAccount("OFFSET", "Offset", 5, 4, "-40", "0", "0", "-40", "0"),
+        TrialBalanceAccount("EQ1", "Equity", 3, 2, "-60", "0", "40", "-100", "-40"),
+        TrialBalanceAccount("REV", "Revenue", 4, 3, "0", "0", "30", "-30", "-30"),
+        TrialBalanceAccount("EXP", "Expense", 5, 4, "0", "20", "0", "20", "20"),
+        TrialBalanceAccount("OFFSET", "Offset", 6, 5, "20", "40", "0", "60", "40"),
     )
     return TrialBalanceDiagnostic(
         company_code="001", fiscal_year=1404, source_sha256=SOURCE,
-        account_count=4, opening_debit_net_total="0",
-        debit_turnover_total="50", credit_turnover_total="50",
+        account_count=5, opening_debit_net_total="0",
+        debit_turnover_total="90", credit_turnover_total="90",
         closing_debit_net_total="0", movement_difference="0",
         opening_to_closing_difference="0", findings=(), accounts=accounts,
         balanced_for_analyst_review=balanced,
@@ -480,3 +481,12 @@ def test_cash_scope_and_ledger_completeness_flags_cannot_be_smuggled_in():
         reconcile(cash_flow=replace(
             cash(), cash_account_scope_owner_approved=True,
         ))
+
+
+def test_equity_account_movement_must_match_trial_balance_source_row():
+    source = trial()
+    rows = list(source.accounts)
+    rows[1] = replace(rows[1], credit="39", closing="-99", debit_net_movement="-39")
+    result = reconcile(trial_balance=replace(source, accounts=tuple(rows)))
+    assert not result.equity_rollforward_valid
+    assert "EQUITY_STATEMENT_ROLLFORWARD_INVALID" in result.findings
