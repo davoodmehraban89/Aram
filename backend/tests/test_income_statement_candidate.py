@@ -283,7 +283,7 @@ def test_tiny_exact_decimal_is_not_rounded_away():
         refs=references(costs=small),
     )
     assert result.eligible_for_analyst_review
-    assert result.cost_of_revenue_total == small
+    assert Decimal(result.cost_of_revenue_total) == Decimal(small)
     with localcontext() as context:
         context.prec = 400
         expected = str(Decimal("155") - Decimal(small))
