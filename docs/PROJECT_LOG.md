@@ -394,3 +394,10 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — five-statement CLI documentation-inclusive verification
 - Latest PR #71 head `a5a874b1d227e52c1e70e00edcb8dc5b96a77c6a`, [CI 41184045992](https://github.com/davoodmehraban89/Aram/actions/runs/41184045992): 413 passed; migration round-trip and compileall passed. Existing Actions Node.js 20 deprecation warning only.
 - Draft PR #71 remains unmerged. No real financial data, finance-owner signoff, independent C1/C2/C3, official export or release.
+
+
+### 2026-10-31 — Windows demonstration dataset and frozen-EXE success smoke
+- Branch `codex/aram-synthetic-windows-demo-20261031` (child of Draft PR #75).
+- New `aram_backend.synthetic_five_statement_demo` owns one completely synthetic six-account XLSX and consistent strict manifest. Existing integration tests now import the same fixture functions; no copy/paste drift. Generator is opt-in and creates only a new directory with XLSX, JSON and warning notice, never overwriting existing data.
+- Windows workflow now tests generated files with real CLI, then builds EXE and runs both invalid-input and **valid end-to-end** native GUI smoke tests, uploading demo files alongside the unreleased EXE.
+- CI and review pending. No real company data, account posting, network transfer, official approval, deployment or release.
