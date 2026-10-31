@@ -6,6 +6,7 @@ Tk is a presentation layer over the existing bounded local preview pipeline.
 from __future__ import annotations
 
 from queue import Empty, Queue
+import json
 import sys
 import tempfile
 from threading import Thread
@@ -16,6 +17,9 @@ from typing import Callable
 
 from aram_backend.desktop_five_statement_core import (
     DesktopFiveInputError, DesktopFiveStatementController,
+)
+from aram_backend.synthetic_five_statement_demo import (
+    pipeline_manifest, source_workbook,
 )
 
 TITLE = "آرام | پنج صورت مالی — پیش‌نمایش آزمایشی و غیررسمی"
@@ -455,14 +459,73 @@ def ui_smoke_test() -> int:
                 pass
 
 
+def ui_valid_smoke_test() -> int:
+    """Exercise frozen Tk with a truly valid synthetic five-statement input.
+
+    This is an automated widget check, not human review or official approval.
+    """
+    import time
+    with tempfile.TemporaryDirectory() as directory:
+        folder = Path(directory)
+        workbook = folder / "ARAM-SYNTHETIC-ONLY.xlsx"
+        manifest = folder / "ARAM-SYNTHETIC-ONLY.json"
+        workbook.write_bytes(source_workbook())
+        manifest.write_text(
+            json.dumps(pipeline_manifest(), ensure_ascii=True), encoding="utf-8",
+        )
+        selected = {"workbook": str(workbook), "manifest": str(manifest)}
+        window = FiveStatementWindow(picker=lambda kind: selected[kind])
+        try:
+            window.withdraw()
+            window.update_idletasks()
+            if str(window.run_button.cget("state")) != "disabled":
+                return 20
+            window.workbook_button.invoke()
+            window.manifest_button.invoke()
+            if not window.controller.can_run:
+                return 21
+            window.run_button.invoke()
+            for _ in range(500):
+                window.update()
+                if not window._busy:
+                    break
+                time.sleep(0.02)
+            if window._busy or window.controller.state != "ELIGIBLE":
+                return 22
+            if not window.controller.result or not window.controller.result.eligible_for_analyst_review:
+                return 23
+            rows = window.outcome_tree.get_children()
+            if len(rows) != 5:
+                return 24
+            if any(
+                window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
+                for row in rows
+            ):
+                return 25
+            window.clear_button.invoke()
+            if window.controller.result is not None or window.outcome_tree.get_children():
+                return 26
+            if str(window.run_button.cget("state")) != "disabled":
+                return 27
+            return 0
+        finally:
+            try:
+                if window.winfo_exists():
+                    window.destroy()
+            except tk.TclError:
+                pass
+
+
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     if args == ["--self-test"]:
         return self_test()
     if args == ["--ui-smoke"]:
         return ui_smoke_test()
+    if args == ["--ui-valid-smoke"]:
+        return ui_valid_smoke_test()
     if args:
-        print("Supported: --self-test, --ui-smoke, or no arguments", file=sys.stderr)
+        print("Supported: --self-test, --ui-smoke, --ui-valid-smoke, or no arguments", file=sys.stderr)
         return 2
     window = FiveStatementWindow()
     window.mainloop()
