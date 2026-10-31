@@ -256,11 +256,21 @@ def _income_detail_bridge(income: IncomeStatementCandidate) -> bool:
     )
 
 
-def _equity_detail_bridge(equity: EquityChangesCandidate) -> bool:
-    if (not isinstance(equity.note_movements, tuple) or not equity.note_movements
+def _equity_detail_bridge(
+    equity: EquityChangesCandidate, trial: TrialBalanceDiagnostic,
+) -> bool:
+    if (not isinstance(trial.accounts, tuple)
+            or not isinstance(equity.note_movements, tuple) or not equity.note_movements
             or not isinstance(equity.account_movements, tuple)
             or not equity.account_movements
             or not isinstance(equity.component_totals, tuple)):
+        return False
+    trial_by_code = {
+        account.account_code: account
+        for account in trial.accounts
+        if isinstance(account, TrialBalanceAccount)
+    }
+    if len(trial_by_code) != len(trial.accounts):
         return False
     accounts_by_note: dict[tuple[str, str, str], list[EquityAccountMovement]] = {}
     seen_accounts: set[str] = set()
@@ -290,7 +300,16 @@ def _equity_detail_bridge(equity: EquityChangesCandidate) -> bool:
         credit = _money(account.credit_turnover)
         movement = _money(account.movement_amount)
         closing = _money(account.closing_balance)
-        if (debit < 0 or credit < 0
+        source = trial_by_code.get(code)
+        if (source is None
+                or account.account_name != source.account_name
+                or account.source_excel_row != source.excel_row
+                or account.source_row != source.source_row
+                or opening * account.sign_multiplier != _money(source.opening)
+                or debit != _money(source.debit)
+                or credit != _money(source.credit)
+                or closing * account.sign_multiplier != _money(source.closing)
+                or debit < 0 or credit < 0
                 or movement != _sum_exact([debit, -credit]) * account.sign_multiplier
                 or _sum_exact([opening, movement, -closing]) != 0):
             return False
@@ -791,7 +810,7 @@ def reconcile_cross_statements(
         -_money(equity_changes.closing_equity_total),
     ])
     equity_rollforward_valid = (
-        _equity_detail_bridge(equity_changes)
+        _equity_detail_bridge(equity_changes, trial_balance)
         and equity_rollforward == 0
         and _money(equity_changes.rollforward_difference) == 0
     )
