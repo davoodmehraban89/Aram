@@ -196,3 +196,9 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — five-statement orchestrator exact-head verification
 - PR #70 exact implementation SHA `2b201d350bffecdedbd26b44bd2209e47aa50e3a` passed [Backend CI 41183509414](https://github.com/davoodmehraban89/Aram/actions/runs/41183509414): 409 tests; Alembic round-trip and compileall passed.
 - Three internal engineering passes completed. PR #70 is Draft/unmerged; no finance-owner signoff, source completeness, independent C1/C2/C3, official export, GUI, installer or release.
+
+
+## 2026-10-31 — offline five-statement CLI (verification pending)
+- Current branch `codex/aram-five-statement-cli-20261031`, Draft PR #71, based on PR #70.
+- Command: `python -m aram_backend.five_statement_pipeline_cli --file <pilot.xlsx> --manifest <pipeline.json>`. Reads bounded local XLSX and strict JSON manifest, invokes the shared-snapshot orchestrator, prints JSON to stdout only. Exit 0 = analyst preview, 3 = blocked candidate, 2 = unsafe/malformed input. See `docs/FIVE_STATEMENT_PIPELINE_CLI.md`.
+- Exact-head CI pending. Real manifests contain financial information and must remain local/authorized. No DB write, posting, approval, official export, GUI, installer or release.
