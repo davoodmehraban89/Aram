@@ -86,3 +86,10 @@ Use the statement selector to isolate one of the five statements and the search 
 
 Before figures or details appear, the desktop integrity gate checks the typed candidate/reconciliation objects, their non-approval flags, source SHA-256 snapshot, company/year, shared note-reference snapshot and critical equity/profit/cash/trial-balance ties. This is an additional display-integrity guard, not an independent audit or proof that source ledgers are complete.
 
+## Read-only source-detail drill-down
+
+The new **ریز اقلام** tab shows each output line and its traceable source details: balance-sheet and income-statement note lines; equity note movements and account-level opening/debit/credit/movement/closing; cash journal lines and per-cash-account turnover roll-forward; and every trial-balance account row. The grid includes note/transaction/account IDs, source row, source exposure, evidence references and the supplied presentation/classification policy references. Amounts retain exact Decimal scale and signs.
+
+Use the statement selector to isolate one of the five statements and the search box to find an account, note, transaction, description or evidence reference. Results are paginated at 200 rows and horizontally/vertically scrollable. The drill-down refuses more than 75,000 rows instead of silently dropping details. Detail construction and integrity checks run in the worker thread rather than blocking Tk.
+
+Before figures or details appear, the desktop integrity gate checks the typed candidate/reconciliation objects, their non-approval flags, source SHA-256 snapshot, company/year, shared note-reference snapshot and critical equity/profit/cash/trial-balance ties. Source exposure, presentation amounts and movement fields are parsed with the bounded Decimal validator; malformed, nonfinite or extreme values fail closed. This is an additional display-integrity guard, not an independent audit or proof that source ledgers are complete.
