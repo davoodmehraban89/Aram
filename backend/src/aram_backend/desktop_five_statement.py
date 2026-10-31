@@ -18,6 +18,8 @@ from typing import Callable
 from aram_backend.desktop_five_statement_core import (
     DesktopFiveInputError, DesktopFiveStatementController,
 )
+from aram_backend.desktop_five_statement_figures import build_preview_figures
+from aram_backend.coverage_preview import CoverageError
 from aram_backend.synthetic_five_statement_demo import (
     pipeline_manifest, source_workbook,
 )
@@ -32,7 +34,7 @@ ACTIONS = {
     "help.about": "show_about",
 }
 MAX_VISIBLE_FINDINGS = 2000
-TAB_NAMES = ("بررسی پنج صورت مالی", "محدودیت‌ها", "راهنما")
+TAB_NAMES = ("بررسی پنج صورت مالی", "خلاصه مبالغ", "محدودیت‌ها", "راهنما")
 CANDIDATE_NAMES = (
     ("balance_sheet", "ترازنامه"),
     ("income_statement", "سود و زیان"),
@@ -66,6 +68,7 @@ class FiveStatementWindow(tk.Tk):
         self.manifest_label = tk.StringVar(value="فایل سیاست‌ها/اسناد انتخاب نشده است")
         self.overview = tk.StringVar(value="ابتدا هر دو فایل را انتخاب کنید")
         self.status = tk.StringVar(value="آفلاین | فقط خواندن | بدون صدور یا تأیید")
+        self.amount_units = tk.StringVar(value="واحد: طبق داده‌های ورودی | هنوز محاسبه نشده")
         self._configure_styles()
         self._build_menu()
         self._build_tabs()
@@ -140,9 +143,10 @@ class FiveStatementWindow(tk.Tk):
         self.tabs = ttk.Notebook(outer)
         self.tabs.pack(fill="both", expand=True)
         main = ttk.Frame(self.tabs, padding=12)
+        figures = ttk.Frame(self.tabs, padding=12)
         limitations = ttk.Frame(self.tabs, padding=18)
         help_tab = ttk.Frame(self.tabs, padding=18)
-        for tab, title in zip((main, limitations, help_tab), TAB_NAMES):
+        for tab, title in zip((main, figures, limitations, help_tab), TAB_NAMES):
             self.tabs.add(tab, text=title)
 
         ttk.Label(main, textvariable=self.workbook_label, anchor="e").pack(
@@ -203,6 +207,37 @@ class FiveStatementWindow(tk.Tk):
         area.grid_columnconfigure(0, weight=1)
         area.grid_rowconfigure(0, weight=1)
 
+        ttk.Label(
+            figures,
+            text="مبالغ خام پنج صورت مالی — صرفاً نامزد بررسی کارشناسی",
+            font=("Tahoma", 11, "bold"), anchor="e",
+        ).pack(fill="x", pady=(0, 7))
+        ttk.Label(
+            figures, textvariable=self.amount_units, anchor="e",
+        ).pack(fill="x", pady=(0, 8))
+        figure_area = ttk.Frame(figures)
+        figure_area.pack(fill="both", expand=True)
+        self.figures_tree = ttk.Treeview(
+            figure_area, columns=("statement", "label", "amount", "state"),
+            show="headings", style="Aram.Treeview",
+        )
+        for key, title, width in (
+            ("statement", "صورت مالی", 190),
+            ("label", "شاخص", 220),
+            ("amount", "مبلغ (بدون گردکردن)", 200),
+            ("state", "اعتبار نتیجه", 230),
+        ):
+            self.figures_tree.heading(key, text=title)
+            self.figures_tree.column(key, width=width, anchor="e")
+        figures_scrollbar = ttk.Scrollbar(
+            figure_area, orient="vertical", command=self.figures_tree.yview,
+        )
+        self.figures_tree.configure(yscrollcommand=figures_scrollbar.set)
+        self.figures_tree.grid(row=0, column=0, sticky="nsew")
+        figures_scrollbar.grid(row=0, column=1, sticky="ns")
+        figure_area.grid_columnconfigure(0, weight=1)
+        figure_area.grid_rowconfigure(0, weight=1)
+
         for item in (
             "• موفقیت آزمون به‌معنای کامل‌بودن سندها، مانده‌ها یا نگاشت‌های حسابداری نیست.",
             "• طبقه‌بندی جریان نقد به ریزاسناد جفت‌شده و فهرست حساب‌های نقد نیاز دارد.",
@@ -260,9 +295,11 @@ class FiveStatementWindow(tk.Tk):
         self.file_menu.entryconfigure(2, state=executable)
 
     def _clear_rows(self) -> None:
-        children = self.outcome_tree.get_children()
-        if children:
-            self.outcome_tree.delete(*children)
+        for tree in (self.outcome_tree, self.figures_tree):
+            children = tree.get_children()
+            if children:
+                tree.delete(*children)
+        self.amount_units.set("واحد: طبق داده‌های ورودی | هنوز محاسبه نشده")
 
     def select_workbook(self) -> None:
         if self._busy:
@@ -344,6 +381,39 @@ class FiveStatementWindow(tk.Tk):
             self.status.set("کد خطا: " + error)
         else:
             outcome = result
+            try:
+                if (
+                    outcome.balance_sheet.equity_total
+                    != outcome.reconciliation.balance_sheet_equity_total
+                    or outcome.income_statement.net_result
+                    != outcome.reconciliation.income_statement_net_result
+                    or outcome.cash_flow.closing_cash_and_equivalents
+                    != outcome.reconciliation.cash_flow_closing_cash
+                ):
+                    raise CoverageError("DESKTOP_FIGURES_SUMMARY_MISMATCH")
+                figure_rows = build_preview_figures(outcome)
+            except (CoverageError, AttributeError, TypeError, ValueError):
+                # Refuse to render unverified numeric data as a green preview.
+                self.controller.result = None
+                self.controller.state = "INPUT_ERROR"
+                self._clear_rows()
+                self.overview.set("نمایش مبالغ نامعتبر؛ پیش‌نمایش مسدود شد")
+                self.status.set("DESKTOP_FIGURES_INVALID")
+                self._refresh()
+                return
+            self.amount_units.set(
+                "شرکت " + outcome.company_code
+                + " | سال " + str(outcome.fiscal_year)
+                + " | واحد " + outcome.cash_flow.unit
+                + " | ارز " + outcome.cash_flow.currency
+                + " | غیررسمی"
+            )
+            for figure in figure_rows:
+                self.figures_tree.insert(
+                    "", "end",
+                    values=(figure.statement, figure.label,
+                            figure.value, figure.state),
+                )
             eligible = outcome.eligible_for_analyst_review
             self.overview.set(
                 "تطبیق حسابی مناسب بررسی کارشناسی؛ نه تأیید رسمی"
@@ -497,6 +567,17 @@ def ui_valid_smoke_test() -> int:
             rows = window.outcome_tree.get_children()
             if len(rows) != 5:
                 return 24
+            amount_rows = [
+                window.figures_tree.item(row, "values")
+                for row in window.figures_tree.get_children()
+            ]
+            if len(amount_rows) != 28:
+                return 28
+            if not any(
+                row[0] == "سود و زیان" and row[1] == "سود خالص"
+                and row[2] == "20" for row in amount_rows
+            ):
+                return 29
             if any(
                 window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
                 for row in rows

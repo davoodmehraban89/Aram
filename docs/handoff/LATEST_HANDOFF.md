@@ -219,3 +219,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Synthetic XLSX/manifest generator `python -m aram_backend.synthetic_five_statement_demo --output-dir <NEW_FOLDER>`; **never** reads company data or overwrites existing paths. Integration tests share the same fixture definitions.
 - Windows EXE CI now bundles the synthetic files and runs `--ui-valid-smoke` on the frozen executable for a real, five-result positive GUI flow. See `backend/desktop/FIVE_STATEMENT_WINDOWS_README.md`.
 - Exact-head CI and reviews still pending. No C1/C2/C3 approval, real-source completeness, official report, signed installer or release.
+
+
+## 2026-10-31 — financial figures in Windows pilot (verification pending)
+- Branch `codex/aram-windows-statement-figures-20261031`, Draft PR child of #76. New `desktop_five_statement_figures.py` displays 28 exact, read-only, clearly nonofficial statement and reconciliation metrics in Persian, without new financial assumptions. Tk new tab clears on input changes, errors or reset. Windows valid smoke asserts key values.
+- Exact final-head CI still required; no source completeness, finance-owner approval, independent C1/C2/C3, signed installer, official export or release.

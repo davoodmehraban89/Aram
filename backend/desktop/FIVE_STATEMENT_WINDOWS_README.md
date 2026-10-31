@@ -69,3 +69,12 @@ The result is `backend/dist/AramFivePilot-UNRELEASED.exe`. GitHub's dedicated Wi
 The same manifest contract as `docs/FIVE_STATEMENT_PIPELINE_CLI.md` applies. It includes potentially confidential account and journal data; **do not commit real corporate manifest files to public GitHub**. The app does not upload files, write to a database, mutate XLSX/JSON, post accounting entries, save report files or generate an official PDF/Excel document.
 
 Even a green result is only eligible for analyst review. There is no proof of source-ledger completeness, no authenticated accounting-policy or finance-owner signoff, no independent C1/C2/C3 approval, no signed Windows installer, no clean-machine deployment validation and no legally releasable financial statement. Review the actual security and accounting constraints before any production use.
+
+## Read-only financial amounts tab
+
+The new **خلاصه مبالغ** tab shows **28 unrounded monetary values** extracted directly from the five typed candidate objects and the cross-statement control: BS assets/liabilities/equity and balance difference; IS revenue, costs, operating/pretax/net results; EQ opening, movement, profit and closing; CF opening, activity net flows, cash change and closing; TB opening/turnover/closing; and the three cross-statement reconciliation differences. The company, fiscal year, currency and unit are displayed from the actual input pipeline.
+
+The display is **not** an official statement template and makes no account classification claims beyond the user-supplied policies. Figures on a blocked result are visibly marked *diagnostic only / blocked*; they are never silently presented as approved. Exact Decimal values are formatted with thousands separators without rounding or sign changes.
+
+Changing either selected file, clearing selections, or encountering a processing error clears both candidate statuses **and** the amounts tab. Both native Tk tests and the frozen-EXE `--ui-valid-smoke` verify the populated numbers and subsequent clearing.
+
