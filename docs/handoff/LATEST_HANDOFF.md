@@ -141,3 +141,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Current candidate branch: `codex/aram-income-statement-candidate-20261031`, parent unmerged PR #62 SHA `d6d0fc5da47e7209fe21fe96d48548d1489ef8a7`.
 - Explicit six-category IS note presentation, exact Decimal bridge, synthetic tests and safe offline CLI. Documentation `docs/INCOME_STATEMENT_CANDIDATE.md`.
 - Still **not** an approved P&L report, tax statement, posted financial entry or releasable output. Actual ledger movements, verified finance policies, three independent approvals, GUI integration and Windows installer remain pending.
+
+## 2026-10-31 — trial balance arithmetic diagnostic
+- Current branch `codex/aram-trial-balance-diagnostic-20261031` off unmerged PR #63 `5679a2e9feff582b0d0b74bd5a807387879bb358`.
+- Synthetic-only, read-only debit/credit turnover and opening/closing equality checks. See `docs/TRIAL_BALANCE_DIAGNOSTIC.md`.
+- Not an authenticated trial balance, complete source posting proof or regulatory financial statement. No release, independent C1/C2/C3 approval, GUI or real-ledger validation. Exact SHA CI and reviewer evidence needed before merge.
