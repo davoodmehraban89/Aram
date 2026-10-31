@@ -124,6 +124,14 @@ def filter_preview_details(
     for row in rows:
         if type(row) is not PreviewDetail:
             raise CoverageError("DESKTOP_DETAIL_SEARCH_ROW_INVALID")
+        values = row.values()
+        if len(values) != 11 or any(
+            not isinstance(value, str) or len(value) > 1024
+            or value != value.strip()
+            or any(_unsafe_display_character(char) for char in value)
+            for value in values
+        ):
+            raise CoverageError("DESKTOP_DETAIL_SEARCH_ROW_INVALID")
         if statement != "همه" and row.statement != statement:
             continue
         if not needle or any(
