@@ -401,3 +401,8 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - New `aram_backend.synthetic_five_statement_demo` owns one completely synthetic six-account XLSX and consistent strict manifest. Existing integration tests now import the same fixture functions; no copy/paste drift. Generator is opt-in and creates only a new directory with XLSX, JSON and warning notice, never overwriting existing data.
 - Windows workflow now tests generated files with real CLI, then builds EXE and runs both invalid-input and **valid end-to-end** native GUI smoke tests, uploading demo files alongside the unreleased EXE.
 - CI and review pending. No real company data, account posting, network transfer, official approval, deployment or release.
+
+
+### 2026-10-31 — native five-statement financial figures
+- Branch `codex/aram-windows-statement-figures-20261031`, parent Draft PR #76. Added a pure figure presentation layer with 28 explicit BS/IS/EQ/CF/TB and cross-statement numeric fields; uses the exact Decimal parser and never rounds. New Tk amounts tab marks blocked figures clearly and wipes values on input changes, processing failure or clear action.
+- Added positive/blocked and malformed-amount tests, actual Windows Tk assertions, and frozen executable valid GUI smoke with exact figures. Full CI pending. No accounting approval or official reporting authority.
