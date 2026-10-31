@@ -732,6 +732,25 @@ def ui_valid_smoke_test() -> int:
                 return 33
             window.detail_filter_var.set("همه")
             window.detail_search_var.set("")
+            original_details = window._detail_rows
+            if not original_details:
+                return 34
+            repeats = 200 // len(original_details) + 1
+            window._detail_rows = original_details * repeats
+            window._apply_detail_filter()
+            if len(window.detail_tree.get_children()) != 200:
+                return 35
+            if str(window.detail_next_button.cget("state")) != "normal":
+                return 36
+            window._change_detail_page(1)
+            if len(window.detail_tree.get_children()) != len(window._detail_rows) - 200:
+                return 37
+            if str(window.detail_prev_button.cget("state")) != "normal":
+                return 38
+            window._change_detail_page(-1)
+            if len(window.detail_tree.get_children()) != 200:
+                return 39
+            window._detail_rows = original_details
             window._apply_detail_filter()
             if any(
                 window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
