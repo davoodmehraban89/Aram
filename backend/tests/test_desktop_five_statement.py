@@ -218,8 +218,16 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
             window.outcome_tree.item(row, "values")[1] == "قابل بررسی"
             for row in rows
         )
+        amounts = [
+            window.figures_tree.item(row, "values")
+            for row in window.figures_tree.get_children()
+        ]
+        assert len(amounts) == 28
+        assert ("ترازنامه", "دارایی‌ها", "100", "پیش‌نویس قابل بررسی؛ غیررسمی") in amounts
+        assert ("سود و زیان", "سود خالص", "20", "پیش‌نویس قابل بررسی؛ غیررسمی") in amounts
         window.clear_button.invoke()
         assert not window.outcome_tree.get_children()
+        assert not window.figures_tree.get_children()
         assert window.controller.result is None
         assert str(window.run_button.cget("state")) == "disabled"
     finally:
