@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from hashlib import sha256
 import json
+import sys
+import time
 
 import pytest
 
@@ -186,3 +188,40 @@ def test_headless_executable_smoke_and_all_enabled_actions_have_methods():
     }
     for key, method in ACTIONS.items():
         assert callable(getattr(FiveStatementWindow, method)), key
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Native Tk smoke requires Windows runner")
+def test_native_window_shows_real_successful_five_statement_result(tmp_path):
+    paths = fixtures(tmp_path)
+    file_names = {"workbook": str(paths[0]), "manifest": str(paths[1])}
+    window = FiveStatementWindow(picker=lambda kind: file_names[kind])
+    try:
+        window.withdraw()
+        window.update_idletasks()
+        assert str(window.run_button.cget("state")) == "disabled"
+        window.workbook_button.invoke()
+        window.manifest_button.invoke()
+        assert str(window.run_button.cget("state")) == "normal"
+        window.run_button.invoke()
+        for _ in range(500):
+            window.update()
+            if not window._busy:
+                break
+            time.sleep(0.02)
+        assert not window._busy
+        assert window.controller.state == "ELIGIBLE"
+        assert window.controller.result is not None
+        assert window.controller.result.eligible_for_analyst_review
+        rows = window.outcome_tree.get_children()
+        assert len(rows) == 5
+        assert all(
+            window.outcome_tree.item(row, "values")[1] == "قابل بررسی"
+            for row in rows
+        )
+        window.clear_button.invoke()
+        assert not window.outcome_tree.get_children()
+        assert window.controller.result is None
+        assert str(window.run_button.cget("state")) == "disabled"
+    finally:
+        if window.winfo_exists():
+            window.destroy()
