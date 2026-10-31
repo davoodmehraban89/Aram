@@ -13,12 +13,16 @@ import re
 from typing import Any, Sequence
 
 from aram_backend.balance_sheet_candidate import BalanceSheetCandidate
-from aram_backend.cash_flow_direct_candidate import DirectCashFlowCandidate
+from aram_backend.cash_flow_direct_candidate import (
+    CashAccountReconciliation, DirectCashFlowCandidate,
+)
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.equity_changes_candidate import EquityChangesCandidate
 from aram_backend.income_statement_candidate import IncomeStatementCandidate
 from aram_backend.reconciliation_review import _money, _sum_exact
-from aram_backend.trial_balance_diagnostic import TrialBalanceDiagnostic
+from aram_backend.trial_balance_diagnostic import (
+    TrialBalanceAccount, TrialBalanceDiagnostic,
+)
 
 EXPECTED_KINDS = {
     "balance_sheet": "UNAPPROVED_BALANCE_SHEET_PRESENTATION_CANDIDATE",
@@ -72,6 +76,8 @@ class CrossStatementReconciliation:
     cash_flow_bridge_valid: bool
     equity_rollforward_valid: bool
     trial_balance_arithmetic_valid: bool
+    cash_accounts_match_trial_balance: bool
+    cash_account_totals_valid: bool
     selected_cash_notes: tuple[SelectedCashBalanceNote, ...]
     findings: tuple[str, ...]
     eligible_for_analyst_review: bool
@@ -115,6 +121,12 @@ def _validate_candidate(candidate: object, label: str, expected_type: type) -> N
     if any(getattr(candidate, flag, False) for flag in forbidden):
         raise CoverageError("CROSS_STATEMENT_APPROVAL_PROVENANCE_INVALID")
     _hash(candidate.source_sha256, label.upper() + "_SOURCE_HASH")
+    for hash_field in (
+        "note_references_sha256", "presentation_policies_sha256",
+        "transaction_ledger_sha256", "classification_policies_sha256",
+    ):
+        if hasattr(candidate, hash_field):
+            _hash(getattr(candidate, hash_field), label.upper() + "_" + hash_field.upper())
     _text(candidate.company_code, label.upper() + "_COMPANY")
     if type(candidate.fiscal_year) is not int or candidate.fiscal_year <= 0:
         raise CoverageError("INVALID_CROSS_STATEMENT_" + label.upper() + "_YEAR")
@@ -172,6 +184,59 @@ def _trial_balance_bridge(trial: TrialBalanceDiagnostic) -> bool:
         trial.balanced_for_analyst_review
         and opening == 0 and debit_credit == 0 and closing == 0 and rollforward == 0
     )
+
+
+def _cash_accounts_match_trial_balance(
+    cash: DirectCashFlowCandidate, trial: TrialBalanceDiagnostic,
+) -> tuple[bool, bool]:
+    findings_valid = True
+    totals_valid = True
+    if (type(trial.account_count) is not int
+            or trial.account_count != len(trial.accounts)):
+        findings_valid = False
+    trial_by_code: dict[str, TrialBalanceAccount] = {}
+    for account in trial.accounts:
+        if not isinstance(account, TrialBalanceAccount) or account.account_code in trial_by_code:
+            findings_valid = False
+            continue
+        trial_by_code[account.account_code] = account
+
+    if (type(cash.cash_account_count) is not int
+            or cash.cash_account_count != len(cash.account_reconciliations)):
+        findings_valid = False
+    seen: set[str] = set()
+    opening_values: list[Decimal] = []
+    closing_values: list[Decimal] = []
+    for item in cash.account_reconciliations:
+        if not isinstance(item, CashAccountReconciliation) or item.account_code in seen:
+            findings_valid = False
+            continue
+        seen.add(item.account_code)
+        trial_account = trial_by_code.get(item.account_code)
+        if trial_account is None:
+            findings_valid = False
+            continue
+        source_values = (
+            _money(item.opening_balance), _money(item.source_debit_turnover),
+            _money(item.source_credit_turnover), _money(item.closing_balance),
+        )
+        trial_values = (
+            _money(trial_account.opening), _money(trial_account.debit),
+            _money(trial_account.credit), _money(trial_account.closing),
+        )
+        if source_values != trial_values:
+            findings_valid = False
+        if (_money(item.debit_difference) != 0
+                or _money(item.credit_difference) != 0
+                or _money(item.rollforward_difference) != 0):
+            totals_valid = False
+        opening_values.append(source_values[0])
+        closing_values.append(source_values[3])
+
+    if (_sum_exact(opening_values) != _money(cash.opening_cash_and_equivalents)
+            or _sum_exact(closing_values) != _money(cash.closing_cash_and_equivalents)):
+        totals_valid = False
+    return findings_valid, totals_valid
 
 
 def reconcile_cross_statements(
@@ -285,10 +350,13 @@ def reconcile_cross_statements(
     if not equity_rollforward_valid:
         findings.append("EQUITY_STATEMENT_ROLLFORWARD_INVALID")
 
-    bs_lines = {
-        (line.statement_section, line.note_number, line.subnote_code): line
-        for line in balance_sheet.lines
-    }
+    bs_lines = {}
+    for line in balance_sheet.lines:
+        key = (line.statement_section, line.note_number, line.subnote_code)
+        if key in bs_lines:
+            findings.append("DUPLICATE_BALANCE_SHEET_NOTE_LINE")
+        else:
+            bs_lines[key] = line
     selected_lines: list[SelectedCashBalanceNote] = []
     cash_amounts: list[Decimal] = []
     for key in sorted(selected):
@@ -318,6 +386,14 @@ def reconcile_cross_statements(
     cash_valid = _cash_flow_bridge(cash_flow)
     if not cash_valid:
         findings.append("CASH_FLOW_BRIDGE_INVALID")
+
+    cash_accounts_match_tb, cash_account_totals_valid = (
+        _cash_accounts_match_trial_balance(cash_flow, trial_balance)
+    )
+    if not cash_accounts_match_tb:
+        findings.append("CASH_ACCOUNTS_TRIAL_BALANCE_MISMATCH")
+    if not cash_account_totals_valid:
+        findings.append("CASH_ACCOUNT_TURNOVER_OR_TOTALS_INVALID")
 
     trial_valid = _trial_balance_bridge(trial_balance)
     if not trial_valid:
@@ -354,6 +430,8 @@ def reconcile_cross_statements(
         cash_flow_bridge_valid=cash_valid,
         equity_rollforward_valid=equity_rollforward_valid,
         trial_balance_arithmetic_valid=trial_valid,
+        cash_accounts_match_trial_balance=cash_accounts_match_tb,
+        cash_account_totals_valid=cash_account_totals_valid,
         selected_cash_notes=tuple(selected_lines),
         findings=tuple(sorted(set(findings))),
         eligible_for_analyst_review=not findings,
