@@ -142,3 +142,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Child branch `codex/aram-cross-statement-controls-20261031`, based on unmerged PR #66 SHA `6d7f949caeb73d3afefb7416608f06452df605e6`.
 - Adds exact common-source/company/year checks, recomputed P&L/BS/EQ/CF/TB arithmetic, BS equity↔EQ closing, IS net result↔EQ profit movement, selected BS cash notes↔CF closing, and each cash account↔trial-balance account detail tie-out.
 - Cash-note selection remains untrusted and evidence-bearing. Source completeness, finance-owner approval, authenticated C1/C2/C3 and release are not claimed. Synthetic tests only; no financial data, DB migration or release changed.
+
+## 2026-10-31 — cross-statement gate expanded to line-level trace (DRAFT)
+- Based on unmerged PR #66 SHA `6d7f949caeb73d3afefb7416608f06452df605e6`.
+- Gate now recomputes P&L/CF from statement lines and TB totals from all account rows; verifies every cash account's source row and balances/turnovers against TB; recomputes internal transfer neutrality; rejects duplicate BS note rows.
+- Cash-note selection is still user-supplied/untrusted. No authenticated finance policy, source completeness, independent C1/C2/C3 approval, official export or release. Exact-head CI pending.
