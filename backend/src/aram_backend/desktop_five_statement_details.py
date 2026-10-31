@@ -245,6 +245,42 @@ def build_preview_details(
             movement=account.debit_net_movement, closing=account.closing,
             state=state,
         ))
+    # One explicit source-account->note mapping row, not an inferred
+    # presentation amount. The source closing exposure is shown in the
+    # "source" column only. An included workbook mapping is not a trusted
+    # accounting approval.
+    statement_names = {
+        "BS": "ترازنامه",
+        "IS": "سود و زیان",
+        "EQ": "تغییرات حقوق مالکانه",
+        "CF": "جریان وجوه نقد",
+    }
+    for mapping in result.mapping_coverage.mappings:
+        statement = statement_names.get(mapping.target_statement)
+        if statement is None:
+            raise CoverageError("DESKTOP_DETAIL_MAPPING_STATEMENT_INVALID")
+        rows.append(_row(
+            statement,
+            f"حساب {mapping.account_code} / {mapping.account_name}",
+            _note_reference(
+                mapping.target_section, mapping.target_note,
+                mapping.target_subnote,
+            ),
+            (
+                f"اکسل {mapping.account_excel_row} / منبع {mapping.source_row}"
+            ),
+            opening=mapping.closing_exposure,
+            trace=(
+                f"نگاشت {mapping.mapping_id} / ردیف نگاشت "
+                f"{mapping.mapping_excel_row} | "
+                "وضعیت بر اساس فایل، فاقد تأیید مستقل"
+            ),
+            state=(
+                state if mapping.included
+                else "نگاشت مسدود؛ صرفاً تشخیصی"
+            ),
+        ))
+
     if len(rows) > MAX_DETAIL_ROWS:
         raise CoverageError("DESKTOP_DETAIL_ROW_LIMIT_EXCEEDED")
     return tuple(rows)
