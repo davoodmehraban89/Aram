@@ -45,6 +45,7 @@ zeros.
 - `mapping_id` is globally unique in the workbook. Each mapping account must
   exist in Accounts for the same company and year. Unknown accounts are errors;
   mappings are never guessed.
+- Mapping cardinality is one row per `(company_code, fiscal_year, account_full_code, target_statement)`. The same source account may have distinct mappings for BS, IS, CF and/or EQ, but two mappings for the same account within the same target statement are ambiguous and blocked by the read-only coverage preview. Each statement mapping requires its own note target and evidence; global source-account totals are counted once while statement note exposures are grouped separately.
 
 ## Validation report
 
