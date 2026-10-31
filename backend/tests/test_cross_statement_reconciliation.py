@@ -9,14 +9,14 @@ import pytest
 from aram_backend.balance_sheet_candidate import (
     BalanceSheetCandidate, CandidateBalanceSheetLine,
 )
-from aram_backend.cash_flow_direct_candidate import DirectCashFlowCandidate
+from aram_backend.cash_flow_direct_candidate import CashAccountReconciliation, DirectCashFlowCandidate
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.cross_statement_reconciliation import (
     CashBalanceNoteSelection, reconcile_cross_statements,
 )
 from aram_backend.equity_changes_candidate import EquityChangesCandidate
 from aram_backend.income_statement_candidate import IncomeStatementCandidate
-from aram_backend.trial_balance_diagnostic import TrialBalanceDiagnostic
+from aram_backend.trial_balance_diagnostic import TrialBalanceAccount, TrialBalanceDiagnostic
 
 
 SOURCE = "a" * 64
