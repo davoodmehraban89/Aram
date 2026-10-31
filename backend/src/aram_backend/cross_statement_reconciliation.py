@@ -229,7 +229,9 @@ def _cash_accounts_match_trial_balance(
         findings_valid = False
     trial_by_code: dict[str, TrialBalanceAccount] = {}
     for account in trial.accounts:
-        if not isinstance(account, TrialBalanceAccount) or account.account_code in trial_by_code:
+        if (not isinstance(account, TrialBalanceAccount)
+                or not isinstance(account.account_code, str)
+                or account.account_code in trial_by_code):
             findings_valid = False
             continue
         trial_by_code[account.account_code] = account
@@ -241,7 +243,9 @@ def _cash_accounts_match_trial_balance(
     opening_values: list[Decimal] = []
     closing_values: list[Decimal] = []
     for item in cash.account_reconciliations:
-        if not isinstance(item, CashAccountReconciliation) or item.account_code in seen:
+        if (not isinstance(item, CashAccountReconciliation)
+                or not isinstance(item.account_code, str)
+                or item.account_code in seen):
             findings_valid = False
             continue
         seen.add(item.account_code)
