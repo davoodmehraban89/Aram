@@ -400,7 +400,10 @@ class FiveStatementWindow(tk.Tk):
         self._render_detail_page()
 
     def _apply_detail_filter(self) -> None:
-        if self._busy or self._filtering:
+        # A new filter request supersedes an in-flight initial/background
+        # search.  The generation token prevents an older worker's reply
+        # from replacing the latest query or repopulating cleared rows.
+        if self._busy:
             return
         statement = self.detail_filter_var.get()
         query = self.detail_search_var.get()
