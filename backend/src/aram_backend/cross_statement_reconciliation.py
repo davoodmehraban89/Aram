@@ -12,13 +12,22 @@ import json
 import re
 from typing import Any, Sequence
 
-from aram_backend.balance_sheet_candidate import BalanceSheetCandidate
+from aram_backend.balance_sheet_candidate import (
+    CATEGORIES as BALANCE_SHEET_CATEGORIES,
+    BalanceSheetCandidate, CandidateBalanceSheetLine,
+)
 from aram_backend.cash_flow_direct_candidate import (
     CashAccountReconciliation, CashFlowLine, DirectCashFlowCandidate,
 )
 from aram_backend.coverage_preview import CoverageError
-from aram_backend.equity_changes_candidate import EquityChangesCandidate
-from aram_backend.income_statement_candidate import IncomeStatementCandidate
+from aram_backend.equity_changes_candidate import (
+    EQUITY_COMPONENTS, MOVEMENT_CATEGORIES, EquityAccountMovement,
+    EquityChangesCandidate, EquityComponentTotal, EquityNoteMovement,
+)
+from aram_backend.income_statement_candidate import (
+    CATEGORIES as INCOME_STATEMENT_CATEGORIES,
+    CandidateIncomeStatementLine, IncomeStatementCandidate,
+)
 from aram_backend.reconciliation_review import _money, _sum_exact
 from aram_backend.trial_balance_diagnostic import (
     TrialBalanceAccount, TrialBalanceDiagnostic,
@@ -110,16 +119,34 @@ def _text(value: object, label: str, *, blank_ok: bool = False) -> str:
 
 def _validate_candidate(candidate: object, label: str, expected_type: type) -> None:
     if type(candidate) is not expected_type:
-        raise CoverageError("INVALID_CROSS_STATEMENT_" + label + "_OBJECT")
+        raise CoverageError("INVALID_CROSS_STATEMENT_" + label.upper() + "_OBJECT")
     if getattr(candidate, "kind", None) != EXPECTED_KINDS[label]:
-        raise CoverageError("INVALID_CROSS_STATEMENT_" + label + "_KIND")
+        raise CoverageError("INVALID_CROSS_STATEMENT_" + label.upper() + "_KIND")
     forbidden = (
         "official_financial_statement", "independently_reviewed",
         "export_authorized", "releasable", "accounting_policy_authorized",
-        "trusted_approvals",
+        "trusted_approvals", "source_ledger_completeness_verified",
+        "cash_account_scope_owner_approved",
+        "transaction_ledger_completeness_verified",
+        "accounting_policies_verified",
     )
-    if any(getattr(candidate, flag, False) for flag in forbidden):
-        raise CoverageError("CROSS_STATEMENT_APPROVAL_PROVENANCE_INVALID")
+    for flag in forbidden:
+        if hasattr(candidate, flag):
+            value = getattr(candidate, flag)
+            if type(value) is not bool or value:
+                raise CoverageError("CROSS_STATEMENT_APPROVAL_PROVENANCE_INVALID")
+    eligible_field = (
+        "balanced_for_analyst_review" if label == "trial_balance"
+        else "eligible_for_analyst_review"
+    )
+    eligible = getattr(candidate, eligible_field, None)
+    if type(eligible) is not bool:
+        raise CoverageError("CROSS_STATEMENT_CANDIDATE_ELIGIBILITY_INVALID")
+    findings = getattr(candidate, "findings", None)
+    if (not isinstance(findings, tuple)
+            or any(not isinstance(item, str) or not item for item in findings)
+            or (eligible and findings)):
+        raise CoverageError("CROSS_STATEMENT_CANDIDATE_FINDINGS_INVALID")
     _hash(candidate.source_sha256, label.upper() + "_SOURCE_HASH")
     for hash_field in (
         "note_references_sha256", "presentation_policies_sha256",
@@ -130,6 +157,249 @@ def _validate_candidate(candidate: object, label: str, expected_type: type) -> N
     _text(candidate.company_code, label.upper() + "_COMPANY")
     if type(candidate.fiscal_year) is not int or candidate.fiscal_year <= 0:
         raise CoverageError("INVALID_CROSS_STATEMENT_" + label.upper() + "_YEAR")
+
+
+def _balance_sheet_detail_bridge(balance: BalanceSheetCandidate) -> bool:
+    if not isinstance(balance.lines, tuple) or not balance.lines:
+        return False
+    buckets: dict[str, list[Decimal]] = {
+        category: [] for category in BALANCE_SHEET_CATEGORIES
+    }
+    seen: set[tuple[str, str, str]] = set()
+    for line in balance.lines:
+        if not isinstance(line, CandidateBalanceSheetLine):
+            return False
+        key = (
+            _text(line.statement_section, "BS_DETAIL_SECTION"),
+            _text(line.note_number, "BS_DETAIL_NOTE"),
+            _text(line.subnote_code, "BS_DETAIL_SUBNOTE", blank_ok=True),
+        )
+        if key in seen or line.category not in BALANCE_SHEET_CATEGORIES:
+            return False
+        seen.add(key)
+        if type(line.sign_multiplier) is not int or line.sign_multiplier not in (-1, 1):
+            return False
+        source = _money(line.source_closing_exposure)
+        amount = _money(line.presentation_amount)
+        if amount != source * line.sign_multiplier or amount < 0:
+            return False
+        _text(line.line_label, "BS_DETAIL_LABEL")
+        _text(line.note_reference_evidence, "BS_DETAIL_REFERENCE")
+        _text(line.policy_evidence_ref, "BS_DETAIL_POLICY")
+        buckets[line.category].append(amount)
+    totals = {key: _sum_exact(values) for key, values in buckets.items()}
+    return (
+        all(buckets[key] for key in BALANCE_SHEET_CATEGORIES)
+        and totals["ASSETS"] == _money(balance.assets_total)
+        and totals["LIABILITIES"] == _money(balance.liabilities_total)
+        and totals["EQUITY"] == _money(balance.equity_total)
+        and _sum_exact([
+            totals["ASSETS"], -totals["LIABILITIES"], -totals["EQUITY"],
+        ]) == _money(balance.balance_difference) == 0
+        and balance.arithmetically_balanced is True
+    )
+
+
+def _income_detail_bridge(income: IncomeStatementCandidate) -> bool:
+    if not isinstance(income.lines, tuple) or not income.lines:
+        return False
+    buckets: dict[str, list[Decimal]] = {
+        category: [] for category in INCOME_STATEMENT_CATEGORIES
+    }
+    seen: set[tuple[str, str, str]] = set()
+    for line in income.lines:
+        if not isinstance(line, CandidateIncomeStatementLine):
+            return False
+        key = (
+            _text(line.statement_section, "IS_DETAIL_SECTION"),
+            _text(line.note_number, "IS_DETAIL_NOTE"),
+            _text(line.subnote_code, "IS_DETAIL_SUBNOTE", blank_ok=True),
+        )
+        if key in seen or line.category not in INCOME_STATEMENT_CATEGORIES:
+            return False
+        seen.add(key)
+        if type(line.sign_multiplier) is not int or line.sign_multiplier not in (-1, 1):
+            return False
+        source = _money(line.source_closing_exposure)
+        amount = _money(line.presentation_amount)
+        if amount != source * line.sign_multiplier or amount < 0:
+            return False
+        _text(line.line_label, "IS_DETAIL_LABEL")
+        _text(line.note_reference_evidence, "IS_DETAIL_REFERENCE")
+        _text(line.policy_evidence_ref, "IS_DETAIL_POLICY")
+        buckets[line.category].append(amount)
+    totals = {key: _sum_exact(values) for key, values in buckets.items()}
+    revenue = totals["REVENUE"]
+    cost = totals["COST_OF_REVENUE"]
+    gross = _sum_exact([revenue, -cost])
+    operating = _sum_exact([gross, -totals["OPERATING_EXPENSE"]])
+    pretax = _sum_exact([
+        operating, totals["OTHER_INCOME"], -totals["OTHER_EXPENSE"],
+    ])
+    net = _sum_exact([pretax, -totals["TAX_EXPENSE"]])
+    return (
+        bool(buckets["REVENUE"])
+        and any(buckets[key] for key in (
+            "COST_OF_REVENUE", "OPERATING_EXPENSE",
+            "OTHER_EXPENSE", "TAX_EXPENSE",
+        ))
+        and revenue == _money(income.revenue_total)
+        and cost == _money(income.cost_of_revenue_total)
+        and gross == _money(income.gross_profit)
+        and totals["OPERATING_EXPENSE"] == _money(income.operating_expense_total)
+        and operating == _money(income.operating_profit)
+        and totals["OTHER_INCOME"] == _money(income.other_income_total)
+        and totals["OTHER_EXPENSE"] == _money(income.other_expense_total)
+        and pretax == _money(income.profit_before_tax)
+        and totals["TAX_EXPENSE"] == _money(income.tax_expense_total)
+        and net == _money(income.net_result)
+    )
+
+
+def _equity_detail_bridge(equity: EquityChangesCandidate) -> bool:
+    if (not isinstance(equity.note_movements, tuple) or not equity.note_movements
+            or not isinstance(equity.account_movements, tuple)
+            or not equity.account_movements
+            or not isinstance(equity.component_totals, tuple)):
+        return False
+    accounts_by_note: dict[tuple[str, str, str], list[EquityAccountMovement]] = {}
+    seen_accounts: set[str] = set()
+    for account in equity.account_movements:
+        if not isinstance(account, EquityAccountMovement):
+            return False
+        code = _text(account.account_code, "EQ_DETAIL_ACCOUNT")
+        if code in seen_accounts:
+            return False
+        seen_accounts.add(code)
+        key = (
+            _text(account.statement_section, "EQ_DETAIL_SECTION"),
+            _text(account.note_number, "EQ_DETAIL_NOTE"),
+            _text(account.subnote_code, "EQ_DETAIL_SUBNOTE", blank_ok=True),
+        )
+        if (account.equity_component not in EQUITY_COMPONENTS
+                or account.movement_category not in MOVEMENT_CATEGORIES
+                or type(account.sign_multiplier) is not int
+                or account.sign_multiplier not in (-1, 1)
+                or type(account.source_excel_row) is not int
+                or account.source_excel_row < 2
+                or type(account.source_row) is not int
+                or account.source_row <= 0):
+            return False
+        opening = _money(account.opening_balance)
+        debit = _money(account.debit_turnover)
+        credit = _money(account.credit_turnover)
+        movement = _money(account.movement_amount)
+        closing = _money(account.closing_balance)
+        if (debit < 0 or credit < 0
+                or movement != _sum_exact([debit, -credit]) * account.sign_multiplier
+                or _sum_exact([opening, movement, -closing]) != 0):
+            return False
+        _text(account.account_name, "EQ_DETAIL_ACCOUNT_NAME")
+        _text(account.policy_evidence_ref, "EQ_DETAIL_POLICY")
+        accounts_by_note.setdefault(key, []).append(account)
+
+    note_by_key: dict[tuple[str, str, str], EquityNoteMovement] = {}
+    category_movements: dict[str, list[Decimal]] = {
+        category: [] for category in MOVEMENT_CATEGORIES
+    }
+    component_values: dict[str, dict[str, list[Decimal]]] = {}
+    opening_values: list[Decimal] = []
+    movement_values: list[Decimal] = []
+    closing_values: list[Decimal] = []
+    for note in equity.note_movements:
+        if not isinstance(note, EquityNoteMovement):
+            return False
+        key = (
+            _text(note.statement_section, "EQ_DETAIL_SECTION"),
+            _text(note.note_number, "EQ_DETAIL_NOTE"),
+            _text(note.subnote_code, "EQ_DETAIL_SUBNOTE", blank_ok=True),
+        )
+        if key in note_by_key or key not in accounts_by_note:
+            return False
+        if (note.equity_component not in EQUITY_COMPONENTS
+                or note.movement_category not in MOVEMENT_CATEGORIES):
+            return False
+        _text(note.line_label, "EQ_DETAIL_LABEL")
+        _text(note.note_reference_evidence, "EQ_DETAIL_REFERENCE")
+        _text(note.policy_evidence_ref, "EQ_DETAIL_POLICY")
+        rows = accounts_by_note[key]
+        if any(
+            row.equity_component != note.equity_component
+            or row.movement_category != note.movement_category
+            for row in rows
+        ):
+            return False
+        opening = _sum_exact([_money(row.opening_balance) for row in rows])
+        movement = _sum_exact([_money(row.movement_amount) for row in rows])
+        closing = _sum_exact([_money(row.closing_balance) for row in rows])
+        raw_closing = _sum_exact([
+            _money(row.closing_balance) * row.sign_multiplier for row in rows
+        ])
+        note_opening = _money(note.opening_balance)
+        note_movement = _money(note.movement_amount)
+        note_closing = _money(note.closing_balance)
+        if (
+            opening != note_opening or movement != note_movement
+            or closing != note_closing
+            or raw_closing != _money(note.source_closing_exposure)
+            or _sum_exact([note_opening, note_movement, -note_closing]) != 0
+        ):
+            return False
+        note_by_key[key] = note
+        opening_values.append(note_opening)
+        movement_values.append(note_movement)
+        closing_values.append(note_closing)
+        category_movements[note.movement_category].append(note_movement)
+        group = component_values.setdefault(note.equity_component, {
+            "opening": [], "movement": [], "closing": [],
+        })
+        group["opening"].append(note_opening)
+        group["movement"].append(note_movement)
+        group["closing"].append(note_closing)
+    if set(accounts_by_note) != set(note_by_key):
+        return False
+
+    component_by_key: dict[str, EquityComponentTotal] = {}
+    for item in equity.component_totals:
+        if not isinstance(item, EquityComponentTotal):
+            return False
+        if item.equity_component not in EQUITY_COMPONENTS or item.equity_component in component_by_key:
+            return False
+        component_by_key[item.equity_component] = item
+    if set(component_by_key) != set(component_values):
+        return False
+    for component, group in component_values.items():
+        item = component_by_key[component]
+        if (
+            _money(item.opening_balance) != _sum_exact(group["opening"])
+            or _money(item.movement_amount) != _sum_exact(group["movement"])
+            or _money(item.closing_balance) != _sum_exact(group["closing"])
+        ):
+            return False
+
+    summary_categories = {
+        "CAPITAL_CONTRIBUTION": equity.capital_contributions,
+        "NET_PROFIT_LOSS": equity.net_profit_loss_movements,
+        "DIVIDENDS": equity.dividends,
+        "OTHER_COMPREHENSIVE_INCOME": equity.other_comprehensive_income,
+        "TRANSFER": equity.transfers,
+        "PRIOR_PERIOD_ADJUSTMENT": equity.prior_period_adjustments,
+        "OTHER_MOVEMENT": equity.other_movements,
+    }
+    return (
+        _sum_exact(opening_values) == _money(equity.opening_equity_total)
+        and _sum_exact(movement_values) == _money(equity.total_movement)
+        and _sum_exact(closing_values) == _money(equity.closing_equity_total)
+        and _sum_exact([
+            _money(equity.opening_equity_total),
+            _money(equity.total_movement),
+            -_money(equity.closing_equity_total),
+        ]) == _money(equity.rollforward_difference) == 0
+        and all(
+            _sum_exact(category_movements[category]) == _money(amount)
+            for category, amount in summary_categories.items()
+        )
+    )
 
 
 def _income_bridge(income: IncomeStatementCandidate) -> bool:
@@ -144,7 +414,8 @@ def _income_bridge(income: IncomeStatementCandidate) -> bool:
     tax = _money(income.tax_expense_total)
     net = _money(income.net_result)
     return (
-        _sum_exact([revenue, -cost, -gross]) == 0
+        _income_detail_bridge(income)
+        and _sum_exact([revenue, -cost, -gross]) == 0
         and _sum_exact([gross, -operating_expense, -operating]) == 0
         and _sum_exact([operating, other_income, -other_expense, -pretax]) == 0
         and _sum_exact([pretax, -tax, -net]) == 0
