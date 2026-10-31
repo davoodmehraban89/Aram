@@ -281,7 +281,7 @@ def test_all_zero_cash_balances_and_no_transactions_are_valid():
             for col in (16, 17, 18, 19):
                 row[col].value = "0"
     data = edit(workbook(), zero)
-    result = build(data=data, entries=[])
+    result = build(data=data, entries=[], policies=[])
     assert result.eligible_for_analyst_review
     assert result.opening_cash_and_equivalents == "0"
     assert result.net_change_in_cash == "0"
