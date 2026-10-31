@@ -153,5 +153,10 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
                 or not all(eligibility) or result.findings
                 or any(candidate.findings for candidate, _, _ in candidates)):
             raise CoverageError("DESKTOP_PREVIEW_FALSE_ELIGIBILITY")
-    elif _require_bool(reconciliation, "eligible_for_analyst_review"):
-        raise CoverageError("DESKTOP_PREVIEW_ELIGIBILITY_MISMATCH")
+    else:
+        if _require_bool(reconciliation, "eligible_for_analyst_review"):
+            raise CoverageError("DESKTOP_PREVIEW_ELIGIBILITY_MISMATCH")
+        if not reconciliation.findings and all(eligibility) and not any(
+            candidate.findings for candidate, _, _ in candidates
+        ):
+            raise CoverageError("DESKTOP_PREVIEW_BLOCKED_WITHOUT_FINDINGS")
