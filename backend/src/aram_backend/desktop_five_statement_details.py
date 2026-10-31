@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import unicodedata
 
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.desktop_five_statement_integrity import validate_desktop_pipeline_result
@@ -9,6 +10,15 @@ from aram_backend.five_statement_pipeline import FiveStatementPipelineResult
 from aram_backend.reconciliation_review import _money
 
 MAX_DETAIL_ROWS = 75_000
+
+
+def _unsafe_display_character(char: str) -> bool:
+    codepoint = ord(char)
+    category = unicodedata.category(char)
+    return (
+        category in {"Cc", "Cs"}
+        or (category == "Cf" and codepoint not in {0x200C, 0x200D})
+    )
 
 
 @dataclass(frozen=True)
@@ -36,7 +46,7 @@ class PreviewDetail:
 def _text(value: object, label: str, *, blank_ok: bool = False) -> str:
     if (not isinstance(value, str) or len(value) > 1024
             or value != value.strip() or (not value and not blank_ok)
-            or any(ord(char) < 32 or ord(char) == 127 for char in value)):
+            or any(_unsafe_display_character(char) for char in value)):
         raise CoverageError("DESKTOP_DETAIL_" + label + "_INVALID")
     return value
 
