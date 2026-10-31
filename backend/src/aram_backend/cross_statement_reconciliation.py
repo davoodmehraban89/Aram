@@ -14,7 +14,7 @@ from typing import Any, Sequence
 
 from aram_backend.balance_sheet_candidate import BalanceSheetCandidate
 from aram_backend.cash_flow_direct_candidate import (
-    CashAccountReconciliation, DirectCashFlowCandidate,
+    CashAccountReconciliation, CashFlowLine, DirectCashFlowCandidate,
 )
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.equity_changes_candidate import EquityChangesCandidate
@@ -152,14 +152,42 @@ def _income_bridge(income: IncomeStatementCandidate) -> bool:
 
 
 def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
+    categories = {
+        activity: {"inflows": [], "outflows": []}
+        for activity in ("OPERATING", "INVESTING", "FINANCING")
+    }
+    line_ids: set[str] = set()
+    if (type(cash.transaction_count) is not int
+            or cash.transaction_count != len(cash.cash_flow_lines)):
+        return False
+    for line in cash.cash_flow_lines:
+        if not isinstance(line, CashFlowLine):
+            return False
+        line_id = _text(line.line_id, "CASH_FLOW_LINE_ID")
+        if line_id in line_ids:
+            return False
+        line_ids.add(line_id)
+        inflow = _money(line.cash_inflow)
+        outflow = _money(line.cash_outflow)
+        if inflow < 0 or outflow < 0 or not ((inflow > 0) ^ (outflow > 0)):
+            return False
+        if line.activity in categories:
+            categories[line.activity]["inflows"].append(inflow)
+            categories[line.activity]["outflows"].append(outflow)
+        elif line.activity != "CASH_TRANSFER":
+            return False
+
     operating = _sum_exact([
-        _money(cash.operating_inflows), -_money(cash.operating_outflows),
+        _sum_exact(categories["OPERATING"]["inflows"]),
+        -_sum_exact(categories["OPERATING"]["outflows"]),
     ])
     investing = _sum_exact([
-        _money(cash.investing_inflows), -_money(cash.investing_outflows),
+        _sum_exact(categories["INVESTING"]["inflows"]),
+        -_sum_exact(categories["INVESTING"]["outflows"]),
     ])
     financing = _sum_exact([
-        _money(cash.financing_inflows), -_money(cash.financing_outflows),
+        _sum_exact(categories["FINANCING"]["inflows"]),
+        -_sum_exact(categories["FINANCING"]["outflows"]),
     ])
     net_change = _money(cash.net_change_in_cash)
     rollforward = _sum_exact([
@@ -167,10 +195,18 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
         -_money(cash.closing_cash_and_equivalents),
     ])
     return (
-        operating == _money(cash.operating_net_cash_flow)
+        _sum_exact(categories["OPERATING"]["inflows"]) == _money(cash.operating_inflows)
+        and _sum_exact(categories["OPERATING"]["outflows"]) == _money(cash.operating_outflows)
+        and operating == _money(cash.operating_net_cash_flow)
+        and _sum_exact(categories["INVESTING"]["inflows"]) == _money(cash.investing_inflows)
+        and _sum_exact(categories["INVESTING"]["outflows"]) == _money(cash.investing_outflows)
         and investing == _money(cash.investing_net_cash_flow)
+        and _sum_exact(categories["FINANCING"]["inflows"]) == _money(cash.financing_inflows)
+        and _sum_exact(categories["FINANCING"]["outflows"]) == _money(cash.financing_outflows)
         and financing == _money(cash.financing_net_cash_flow)
         and _sum_exact([operating, investing, financing, -net_change]) == 0
+        and _money(cash.internal_transfer_inflows) == _money(cash.internal_transfer_outflows)
+        and _money(cash.internal_transfer_inflows) >= 0
         and rollforward == _money(cash.rollforward_difference) == 0
     )
 
@@ -264,9 +300,21 @@ def _cash_accounts_match_trial_balance(
         if (source_values != trial_values
                 or item.source_row != trial_account.source_row):
             findings_valid = False
-        if (_money(item.debit_difference) != 0
-                or _money(item.credit_difference) != 0
-                or _money(item.rollforward_difference) != 0):
+        debit_difference = _sum_exact([
+            _money(item.transaction_debit_turnover),
+            -_money(item.source_debit_turnover),
+        ])
+        credit_difference = _sum_exact([
+            _money(item.transaction_credit_turnover),
+            -_money(item.source_credit_turnover),
+        ])
+        rollforward = _sum_exact([
+            source_values[0], source_values[1], -source_values[2], -source_values[3],
+        ])
+        if (debit_difference != 0 or credit_difference != 0 or rollforward != 0
+                or _money(item.debit_difference) != debit_difference
+                or _money(item.credit_difference) != credit_difference
+                or _money(item.rollforward_difference) != rollforward):
             totals_valid = False
         opening_values.append(source_values[0])
         closing_values.append(source_values[3])
