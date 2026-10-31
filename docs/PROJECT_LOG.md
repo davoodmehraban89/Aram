@@ -320,3 +320,9 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - New pure `income_statement_candidate.py`, strict local JSON CLI and synthetic normal, loss, precision, mapping mismatch, malformed input and scope-isolation tests. See `docs/INCOME_STATEMENT_CANDIDATE.md`.
 - No genuine tax policy or statement certification claimed; account closing exposure is **not automatically period movement**.
 - This branch is unmerged. Verify exact-final-head CI and independent C1/C2/C3; no financial data, customer credentials, released EXE or canonical files changed.
+
+### 2026-10-31 — trial balance diagnostic candidate
+- Actor: ChatGPT engineering; working branch `codex/aram-trial-balance-diagnostic-20261031`, parent PR #63 SHA `5679a2e9feff582b0d0b74bd5a807387879bb358`.
+- Adds pure `trial_balance_diagnostic.py`, safe offline CLI, synthetic tests and `docs/TRIAL_BALANCE_DIAGNOSTIC.md`.
+- Assumes net-debit signed openings/closings and nonnegative debit/credit turnover; source conventions and completeness must be independently confirmed before finance use.
+- No canonical XLSX/PDF, `data/`, original Alembic migration, financial output, signoff or accepted code mutated. Full GitHub CI on exact final SHA required; keep Draft until independent acceptance.
