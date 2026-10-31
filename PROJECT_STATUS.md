@@ -116,3 +116,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Independent development branch `codex/aram-income-statement-candidate-20261031`, based on unmerged PR #62 at `d6d0fc5da47e7209fe21fe96d48548d1489ef8a7`.
 - Introduces explicit income/cost/expense/tax sign policies, provisional period-result arithmetic, strict offline CLI and synthetic adversarial tests. Real recognition, comparison-year rules and statutory reporting not implemented.
 - No canonical financial sources, original migrations, database writes, releases, and accepted branch modifications. **DRAFT / NOT ACCEPTED** until CI and C1/C2/C3 + financial owner review.
+
+## 2026-10-31 — trial balance source arithmetic diagnostic (DRAFT)
+- Child branch `codex/aram-trial-balance-diagnostic-20261031`, based on unmerged income candidate PR #63 `5679a2e9feff582b0d0b74bd5a807387879bb358`.
+- Read-only company/year trial-balance equality and per-account movement checks with synthetic tests, local-only CLI and explicit signed net-debit assumptions. Not a verified or complete source ledger.
+- Data files, migrations, customer credentials, released artifact and accepted base untouched; formal C1/C2/C3 reviews and accountant signoff pending. NOT ACCEPTED.
