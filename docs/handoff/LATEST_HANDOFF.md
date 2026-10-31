@@ -146,3 +146,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Current branch `codex/aram-trial-balance-diagnostic-20261031` off unmerged PR #63 `5679a2e9feff582b0d0b74bd5a807387879bb358`.
 - Synthetic-only, read-only debit/credit turnover and opening/closing equality checks. See `docs/TRIAL_BALANCE_DIAGNOSTIC.md`.
 - Not an authenticated trial balance, complete source posting proof or regulatory financial statement. No release, independent C1/C2/C3 approval, GUI or real-ledger validation. Exact SHA CI and reviewer evidence needed before merge.
+
+## 2026-10-31 — statement of changes in equity candidate
+- Current development branch `codex/aram-equity-changes-candidate-20261031`, parent unmerged PR #64 `bfdde93bf98383470181b7ee55409e2ab9c45408`.
+- Synthetic-only, read-only equity movement preview with explicit sign/category policies, exact opening + movement = closing controls, account trace and offline CLI. See `docs/EQUITY_CHANGES_CANDIDATE.md`.
+- Known limitations: one movement class per note/subnote; no automated net-profit tie to P&L; actual source semantics and completeness unverified; no statutory report, C1/C2/C3 approval, UI, installer or release. Verify full CI on final SHA before any merge.
