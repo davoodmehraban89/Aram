@@ -157,6 +157,7 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
         for activity in ("OPERATING", "INVESTING", "FINANCING")
     }
     line_ids: set[str] = set()
+    transfer_values: list[Decimal] = []
     if (type(cash.transaction_count) is not int
             or cash.transaction_count != len(cash.cash_flow_lines)):
         return False
@@ -174,7 +175,9 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
         if line.activity in categories:
             categories[line.activity]["inflows"].append(inflow)
             categories[line.activity]["outflows"].append(outflow)
-        elif line.activity != "CASH_TRANSFER":
+        elif line.activity == "CASH_TRANSFER":
+            transfer_values.append(_sum_exact([inflow, outflow]))
+        else:
             return False
 
     operating = _sum_exact([
@@ -190,6 +193,7 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
         -_sum_exact(categories["FINANCING"]["outflows"]),
     ])
     net_change = _money(cash.net_change_in_cash)
+    transfer_total = _sum_exact(transfer_values)
     rollforward = _sum_exact([
         _money(cash.opening_cash_and_equivalents), net_change,
         -_money(cash.closing_cash_and_equivalents),
@@ -205,8 +209,8 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
         and _sum_exact(categories["FINANCING"]["outflows"]) == _money(cash.financing_outflows)
         and financing == _money(cash.financing_net_cash_flow)
         and _sum_exact([operating, investing, financing, -net_change]) == 0
-        and _money(cash.internal_transfer_inflows) == _money(cash.internal_transfer_outflows)
-        and _money(cash.internal_transfer_inflows) >= 0
+        and _money(cash.internal_transfer_inflows) == transfer_total
+        and _money(cash.internal_transfer_outflows) == transfer_total
         and rollforward == _money(cash.rollforward_difference) == 0
     )
 
