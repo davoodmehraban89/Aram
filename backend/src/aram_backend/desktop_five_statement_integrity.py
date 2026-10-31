@@ -40,6 +40,10 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
     )
     if result.kind != "UNAPPROVED_FIVE_STATEMENT_PIPELINE_CANDIDATE":
         raise CoverageError("DESKTOP_PREVIEW_PIPELINE_KIND_INVALID")
+    if type(result.reconciliation) is not CrossStatementReconciliation:
+        raise CoverageError("DESKTOP_PREVIEW_RECONCILIATION_TYPE_INVALID")
+    if result.reconciliation.kind != "UNAPPROVED_CROSS_STATEMENT_RECONCILIATION":
+        raise CoverageError("DESKTOP_PREVIEW_RECONCILIATION_KIND_INVALID")
     _require_false(result, (
         "source_ledger_completeness_verified", "accounting_policy_authorized",
         "independently_reviewed", "trusted_approvals",
@@ -94,8 +98,6 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
                      "independently_reviewed", "releasable")
         _require_false(candidate, flags)
     reconciliation = result.reconciliation
-    if type(reconciliation) is not CrossStatementReconciliation:
-        raise CoverageError("DESKTOP_PREVIEW_RECONCILIATION_TYPE_INVALID")
     if (len(source_hashes) != 1
             or reconciliation.source_sha256 not in source_hashes
             or reconciliation.same_source_snapshot is not True):
