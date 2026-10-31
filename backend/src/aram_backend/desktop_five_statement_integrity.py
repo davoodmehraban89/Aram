@@ -65,8 +65,22 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
                 or not re.fullmatch(r"[0-9a-f]{64}", candidate.source_sha256)):
             raise CoverageError("DESKTOP_PREVIEW_SOURCE_HASH_INVALID")
         source_hashes.add(candidate.source_sha256)
+        if (not isinstance(candidate.company_code, str)
+                or not candidate.company_code
+                or candidate.company_code != candidate.company_code.strip()
+                or type(candidate.fiscal_year) is not int
+                or candidate.fiscal_year <= 0):
+            raise CoverageError("DESKTOP_PREVIEW_SCOPE_INVALID")
         companies.add(candidate.company_code)
         years.add(candidate.fiscal_year)
+        for hash_field in (
+            "note_references_sha256", "presentation_policies_sha256",
+            "transaction_ledger_sha256", "classification_policies_sha256",
+        ):
+            if hasattr(candidate, hash_field):
+                digest = getattr(candidate, hash_field)
+                if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+                    raise CoverageError("DESKTOP_PREVIEW_PROVENANCE_HASH_INVALID")
         eligible_field = (
             "balanced_for_analyst_review" if isinstance(candidate, TrialBalanceDiagnostic)
             else "eligible_for_analyst_review"
@@ -100,8 +114,18 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
     reconciliation = result.reconciliation
     if (len(source_hashes) != 1
             or reconciliation.source_sha256 not in source_hashes
+            or not isinstance(reconciliation.source_sha256, str)
+            or not re.fullmatch(r"[0-9a-f]{64}", reconciliation.source_sha256)
             or reconciliation.same_source_snapshot is not True):
         raise CoverageError("DESKTOP_PREVIEW_SOURCE_SNAPSHOT_MISMATCH")
+    if (not isinstance(reconciliation.cash_flow_transaction_ledger_sha256, str)
+            or not re.fullmatch(r"[0-9a-f]{64}", reconciliation.cash_flow_transaction_ledger_sha256)
+            or not isinstance(reconciliation.cash_note_selection_sha256, str)
+            or not re.fullmatch(r"[0-9a-f]{64}", reconciliation.cash_note_selection_sha256)):
+        raise CoverageError("DESKTOP_PREVIEW_RECONCILIATION_HASH_INVALID")
+    if (not isinstance(reconciliation.findings, tuple)
+            or any(not isinstance(item, str) or not item for item in reconciliation.findings)):
+        raise CoverageError("DESKTOP_PREVIEW_RECONCILIATION_FINDINGS_INVALID")
     if companies != {reconciliation.company_code} or years != {reconciliation.fiscal_year}:
         raise CoverageError("DESKTOP_PREVIEW_SCOPE_MISMATCH")
     if (result.balance_sheet.note_references_sha256
