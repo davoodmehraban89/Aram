@@ -212,8 +212,7 @@ def build_direct_cash_flow_candidate(
     recognized only when both cash accounts are explicitly registered and are
     excluded from operating/investing/financing totals.
     """
-    if not isinstance(company_code, str) or not company_code or company_code != company_code.strip():
-        raise CoverageError("CASH_FLOW_COMPANY_SCOPE_INVALID")
+    company_code = _text(company_code, "COMPANY_SCOPE", max_length=64)
     if type(fiscal_year) is not int or fiscal_year <= 0:
         raise CoverageError("CASH_FLOW_YEAR_SCOPE_INVALID")
     currency = _text(currency, "CURRENCY", max_length=16)
@@ -365,10 +364,8 @@ def build_direct_cash_flow_candidate(
                 transaction_turnovers[counterpart_code][1].append(counterpart_credit)
                 activity = "CASH_TRANSFER"
                 classification_evidence = cash_policy[counterpart_code].evidence_ref
-                if cash_debit:
-                    transfer_inflows.append(cash_debit)
-                else:
-                    transfer_outflows.append(cash_credit)
+                transfer_inflows.extend([cash_debit, counterpart_debit])
+                transfer_outflows.extend([cash_credit, counterpart_credit])
             else:
                 policy = counterpart_policy.get(counterpart_code)
                 if policy is None:
