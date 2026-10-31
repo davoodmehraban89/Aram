@@ -204,7 +204,7 @@ def reconcile(**overrides):
 
 def test_all_five_statements_tie_exactly_without_claiming_approval():
     result = reconcile()
-    assert result.eligible_for_analyst_review
+    assert result.eligible_for_analyst_review, result.findings
     assert not result.findings
     assert result.same_source_snapshot
     assert result.balance_sheet_difference == "0"
