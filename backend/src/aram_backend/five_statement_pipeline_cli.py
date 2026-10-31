@@ -82,6 +82,8 @@ def _reject_json_constant(value: str) -> None:
 def _rows(
     payload: dict[str, Any], key: str, fields: frozenset[str],
     factory: type, maximum: int, *, minimum: int = 0,
+    string_fields: tuple[str, ...] = (),
+    sign_field: str | None = None,
 ) -> tuple[Any, ...]:
     items = payload[key]
     if (not isinstance(items, list) or len(items) < minimum
