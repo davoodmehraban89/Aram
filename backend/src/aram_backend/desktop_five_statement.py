@@ -713,13 +713,35 @@ def ui_valid_smoke_test() -> int:
                 and row[2] == "20" for row in amount_rows
             ):
                 return 29
+            detail_rows = window.detail_tree.get_children()
+            if not window._detail_rows or not detail_rows:
+                return 30
+            if not any(
+                row.item == "Revenue" and row.statement == "سود و زیان"
+                for row in window._detail_rows
+            ):
+                return 31
+            window.detail_filter_var.set("سود و زیان")
+            window.detail_search_var.set("Revenue")
+            window._apply_detail_filter()
+            filtered = window.detail_tree.get_children()
+            if len(filtered) != 1:
+                return 32
+            values = window.detail_tree.item(filtered[0], "values")
+            if values[1] != "Revenue" or values[0] != "سود و زیان":
+                return 33
+            window.detail_filter_var.set("همه")
+            window.detail_search_var.set("")
+            window._apply_detail_filter()
             if any(
                 window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
                 for row in rows
             ):
                 return 25
             window.clear_button.invoke()
-            if window.controller.result is not None or window.outcome_tree.get_children():
+            if (window.controller.result is not None or window.outcome_tree.get_children()
+                    or window.figures_tree.get_children() or window.detail_tree.get_children()
+                    or window._detail_rows):
                 return 26
             if str(window.run_button.cget("state")) != "disabled":
                 return 27
