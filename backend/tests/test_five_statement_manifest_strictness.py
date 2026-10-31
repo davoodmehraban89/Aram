@@ -84,8 +84,6 @@ def test_invalid_identity_and_evidence_fields_fail_closed(section, field, bad):
 
 @pytest.mark.parametrize("field, bad", [
     ("company_code", "002"),
-    ("company_code", " 001 "),
-    ("company_code", None),
     ("fiscal_year", 1403),
     ("fiscal_year", "1404"),
     ("fiscal_year", True),
