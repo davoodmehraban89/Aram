@@ -9,7 +9,7 @@ from queue import Empty, Queue
 import json
 import sys
 import tempfile
-from threading import Thread
+from threading import Lock, Thread
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from pathlib import Path
@@ -19,7 +19,9 @@ from aram_backend.desktop_five_statement_core import (
     DesktopFiveInputError, DesktopFiveStatementController,
 )
 from aram_backend.desktop_five_statement_figures import build_preview_figures
-from aram_backend.desktop_five_statement_details import PreviewDetail, build_preview_details
+from aram_backend.desktop_five_statement_details import (
+    PreviewDetail, build_preview_details, filter_preview_details,
+)
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.synthetic_five_statement_demo import (
     pipeline_manifest, source_workbook,
@@ -63,6 +65,10 @@ class FiveStatementWindow(tk.Tk):
         self._busy = False
         self._detail_rows: tuple[PreviewDetail, ...] = ()
         self._filtered_detail_rows: tuple[PreviewDetail, ...] = ()
+        self._filter_events: Queue[tuple[int, tuple[PreviewDetail, ...], str | None]] = Queue()
+        self._filter_guard = Lock()
+        self._detail_filter_generation = 0
+        self._filtering = False
         self._detail_page = 0
         self._detail_page_size = 200
         self.title(TITLE)
@@ -385,27 +391,80 @@ class FiveStatementWindow(tk.Tk):
         self.manifest_button.configure(state=selectable)
         self.clear_button.configure(state=selectable)
         self.run_button.configure(state=executable)
-        self.detail_filter_combo.configure(state="disabled" if self._busy else "readonly")
-        self.detail_search_entry.configure(state=selectable)
-        self.detail_search_button.configure(state=selectable)
+        filter_disabled = self._busy or self._filtering
+        self.detail_filter_combo.configure(state="disabled" if filter_disabled else "readonly")
+        self.detail_search_entry.configure(state="disabled" if filter_disabled else "normal")
+        self.detail_search_button.configure(state="disabled" if filter_disabled else "normal")
         for i in (0, 1, 3):
             self.file_menu.entryconfigure(i, state=selectable)
         self.file_menu.entryconfigure(2, state=executable)
         self._render_detail_page()
 
     def _apply_detail_filter(self) -> None:
+        # A new filter request supersedes an in-flight initial/background
+        # search.  The generation token prevents an older worker's reply
+        # from replacing the latest query or repopulating cleared rows.
+        if self._busy:
+            return
         statement = self.detail_filter_var.get()
-        query = self.detail_search_var.get().strip().casefold()
-        self._filtered_detail_rows = tuple(
-            row for row in self._detail_rows
-            if (statement == "همه" or row.statement == statement)
-            and (not query or query in " ".join(row.values()).casefold())
-        )
+        query = self.detail_search_var.get()
+        with self._filter_guard:
+            self._detail_filter_generation += 1
+            token = self._detail_filter_generation
+        rows = self._detail_rows
+        self._filtering = True
+        self.detail_status.set("جستجو در ریز اقلام در حال انجام است…")
+        self._refresh()
+
+        def worker() -> None:
+            try:
+                filtered = filter_preview_details(
+                    rows, statement=statement, query=query,
+                )
+            except CoverageError as exc:
+                event = (token, (), str(exc))
+            except Exception:
+                event = (token, (), "DETAIL_SEARCH_FAILED")
+            else:
+                event = (token, filtered, None)
+            # Results of superseded searches can contain 75,000 private
+            # financial rows. Never retain them in the queue after reset.
+            with self._filter_guard:
+                if token == self._detail_filter_generation:
+                    self._filter_events.put(event)
+
+        Thread(target=worker, daemon=True).start()
+        self.after(50, lambda: self._poll_detail_filter(token))
+
+    def _poll_detail_filter(self, token: int) -> None:
+        if token != self._detail_filter_generation or not self._filtering:
+            return
+        try:
+            event_token, filtered, error = self._filter_events.get_nowait()
+        except Empty:
+            self.after(50, lambda: self._poll_detail_filter(token))
+            return
+        if event_token != self._detail_filter_generation:
+            self.after(50, lambda: self._poll_detail_filter(token))
+            return
+        self._filtering = False
+        if error is not None:
+            self._filtered_detail_rows = ()
+            self._detail_page = 0
+            self._refresh()
+            self.detail_status.set("جستجو انجام نشد؛ کد خطا: " + error)
+            return
+        self._filtered_detail_rows = filtered
         self._detail_page = 0
-        self._render_detail_page()
+        self._refresh()
 
     def _render_detail_page(self) -> None:
         if not hasattr(self, "detail_tree") or not self.detail_tree.winfo_exists():
+            return
+        if self._filtering:
+            self.detail_status.set("جستجو در ریز اقلام در حال انجام است…")
+            self.detail_prev_button.configure(state="disabled")
+            self.detail_next_button.configure(state="disabled")
             return
         children = self.detail_tree.get_children()
         if children:
@@ -424,7 +483,7 @@ class FiveStatementWindow(tk.Tk):
             )
         else:
             self.detail_status.set("ردیفی با این فیلتر پیدا نشد")
-        button_state = "disabled" if self._busy else "normal"
+        button_state = "disabled" if self._busy or self._filtering else "normal"
         self.detail_prev_button.configure(
             state=(button_state if self._detail_page > 0 else "disabled"),
         )
@@ -433,7 +492,7 @@ class FiveStatementWindow(tk.Tk):
         )
 
     def _change_detail_page(self, delta: int) -> None:
-        if self._busy:
+        if self._busy or self._filtering:
             return
         self._detail_page += delta
         self._render_detail_page()
@@ -443,6 +502,14 @@ class FiveStatementWindow(tk.Tk):
             children = tree.get_children()
             if children:
                 tree.delete(*children)
+        with self._filter_guard:
+            self._detail_filter_generation += 1
+            while True:
+                try:
+                    self._filter_events.get_nowait()
+                except Empty:
+                    break
+        self._filtering = False
         self._detail_rows = ()
         self._filtered_detail_rows = ()
         self._detail_page = 0
@@ -670,6 +737,16 @@ def ui_valid_smoke_test() -> int:
     This is an automated widget check, not human review or official approval.
     """
     import time
+    from aram_backend.desktop_five_statement_details import MAX_DETAIL_ROWS
+
+    def wait_for_filter(window: FiveStatementWindow) -> bool:
+        for _ in range(500):
+            window.update()
+            if not window._filtering:
+                return True
+            time.sleep(0.01)
+        return False
+
     with tempfile.TemporaryDirectory() as directory:
         folder = Path(directory)
         workbook = folder / "ARAM-SYNTHETIC-ONLY.xlsx"
@@ -697,6 +774,8 @@ def ui_valid_smoke_test() -> int:
                 time.sleep(0.02)
             if window._busy or window.controller.state != "ELIGIBLE":
                 return 22
+            if not wait_for_filter(window):
+                return 40
             if not window.controller.result or not window.controller.result.eligible_for_analyst_review:
                 return 23
             rows = window.outcome_tree.get_children()
@@ -724,6 +803,13 @@ def ui_valid_smoke_test() -> int:
             window.detail_filter_var.set("سود و زیان")
             window.detail_search_var.set("یادداشت R01")
             window._apply_detail_filter()
+            if not window._filtering:
+                return 44
+            if str(window.detail_search_button.cget("state")) != "disabled":
+                return 45
+            window.update_idletasks()
+            if not wait_for_filter(window):
+                return 41
             filtered = window.detail_tree.get_children()
             if len(filtered) != 1:
                 return 32
@@ -735,15 +821,38 @@ def ui_valid_smoke_test() -> int:
             original_details = window._detail_rows
             if not original_details:
                 return 34
-            repeats = 200 // len(original_details) + 1
-            window._detail_rows = original_details * repeats
+            repeats, remainder = divmod(MAX_DETAIL_ROWS, len(original_details))
+            window._detail_rows = (
+                original_details * repeats + original_details[:remainder]
+            )
+            if len(window._detail_rows) != MAX_DETAIL_ROWS:
+                return 46
+            window.detail_filter_var.set("تراز آزمایشی")
             window._apply_detail_filter()
+            if not window._filtering:
+                return 47
+            window.update_idletasks()
+            if not wait_for_filter(window):
+                return 42
+            expected_trial_balance = (
+                sum(row.statement == "تراز آزمایشی" for row in original_details) * repeats
+                + sum(
+                    row.statement == "تراز آزمایشی"
+                    for row in original_details[:remainder]
+                )
+            )
+            if len(window._filtered_detail_rows) != expected_trial_balance:
+                return 48
             if len(window.detail_tree.get_children()) != 200:
                 return 35
             if str(window.detail_next_button.cget("state")) != "normal":
                 return 36
             window._change_detail_page(1)
-            if len(window.detail_tree.get_children()) != len(window._detail_rows) - 200:
+            # Each page is bounded to 200 *filtered* rows; it must not
+            # materialize the entire remaining 75k-row dataset into Tk.
+            if len(window.detail_tree.get_children()) != min(
+                window._detail_page_size, expected_trial_balance - window._detail_page_size,
+            ):
                 return 37
             if str(window.detail_prev_button.cget("state")) != "normal":
                 return 38
@@ -751,7 +860,10 @@ def ui_valid_smoke_test() -> int:
             if len(window.detail_tree.get_children()) != 200:
                 return 39
             window._detail_rows = original_details
+            window.detail_filter_var.set("همه")
             window._apply_detail_filter()
+            if not wait_for_filter(window):
+                return 43
             if any(
                 window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
                 for row in rows

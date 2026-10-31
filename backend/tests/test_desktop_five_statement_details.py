@@ -196,3 +196,63 @@ def test_integrity_gate_rejects_blocked_state_without_explanation():
     )
     with pytest.raises(CoverageError, match="BLOCKED_WITHOUT_FINDINGS"):
         validate_desktop_pipeline_result(changed)
+
+
+def test_detail_filter_supports_statement_and_cross_column_search():
+    from aram_backend.desktop_five_statement_details import filter_preview_details
+    rows = build_preview_details(build_pipeline())
+    all_rows = filter_preview_details(rows, statement="همه", query="")
+    assert all_rows == rows
+    income = filter_preview_details(rows, statement="سود و زیان", query="")
+    assert income and all(row.statement == "سود و زیان" for row in income)
+    revenue = filter_preview_details(rows, statement="همه", query="Revenue")
+    assert any(row.item == "Revenue" for row in revenue)
+    note = filter_preview_details(rows, statement="سود و زیان", query="یادداشت R01")
+    assert len(note) == 1 and note[0].item == "Revenue"
+
+
+def test_detail_filter_is_casefolded_and_handles_no_match():
+    from aram_backend.desktop_five_statement_details import filter_preview_details
+    rows = build_preview_details(build_pipeline())
+    assert filter_preview_details(rows, statement="همه", query="revenue") == (
+        filter_preview_details(rows, statement="همه", query="Revenue")
+    )
+    assert filter_preview_details(rows, statement="همه", query="no-such-account") == ()
+
+
+@pytest.mark.parametrize("query", ["x" * 257, "bad\nquery", "bad\u202equery"])
+def test_detail_filter_rejects_oversized_and_unsafe_queries(query):
+    from aram_backend.desktop_five_statement_details import filter_preview_details
+    rows = build_preview_details(build_pipeline())
+    with pytest.raises(CoverageError, match="SEARCH_QUERY"):
+        filter_preview_details(rows, statement="همه", query=query)
+
+
+def test_detail_filter_rejects_invalid_statement_or_mutated_row():
+    from dataclasses import replace
+    from aram_backend.desktop_five_statement_details import (
+        PreviewDetail, filter_preview_details,
+    )
+    rows = build_preview_details(build_pipeline())
+    with pytest.raises(CoverageError, match="SEARCH_STATEMENT"):
+        filter_preview_details(rows, statement="all", query="")
+    forged = (replace(rows[0], trace="hidden\ncontrol"),) + rows[1:]
+    with pytest.raises(CoverageError, match="SEARCH_ROW"):
+        filter_preview_details(forged, statement="همه", query="")
+    with pytest.raises(CoverageError, match="SEARCH_ROWS"):
+        filter_preview_details(list(rows), statement="همه", query="")
+    assert PreviewDetail is type(rows[0])
+
+
+def test_detail_filter_handles_large_bounded_row_collection_without_truncation():
+    from aram_backend.desktop_five_statement_details import (
+        MAX_DETAIL_ROWS, filter_preview_details,
+    )
+    rows = build_preview_details(build_pipeline())
+    repeats, remainder = divmod(MAX_DETAIL_ROWS, len(rows))
+    expanded = rows * repeats + rows[:remainder]
+    assert len(expanded) == MAX_DETAIL_ROWS
+    matches = filter_preview_details(expanded, statement="تراز آزمایشی", query="")
+    assert len(matches) == sum(
+        1 for row in expanded if row.statement == "تراز آزمایشی"
+    )

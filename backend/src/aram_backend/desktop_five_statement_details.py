@@ -10,6 +10,11 @@ from aram_backend.five_statement_pipeline import FiveStatementPipelineResult
 from aram_backend.reconciliation_review import _money
 
 MAX_DETAIL_ROWS = 75_000
+MAX_DETAIL_SEARCH_CHARS = 256
+DETAIL_STATEMENTS = (
+    "همه", "ترازنامه", "سود و زیان",
+    "تغییرات حقوق مالکانه", "جریان وجوه نقد", "تراز آزمایشی",
+)
 
 
 def _unsafe_display_character(char: str) -> bool:
@@ -97,6 +102,44 @@ def _row(
         trace=_text(trace, "TRACE", blank_ok=True),
         state=state,
     )
+
+
+def filter_preview_details(
+    rows: tuple[PreviewDetail, ...], *, statement: str, query: str,
+) -> tuple[PreviewDetail, ...]:
+    """Filter bounded detail rows; call from a worker thread, never Tk.
+
+    The helper deliberately avoids joining all 11 columns into a second
+    temporary string. It searches one already-bounded cell at a time.
+    """
+    if type(rows) is not tuple or len(rows) > MAX_DETAIL_ROWS:
+        raise CoverageError("DESKTOP_DETAIL_SEARCH_ROWS_INVALID")
+    if not isinstance(statement, str) or statement not in DETAIL_STATEMENTS:
+        raise CoverageError("DESKTOP_DETAIL_SEARCH_STATEMENT_INVALID")
+    if (not isinstance(query, str) or len(query) > MAX_DETAIL_SEARCH_CHARS
+            or any(_unsafe_display_character(char) for char in query)):
+        raise CoverageError("DESKTOP_DETAIL_SEARCH_QUERY_INVALID")
+    needle = query.strip().casefold()
+    matches: list[PreviewDetail] = []
+    for row in rows:
+        if type(row) is not PreviewDetail:
+            raise CoverageError("DESKTOP_DETAIL_SEARCH_ROW_INVALID")
+        values = row.values()
+        if len(values) != 11 or any(
+            not isinstance(value, str) or len(value) > 1024
+            or value != value.strip()
+            or any(_unsafe_display_character(char) for char in value)
+            for value in values
+        ):
+            raise CoverageError("DESKTOP_DETAIL_SEARCH_ROW_INVALID")
+        if statement != "همه" and row.statement != statement:
+            continue
+        if not needle or any(
+            isinstance(value, str) and needle in value.casefold()
+            for value in row.values()
+        ):
+            matches.append(row)
+    return tuple(matches)
 
 
 def build_preview_details(

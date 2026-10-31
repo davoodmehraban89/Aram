@@ -239,6 +239,15 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
         window.detail_filter_var.set("سود و زیان")
         window.detail_search_var.set("یادداشت R01")
         window._apply_detail_filter()
+        assert window._filtering
+        assert str(window.detail_search_button.cget("state")) == "disabled"
+        window.update_idletasks()
+        for _ in range(500):
+            window.update()
+            if not window._filtering:
+                break
+            time.sleep(0.01)
+        assert not window._filtering
         assert len(window.detail_tree.get_children()) == 1
         assert window.detail_tree.item(
             window.detail_tree.get_children()[0], "values",
@@ -251,5 +260,74 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
         assert window.controller.result is None
         assert str(window.run_button.cget("state")) == "disabled"
     finally:
+        if window.winfo_exists():
+            window.destroy()
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Native Tk requires Windows runner")
+def test_new_detail_query_supersedes_inflight_search_and_ignores_stale_reply(
+    tmp_path, monkeypatch,
+):
+    """The initial all-rows filter cannot overwrite a newer exact note query."""
+    import threading
+    import aram_backend.desktop_five_statement as desktop_module
+
+    release_old = threading.Event()
+    started_old = threading.Event()
+    real_filter = desktop_module.filter_preview_details
+
+    def delayed_filter(rows, *, statement, query):
+        if statement == "همه" and query == "":
+            started_old.set()
+            if not release_old.wait(30):
+                raise RuntimeError("Synthetic old filter was not released")
+        return real_filter(rows, statement=statement, query=query)
+
+    monkeypatch.setattr(desktop_module, "filter_preview_details", delayed_filter)
+    paths = fixtures(tmp_path)
+    file_names = {"workbook": str(paths[0]), "manifest": str(paths[1])}
+    window = FiveStatementWindow(picker=lambda kind: file_names[kind])
+    try:
+        window.withdraw()
+        window.workbook_button.invoke()
+        window.manifest_button.invoke()
+        window.run_button.invoke()
+        for _ in range(2000):
+            window.update()
+            if not window._busy and started_old.is_set():
+                break
+            time.sleep(0.01)
+        assert not window._busy
+        assert started_old.is_set()
+        assert window._filtering
+        window.detail_filter_var.set("سود و زیان")
+        window.detail_search_var.set("یادداشت R01")
+        window._apply_detail_filter()
+        assert window._filtering
+        for _ in range(500):
+            window.update()
+            if not window._filtering:
+                break
+            time.sleep(0.01)
+        assert not window._filtering
+        rows = window.detail_tree.get_children()
+        assert len(rows) == 1
+        assert window.detail_tree.item(rows[0], "values")[1] == "Revenue"
+
+        release_old.set()
+        for _ in range(30):
+            window.update()
+            time.sleep(0.01)
+        # A superseded full-dataset search must not retain private rows
+        # in the pending event queue after the newer search finishes.
+        assert window._filter_events.empty()
+        rows = window.detail_tree.get_children()
+        assert len(rows) == 1
+        assert window.detail_tree.item(rows[0], "values")[1] == "Revenue"
+        window.clear_button.invoke()
+        assert not window.detail_tree.get_children()
+        assert not window._detail_rows
+    finally:
+        release_old.set()
         if window.winfo_exists():
             window.destroy()
