@@ -25,6 +25,7 @@ def test_details_cover_every_candidate_line_and_account_row():
         + len(result.cash_flow.cash_flow_lines)
         + len(result.cash_flow.account_reconciliations)
         + len(result.trial_balance.accounts)
+        + len(result.mapping_coverage.mappings)
     )
     assert len(rows) == expected
     assert {row.statement for row in rows} == {
@@ -208,7 +209,8 @@ def test_detail_filter_supports_statement_and_cross_column_search():
     revenue = filter_preview_details(rows, statement="همه", query="Revenue")
     assert any(row.item == "Revenue" for row in revenue)
     note = filter_preview_details(rows, statement="سود و زیان", query="یادداشت R01")
-    assert len(note) == 1 and note[0].item == "Revenue"
+    assert len(note) == 2
+    assert {row.item for row in note} == {"Revenue", "حساب REV / Revenue"}
 
 
 def test_detail_filter_is_casefolded_and_handles_no_match():
