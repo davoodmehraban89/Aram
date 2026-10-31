@@ -122,6 +122,7 @@ def test_equity_statement_rollforward_and_category_totals_are_exact():
     assert result.closing_equity_total == "155"
     assert result.rollforward_difference == "0"
     assert len(result.note_movements) == 3
+    assert result.note_movements[0].line_label.startswith("Synthetic ")
     assert len(result.account_movements) == 3
     assert result.kind == "UNAPPROVED_EQUITY_CHANGES_PRESENTATION_CANDIDATE"
     assert not result.official_financial_statement
