@@ -207,19 +207,21 @@ def _validated_preview(content: bytes, preview: CoveragePreview) -> None:
             raise CoverageError("ACCOUNT_MAPPING_ELIGIBILITY_MISMATCH")
         if account.mapping_count == 1:
             only = rows[0]
+            actual = (
+                account.mapping_excel_row, account.mapping_id,
+                account.target_statement, account.target_section,
+                account.target_note, account.target_subnote,
+            )
             if only.included:
                 expected = (
                     only.mapping_excel_row, only.mapping_id,
                     only.target_statement, only.target_section,
                     only.target_note, only.target_subnote,
                 )
-                actual = (
-                    account.mapping_excel_row, account.mapping_id,
-                    account.target_statement, account.target_section,
-                    account.target_note, account.target_subnote,
-                )
                 if actual != expected:
                     raise CoverageError("ACCOUNT_MAPPING_TRACE_MISMATCH")
+            elif any(value is not None for value in actual):
+                raise CoverageError("ACCOUNT_MAPPING_TRACE_MISMATCH")
         elif any(value is not None for value in (
             account.mapping_excel_row, account.mapping_id,
             account.target_statement, account.target_section,
