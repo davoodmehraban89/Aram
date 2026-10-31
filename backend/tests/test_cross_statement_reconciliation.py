@@ -9,7 +9,9 @@ import pytest
 from aram_backend.balance_sheet_candidate import (
     BalanceSheetCandidate, CandidateBalanceSheetLine,
 )
-from aram_backend.cash_flow_direct_candidate import CashAccountReconciliation, DirectCashFlowCandidate
+from aram_backend.cash_flow_direct_candidate import (
+    CashAccountReconciliation, CashFlowLine, DirectCashFlowCandidate,
+)
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.cross_statement_reconciliation import (
     CashBalanceNoteSelection, reconcile_cross_statements,
