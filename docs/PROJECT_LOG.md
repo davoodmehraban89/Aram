@@ -332,3 +332,9 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Added `equity_changes_candidate.py`, local-only CLI, synthetic tests and `docs/EQUITY_CHANGES_CANDIDATE.md`.
 - Uses explicit note-level component, movement class and debit-net sign; exact roll-forward by note/account and source lineage. One movement type per note/subnote; mixed movements need separate subnotes. No automatic P&L tie-out yet.
 - Draft only; no real finance workbook, database write, migration, release or approval touched. Await exact-head full CI and actual independent finance review.
+
+### 2026-10-31 — direct-method cash flow candidate
+- Actor: ChatGPT engineering; branch `codex/aram-cash-flow-direct-candidate-20261031`, parent unmerged PR #65 exact SHA `6dd52d6e098999d22700ba2a7150bedc3846ab1a`.
+- Added paired transaction-level direct cash-flow calculator, strict bounded local manifest CLI, synthetic tests and `docs/CASH_FLOW_DIRECT_CANDIDATE.md`.
+- Aggregate debit/credit alone cannot identify operating/investing/financing. The candidate requires one cash/counterpart pair per transaction line, explicit cash-account registry and counterpart classification; cash-to-cash transfers excluded from activity totals and reconciled on both sides.
+- No real ledger/bank statement, database write, migration, customer data, financial approval or release touched. Keep Draft pending final-head CI, finance-owner policy and independent review.
