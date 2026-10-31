@@ -151,3 +151,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Current development branch `codex/aram-equity-changes-candidate-20261031`, parent unmerged PR #64 `bfdde93bf98383470181b7ee55409e2ab9c45408`.
 - Synthetic-only, read-only equity movement preview with explicit sign/category policies, exact opening + movement = closing controls, account trace and offline CLI. See `docs/EQUITY_CHANGES_CANDIDATE.md`.
 - Known limitations: one movement class per note/subnote; no automated net-profit tie to P&L; actual source semantics and completeness unverified; no statutory report, C1/C2/C3 approval, UI, installer or release. Verify full CI on final SHA before any merge.
+
+## 2026-10-31 — direct cash flow candidate
+- Current branch `codex/aram-cash-flow-direct-candidate-20261031` based on unmerged PR #65 `6dd52d6e098999d22700ba2a7150bedc3846ab1a`.
+- Synthetic-only direct cash flow preview from paired cash/counterpart journal lines. Explicit cash-account registry, counterpart activity mapping, source-turnover reconciliation and cash roll-forward. See `docs/CASH_FLOW_DIRECT_CANDIDATE.md`.
+- Does not infer activity from aggregate TB; real source transaction completeness, cash-account scope and policy remain unverified. No official statement, C1/C2/C3 approval, GUI, installer or release. Full CI on exact head required.
