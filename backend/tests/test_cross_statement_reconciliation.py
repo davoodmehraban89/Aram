@@ -410,3 +410,73 @@ def test_internal_cash_transfer_totals_must_be_derived_from_line_trace():
     result = reconcile(cash_flow=bad)
     assert not result.cash_flow_bridge_valid
     assert "CASH_FLOW_BRIDGE_INVALID" in result.findings
+
+
+def test_balance_sheet_line_detail_must_support_summary_totals():
+    source = bs()
+    lines = list(source.lines)
+    lines[0] = replace(lines[0], presentation_amount="51")
+    result = reconcile(balance_sheet=replace(source, lines=tuple(lines)))
+    assert "BALANCE_SHEET_DETAIL_INVALID" in result.findings
+    assert not result.eligible_for_analyst_review
+
+
+def test_income_statement_line_detail_must_support_summary_totals():
+    source = income()
+    lines = list(source.lines)
+    lines[0] = replace(lines[0], presentation_amount="101")
+    result = reconcile(income_statement=replace(source, lines=tuple(lines)))
+    assert not result.income_statement_bridge_valid
+    assert "INCOME_STATEMENT_BRIDGE_INVALID" in result.findings
+
+
+def test_equity_account_detail_must_support_note_and_summary_movements():
+    source = equity()
+    account = replace(source.account_movements[0], credit_turnover="39")
+    result = reconcile(equity_changes=replace(
+        source, account_movements=(account,),
+    ))
+    assert not result.equity_rollforward_valid
+    assert "EQUITY_STATEMENT_ROLLFORWARD_INVALID" in result.findings
+
+
+def test_trial_balance_row_rollforward_mismatch_cannot_net_off_globally():
+    source = trial()
+    rows = list(source.accounts)
+    rows[0] = replace(rows[0], closing="51")
+    rows[3] = replace(rows[3], closing="-41")
+    result = reconcile(trial_balance=replace(source, accounts=tuple(rows)))
+    assert not result.trial_balance_arithmetic_valid
+    assert "TRIAL_BALANCE_ARITHMETIC_INVALID" in result.findings
+
+
+def test_cash_account_transaction_turnovers_must_match_cash_flow_line_trace():
+    source = cash()
+    account = replace(source.account_reconciliations[0], transaction_debit_turnover="29")
+    result = reconcile(cash_flow=replace(
+        source, account_reconciliations=(account,),
+    ))
+    assert not result.cash_account_totals_valid
+    assert "CASH_ACCOUNT_TURNOVER_OR_TOTALS_INVALID" in result.findings
+
+
+def test_all_statement_candidates_must_share_one_note_reference_snapshot():
+    result = reconcile(income_statement=replace(
+        income(), note_references_sha256="e" * 64,
+    ))
+    assert "CROSS_STATEMENT_NOTE_REFERENCE_SNAPSHOT_MISMATCH" in result.findings
+    assert not result.eligible_for_analyst_review
+
+
+def test_candidate_eligibility_must_be_a_real_boolean():
+    with pytest.raises(CoverageError):
+        reconcile(income_statement=replace(
+            income(), eligible_for_analyst_review="False",
+        ))
+
+
+def test_cash_scope_and_ledger_completeness_flags_cannot_be_smuggled_in():
+    with pytest.raises(CoverageError):
+        reconcile(cash_flow=replace(
+            cash(), cash_account_scope_owner_approved=True,
+        ))
