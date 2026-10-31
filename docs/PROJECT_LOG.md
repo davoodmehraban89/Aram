@@ -367,3 +367,14 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — five-statement integration verification
 - Exact implementation SHA `b669fc29ab8f85a44b57655b23e26d12b705e215`, [Backend CI 41183115444](https://github.com/davoodmehraban89/Aram/actions/runs/41183115444): 408 passed; Alembic upgrade/downgrade and compileall passed. One platform Node.js 20 deprecation warning from existing Actions versions.
 - Sequential internal functional, quality/security and edge/misuse passes completed. PR #69 remains Draft. No independent finance C1/C2/C3, source completeness proof or official report is claimed.
+
+
+### 2026-10-31 — five-statement orchestration API
+- Branch `codex/aram-five-statement-orchestrator-20261031`, Draft PR #70, child of PR #69.
+- Added `aram_backend.five_statement_pipeline` to freeze input sequences and invoke all five candidate builders on the exact same immutable workbook bytes. One reference tuple is reused for BS/IS/EQ. Result carries candidate objects, reconciliation findings and permanently false approval/release flags.
+- End-to-end integration test now exercises the orchestrator. Added tests for JSON-ready nonofficial output and fail-closed non-sequence reference input. This remains a library API, not a CLI or desktop workflow. Exact-head CI pending.
+
+
+### 2026-10-31 — five-statement orchestrator verification
+- Exact implementation SHA `2b201d350bffecdedbd26b44bd2209e47aa50e3a`, [Backend CI 41183509414](https://github.com/davoodmehraban89/Aram/actions/runs/41183509414): 409 passed; Alembic round-trip and compileall passed. One existing Actions Node.js 20 deprecation warning.
+- Internal functional, quality/security and edge/misuse passes completed. PR #70 remains Draft; no independent finance approvals, source completeness proof or official export.

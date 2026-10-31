@@ -6,25 +6,17 @@ from io import BytesIO
 import pytest
 from openpyxl import Workbook
 
-from aram_backend.balance_sheet_candidate import (
-    BalanceSheetLinePolicy, build_balance_sheet_candidate,
-)
+from aram_backend.balance_sheet_candidate import BalanceSheetLinePolicy
 from aram_backend.cash_flow_direct_candidate import (
     CashAccountPolicy, CashCounterpartPolicy, CashFlowEntry,
-    build_direct_cash_flow_candidate,
 )
-from aram_backend.cross_statement_reconciliation import (
-    CashBalanceNoteSelection, reconcile_cross_statements,
-)
-from aram_backend.equity_changes_candidate import (
-    EquityMovementPolicy, build_equity_changes_candidate,
-)
-from aram_backend.income_statement_candidate import (
-    IncomeStatementLinePolicy, build_income_statement_candidate,
-)
+from aram_backend.coverage_preview import CoverageError
+from aram_backend.cross_statement_reconciliation import CashBalanceNoteSelection
+from aram_backend.equity_changes_candidate import EquityMovementPolicy
+from aram_backend.income_statement_candidate import IncomeStatementLinePolicy
 from aram_backend.pilot_workbook import SHEET_HEADERS
 from aram_backend.reconciliation_review import NoteReference
-from aram_backend.trial_balance_diagnostic import analyze_trial_balance
+from aram_backend.five_statement_pipeline import build_five_statement_pipeline
 
 
 COMPANY = "001"
@@ -146,12 +138,14 @@ def cash_transactions() -> tuple[CashFlowEntry, ...]:
     )
 
 
-def build_all(data: bytes | None = None, *, transactions=None):
+def build_pipeline(
+    data: bytes | None = None, *, transactions=None, refs=None,
+):
     source = source_workbook() if data is None else data
-    refs = references()
-    balance_sheet = build_balance_sheet_candidate(
-        source, company_code=COMPANY, fiscal_year=YEAR, references=refs,
-        policies=(
+    return build_five_statement_pipeline(
+        source, company_code=COMPANY, fiscal_year=YEAR,
+        references=references() if refs is None else refs,
+        balance_sheet_policies=(
             BalanceSheetLinePolicy(
                 "Current assets", "C01", "", "ASSETS", 1,
                 "Cash and cash equivalents", "SYNTH-POL-BS-CASH",
@@ -169,10 +163,7 @@ def build_all(data: bytes | None = None, *, transactions=None):
                 "Total equity", "SYNTH-POL-BS-EQ",
             ),
         ),
-    )
-    income_statement = build_income_statement_candidate(
-        source, company_code=COMPANY, fiscal_year=YEAR, references=refs,
-        policies=(
+        income_statement_policies=(
             IncomeStatementLinePolicy(
                 "Revenue", "R01", "", "REVENUE", -1,
                 "Revenue", "SYNTH-POL-IS-REV",
@@ -182,10 +173,7 @@ def build_all(data: bytes | None = None, *, transactions=None):
                 "Cost of revenue", "SYNTH-POL-IS-COST",
             ),
         ),
-    )
-    equity_changes = build_equity_changes_candidate(
-        source, company_code=COMPANY, fiscal_year=YEAR, references=refs,
-        policies=(
+        equity_movement_policies=(
             EquityMovementPolicy(
                 "Share capital", "E01", "", "SHARE_CAPITAL",
                 "CAPITAL_CONTRIBUTION", -1, "Share capital",
@@ -197,9 +185,6 @@ def build_all(data: bytes | None = None, *, transactions=None):
                 "SYNTH-POL-EQ-PROFIT",
             ),
         ),
-    )
-    cash_flow = build_direct_cash_flow_candidate(
-        source, company_code=COMPANY, fiscal_year=YEAR,
         currency="IRR", unit="Rial",
         cash_accounts=(CashAccountPolicy("CASH", "SYNTH-CASH-SCOPE"),),
         counterpart_policies=(
@@ -207,23 +192,20 @@ def build_all(data: bytes | None = None, *, transactions=None):
             CashCounterpartPolicy("EXP", "OPERATING", "SYNTH-EXP-CLASS"),
         ),
         transactions=cash_transactions() if transactions is None else transactions,
-    )
-    trial_balance = analyze_trial_balance(
-        source, company_code=COMPANY, fiscal_year=YEAR,
-    )
-    result = reconcile_cross_statements(
-        balance_sheet=balance_sheet, income_statement=income_statement,
-        equity_changes=equity_changes, cash_flow=cash_flow,
-        trial_balance=trial_balance,
         cash_balance_notes=(
             CashBalanceNoteSelection(
                 "Current assets", "C01", "", "SYNTH-CASH-NOTE-SELECTION",
             ),
         ),
     )
+
+
+def build_all(data: bytes | None = None, *, transactions=None):
+    pipeline = build_pipeline(data, transactions=transactions)
     return (
-        balance_sheet, income_statement, equity_changes,
-        cash_flow, trial_balance, result,
+        pipeline.balance_sheet, pipeline.income_statement,
+        pipeline.equity_changes, pipeline.cash_flow,
+        pipeline.trial_balance, pipeline.reconciliation,
     )
 
 
@@ -284,3 +266,22 @@ def test_missing_cash_transaction_blocks_real_five_statement_pipeline():
     assert not result.eligible_for_analyst_review
     assert "CASH_FLOW_CANDIDATE_BLOCKED" in result.findings
     assert "CASH_FLOW_BRIDGE_INVALID" in result.findings or "CASH_ACCOUNT_TURNOVER_OR_TOTALS_INVALID" in result.findings
+
+
+def test_pipeline_result_is_nonofficial_and_freezes_reference_collection():
+    result = build_pipeline()
+    payload = result.to_dict()
+    assert result.eligible_for_analyst_review
+    assert payload["kind"] == "UNAPPROVED_FIVE_STATEMENT_PIPELINE_CANDIDATE"
+    assert payload["source_sha256"] == result.source_sha256
+    for flag in (
+        "source_ledger_completeness_verified", "accounting_policy_authorized",
+        "independently_reviewed", "trusted_approvals",
+        "official_financial_statement", "export_authorized", "releasable",
+    ):
+        assert payload[flag] is False
+
+    with pytest.raises(CoverageError) as error:
+        build_pipeline(refs=iter(references()))
+    assert error.value.code == "INVALID_FIVE_STATEMENT_NOTE_REFERENCES"
+
