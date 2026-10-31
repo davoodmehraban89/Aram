@@ -326,3 +326,9 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Adds pure `trial_balance_diagnostic.py`, safe offline CLI, synthetic tests and `docs/TRIAL_BALANCE_DIAGNOSTIC.md`.
 - Assumes net-debit signed openings/closings and nonnegative debit/credit turnover; source conventions and completeness must be independently confirmed before finance use.
 - No canonical XLSX/PDF, `data/`, original Alembic migration, financial output, signoff or accepted code mutated. Full GitHub CI on exact final SHA required; keep Draft until independent acceptance.
+
+### 2026-10-31 — equity changes candidate
+- Actor: ChatGPT engineering; child branch `codex/aram-equity-changes-candidate-20261031`, parent PR #64 exact SHA `bfdde93bf98383470181b7ee55409e2ab9c45408`.
+- Added `equity_changes_candidate.py`, local-only CLI, synthetic tests and `docs/EQUITY_CHANGES_CANDIDATE.md`.
+- Uses explicit note-level component, movement class and debit-net sign; exact roll-forward by note/account and source lineage. One movement type per note/subnote; mixed movements need separate subnotes. No automatic P&L tie-out yet.
+- Draft only; no real finance workbook, database write, migration, release or approval touched. Await exact-head full CI and actual independent finance review.
