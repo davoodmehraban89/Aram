@@ -136,3 +136,15 @@ def test_integrity_gate_rejects_truthy_non_boolean_approval_flag():
     )
     with pytest.raises(CoverageError, match="PROVENANCE"):
         validate_desktop_pipeline_result(forged)
+
+
+def test_invalid_source_exposure_amount_fails_closed():
+    result = build_pipeline()
+    line = replace(result.balance_sheet.lines[0], source_closing_exposure="NaN")
+    changed = replace(
+        result, balance_sheet=replace(
+            result.balance_sheet, lines=(line,) + result.balance_sheet.lines[1:],
+        ),
+    )
+    with pytest.raises(CoverageError, match="SOURCE_INVALID"):
+        build_preview_details(changed)
