@@ -127,3 +127,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Adds explicit note-level equity component/movement classifications, debit-net sign policy, opening/movement/closing exact roll-forward, account trace, guarded offline CLI and synthetic tests.
 - A single note policy classifies all mapped turnovers in that note as one movement type; mixed movements need split subnotes. Profit/loss movement is not yet automatically tied to the income statement. No financial authority, source completeness or independent signoff is claimed.
 - Canonical source files, database migrations, accepted branch, customer records and releases unchanged. NOT ACCEPTED; exact-head CI and finance-owner/C1/C2/C3 approvals pending.
+
+## 2026-10-31 — direct-method cash flow candidate (DRAFT)
+- Child branch `codex/aram-cash-flow-direct-candidate-20261031`, based on unmerged PR #65 SHA `6dd52d6e098999d22700ba2a7150bedc3846ab1a`.
+- Requires paired transaction-level cash/counterpart postings, explicit cash-account registry and counterpart activity policies; ties transaction debit/credit to source cash-account turnovers and opening + net flow = closing.
+- Does not infer cash flow from aggregate trial balance. No proof of completeness/authenticity, no owner-approved cash-account scope, no official statement, no export, no finance approval. Date convention requires source-owner confirmation.
+- Synthetic-only implementation/tests; canonical data, DB/migrations, accepted branch, customer records and releases unchanged. Exact-head CI and independent C1/C2/C3 remain pending.
+
+## 2026-10-31 — direct cash flow candidate exact-head CI checkpoint
+- Implementation head `392ac9e8d2a9806843bb572b8e4032d7e75e9843` passed [Backend CI 41170694898](https://github.com/davoodmehraban89/Aram/actions/runs/41170694898): 365 tests, reversible Alembic upgrade/downgrade and compileall succeeded; 1 pre-existing third-party deprecation warning.
+- Initial import-constant mismatch was corrected before the successful run. Current PR #66 remains Draft and unmerged; no real transaction ledger, finance-owner cash scope or C1/C2/C3 acceptance.
