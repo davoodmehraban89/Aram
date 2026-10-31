@@ -291,7 +291,11 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
             )
             if key not in covered_notes:
                 raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_MISSING")
-            if _money(line.source_closing_exposure) != covered_notes[key]:
+            try:
+                line_exposure = _money(line.source_closing_exposure)
+            except CoverageError as exc:
+                raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_INVALID") from exc
+            if line_exposure != covered_notes[key]:
                 raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_MISMATCH")
 
     overall = _require_bool(result, "eligible_for_analyst_review")
