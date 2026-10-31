@@ -207,3 +207,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — five-statement CLI exact-head verification
 - PR #71 exact implementation SHA `3a1d6988fb1f5049681f4668aa14a96321cc93b7` passed [Backend CI 41183945204](https://github.com/davoodmehraban89/Aram/actions/runs/41183945204): 413 tests; Alembic round-trip and compileall passed.
 - Internal functional, quality/security and edge/misuse passes completed. PR #71 is Draft/unmerged; real-source completeness, finance-owner approval, independent C1/C2/C3, official export, GUI, installer and release remain open.
+
+
+## 2026-10-31 — five-statement CLI documentation-inclusive verification
+- PR #71 latest head `a5a874b1d227e52c1e70e00edcb8dc5b96a77c6a` passed [CI 41184045992](https://github.com/davoodmehraban89/Aram/actions/runs/41184045992): 413 tests; Alembic round-trip and compileall passed.
+- PR #71 remains Draft/unmerged. No real source completeness, finance-owner approval, independent C1/C2/C3, official export, GUI, installer or release.
