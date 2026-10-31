@@ -264,6 +264,10 @@ def test_duplicate_cash_or_counterpart_policies_rejected():
 
 
 def test_invalid_activity_or_cash_counterpart_policy_rejected():
+    bad_type = counterpart_policies()
+    bad_type[0] = replace(bad_type[0], activity=[])
+    with pytest.raises(CoverageError):
+        build(policies=bad_type)
     bad = counterpart_policies()
     bad[0] = replace(bad[0], activity="CASH_TRANSFER")
     with pytest.raises(CoverageError):
