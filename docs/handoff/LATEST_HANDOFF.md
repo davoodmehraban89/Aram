@@ -165,3 +165,7 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Current branch `codex/aram-cross-statement-controls-20261031`, parent unmerged PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`.
 - Adds typed cross-statement gate for same-source BS/IS/EQ/CF/TB candidates, including P&L↔equity profit, BS equity↔EQ closing, selected BS cash notes↔CF closing and cash-account↔TB account trace. See `docs/CROSS_STATEMENT_RECONCILIATION.md`.
 - Synthetic candidate tests only. Still no authenticated source completeness, signed accounting policy, C1/C2/C3 approvals, official exports, GUI or installer. Exact-head CI required.
+
+## 2026-10-31 — cross-statement gate hardening
+- Cross-statement control now recomputes from detail: P&L totals from statement bridge, cash-flow categories from classified cash lines, TB totals from all account rows, and cash-account opening/turnover/closing/source-row against TB. Internal transfers are checked from line trace.
+- Based on PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`; exact final-head CI pending. Still no authenticated source completeness, financial approval, C1/C2/C3, official export or release.
