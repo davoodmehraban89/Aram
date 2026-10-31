@@ -344,3 +344,14 @@ def test_ambiguous_bs_mapping_does_not_hide_valid_eq_mapping_or_pass_review():
         finding.code == "BLOCKED_ACCOUNT_AMBIGUOUS_ACCOUNT_MAPPING"
         and finding.account_code == "0010" for finding in reviewed.findings
     )
+
+def test_rejects_stale_account_target_for_unapproved_mapping():
+    data = workbook(second_draft=True)
+    preview = preview_mapping_coverage(data, company_code="001", fiscal_year=1404)
+    rows = list(preview.accounts)
+    i = next(i for i, row in enumerate(rows) if row.account_code == "0020")
+    assert not rows[i].included
+    rows[i] = replace(rows[i], target_statement="BS")
+    altered = replace(preview, accounts=tuple(rows))
+    with pytest.raises(CoverageError):
+        _validated_preview(data, altered)
