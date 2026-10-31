@@ -406,3 +406,11 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — native five-statement financial figures
 - Branch `codex/aram-windows-statement-figures-20261031`, parent Draft PR #76. Added a pure figure presentation layer with 28 explicit BS/IS/EQ/CF/TB and cross-statement numeric fields; uses the exact Decimal parser and never rounds. New Tk amounts tab marks blocked figures clearly and wipes values on input changes, processing failure or clear action.
 - Added positive/blocked and malformed-amount tests, actual Windows Tk assertions, and frozen executable valid GUI smoke with exact figures. Full CI pending. No accounting approval or official reporting authority.
+
+
+
+### 2026-10-31 — searchable five-statement detail drill-down
+- Branch `codex/aram-windows-detail-review-20261031`, child Draft PR #78 of #77. Added 75k-bounded, fail-closed detail mapping for BS/IS note lines, equity note/account movements, cash transactions/account rollforward and trial-balance accounts, with evidence/policy references.
+- New Tk tab has five-statement filter, search, 200-row paging and two-axis scrolling. Detail mapping and provenance checks execute on worker thread. Clearing or selecting new files clears every row and amount.
+- Added exact candidate/reconciliation type, approval-flag, source-hash, company/year, note-snapshot and critical bridge validation before figures/details render. Numeric exposure/presentation/movement fields are checked as bounded Decimals.
+- Synthetic tests cover valid/blocked outputs, tampered amount/text, row cap, forged approvals, source hash mismatch and cross-tie tampering. Windows native/frozen EXE verification pending.
