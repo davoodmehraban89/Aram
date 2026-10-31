@@ -173,3 +173,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## 2026-10-31 — five-statement integration exact-head checkpoint
 - PR #69 final implementation SHA `b669fc29ab8f85a44b57655b23e26d12b705e215` passed [Backend CI 41183115444](https://github.com/davoodmehraban89/Aram/actions/runs/41183115444): 408 tests passed; Alembic upgrade/downgrade and compileall passed. One GitHub Actions Node.js 20 deprecation warning remains for the existing checkout/setup-python actions.
 - Three sequential internal engineering passes (functional, quality/security, edge/misuse) recorded in PR #69. These are not independent C1/C2/C3 or finance-owner approvals. PR remains Draft/unmerged.
+
+
+## 2026-10-31 — shared-snapshot five-statement orchestrator (DRAFT)
+- Child branch `codex/aram-five-statement-orchestrator-20261031`, Draft PR #70, based on PR #69.
+- Adds `five_statement_pipeline.py`: one in-memory entry point freezes input sequences, passes the same immutable XLSX bytes to BS/IS/EQ/CF/TB, reuses one note-reference tuple for BS/IS/EQ, then runs the cross-statement gate and returns all candidates/findings in a nonofficial result object.
+- The end-to-end integration test now uses the orchestrator; tests cover blocked cash transaction, nonofficial output flags and generator rejection at the sequence boundary. Exact-head CI pending. No CLI, file access, DB writes or release added.
