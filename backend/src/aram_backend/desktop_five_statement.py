@@ -9,7 +9,7 @@ from queue import Empty, Queue
 import json
 import sys
 import tempfile
-from threading import Thread
+from threading import Lock, Thread
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from pathlib import Path
@@ -66,6 +66,7 @@ class FiveStatementWindow(tk.Tk):
         self._detail_rows: tuple[PreviewDetail, ...] = ()
         self._filtered_detail_rows: tuple[PreviewDetail, ...] = ()
         self._filter_events: Queue[tuple[int, tuple[PreviewDetail, ...], str | None]] = Queue()
+        self._filter_guard = Lock()
         self._detail_filter_generation = 0
         self._filtering = False
         self._detail_page = 0
@@ -407,8 +408,9 @@ class FiveStatementWindow(tk.Tk):
             return
         statement = self.detail_filter_var.get()
         query = self.detail_search_var.get()
-        self._detail_filter_generation += 1
-        token = self._detail_filter_generation
+        with self._filter_guard:
+            self._detail_filter_generation += 1
+            token = self._detail_filter_generation
         rows = self._detail_rows
         self._filtering = True
         self.detail_status.set("جستجو در ریز اقلام در حال انجام است…")
@@ -420,11 +422,16 @@ class FiveStatementWindow(tk.Tk):
                     rows, statement=statement, query=query,
                 )
             except CoverageError as exc:
-                self._filter_events.put((token, (), str(exc)))
+                event = (token, (), str(exc))
             except Exception:
-                self._filter_events.put((token, (), "DETAIL_SEARCH_FAILED"))
+                event = (token, (), "DETAIL_SEARCH_FAILED")
             else:
-                self._filter_events.put((token, filtered, None))
+                event = (token, filtered, None)
+            # Results of superseded searches can contain 75,000 private
+            # financial rows. Never retain them in the queue after reset.
+            with self._filter_guard:
+                if token == self._detail_filter_generation:
+                    self._filter_events.put(event)
 
         Thread(target=worker, daemon=True).start()
         self.after(50, lambda: self._poll_detail_filter(token))
@@ -495,7 +502,13 @@ class FiveStatementWindow(tk.Tk):
             children = tree.get_children()
             if children:
                 tree.delete(*children)
-        self._detail_filter_generation += 1
+        with self._filter_guard:
+            self._detail_filter_generation += 1
+            while True:
+                try:
+                    self._filter_events.get_nowait()
+                except Empty:
+                    break
         self._filtering = False
         self._detail_rows = ()
         self._filtered_detail_rows = ()
