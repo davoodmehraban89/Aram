@@ -269,7 +269,7 @@ def test_one_account_can_reconcile_to_multiple_distinct_statement_notes():
     assert result.candidate_mapped_accounts == 2
     assert result.blocked_accounts == 0
     notes = {(note.statement, note.note_number): note for note in result.notes}
-    assert notes[("BS", "N01")].candidate_closing_exposure == "126"
+    assert notes[("BS", "N01")].candidate_closing_exposure == "126.00"
     assert notes[("EQ", "E01")].candidate_closing_exposure == "110.25"
     assert all(note.matched for note in result.notes)
 
