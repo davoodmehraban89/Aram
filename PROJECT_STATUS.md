@@ -121,3 +121,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Child branch `codex/aram-trial-balance-diagnostic-20261031`, based on unmerged income candidate PR #63 `5679a2e9feff582b0d0b74bd5a807387879bb358`.
 - Read-only company/year trial-balance equality and per-account movement checks with synthetic tests, local-only CLI and explicit signed net-debit assumptions. Not a verified or complete source ledger.
 - Data files, migrations, customer credentials, released artifact and accepted base untouched; formal C1/C2/C3 reviews and accountant signoff pending. NOT ACCEPTED.
+
+## 2026-10-31 — statement of changes in equity candidate (DRAFT)
+- Child branch `codex/aram-equity-changes-candidate-20261031`, based on unmerged PR #64 SHA `bfdde93bf98383470181b7ee55409e2ab9c45408`.
+- Adds explicit note-level equity component/movement classifications, debit-net sign policy, opening/movement/closing exact roll-forward, account trace, guarded offline CLI and synthetic tests.
+- A single note policy classifies all mapped turnovers in that note as one movement type; mixed movements need split subnotes. Profit/loss movement is not yet automatically tied to the income statement. No financial authority, source completeness or independent signoff is claimed.
+- Canonical source files, database migrations, accepted branch, customer records and releases unchanged. NOT ACCEPTED; exact-head CI and finance-owner/C1/C2/C3 approvals pending.
