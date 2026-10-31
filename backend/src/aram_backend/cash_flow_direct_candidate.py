@@ -23,7 +23,7 @@ from aram_backend.pilot_workbook import SHEET_HEADERS, preflight_pilot_workbook
 from aram_backend.reconciliation_review import _money, _sum_exact
 
 MAX_CASH_ACCOUNTS = 5_000
-MAX_COUNTERPART_POLICIES = 20_000
+MAX_CASH_COUNTERPART_POLICIES = 20_000
 MAX_CASH_TRANSACTIONS = 30_000
 ACTIVITIES = frozenset({"OPERATING", "INVESTING", "FINANCING"})
 
@@ -159,7 +159,7 @@ def _policies(
             or not 0 < len(cash_accounts) <= MAX_CASH_ACCOUNTS):
         raise CoverageError("INVALID_CASH_ACCOUNT_POLICIES")
     if (not isinstance(counterparts, (list, tuple))
-            or len(counterparts) > MAX_COUNTERPART_POLICIES):
+            or len(counterparts) > MAX_CASH_COUNTERPART_POLICIES):
         raise CoverageError("INVALID_CASH_COUNTERPART_POLICIES")
     cash: dict[str, CashAccountPolicy] = {}
     other: dict[str, CashCounterpartPolicy] = {}
