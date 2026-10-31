@@ -342,3 +342,8 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — cash flow implementation verification
 - Candidate implementation SHA `392ac9e8d2a9806843bb572b8e4032d7e75e9843`, [CI 41170694898](https://github.com/davoodmehraban89/Aram/actions/runs/41170694898): 365 passed, 1 pre-existing third-party deprecation warning; Alembic round-trip and compileall successful.
 - Fixed CLI/module counterpart policy constant import mismatch after initial collection failure. Added explicit documentation for one-activity-per-counterpart-account limitation and a policy-hash regression test. Draft PR #66, no production release.
+
+### 2026-10-31 — cross-statement integrity gate
+- Actor: ChatGPT engineering; branch `codex/aram-cross-statement-controls-20261031`, parent PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`.
+- Added `cross_statement_reconciliation.py` and synthetic adversarial tests. Recomputes internal bridges and five-statement ties; cash account balances/turnovers/source rows are tied back to trial-balance trace. BS cash-note selection is explicit and untrusted.
+- No official report, source completeness, financial owner signoff, independent review, database write or export. Full exact-head CI pending.
