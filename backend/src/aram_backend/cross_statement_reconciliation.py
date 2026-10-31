@@ -257,7 +257,8 @@ def _cash_accounts_match_trial_balance(
             _money(trial_account.opening), _money(trial_account.debit),
             _money(trial_account.credit), _money(trial_account.closing),
         )
-        if source_values != trial_values:
+        if (source_values != trial_values
+                or item.source_row != trial_account.source_row):
             findings_valid = False
         if (_money(item.debit_difference) != 0
                 or _money(item.credit_difference) != 0
