@@ -16,8 +16,13 @@ from aram_backend.coverage_preview import CoverageError
 from aram_backend.cross_statement_reconciliation import (
     CashBalanceNoteSelection, reconcile_cross_statements,
 )
-from aram_backend.equity_changes_candidate import EquityChangesCandidate
-from aram_backend.income_statement_candidate import IncomeStatementCandidate
+from aram_backend.equity_changes_candidate import (
+    EquityAccountMovement, EquityChangesCandidate, EquityComponentTotal,
+    EquityNoteMovement,
+)
+from aram_backend.income_statement_candidate import (
+    CandidateIncomeStatementLine, IncomeStatementCandidate,
+)
 from aram_backend.trial_balance_diagnostic import TrialBalanceAccount, TrialBalanceDiagnostic
 
 
@@ -67,11 +72,60 @@ def income(*, net="40", gross="60", eligible=True):
         operating_profit="40", other_income_total="5",
         other_expense_total="2", profit_before_tax="43",
         tax_expense_total="3", net_result=net,
-        lines=(), findings=(), eligible_for_analyst_review=eligible,
+        lines=(
+            CandidateIncomeStatementLine(
+                "Revenue", "R01", "", "REVENUE", -1, "Revenue",
+                "-100", "100", "REF-REV", "POL-REV",
+            ),
+            CandidateIncomeStatementLine(
+                "Cost", "C01", "", "COST_OF_REVENUE", 1, "Cost of revenue",
+                "40", "40", "REF-COST", "POL-COST",
+            ),
+            CandidateIncomeStatementLine(
+                "Operating", "O01", "", "OPERATING_EXPENSE", 1, "Operating expense",
+                "20", "20", "REF-OPEX", "POL-OPEX",
+            ),
+            CandidateIncomeStatementLine(
+                "Other income", "I01", "", "OTHER_INCOME", -1, "Other income",
+                "-5", "5", "REF-OIN", "POL-OIN",
+            ),
+            CandidateIncomeStatementLine(
+                "Other expense", "X01", "", "OTHER_EXPENSE", 1, "Other expense",
+                "2", "2", "REF-OEX", "POL-OEX",
+            ),
+            CandidateIncomeStatementLine(
+                "Tax", "T01", "", "TAX_EXPENSE", 1, "Tax",
+                "3", "3", "REF-TAX", "POL-TAX",
+            ),
+        ), findings=(), eligible_for_analyst_review=eligible,
     )
 
 
 def equity(*, closing="100", profit="40", eligible=True):
+    closing_value = Decimal(closing)
+    profit_value = Decimal(profit)
+    rollforward = Decimal("60") + profit_value - closing_value
+    account = EquityAccountMovement(
+        account_code="EQ1", account_name="Equity", source_excel_row=2,
+        source_row=1, statement_section="Equity", note_number="E01",
+        subnote_code="", equity_component="RETAINED_EARNINGS",
+        movement_category="NET_PROFIT_LOSS", sign_multiplier=-1,
+        opening_balance="60", debit_turnover="0", credit_turnover=profit,
+        movement_amount=profit, closing_balance=closing,
+        policy_evidence_ref="POL-EQ",
+    )
+    note = EquityNoteMovement(
+        statement_section="Equity", note_number="E01", subnote_code="",
+        equity_component="RETAINED_EARNINGS", movement_category="NET_PROFIT_LOSS",
+        line_label="Retained earnings", opening_balance="60",
+        movement_amount=profit, closing_balance=closing,
+        source_closing_exposure=str(-closing_value),
+        note_reference_evidence="REF-EQ", policy_evidence_ref="POL-EQ",
+    )
+    component = EquityComponentTotal(
+        equity_component="RETAINED_EARNINGS", opening_balance="60",
+        movement_amount=profit, closing_balance=closing,
+    )
     return EquityChangesCandidate(
         company_code="001", fiscal_year=1404, source_sha256=SOURCE,
         note_references_sha256=REFS, presentation_policies_sha256=POLICY,
@@ -79,9 +133,9 @@ def equity(*, closing="100", profit="40", eligible=True):
         net_profit_loss_movements=profit, dividends="0",
         other_comprehensive_income="0", transfers="0",
         prior_period_adjustments="0", other_movements="0",
-        total_movement="40", closing_equity_total=closing,
-        rollforward_difference="0", component_totals=(),
-        note_movements=(), account_movements=(), findings=(),
+        total_movement=profit, closing_equity_total=closing,
+        rollforward_difference=str(rollforward), component_totals=(component,),
+        note_movements=(note,), account_movements=(account,), findings=(),
         eligible_for_analyst_review=eligible,
     )
 
@@ -116,15 +170,18 @@ def cash(*, closing="50", net="10", eligible=True):
 
 
 def trial(*, balanced=True):
+    accounts = (
+        TrialBalanceAccount("CASH1", "Cash", 2, 1, "40", "30", "20", "50", "10"),
+        TrialBalanceAccount("REV", "Revenue", 3, 2, "0", "0", "30", "-30", "-30"),
+        TrialBalanceAccount("EXP", "Expense", 4, 3, "0", "20", "0", "20", "20"),
+        TrialBalanceAccount("OFFSET", "Offset", 5, 4, "-40", "0", "0", "-40", "0"),
+    )
     return TrialBalanceDiagnostic(
         company_code="001", fiscal_year=1404, source_sha256=SOURCE,
-        account_count=2, opening_debit_net_total="0",
-        debit_turnover_total="100", credit_turnover_total="100",
+        account_count=4, opening_debit_net_total="0",
+        debit_turnover_total="50", credit_turnover_total="50",
         closing_debit_net_total="0", movement_difference="0",
-        opening_to_closing_difference="0", findings=(), accounts=(
-            TrialBalanceAccount("CASH1", "Cash", 2, 1, "40", "30", "20", "50", "10"),
-            TrialBalanceAccount("OFFSET", "Offset", 3, 2, "-40", "70", "80", "-50", "-10"),
-        ),
+        opening_to_closing_difference="0", findings=(), accounts=accounts,
         balanced_for_analyst_review=balanced,
     )
 
