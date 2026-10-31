@@ -558,6 +558,17 @@ def ui_valid_smoke_test() -> int:
             rows = window.outcome_tree.get_children()
             if len(rows) != 5:
                 return 24
+            amount_rows = [
+                window.figures_tree.item(row, "values")
+                for row in window.figures_tree.get_children()
+            ]
+            if len(amount_rows) != 28:
+                return 28
+            if not any(
+                row[0] == "سود و زیان" and row[1] == "سود خالص"
+                and row[2] == "20" for row in amount_rows
+            ):
+                return 29
             if any(
                 window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
                 for row in rows
