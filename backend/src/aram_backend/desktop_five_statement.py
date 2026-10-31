@@ -149,9 +149,10 @@ class FiveStatementWindow(tk.Tk):
         self.tabs.pack(fill="both", expand=True)
         main = ttk.Frame(self.tabs, padding=12)
         figures = ttk.Frame(self.tabs, padding=12)
+        details = ttk.Frame(self.tabs, padding=12)
         limitations = ttk.Frame(self.tabs, padding=18)
         help_tab = ttk.Frame(self.tabs, padding=18)
-        for tab, title in zip((main, figures, limitations, help_tab), TAB_NAMES):
+        for tab, title in zip((main, figures, details, limitations, help_tab), TAB_NAMES):
             self.tabs.add(tab, text=title)
 
         ttk.Label(main, textvariable=self.workbook_label, anchor="e").pack(
@@ -242,6 +243,95 @@ class FiveStatementWindow(tk.Tk):
         figures_scrollbar.grid(row=0, column=1, sticky="ns")
         figure_area.grid_columnconfigure(0, weight=1)
         figure_area.grid_rowconfigure(0, weight=1)
+
+        ttk.Label(
+            details,
+            text="ریز اقلام و ردگیری منبع — فقط خواندنی و غیررسمی",
+            font=("Tahoma", 11, "bold"), anchor="e",
+        ).pack(fill="x", pady=(0, 7))
+        controls = ttk.Frame(details)
+        controls.pack(fill="x", pady=(0, 8))
+        self.detail_filter_var = tk.StringVar(value="همه")
+        self.detail_filter_combo = ttk.Combobox(
+            controls, textvariable=self.detail_filter_var, state="readonly",
+            values=(
+                "همه", "ترازنامه", "سود و زیان",
+                "تغییرات حقوق مالکانه", "جریان وجوه نقد", "تراز آزمایشی",
+            ),
+            width=22,
+        )
+        self.detail_filter_combo.pack(side="right", padx=4)
+        self.detail_filter_combo.bind(
+            "<<ComboboxSelected>>", lambda event: self._apply_detail_filter(),
+        )
+        self.detail_search_var = tk.StringVar(value="")
+        self.detail_search_entry = ttk.Entry(
+            controls, textvariable=self.detail_search_var, width=28,
+        )
+        self.detail_search_entry.pack(side="right", padx=4)
+        self.detail_search_entry.bind(
+            "<Return>", lambda event: self._apply_detail_filter(),
+        )
+        self.detail_search_button = ttk.Button(
+            controls, text="جستجو", command=self._apply_detail_filter,
+        )
+        self.detail_search_button.pack(side="right", padx=4)
+        self.detail_status = tk.StringVar(value="پس از اجرای کنترل، ریز اقلام نمایش داده می‌شود")
+        ttk.Label(details, textvariable=self.detail_status, anchor="e").pack(
+            fill="x", pady=(0, 6),
+        )
+        detail_area = ttk.Frame(details)
+        detail_area.pack(fill="both", expand=True)
+        detail_columns = (
+            "statement", "item", "reference", "source", "opening",
+            "debit", "credit", "movement", "closing", "trace", "state",
+        )
+        self.detail_tree = ttk.Treeview(
+            detail_area, columns=detail_columns, show="headings",
+            style="Aram.Treeview",
+        )
+        detail_headers = (
+            ("statement", "صورت مالی", 150),
+            ("item", "شرح / حساب / فعالیت", 190),
+            ("reference", "یادداشت / شناسه", 190),
+            ("source", "مواجهه / ردیف منبع", 180),
+            ("opening", "افتتاحیه / منبع", 130),
+            ("debit", "بدهکار / ورودی", 130),
+            ("credit", "بستانکار / خروجی", 130),
+            ("movement", "تغییر", 130),
+            ("closing", "اختتامیه / ارائه", 150),
+            ("trace", "مدرک / سیاست / ردگیری", 330),
+            ("state", "وضعیت", 160),
+        )
+        for key, heading, width in detail_headers:
+            self.detail_tree.heading(key, text=heading)
+            self.detail_tree.column(key, width=width, minwidth=80, anchor="e")
+        detail_y = ttk.Scrollbar(
+            detail_area, orient="vertical", command=self.detail_tree.yview,
+        )
+        detail_x = ttk.Scrollbar(
+            detail_area, orient="horizontal", command=self.detail_tree.xview,
+        )
+        self.detail_tree.configure(
+            yscrollcommand=detail_y.set, xscrollcommand=detail_x.set,
+        )
+        self.detail_tree.grid(row=0, column=0, sticky="nsew")
+        detail_y.grid(row=0, column=1, sticky="ns")
+        detail_x.grid(row=1, column=0, sticky="ew")
+        detail_area.grid_columnconfigure(0, weight=1)
+        detail_area.grid_rowconfigure(0, weight=1)
+        paging = ttk.Frame(details)
+        paging.pack(fill="x", pady=(7, 0))
+        self.detail_prev_button = ttk.Button(
+            paging, text="صفحه قبل", command=lambda: self._change_detail_page(-1),
+            state="disabled",
+        )
+        self.detail_prev_button.pack(side="right", padx=4)
+        self.detail_next_button = ttk.Button(
+            paging, text="صفحه بعد", command=lambda: self._change_detail_page(1),
+            state="disabled",
+        )
+        self.detail_next_button.pack(side="right", padx=4)
 
         for item in (
             "• موفقیت آزمون به‌معنای کامل‌بودن سندها، مانده‌ها یا نگاشت‌های حسابداری نیست.",
