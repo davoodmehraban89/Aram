@@ -111,3 +111,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - New dependent branch `codex/aram-bs-candidate-statement-20261031` based on Draft PR #61 exact head `736193905d8b041a938e7285610ff207b4cd4487`.
 - Adds explicit-policy BS candidate and synthetic security/accounting tests. The equity equation is an arithmetic **diagnostic**, never a verified statutory balance sheet. No data source, migration, release or accepted branch touched.
 - PR and exact-head CI must be verified separately. Independent C1/C2/C3 and accounting-owner acceptance **not completed**. Status: NOT ACCEPTED / UNMERGED.
+
+## 2026-10-31 — unsigned income statement candidate (Draft)
+- Independent development branch `codex/aram-income-statement-candidate-20261031`, based on unmerged PR #62 at `d6d0fc5da47e7209fe21fe96d48548d1489ef8a7`.
+- Introduces explicit income/cost/expense/tax sign policies, provisional period-result arithmetic, strict offline CLI and synthetic adversarial tests. Real recognition, comparison-year rules and statutory reporting not implemented.
+- No canonical financial sources, original migrations, database writes, releases, and accepted branch modifications. **DRAFT / NOT ACCEPTED** until CI and C1/C2/C3 + financial owner review.
