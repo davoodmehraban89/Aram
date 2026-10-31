@@ -313,3 +313,10 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Isolated changes: `backend/src/aram_backend/balance_sheet_candidate.py`, `backend/tests/test_balance_sheet_candidate.py`, `docs/BALANCE_SHEET_CANDIDATE.md`, append-only governance records.
 - Amounts are never official or approved; source workbook and signed accounting policy authority are missing. No real customer test data, canonical XLSX/PDF, SQL persistence, migrations or released EXE touched.
 - Verify final remote SHA, full CI, source diff and three independent reviews before acceptance. Do not merge without review.
+
+### 2026-10-31 — unsigned income candidate design and tests
+- Actor: ChatGPT Principal Engineering; parent Draft PR #62 exact head `d6d0fc5da47e7209fe21fe96d48548d1489ef8a7`, upstream #61→#60→accepted source-data-cleanup.
+- Working branch: `codex/aram-income-statement-candidate-20261031`.
+- New pure `income_statement_candidate.py`, strict local JSON CLI and synthetic normal, loss, precision, mapping mismatch, malformed input and scope-isolation tests. See `docs/INCOME_STATEMENT_CANDIDATE.md`.
+- No genuine tax policy or statement certification claimed; account closing exposure is **not automatically period movement**.
+- This branch is unmerged. Verify exact-final-head CI and independent C1/C2/C3; no financial data, customer credentials, released EXE or canonical files changed.
