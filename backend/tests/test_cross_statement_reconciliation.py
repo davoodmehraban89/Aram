@@ -337,3 +337,19 @@ def test_unclassified_cash_flow_line_cannot_pass_cross_statement_gate():
     result = reconcile(cash_flow=replace(source, cash_flow_lines=tuple(lines)))
     assert not result.cash_flow_bridge_valid
     assert "CASH_FLOW_BRIDGE_INVALID" in result.findings
+
+
+def test_internal_cash_transfer_totals_must_be_derived_from_line_trace():
+    source = cash()
+    transfer = CashFlowLine(
+        "L3", "V3", "1404-01-03", "CASH1", "CASH2",
+        "CASH_TRANSFER", "10", "0", "SRC3", "CASH-POLICY",
+    )
+    bad = replace(
+        source, transaction_count=3,
+        cash_flow_lines=source.cash_flow_lines + (transfer,),
+        internal_transfer_inflows="9", internal_transfer_outflows="10",
+    )
+    result = reconcile(cash_flow=bad)
+    assert not result.cash_flow_bridge_valid
+    assert "CASH_FLOW_BRIDGE_INVALID" in result.findings
