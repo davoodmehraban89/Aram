@@ -212,3 +212,10 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — five-statement CLI documentation-inclusive verification
 - PR #71 latest head `a5a874b1d227e52c1e70e00edcb8dc5b96a77c6a` passed [CI 41184045992](https://github.com/davoodmehraban89/Aram/actions/runs/41184045992): 413 tests; Alembic round-trip and compileall passed.
 - PR #71 remains Draft/unmerged. No real source completeness, finance-owner approval, independent C1/C2/C3, official export, GUI, installer or release.
+
+
+## 2026-10-31 — synthetic Windows inspection demo (verification pending)
+- Current child branch `codex/aram-synthetic-windows-demo-20261031`, parent Draft PR #75 (head `04397f8ad6c329d1f16d0e2d41981f57be43426d`).
+- Synthetic XLSX/manifest generator `python -m aram_backend.synthetic_five_statement_demo --output-dir <NEW_FOLDER>`; **never** reads company data or overwrites existing paths. Integration tests share the same fixture definitions.
+- Windows EXE CI now bundles the synthetic files and runs `--ui-valid-smoke` on the frozen executable for a real, five-result positive GUI flow. See `backend/desktop/FIVE_STATEMENT_WINDOWS_README.md`.
+- Exact-head CI and reviews still pending. No C1/C2/C3 approval, real-source completeness, official report, signed installer or release.
