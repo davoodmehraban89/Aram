@@ -378,3 +378,9 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — five-statement orchestrator verification
 - Exact implementation SHA `2b201d350bffecdedbd26b44bd2209e47aa50e3a`, [Backend CI 41183509414](https://github.com/davoodmehraban89/Aram/actions/runs/41183509414): 409 passed; Alembic round-trip and compileall passed. One existing Actions Node.js 20 deprecation warning.
 - Internal functional, quality/security and edge/misuse passes completed. PR #70 remains Draft; no independent finance approvals, source completeness proof or official export.
+
+
+### 2026-10-31 — offline five-statement CLI
+- Branch `codex/aram-five-statement-cli-20261031`, Draft PR #71, child of PR #70.
+- Added `five_statement_pipeline_cli.py` and `docs/FIVE_STATEMENT_PIPELINE_CLI.md`. Strict manifest includes shared note references, BS/IS/EQ policies, cash-account registry, counterpart activity policies, paired transactions and cash-note selections. Local safe readers reject symlinks and changed files; output is stdout-only.
+- Tests cover successful synthetic run, incomplete transaction blocked exit, duplicate JSON keys, nonfinite values, unknown fields and missing cash registry. Exact-head CI pending. No official report or finance approval.
