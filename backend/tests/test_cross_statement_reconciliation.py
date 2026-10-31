@@ -319,3 +319,21 @@ def test_trial_balance_account_trace_count_must_be_complete():
     result = reconcile(trial_balance=replace(source, account_count=3))
     assert not result.cash_accounts_match_trial_balance
     assert "CASH_ACCOUNTS_TRIAL_BALANCE_MISMATCH" in result.findings
+
+
+def test_cash_flow_aggregates_must_match_individual_classified_lines():
+    source = cash()
+    lines = list(source.cash_flow_lines)
+    lines[0] = replace(lines[0], cash_inflow="29")
+    result = reconcile(cash_flow=replace(source, cash_flow_lines=tuple(lines)))
+    assert not result.cash_flow_bridge_valid
+    assert "CASH_FLOW_BRIDGE_INVALID" in result.findings
+
+
+def test_unclassified_cash_flow_line_cannot_pass_cross_statement_gate():
+    source = cash()
+    lines = list(source.cash_flow_lines)
+    lines[0] = replace(lines[0], activity="UNCLASSIFIED")
+    result = reconcile(cash_flow=replace(source, cash_flow_lines=tuple(lines)))
+    assert not result.cash_flow_bridge_valid
+    assert "CASH_FLOW_BRIDGE_INVALID" in result.findings
