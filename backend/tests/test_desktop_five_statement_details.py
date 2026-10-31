@@ -174,3 +174,25 @@ def test_persian_zero_width_non_joiner_is_preserved_in_detail_label():
     )
     rows = build_preview_details(changed)
     assert any(row.item == label for row in rows)
+
+
+def test_integrity_gate_rejects_malformed_policy_digest():
+    result = build_pipeline()
+    changed = replace(
+        result, income_statement=replace(
+            result.income_statement, presentation_policies_sha256="bad-digest",
+        ),
+    )
+    with pytest.raises(CoverageError, match="PROVENANCE_HASH"):
+        validate_desktop_pipeline_result(changed)
+
+
+def test_integrity_gate_rejects_blocked_state_without_explanation():
+    result = build_pipeline()
+    changed = replace(
+        result, reconciliation=replace(
+            result.reconciliation, eligible_for_analyst_review=False,
+        ),
+    )
+    with pytest.raises(CoverageError, match="BLOCKED_WITHOUT_FINDINGS"):
+        validate_desktop_pipeline_result(changed)
