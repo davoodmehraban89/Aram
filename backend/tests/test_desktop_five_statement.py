@@ -318,6 +318,9 @@ def test_new_detail_query_supersedes_inflight_search_and_ignores_stale_reply(
         for _ in range(30):
             window.update()
             time.sleep(0.01)
+        # A superseded full-dataset search must not retain private rows
+        # in the pending event queue after the newer search finishes.
+        assert window._filter_events.empty()
         rows = window.detail_tree.get_children()
         assert len(rows) == 1
         assert window.detail_tree.item(rows[0], "values")[1] == "Revenue"
