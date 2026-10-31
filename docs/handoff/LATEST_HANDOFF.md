@@ -232,3 +232,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - New `desktop_five_statement_details.py` maps all BS/IS note lines, EQ note and account movements, cash transaction and cash-account reconciliation rows, and TB account details. Persian UI adds search, statement filter, 200-row pages and a 75k fail-closed cap.
 - `desktop_five_statement_integrity.py` verifies exact typed candidate/reconciliation objects, all approval flags remain false, common source hash/company/year/reference snapshot, and critical cross-statement ties before desktop figures/details. All displayed monetary fields are validated as bounded Decimals.
 - Backend/Windows exact-head CI pending. No real source files, official report, finance owner signoff, signed installer or production release.
+
+
+
+## 2026-10-31 — latest Windows detail review exact-head status
+- Current child branch `codex/aram-windows-detail-review-20261031`, Draft PR #78, tested SHA `b5b93213e65c02c514180cece8936874577e9954`.
+- Backend CI #41229238766: 565 passed; one Windows-only skip on Linux. Windows CI #41229238757: 95 passed; native Tk and frozen EXE verified detail drill-down and paging. Artifact ID 13052698865, 7-day retention.
+- Detail UI displays source note lines, EQ movements, CF transactions/cash account roll-forward and TB accounts, with search, statement filter, 200-row paging, 75k cap, source/policy evidence and strict Decimal/provenance checks.
+- PR remains Draft/unmerged. No finance owner signoff, real source completeness, independent C1/C2/C3, official export, signed installer or production release.
