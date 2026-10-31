@@ -440,11 +440,12 @@ class FiveStatementWindow(tk.Tk):
         self._filtering = False
         if error is not None:
             self._filtered_detail_rows = ()
+            self._detail_page = 0
+            self._refresh()
             self.detail_status.set("جستجو انجام نشد؛ کد خطا: " + error)
-            self._detail_page = 0
-        else:
-            self._filtered_detail_rows = filtered
-            self._detail_page = 0
+            return
+        self._filtered_detail_rows = filtered
+        self._detail_page = 0
         self._refresh()
 
     def _render_detail_page(self) -> None:
