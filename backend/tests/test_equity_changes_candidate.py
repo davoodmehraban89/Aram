@@ -44,6 +44,7 @@ def workbook(*, include_eq=True, bad_delta=False, bad_mapping=False,
             closing = "-119"
         if negative_turnover and code == "DIV":
             debit = "-20"
+            closing = "-20"
         add("Accounts", company_code="001", fiscal_year=1404,
             general_code=code, general_name=label, account_full_code=code,
             account_name="Synthetic " + label, opening=opening,
@@ -187,8 +188,10 @@ def test_invalid_source_rollforward_fails_closed():
 
 
 def test_negative_turnover_fails_closed():
+    refs = references()
+    refs[2] = replace(refs[2], expected_closing_exposure="-20")
     with pytest.raises(CoverageError) as error:
-        build(data=workbook(negative_turnover=True))
+        build(data=workbook(negative_turnover=True), refs=refs)
     assert error.value.code == "EQUITY_NEGATIVE_TURNOVER"
 
 
