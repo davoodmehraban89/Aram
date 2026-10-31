@@ -23,7 +23,7 @@ from aram_backend.five_statement_pipeline import (
     FiveStatementPipelineResult, build_five_statement_pipeline,
 )
 from aram_backend.income_statement_candidate import IncomeStatementLinePolicy
-from aram_backend.reconciliation_review import NoteReference
+from aram_backend.reconciliation_review import NoteReference, _money
 from aram_backend.reconciliation_review_cli import _strict_pairs
 
 
@@ -84,6 +84,7 @@ def _rows(
     factory: type, maximum: int, *, minimum: int = 0,
     string_fields: tuple[str, ...] = (),
     sign_field: str | None = None,
+    amount_fields: tuple[str, ...] = (),
 ) -> tuple[Any, ...]:
     items = payload[key]
     if (not isinstance(items, list) or len(items) < minimum
@@ -93,11 +94,26 @@ def _rows(
     for item in items:
         if not isinstance(item, dict) or set(item) != fields:
             raise CoverageError("PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID")
-        if any(
-            not isinstance(item[field], str) or not item[field]
-            for field in string_fields
-        ):
-            raise CoverageError("PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID")
+        for field in string_fields:
+            value = item[field]
+            if (not isinstance(value, str) or not value
+                    or value != value.strip() or len(value) > 256
+                    or any(ord(char) < 32 or ord(char) == 127 for char in value)):
+                raise CoverageError(
+                    "PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID"
+                )
+        for field in amount_fields:
+            value = item[field]
+            if not isinstance(value, str) or value != value.strip():
+                raise CoverageError(
+                    "PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID"
+                )
+            try:
+                _money(value)
+            except CoverageError as exc:
+                raise CoverageError(
+                    "PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID"
+                ) from exc
         if sign_field is not None and (
             type(item[sign_field]) is not int or item[sign_field] not in (-1, 1)
         ):
@@ -145,6 +161,13 @@ def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
                 or any(ord(char) < 32 or ord(char) == 127 for char in value)):
             raise CoverageError("PIPELINE_MANIFEST_CURRENCY_UNIT_INVALID")
 
+    for item in payload["transactions"]:
+        if (isinstance(item, dict) and
+                (item.get("company_code") != company
+                 or type(item.get("fiscal_year")) is not int
+                 or item.get("fiscal_year") != year)):
+            raise CoverageError("PIPELINE_MANIFEST_TRANSACTION_SCOPE_MISMATCH")
+
     return ParsedPipelineManifest(
         company_code=company,
         fiscal_year=year,
@@ -153,39 +176,50 @@ def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
         references=_rows(
             payload, "references", REFERENCE_FIELDS, NoteReference,
             MAX_POLICY_ROWS, minimum=1,
-            string_fields=("expected_closing_exposure",),
+            string_fields=("statement", "section", "note_number", "evidence_ref"),
+            amount_fields=("expected_closing_exposure",),
         ),
         balance_sheet_policies=_rows(
             payload, "balance_sheet_policies", BS_POLICY_FIELDS,
             BalanceSheetLinePolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
+            string_fields=("statement_section", "note_number", "category",
+                           "line_label", "policy_evidence_ref"),
         ),
         income_statement_policies=_rows(
             payload, "income_statement_policies", IS_POLICY_FIELDS,
             IncomeStatementLinePolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
+            string_fields=("statement_section", "note_number", "category",
+                           "line_label", "policy_evidence_ref"),
         ),
         equity_movement_policies=_rows(
             payload, "equity_movement_policies", EQ_POLICY_FIELDS,
             EquityMovementPolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
+            string_fields=("statement_section", "note_number", "equity_component",
+                           "movement_category", "line_label", "policy_evidence_ref"),
         ),
         cash_accounts=_rows(
             payload, "cash_accounts", CASH_ACCOUNT_FIELDS,
             CashAccountPolicy, MAX_CASH_ACCOUNTS, minimum=1,
+            string_fields=("account_code", "evidence_ref"),
         ),
         counterpart_policies=_rows(
             payload, "counterpart_policies", COUNTERPART_FIELDS,
             CashCounterpartPolicy, MAX_CASH_COUNTERPART_POLICIES,
+            string_fields=("account_code", "activity", "evidence_ref"),
         ),
         transactions=_rows(
             payload, "transactions", TRANSACTION_FIELDS,
             CashFlowEntry, MAX_CASH_TRANSACTIONS,
-            string_fields=(
-                "cash_debit", "cash_credit",
-                "counterpart_debit", "counterpart_credit",
-            ),
+            string_fields=("company_code", "line_id", "transaction_id",
+                           "posting_date", "cash_account_code",
+                           "counterpart_account_code", "evidence_ref"),
+            amount_fields=("cash_debit", "cash_credit",
+                           "counterpart_debit", "counterpart_credit"),
         ),
         cash_balance_notes=_rows(
             payload, "cash_balance_notes", CASH_NOTE_FIELDS,
             CashBalanceNoteSelection, MAX_POLICY_ROWS, minimum=1,
+            string_fields=("statement_section", "note_number", "evidence_ref"),
         ),
     )
 
