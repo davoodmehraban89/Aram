@@ -107,7 +107,10 @@ def cash(*, closing="50", net="10", eligible=True):
             transaction_debit_turnover="30", transaction_credit_turnover="20",
             debit_difference="0", credit_difference="0",
             rollforward_difference="0", policy_evidence_ref="CASH-POLICY",
-        ),), cash_flow_lines=(), findings=(),
+        ),), cash_flow_lines=(
+            CashFlowLine("L1", "V1", "1404-01-01", "CASH1", "REV", "OPERATING", "30", "0", "SRC1", "POL-REV"),
+            CashFlowLine("L2", "V2", "1404-01-02", "CASH1", "EXP", "OPERATING", "0", "20", "SRC2", "POL-EXP"),
+        ), findings=(),
         eligible_for_analyst_review=eligible,
     )
 
