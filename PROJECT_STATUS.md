@@ -195,3 +195,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## 2026-10-31 — five-statement CLI exact-head checkpoint
 - PR #71 final implementation SHA `3a1d6988fb1f5049681f4668aa14a96321cc93b7` passed [Backend CI 41183945204](https://github.com/davoodmehraban89/Aram/actions/runs/41183945204): 413 tests passed; Alembic upgrade/downgrade and compileall passed. One existing GitHub Actions Node.js 20 deprecation warning remains.
 - Internal functional, quality/security and edge/misuse passes recorded in PR #71. PR remains Draft/unmerged; no real financial inputs, finance approvals or release.
+
+
+## 2026-10-31 — five-statement CLI documentation-inclusive exact-head checkpoint
+- Latest PR #71 head `a5a874b1d227e52c1e70e00edcb8dc5b96a77c6a` passed [Backend CI 41184045992](https://github.com/davoodmehraban89/Aram/actions/runs/41184045992): 413 tests; Alembic upgrade/downgrade and compileall passed. Existing Actions Node.js 20 deprecation warning only.
+- PR #71 remains Draft/unmerged. CLI is local-only and nonofficial; no real source files, database writes, approval or release.
