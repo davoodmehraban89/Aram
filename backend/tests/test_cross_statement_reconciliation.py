@@ -98,7 +98,14 @@ def cash(*, closing="50", net="10", eligible=True):
         financing_net_cash_flow="0", internal_transfer_inflows="0",
         internal_transfer_outflows="0", net_change_in_cash=net,
         closing_cash_and_equivalents=closing, rollforward_difference="0",
-        account_reconciliations=(), cash_flow_lines=(), findings=(),
+        account_reconciliations=(CashAccountReconciliation(
+            account_code="CASH1", account_name="Cash", source_row=1,
+            opening_balance="40", source_debit_turnover="30",
+            source_credit_turnover="20", closing_balance="50",
+            transaction_debit_turnover="30", transaction_credit_turnover="20",
+            debit_difference="0", credit_difference="0",
+            rollforward_difference="0", policy_evidence_ref="CASH-POLICY",
+        ),), cash_flow_lines=(), findings=(),
         eligible_for_analyst_review=eligible,
     )
 
