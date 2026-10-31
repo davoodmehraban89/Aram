@@ -272,3 +272,15 @@ def test_one_account_can_reconcile_to_multiple_distinct_statement_notes():
     assert notes[("BS", "N01")].candidate_closing_exposure == "126"
     assert notes[("EQ", "E01")].candidate_closing_exposure == "110.25"
     assert all(note.matched for note in result.notes)
+
+
+def test_preview_integrity_rejects_mapping_trace_amount_tampering():
+    data = workbook()
+    preview = preview_mapping_coverage(data, company_code="001", fiscal_year=1404)
+    altered_mapping = replace(preview.mappings[0], closing_exposure="999")
+    altered = replace(
+        preview, mappings=(altered_mapping, *preview.mappings[1:]),
+    )
+    with pytest.raises(CoverageError) as exc:
+        _validated_preview(data, altered)
+    assert exc.value.code == "MAPPING_TRACE_SOURCE_MISMATCH"
