@@ -76,6 +76,7 @@ class EquityNoteMovement:
     subnote_code: str
     equity_component: str
     movement_category: str
+    line_label: str
     opening_balance: str
     movement_amount: str
     closing_balance: str
@@ -358,6 +359,7 @@ def build_equity_changes_candidate(
                 statement_section=key[0], note_number=key[1],
                 subnote_code=key[2], equity_component=policy.equity_component,
                 movement_category=policy.movement_category,
+                line_label=policy.line_label,
                 opening_balance=str(opening_shown),
                 movement_amount=str(movement_shown),
                 closing_balance=str(closing_shown),
