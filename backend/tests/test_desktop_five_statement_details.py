@@ -249,7 +249,9 @@ def test_detail_filter_handles_large_bounded_row_collection_without_truncation()
         MAX_DETAIL_ROWS, filter_preview_details,
     )
     rows = build_preview_details(build_pipeline())
-    expanded = rows * (MAX_DETAIL_ROWS // len(rows))
+    repeats, remainder = divmod(MAX_DETAIL_ROWS, len(rows))
+    expanded = rows * repeats + rows[:remainder]
+    assert len(expanded) == MAX_DETAIL_ROWS
     matches = filter_preview_details(expanded, statement="تراز آزمایشی", query="")
     assert len(matches) == sum(
         1 for row in expanded if row.statement == "تراز آزمایشی"
