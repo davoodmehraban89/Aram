@@ -131,30 +131,135 @@ def _validated_preview(content: bytes, preview: CoveragePreview) -> None:
         raise CoverageError("COVERAGE_PROVENANCE_INVALID")
     if sha256(content).hexdigest() != preview.source_sha256:
         raise CoverageError("SOURCE_HASH_MISMATCH")
-    if (preview.account_count < 1
+    if (type(preview.account_count) is not int or preview.account_count < 1
             or preview.account_count != len(preview.accounts)
             or preview.account_count != preview.candidate_mapped_accounts + preview.blocked_accounts
-            or preview.candidate_mapped_accounts != sum(a.included for a in preview.accounts)):
+            or preview.candidate_mapped_accounts != sum(a.included for a in preview.accounts)
+            or preview.blocked_accounts != sum(not a.included for a in preview.accounts)):
         raise CoverageError("COVERAGE_COUNT_MISMATCH")
-    if len({account.account_code for account in preview.accounts}) != preview.account_count:
+
+    accounts = {account.account_code: account for account in preview.accounts}
+    if len(accounts) != preview.account_count:
         raise CoverageError("DUPLICATE_SOURCE_ACCOUNT")
-    source_values = [_money(a.closing_exposure) for a in preview.accounts]
+
+    mappings_by_account: dict[str, list[Any]] = {}
+    mappings_by_statement: dict[tuple[str, str], list[Any]] = {}
+    mapping_ids: set[str] = set()
+    mapping_rows: set[int] = set()
+    grouped: dict[tuple[str, str, str, str], list[tuple[str, Decimal]]] = {}
+
+    for mapping in preview.mappings:
+        account = accounts.get(mapping.account_code)
+        if account is None:
+            raise CoverageError("MAPPING_TRACE_UNKNOWN_ACCOUNT")
+        if (mapping.account_name != account.account_name
+                or mapping.account_excel_row != account.account_excel_row
+                or mapping.source_row != account.source_row
+                or _money(mapping.closing_exposure) != _money(account.closing_exposure)):
+            raise CoverageError("MAPPING_TRACE_SOURCE_MISMATCH")
+        if (not isinstance(mapping.mapping_id, str) or not mapping.mapping_id
+                or mapping.mapping_id != mapping.mapping_id.strip()
+                or type(mapping.mapping_excel_row) is not int
+                or mapping.mapping_excel_row < 2
+                or mapping.mapping_excel_row in mapping_rows):
+            raise CoverageError("DUPLICATE_MAPPING_TRACE")
+        if mapping.mapping_id in mapping_ids:
+            raise CoverageError("DUPLICATE_MAPPING_TRACE")
+        if mapping.target_statement not in ALLOWED_STATEMENTS:
+            raise CoverageError("INVALID_MAPPING_TRACE_STATEMENT")
+        for value in (
+            mapping.target_section, mapping.target_note, mapping.target_subnote,
+        ):
+            if (not isinstance(value, str) or value != value.strip()
+                    or any(ord(char) < 32 or ord(char) == 127 for char in value)):
+                raise CoverageError("INVALID_MAPPING_TRACE_TARGET")
+        if not mapping.target_section or not mapping.target_note:
+            raise CoverageError("INVALID_MAPPING_TRACE_TARGET")
+
+        mapping_ids.add(mapping.mapping_id)
+        mapping_rows.add(mapping.mapping_excel_row)
+        mappings_by_account.setdefault(mapping.account_code, []).append(mapping)
+        statement_key = (mapping.account_code, mapping.target_statement)
+        mappings_by_statement.setdefault(statement_key, []).append(mapping)
+
+    for statement_key, items in mappings_by_statement.items():
+        if len(items) > 1 and any(item.included for item in items):
+            raise CoverageError("AMBIGUOUS_MAPPING_INCLUDED")
+
+    for mapping in preview.mappings:
+        if not mapping.included:
+            continue
+        target = _key(
+            mapping.target_statement, mapping.target_section,
+            mapping.target_note, mapping.target_subnote,
+        )
+        grouped.setdefault(target, []).append(
+            (mapping.account_code, _money(mapping.closing_exposure))
+        )
+
+    for account in preview.accounts:
+        rows = mappings_by_account.get(account.account_code, [])
+        if (type(account.mapping_count) is not int
+                or account.mapping_count < 0
+                or account.mapping_count != len(rows)):
+            raise CoverageError("MAPPING_TRACE_COUNT_MISMATCH")
+        if account.included != any(item.included for item in rows):
+            raise CoverageError("ACCOUNT_MAPPING_ELIGIBILITY_MISMATCH")
+        if account.mapping_count == 1:
+            only = rows[0]
+            actual = (
+                account.mapping_excel_row, account.mapping_id,
+                account.target_statement, account.target_section,
+                account.target_note, account.target_subnote,
+            )
+            expected = (
+                only.mapping_excel_row, only.mapping_id,
+                only.target_statement if only.included else None,
+                only.target_section if only.included else None,
+                only.target_note if only.included else None,
+                only.target_subnote if only.included else None,
+            )
+            if actual != expected:
+                raise CoverageError("ACCOUNT_MAPPING_TRACE_MISMATCH")
+        elif any(value is not None for value in (
+            account.mapping_excel_row, account.mapping_id,
+            account.target_statement, account.target_section,
+            account.target_note, account.target_subnote,
+        )):
+            raise CoverageError("ACCOUNT_MAPPING_TRACE_MISMATCH")
+
+    source_values = [_money(account.closing_exposure) for account in preview.accounts]
     candidate_values = [
-        _money(a.closing_exposure) for a in preview.accounts if a.included
+        _money(account.closing_exposure) for account in preview.accounts if account.included
     ]
     blocked_values = [
-        _money(a.closing_exposure) for a in preview.accounts if not a.included
+        _money(account.closing_exposure) for account in preview.accounts if not account.included
     ]
-    note_values = [_money(n.closing_exposure) for n in preview.notes]
-    if (len(preview.notes) != len({
-            _key(n.statement, n.section, n.note_number, n.subnote_code)
-            for n in preview.notes
-        })):
+    note_keys = [
+        _key(note.statement, note.section, note.note_number, note.subnote_code)
+        for note in preview.notes
+    ]
+    if len(note_keys) != len(set(note_keys)):
         raise CoverageError("DUPLICATE_CANDIDATE_NOTE")
+    note_by_key = dict(zip(note_keys, preview.notes))
+    if set(note_by_key) != set(grouped):
+        raise CoverageError("COVERAGE_NOTE_MAPPING_MISMATCH")
+    for target, note in note_by_key.items():
+        mapped = grouped[target]
+        codes = tuple(code for code, _ in mapped)
+        if (len(codes) != len(set(codes))
+                or _money(note.closing_exposure) != _sum_exact(
+                    [amount for _, amount in mapped]
+                )
+                or note.account_codes != codes):
+            raise CoverageError("COVERAGE_NOTE_MAPPING_MISMATCH")
     if (_sum_exact(source_values) != _money(preview.source_closing_exposure)
             or _sum_exact(candidate_values) != _money(preview.candidate_closing_exposure)
             or _sum_exact(blocked_values) != _money(preview.blocked_closing_exposure)
-            or _sum_exact(note_values) != _sum_exact(candidate_values)):
+            or _sum_exact(source_values) != _sum_exact([
+                _money(preview.candidate_closing_exposure),
+                _money(preview.blocked_closing_exposure),
+            ])):
         raise CoverageError("COVERAGE_RECONCILIATION_FAILED")
 
 

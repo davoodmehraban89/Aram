@@ -1,16 +1,17 @@
 """Synthetic tests for independent reference reconciliation; no real finance data."""
 from __future__ import annotations
 
+from dataclasses import replace
 from io import BytesIO
 import json
 
 import pytest
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
-from aram_backend.coverage_preview import CoverageError
+from aram_backend.coverage_preview import CoverageError, preview_mapping_coverage
 from aram_backend.pilot_workbook import SHEET_HEADERS
 from aram_backend.reconciliation_review import (
-    NoteReference, reconcile_workbook_for_review,
+    NoteReference, _validated_preview, reconcile_workbook_for_review,
 )
 
 
@@ -231,3 +232,126 @@ def test_all_zero_note_reference_does_not_crash_exact_decimal_difference():
     assert reviewed.matched_for_analyst_review
     assert reviewed.notes[0].difference == "0"
     assert reviewed.candidate_closing_exposure == "0"
+
+
+def test_one_account_can_reconcile_to_multiple_distinct_statement_notes():
+    source = workbook()
+    book = load_workbook(BytesIO(source))
+    book["Notes"].append([
+        "001", 1404, "EQ", "Equity", "E01", "Equity note", "", "",
+    ])
+    headers = SHEET_HEADERS["Mapping"]
+    base = {
+        header: book["Mapping"].cell(2, index + 1).value
+        for index, header in enumerate(headers)
+    }
+    equity_mapping = dict(base)
+    equity_mapping.update({
+        "mapping_id": "M-EQ-001", "target_statement": "EQ",
+        "statement_section": "Equity", "note_number": "E01",
+    })
+    book["Mapping"].append([
+        equity_mapping.get(header) for header in headers
+    ])
+    updated = BytesIO()
+    book.save(updated)
+    book.close()
+
+    result = reconcile_workbook_for_review(
+        updated.getvalue(), company_code="001", fiscal_year=1404,
+        references=[
+            NoteReference("BS", "Assets", "N01", "", "126", "REF-BS"),
+            NoteReference("EQ", "Equity", "E01", "", "110.25", "REF-EQ"),
+        ],
+    )
+    assert result.matched_for_analyst_review
+    assert result.account_count == 2
+    assert result.candidate_mapped_accounts == 2
+    assert result.blocked_accounts == 0
+    notes = {(note.statement, note.note_number): note for note in result.notes}
+    assert notes[("BS", "N01")].candidate_closing_exposure == "126.00"
+    assert notes[("EQ", "E01")].candidate_closing_exposure == "110.25"
+    assert all(note.matched for note in result.notes)
+
+
+def test_preview_integrity_rejects_mapping_trace_amount_tampering():
+    data = workbook()
+    preview = preview_mapping_coverage(data, company_code="001", fiscal_year=1404)
+    altered_mapping = replace(preview.mappings[0], closing_exposure="999")
+    altered = replace(
+        preview, mappings=(altered_mapping, *preview.mappings[1:]),
+    )
+    with pytest.raises(CoverageError) as exc:
+        _validated_preview(data, altered)
+    assert exc.value.code == "MAPPING_TRACE_SOURCE_MISMATCH"
+
+
+def test_ambiguous_bs_mapping_does_not_hide_valid_eq_mapping_or_pass_review():
+    source = workbook()
+    book = load_workbook(BytesIO(source))
+    book["Notes"].append([
+        "001", 1404, "BS", "Assets", "N02", "Second BS note", "", "",
+    ])
+    book["Notes"].append([
+        "001", 1404, "EQ", "Equity", "E01", "Equity note", "", "",
+    ])
+    headers = SHEET_HEADERS["Mapping"]
+    base = {
+        header: book["Mapping"].cell(2, index + 1).value
+        for index, header in enumerate(headers)
+    }
+    second_bs = dict(base)
+    second_bs.update({"mapping_id": "M-BS-SECOND", "note_number": "N02"})
+    book["Mapping"].append([second_bs.get(header) for header in headers])
+    equity_mapping = dict(base)
+    equity_mapping.update({
+        "mapping_id": "M-EQ-001", "target_statement": "EQ",
+        "statement_section": "Equity", "note_number": "E01",
+    })
+    book["Mapping"].append([equity_mapping.get(header) for header in headers])
+    output = BytesIO()
+    book.save(output)
+    book.close()
+    data = output.getvalue()
+
+    preview = preview_mapping_coverage(data, company_code="001", fiscal_year=1404)
+    account = next(row for row in preview.accounts if row.account_code == "0010")
+    assert account.included
+    assert account.mapping_count == 3
+    assert account.mapping_id is None
+    assert any(
+        item.included and item.target_statement == "EQ"
+        and item.account_code == "0010" for item in preview.mappings
+    )
+    assert not any(
+        item.included and item.target_statement == "BS"
+        and item.account_code == "0010" for item in preview.mappings
+    )
+    assert any(
+        item.code == "AMBIGUOUS_ACCOUNT_MAPPING"
+        and item.account_code == "0010" for item in preview.exceptions
+    )
+
+    reviewed = reconcile_workbook_for_review(
+        data, company_code="001", fiscal_year=1404,
+        references=[
+            ref("15.75", note="N01"),
+            ref("110.25", note="E01", statement="EQ", section="Equity"),
+        ],
+    )
+    assert not reviewed.matched_for_analyst_review
+    assert any(
+        finding.code == "BLOCKED_ACCOUNT_AMBIGUOUS_ACCOUNT_MAPPING"
+        and finding.account_code == "0010" for finding in reviewed.findings
+    )
+
+def test_rejects_stale_account_target_for_unapproved_mapping():
+    data = workbook(second_draft=True)
+    preview = preview_mapping_coverage(data, company_code="001", fiscal_year=1404)
+    rows = list(preview.accounts)
+    i = next(i for i, row in enumerate(rows) if row.account_code == "0020")
+    assert not rows[i].included
+    rows[i] = replace(rows[i], target_statement="BS")
+    altered = replace(preview, accounts=tuple(rows))
+    with pytest.raises(CoverageError):
+        _validated_preview(data, altered)

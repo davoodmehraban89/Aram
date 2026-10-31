@@ -83,6 +83,51 @@ def test_includes_only_file_marked_approved_unique_mapping():
     assert not result.releasable
 
 
+def test_same_account_can_map_once_to_each_distinct_statement():
+    def add_statement_mappings(book):
+        notes = book["Notes"]
+        notes.append([
+            "001", 1404, "EQ", "Equity", "E01", "Equity note", "", "",
+        ])
+        headers = SHEET_HEADERS["Mapping"]
+        base = {
+            header: book["Mapping"].cell(2, index + 1).value
+            for index, header in enumerate(headers)
+        }
+        eq_mapping = dict(base)
+        eq_mapping.update({
+            "mapping_id": "M-EQ-001", "target_statement": "EQ",
+            "statement_section": "Equity", "note_number": "E01",
+        })
+        book["Mapping"].append([eq_mapping.get(header) for header in headers])
+        second_bs = dict(base)
+        second_bs.update({
+            "mapping_id": "M-BS-002", "account_full_code": "0020",
+            "general_code": "0020",
+        })
+        book["Mapping"].append([second_bs.get(header) for header in headers])
+
+    result = preview(make_change(sample_workbook(), add_statement_mappings))
+    assert result.account_count == 2
+    assert result.candidate_mapped_accounts == 2
+    assert result.blocked_accounts == 0
+    assert result.candidate_closing_exposure == "126.00"
+    assert len(result.accounts) == 2
+    assert len(result.mappings) == 3
+    account = next(item for item in result.accounts if item.account_code == "0010")
+    assert account.mapping_count == 2
+    assert account.included
+    assert account.target_statement is None
+    by_statement = {
+        note.statement: note for note in result.notes
+    }
+    assert by_statement["BS"].closing_exposure == "126.00"
+    assert by_statement["BS"].account_codes == ("0010", "0020")
+    assert by_statement["EQ"].closing_exposure == "110.25"
+    assert by_statement["EQ"].account_codes == ("0010",)
+    assert all(item.included for item in result.mappings)
+
+
 def test_multiple_mapping_rows_are_blocked_not_silently_deduplicated():
     result = preview(sample_workbook(extra_mapping=True))
     assert result.candidate_mapped_accounts == 0

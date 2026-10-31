@@ -276,3 +276,30 @@ def test_wrong_source_hash_cannot_be_silently_reused():
     data = edit(workbook(), lambda book: setattr(book["Accounts"]["T2"], "value", "-121"))
     with pytest.raises(CoverageError):
         build(data=data)
+
+
+def test_equity_candidate_keeps_account_when_it_also_maps_to_balance_sheet():
+    def add_bs_mapping(book):
+        book["Notes"].append([
+            "001", 1404, "BS", "Assets", "B01", "Synthetic cash/equity tie note", "", "",
+        ])
+        headers = SHEET_HEADERS["Mapping"]
+        base = {
+            header: book["Mapping"].cell(2, index + 1).value
+            for index, header in enumerate(headers)
+        }
+        bs_policy = dict(base)
+        bs_policy.update({
+            "mapping_id": "M-BS-CAP", "target_statement": "BS",
+            "statement_section": "Assets", "note_number": "B01",
+        })
+        book["Mapping"].append([bs_policy.get(header) for header in headers])
+
+    data = edit(workbook(), add_bs_mapping)
+    refs = references() + [
+        NoteReference("BS", "Assets", "B01", "", "-120", "SYNTH-BS-REF")
+    ]
+    result = build(data=data, refs=refs)
+    assert result.eligible_for_analyst_review
+    assert result.closing_equity_total == "155"
+    assert len(result.account_movements) == 3

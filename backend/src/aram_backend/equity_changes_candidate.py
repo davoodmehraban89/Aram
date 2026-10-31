@@ -223,7 +223,7 @@ def build_equity_changes_candidate(
         for note in review.notes
     }
     trace_by_note: dict[tuple[str, str, str], list[Any]] = {}
-    for trace in preview.accounts:
+    for trace in preview.mappings:
         if trace.included and trace.target_statement == "EQ":
             key = (trace.target_section or "", trace.target_note or "",
                    trace.target_subnote or "")

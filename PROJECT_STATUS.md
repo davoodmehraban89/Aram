@@ -151,3 +151,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## 2026-10-31 — cross-statement exact-head CI checkpoint
 - Implementation head `34bf411430a2a87d2909c9dc5feb3ab65cb9294a` passed [Backend CI 41171545629](https://github.com/davoodmehraban89/Aram/actions/runs/41171545629): 390 tests, reversible Alembic upgrade/downgrade and compileall successful; one pre-existing third-party deprecation warning.
 - PR #67 remains Draft/unmerged. All results are unsigned analyst diagnostics; source completeness, accounting owner approval and independent C1/C2/C3 remain pending.
+
+## 2026-10-31 — multi-statement account mapping (DRAFT)
+- Child branch `codex/aram-multistatement-mapping-20261031`, based on cross-statement gate PR #67.
+- Mapping cardinality is one row per account per target statement: one ledger account can map to BS and EQ (or another distinct statement), while duplicate mappings inside the same statement are blocked. Account-level totals count each source account once; note exposures remain statement-specific.
+- Added per-mapping trace and updated the equity candidate to consume EQ mapping rows. Synthetic tests cover BS+EQ reuse, same-statement ambiguity, equity candidate reuse and trace tampering.
+- Draft implementation only. Exact-head CI and full regression pending; no canonical finance data, database migration, official statement, approval or release changed.
+
+## 2026-10-31 — multi-statement mapping exact-head CI checkpoint
+- Final implementation head `3b40f298aa5c59a0360c57ea6821636c54e87e16` passed [Backend CI 41175299724](https://github.com/davoodmehraban89/Aram/actions/runs/41175299724): 396 tests passed, one existing GitHub Actions Node.js deprecation warning; Alembic upgrade/downgrade and Python compileall succeeded.
+- PR #68 remains Draft and unmerged. Mapping labels and accounting classifications are still untrusted workbook inputs; no official financial statement, authenticated source completeness, finance-owner approval or C1/C2/C3 signoff is claimed.
