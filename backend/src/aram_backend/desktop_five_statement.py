@@ -811,10 +811,15 @@ def ui_valid_smoke_test() -> int:
             if not wait_for_filter(window):
                 return 41
             filtered = window.detail_tree.get_children()
-            if len(filtered) != 1:
+            if len(filtered) != 2:
                 return 32
-            values = window.detail_tree.item(filtered[0], "values")
-            if values[1] != "Revenue" or values[0] != "سود و زیان":
+            filtered_values = [
+                window.detail_tree.item(item, "values")
+                for item in filtered
+            ]
+            if {values[1] for values in filtered_values} != {
+                "Revenue", "حساب REV / Revenue",
+            } or any(values[0] != "سود و زیان" for values in filtered_values):
                 return 33
             window.detail_filter_var.set("همه")
             window.detail_search_var.set("")
