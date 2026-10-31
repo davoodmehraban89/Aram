@@ -500,14 +500,16 @@ class FiveStatementWindow(tk.Tk):
 
         def worker() -> None:
             try:
-                result = self.controller.validate()
-            except DesktopFiveInputError as exc:
+                outcome = self.controller.validate()
+                figures = build_preview_figures(outcome)
+                details = build_preview_details(outcome)
+            except (DesktopFiveInputError, CoverageError) as exc:
                 self._events.put((generation, None, str(exc)))
             except Exception:
                 # Do not disclose a private filesystem or financial traceback.
                 self._events.put((generation, None, "INTERNAL_REVIEW_FAILED"))
             else:
-                self._events.put((generation, result, None))
+                self._events.put((generation, (outcome, figures, details), None))
 
         Thread(target=worker, daemon=True).start()
         self.after(80, self._poll)
@@ -531,27 +533,9 @@ class FiveStatementWindow(tk.Tk):
             self.overview.set("ورودی نامعتبر یا کنترل ناموفق")
             self.status.set("کد خطا: " + error)
         else:
-            outcome = result
-            try:
-                if (
-                    outcome.balance_sheet.equity_total
-                    != outcome.reconciliation.balance_sheet_equity_total
-                    or outcome.income_statement.net_result
-                    != outcome.reconciliation.income_statement_net_result
-                    or outcome.cash_flow.closing_cash_and_equivalents
-                    != outcome.reconciliation.cash_flow_closing_cash
-                ):
-                    raise CoverageError("DESKTOP_FIGURES_SUMMARY_MISMATCH")
-                figure_rows = build_preview_figures(outcome)
-            except (CoverageError, AttributeError, TypeError, ValueError):
-                # Refuse to render unverified numeric data as a green preview.
-                self.controller.result = None
-                self.controller.state = "INPUT_ERROR"
-                self._clear_rows()
-                self.overview.set("نمایش مبالغ نامعتبر؛ پیش‌نمایش مسدود شد")
-                self.status.set("DESKTOP_FIGURES_INVALID")
-                self._refresh()
-                return
+            outcome, figure_rows, detail_rows = result
+            self._detail_rows = detail_rows
+            self._apply_detail_filter()
             self.amount_units.set(
                 "شرکت " + outcome.company_code
                 + " | سال " + str(outcome.fiscal_year)
