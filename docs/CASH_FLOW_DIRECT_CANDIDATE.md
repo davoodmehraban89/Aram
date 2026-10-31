@@ -33,6 +33,8 @@ For each external counterpart policy:
 - Cash credit is an outflow.
 - The explicit counterpart policy supplies the activity category.
 
+Each counterpart account receives exactly one activity category in this version. If one counterpart account contains transactions from multiple cash-flow activities, this account-level policy is insufficient: split the source account into more granular subaccounts or add transaction-level approved classification evidence before using a candidate. The registry itself is user-supplied and is not independently authenticated.
+
 Then:
 
 ```text
