@@ -176,13 +176,46 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
 
 
 def _trial_balance_bridge(trial: TrialBalanceDiagnostic) -> bool:
-    opening = _money(trial.opening_debit_net_total)
-    debit_credit = _money(trial.movement_difference)
-    closing = _money(trial.closing_debit_net_total)
-    rollforward = _money(trial.opening_to_closing_difference)
+    if (type(trial.account_count) is not int
+            or trial.account_count != len(trial.accounts) or not trial.accounts):
+        return False
+    seen: set[str] = set()
+    openings: list[Decimal] = []
+    debits: list[Decimal] = []
+    credits: list[Decimal] = []
+    closings: list[Decimal] = []
+    for account in trial.accounts:
+        if not isinstance(account, TrialBalanceAccount):
+            return False
+        code = _text(account.account_code, "TRIAL_BALANCE_ACCOUNT_CODE")
+        if code in seen:
+            return False
+        seen.add(code)
+        opening = _money(account.opening)
+        debit = _money(account.debit)
+        credit = _money(account.credit)
+        closing = _money(account.closing)
+        if _sum_exact([debit, -credit]) != _money(account.debit_net_movement):
+            return False
+        openings.append(opening)
+        debits.append(debit)
+        credits.append(credit)
+        closings.append(closing)
+    opening_total = _sum_exact(openings)
+    debit_total = _sum_exact(debits)
+    credit_total = _sum_exact(credits)
+    closing_total = _sum_exact(closings)
+    movement = _sum_exact([debit_total, -credit_total])
+    rollforward = _sum_exact([opening_total, movement, -closing_total])
     return (
         trial.balanced_for_analyst_review
-        and opening == 0 and debit_credit == 0 and closing == 0 and rollforward == 0
+        and opening_total == _money(trial.opening_debit_net_total)
+        and debit_total == _money(trial.debit_turnover_total)
+        and credit_total == _money(trial.credit_turnover_total)
+        and closing_total == _money(trial.closing_debit_net_total)
+        and movement == _money(trial.movement_difference) == 0
+        and opening_total == 0 and closing_total == 0
+        and rollforward == _money(trial.opening_to_closing_difference) == 0
     )
 
 
