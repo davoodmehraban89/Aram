@@ -160,3 +160,16 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — direct cash flow exact-head verification
 - Cash flow implementation SHA `392ac9e8d2a9806843bb572b8e4032d7e75e9843`, CI [41170694898](https://github.com/davoodmehraban89/Aram/actions/runs/41170694898): 365 tests passed; migration round-trip and compileall passed.
 - PR #66 is still Draft. Direct cash flow requires paired source journal lines, cash account scope approval and counterpart activity policies; existing aggregated Pilot workbook alone is insufficient. No official statement, source completeness proof, independent approval, GUI or release.
+
+## 2026-10-31 — five-statement reconciliation gate
+- Current branch `codex/aram-cross-statement-controls-20261031`, parent unmerged PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`.
+- Adds typed cross-statement gate for same-source BS/IS/EQ/CF/TB candidates, including P&L↔equity profit, BS equity↔EQ closing, selected BS cash notes↔CF closing and cash-account↔TB account trace. See `docs/CROSS_STATEMENT_RECONCILIATION.md`.
+- Synthetic candidate tests only. Still no authenticated source completeness, signed accounting policy, C1/C2/C3 approvals, official exports, GUI or installer. Exact-head CI required.
+
+## 2026-10-31 — cross-statement gate hardening
+- Cross-statement control now recomputes from detail: P&L totals from statement bridge, cash-flow categories from classified cash lines, TB totals from all account rows, and cash-account opening/turnover/closing/source-row against TB. Internal transfers are checked from line trace.
+- Based on PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`; exact final-head CI pending. Still no authenticated source completeness, financial approval, C1/C2/C3, official export or release.
+
+## 2026-10-31 — cross-statement exact-head verification
+- Cross-statement implementation SHA `34bf411430a2a87d2909c9dc5feb3ab65cb9294a`, CI [41171545629](https://github.com/davoodmehraban89/Aram/actions/runs/41171545629): 390 tests passed; Alembic round-trip and compileall passed.
+- PR #67 remains Draft. It is an arithmetic gate only; no source completeness proof, signed financial-owner policy, C1/C2/C3 approval, official report, GUI or installer.
