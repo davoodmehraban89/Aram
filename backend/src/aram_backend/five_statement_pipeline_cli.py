@@ -91,6 +91,15 @@ def _rows(
     for item in items:
         if not isinstance(item, dict) or set(item) != fields:
             raise CoverageError("PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID")
+        if any(
+            not isinstance(item[field], str) or not item[field]
+            for field in string_fields
+        ):
+            raise CoverageError("PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID")
+        if sign_field is not None and (
+            type(item[sign_field]) is not int or item[sign_field] not in (-1, 1)
+        ):
+            raise CoverageError("PIPELINE_MANIFEST_" + key.upper() + "_ROW_INVALID")
         try:
             result.append(factory(**item))
         except (TypeError, ValueError) as exc:
@@ -142,18 +151,19 @@ def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
         references=_rows(
             payload, "references", REFERENCE_FIELDS, NoteReference,
             MAX_POLICY_ROWS, minimum=1,
+            string_fields=("expected_closing_exposure",),
         ),
         balance_sheet_policies=_rows(
             payload, "balance_sheet_policies", BS_POLICY_FIELDS,
-            BalanceSheetLinePolicy, MAX_POLICY_ROWS,
+            BalanceSheetLinePolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
         ),
         income_statement_policies=_rows(
             payload, "income_statement_policies", IS_POLICY_FIELDS,
-            IncomeStatementLinePolicy, MAX_POLICY_ROWS,
+            IncomeStatementLinePolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
         ),
         equity_movement_policies=_rows(
             payload, "equity_movement_policies", EQ_POLICY_FIELDS,
-            EquityMovementPolicy, MAX_POLICY_ROWS,
+            EquityMovementPolicy, MAX_POLICY_ROWS, sign_field="sign_multiplier",
         ),
         cash_accounts=_rows(
             payload, "cash_accounts", CASH_ACCOUNT_FIELDS,
@@ -166,6 +176,10 @@ def parse_pipeline_manifest(content: bytes) -> ParsedPipelineManifest:
         transactions=_rows(
             payload, "transactions", TRANSACTION_FIELDS,
             CashFlowEntry, MAX_CASH_TRANSACTIONS,
+            string_fields=(
+                "cash_debit", "cash_credit",
+                "counterpart_debit", "counterpart_credit",
+            ),
         ),
         cash_balance_notes=_rows(
             payload, "cash_balance_notes", CASH_NOTE_FIELDS,
