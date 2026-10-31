@@ -148,3 +148,29 @@ def test_invalid_source_exposure_amount_fails_closed():
     )
     with pytest.raises(CoverageError, match="SOURCE_INVALID"):
         build_preview_details(changed)
+
+
+@pytest.mark.parametrize("hidden", ["Revenue\u202eforged", "Revenue\x85forged", "Revenue\ufeffforged"])
+def test_detail_labels_reject_bidi_and_invisible_control_characters(hidden):
+    result = build_pipeline()
+    line = replace(result.balance_sheet.lines[0], line_label=hidden)
+    changed = replace(
+        result, balance_sheet=replace(
+            result.balance_sheet, lines=(line,) + result.balance_sheet.lines[1:],
+        ),
+    )
+    with pytest.raises(CoverageError, match="ITEM_INVALID"):
+        build_preview_details(changed)
+
+
+def test_persian_zero_width_non_joiner_is_preserved_in_detail_label():
+    result = build_pipeline()
+    label = "سود\u200cخالص"
+    line = replace(result.income_statement.lines[0], line_label=label)
+    changed = replace(
+        result, income_statement=replace(
+            result.income_statement, lines=(line,) + result.income_statement.lines[1:],
+        ),
+    )
+    rows = build_preview_details(changed)
+    assert any(row.item == label for row in rows)
