@@ -34,9 +34,17 @@ jobs:
       - name: Install backend and Windows packaging tools
         shell: pwsh
         run: python -m pip install -e ".[test]" "pyinstaller>=6.10,<7"
-      - name: Run controller and full pipeline integration tests
+      - name: Run desktop, synthetic demo and full pipeline integration tests
         shell: pwsh
-        run: python -m pytest tests/test_desktop_five_statement.py tests/test_five_statement_pipeline_integration.py tests/test_cross_statement_reconciliation.py
+        run: python -m pytest tests/test_desktop_five_statement.py tests/test_synthetic_five_statement_demo.py tests/test_five_statement_pipeline_integration.py tests/test_cross_statement_reconciliation.py
+      - name: Generate clearly labeled synthetic inspection inputs
+        shell: pwsh
+        run: python -m aram_backend.synthetic_five_statement_demo --output-dir dist/DEMO-SYNTHETIC-ONLY
+      - name: Prove generated sample passes the actual CLI pipeline
+        shell: pwsh
+        run: |
+          python -m aram_backend.five_statement_pipeline_cli --file "dist/DEMO-SYNTHETIC-ONLY/ARAM-SYNTHETIC-ONLY.xlsx" --manifest "dist/DEMO-SYNTHETIC-ONLY/ARAM-SYNTHETIC-ONLY.json" > $null
+          if ($LASTEXITCODE -ne 0) { throw "Synthetic end-to-end CLI review did not pass" }
       - name: Exercise native Tk menus and callbacks on Windows
         shell: pwsh
         run: python -m aram_backend.desktop_five_statement --ui-smoke
@@ -51,10 +59,14 @@ jobs:
           if ($headless.ExitCode -ne 0) { throw "Frozen EXE self-test exit: $($headless.ExitCode)" }
           $gui = Start-Process -FilePath $exe -ArgumentList "--ui-smoke" -PassThru -Wait
           if ($gui.ExitCode -ne 0) { throw "Frozen EXE GUI smoke exit: $($gui.ExitCode)" }
+          $valid = Start-Process -FilePath $exe -ArgumentList "--ui-valid-smoke" -PassThru -Wait
+          if ($valid.ExitCode -ne 0) { throw "Frozen EXE valid synthetic preview exit: $($valid.ExitCode)" }
       - name: Upload unsigned, nonproduction pilot for inspection only
         uses: actions/upload-artifact@v7
         with:
           name: AramFivePilot-UNRELEASED-Windows-x64
-          path: backend/dist/AramFivePilot-UNRELEASED.exe
+          path: |
+            backend/dist/AramFivePilot-UNRELEASED.exe
+            backend/dist/DEMO-SYNTHETIC-ONLY/*
           if-no-files-found: error
           retention-days: 7
