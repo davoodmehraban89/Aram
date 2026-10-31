@@ -9,8 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 import stat
 
-from aram_backend.coverage_preview import CoverageError
-from aram_backend.coverage_preview_cli import MAX_INPUT_BYTES
+from aram_backend.coverage_preview import CoverageError, MAX_INPUT_BYTES
 from aram_backend.cash_flow_direct_candidate_cli import MAX_CASH_MANIFEST_BYTES
 from aram_backend.five_statement_pipeline import FiveStatementPipelineResult
 from aram_backend.five_statement_pipeline_cli import run_pipeline_cli
