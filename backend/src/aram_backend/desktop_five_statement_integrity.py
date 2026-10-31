@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import re
 
-from aram_backend.coverage_preview import CoverageError
+from aram_backend.coverage_preview import (
+    AccountTrace, CoverageError, CoveragePreview, MappingTrace,
+)
+from aram_backend.reconciliation_review import _money, _sum_exact
 from aram_backend.balance_sheet_candidate import BalanceSheetCandidate
 from aram_backend.cash_flow_direct_candidate import DirectCashFlowCandidate
 from aram_backend.cross_statement_reconciliation import CrossStatementReconciliation
@@ -147,6 +150,154 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
     )
     if any(left != right for left, right in ties):
         raise CoverageError("DESKTOP_PREVIEW_RECONCILIATION_MISMATCH")
+    # The mapping trace is generated from the same immutable XLSX bytes as
+    # the five statements. Do not render account-to-note lineage if it lacks
+    # the exact company, year, source hash, account rows or debit-net figures.
+    coverage = result.mapping_coverage
+    if type(coverage) is not CoveragePreview:
+        raise CoverageError("DESKTOP_PREVIEW_MAPPING_TYPE_INVALID")
+    if (
+        coverage.kind != "UNAPPROVED_MAPPING_COVERAGE_PREVIEW"
+        or type(coverage.financial_statement) is not bool
+        or type(coverage.trusted_approvals) is not bool
+        or type(coverage.releasable) is not bool
+        or coverage.financial_statement or coverage.trusted_approvals
+        or coverage.releasable
+        or coverage.company_code != reconciliation.company_code
+        or coverage.fiscal_year != reconciliation.fiscal_year
+        or coverage.source_sha256 != reconciliation.source_sha256
+    ):
+        raise CoverageError("DESKTOP_PREVIEW_MAPPING_PROVENANCE_INVALID")
+    if (type(coverage.accounts) is not tuple
+            or type(coverage.mappings) is not tuple
+            or type(coverage.notes) is not tuple
+            or type(coverage.account_count) is not int
+            or coverage.account_count != len(coverage.accounts)):
+        raise CoverageError("DESKTOP_PREVIEW_MAPPING_COUNT_INVALID")
+    tb_by_code = {
+        row.account_code: row for row in result.trial_balance.accounts
+    }
+    if len(tb_by_code) != len(result.trial_balance.accounts):
+        raise CoverageError("DESKTOP_PREVIEW_TB_DUPLICATE_ACCOUNT")
+    by_account: dict[str, AccountTrace] = {}
+    for account in coverage.accounts:
+        if type(account) is not AccountTrace or account.account_code in by_account:
+            raise CoverageError("DESKTOP_PREVIEW_MAPPING_ACCOUNT_INVALID")
+        tb_account = tb_by_code.get(account.account_code)
+        if (
+            tb_account is None or account.account_name != tb_account.account_name
+            or account.account_excel_row != tb_account.excel_row
+            or account.source_row != tb_account.source_row
+            or _money(account.closing_exposure) != _money(tb_account.closing)
+        ):
+            raise CoverageError("DESKTOP_PREVIEW_MAPPING_SOURCE_MISMATCH")
+        by_account[account.account_code] = account
+    if set(by_account) != set(tb_by_code):
+        raise CoverageError("DESKTOP_PREVIEW_MAPPING_SOURCE_MISMATCH")
+
+    mapping_counts: dict[str, int] = {}
+    included_accounts: set[str] = set()
+    seen_mapping_rows: set[int] = set()
+    seen_mapping_ids: set[str] = set()
+    note_amounts: dict[tuple[str, str, str, str], list] = {}
+    note_codes: dict[tuple[str, str, str, str], list[str]] = {}
+    seen_account_statement: set[tuple[str, str]] = set()
+    for mapping in coverage.mappings:
+        if type(mapping) is not MappingTrace:
+            raise CoverageError("DESKTOP_PREVIEW_MAPPING_ROW_INVALID")
+        account = by_account.get(mapping.account_code)
+        if (
+            account is None or type(mapping.included) is not bool
+            or mapping.account_name != account.account_name
+            or mapping.account_excel_row != account.account_excel_row
+            or mapping.source_row != account.source_row
+            or _money(mapping.closing_exposure) != _money(account.closing_exposure)
+            or type(mapping.mapping_excel_row) is not int
+            or mapping.mapping_excel_row < 2
+            or mapping.mapping_excel_row in seen_mapping_rows
+            or not isinstance(mapping.mapping_id, str)
+            or not mapping.mapping_id
+            or mapping.mapping_id in seen_mapping_ids
+        ):
+            raise CoverageError("DESKTOP_PREVIEW_MAPPING_ROW_INVALID")
+        seen_mapping_rows.add(mapping.mapping_excel_row)
+        seen_mapping_ids.add(mapping.mapping_id)
+        mapping_counts[mapping.account_code] = (
+            mapping_counts.get(mapping.account_code, 0) + 1
+        )
+        if mapping.included:
+            statement_key = (mapping.account_code, mapping.target_statement)
+            if statement_key in seen_account_statement:
+                raise CoverageError("DESKTOP_PREVIEW_DUPLICATE_MAPPING_TARGET")
+            seen_account_statement.add(statement_key)
+            included_accounts.add(mapping.account_code)
+            note_key = (
+                mapping.target_statement, mapping.target_section,
+                mapping.target_note, mapping.target_subnote,
+            )
+            note_amounts.setdefault(note_key, []).append(
+                _money(mapping.closing_exposure)
+            )
+            note_codes.setdefault(note_key, []).append(mapping.account_code)
+    for account in coverage.accounts:
+        if (
+            type(account.mapping_count) is not int
+            or account.mapping_count != mapping_counts.get(account.account_code, 0)
+            or type(account.included) is not bool
+            or account.included != (account.account_code in included_accounts)
+        ):
+            raise CoverageError("DESKTOP_PREVIEW_MAPPING_COUNT_INVALID")
+    if (
+        coverage.candidate_mapped_accounts != len(included_accounts)
+        or coverage.blocked_accounts != len(coverage.accounts) - len(included_accounts)
+    ):
+        raise CoverageError("DESKTOP_PREVIEW_MAPPING_COUNT_INVALID")
+
+    seen_note_keys: set[tuple[str, str, str, str]] = set()
+    for note in coverage.notes:
+        note_key = (
+            note.statement, note.section, note.note_number, note.subnote_code,
+        )
+        if note_key in seen_note_keys:
+            raise CoverageError("DESKTOP_PREVIEW_MAPPING_NOTE_DUPLICATE")
+        seen_note_keys.add(note_key)
+        if (
+            note_key not in note_amounts
+            or _money(note.closing_exposure) != _sum_exact(note_amounts[note_key])
+            or tuple(note_codes[note_key]) != note.account_codes
+        ):
+            raise CoverageError("DESKTOP_PREVIEW_MAPPING_NOTE_INVALID")
+    if seen_note_keys != set(note_amounts):
+        raise CoverageError("DESKTOP_PREVIEW_MAPPING_NOTE_INVALID")
+
+    # Every displayed BS/IS/EQ candidate note must use the same exact
+    # unrounded exposure as the account-to-note mapping built from this XLSX.
+    # Do not infer accounting signs or reconcile unlike statements together.
+    candidates_by_statement = (
+        ("BS", result.balance_sheet.lines),
+        ("IS", result.income_statement.lines),
+        ("EQ", result.equity_changes.note_movements),
+    )
+    covered_notes = {
+        (note.statement, note.section, note.note_number, note.subnote_code):
+            _money(note.closing_exposure)
+        for note in coverage.notes
+    }
+    for statement, lines in candidates_by_statement:
+        for line in lines:
+            key = (
+                statement, line.statement_section,
+                line.note_number, line.subnote_code,
+            )
+            if key not in covered_notes:
+                raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_MISSING")
+            try:
+                line_exposure = _money(line.source_closing_exposure)
+            except CoverageError as exc:
+                raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_INVALID") from exc
+            if line_exposure != covered_notes[key]:
+                raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_MISMATCH")
+
     overall = _require_bool(result, "eligible_for_analyst_review")
     if overall:
         if (not _require_bool(reconciliation, "eligible_for_analyst_review")

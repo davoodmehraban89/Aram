@@ -17,7 +17,9 @@ from aram_backend.cash_flow_direct_candidate import (
     CashAccountPolicy, CashCounterpartPolicy, CashFlowEntry,
     DirectCashFlowCandidate, build_direct_cash_flow_candidate,
 )
-from aram_backend.coverage_preview import CoverageError
+from aram_backend.coverage_preview import (
+    CoverageError, CoveragePreview, preview_mapping_coverage,
+)
 from aram_backend.cross_statement_reconciliation import (
     CashBalanceNoteSelection, CrossStatementReconciliation,
     reconcile_cross_statements,
@@ -49,6 +51,7 @@ class FiveStatementPipelineResult:
     cash_flow: DirectCashFlowCandidate
     trial_balance: TrialBalanceDiagnostic
     reconciliation: CrossStatementReconciliation
+    mapping_coverage: CoveragePreview
     kind: str = "UNAPPROVED_FIVE_STATEMENT_PIPELINE_CANDIDATE"
     source_ledger_completeness_verified: bool = False
     accounting_policy_authorized: bool = False
@@ -92,6 +95,7 @@ class FiveStatementPipelineResult:
             "cash_flow": self.cash_flow.to_dict(),
             "trial_balance": self.trial_balance.to_dict(),
             "reconciliation": self.reconciliation.to_dict(),
+            "mapping_coverage": self.mapping_coverage.to_dict(),
             "source_ledger_completeness_verified": False,
             "accounting_policy_authorized": False,
             "independently_reviewed": False,
@@ -168,6 +172,9 @@ def build_five_statement_pipeline(
     trial_balance = analyze_trial_balance(
         workbook_bytes, company_code=company_code, fiscal_year=fiscal_year,
     )
+    mapping_coverage = preview_mapping_coverage(
+        workbook_bytes, company_code=company_code, fiscal_year=fiscal_year,
+    )
     reconciliation = reconcile_cross_statements(
         balance_sheet=balance_sheet,
         income_statement=income_statement,
@@ -183,4 +190,5 @@ def build_five_statement_pipeline(
         cash_flow=cash_flow,
         trial_balance=trial_balance,
         reconciliation=reconciliation,
+        mapping_coverage=mapping_coverage,
     )

@@ -89,3 +89,12 @@ Before figures or details appear, the desktop integrity gate checks the typed ca
 ## Search responsiveness and limits
 
 Filtering and text search are performed off the Tk event loop. While a search is running, only the search controls and page navigation are disabled; the main window remains responsive and shows a searching status. Search queries are limited to 256 characters, unsafe control/bidirectional characters are rejected, and the search worker validates the bounded row cells before matching. The Windows frozen-EXE smoke expands synthetic details to the exact 75,000-row limit, runs a statement filter, and exercises page navigation. This is an automated responsiveness-path check, not a performance guarantee for every corporate workbook or PC.
+
+## Account-to-note source lineage (draft)
+
+The **ریز اقلام** tab now includes one explicit row per mapping of a ledger account to a specific BS/IS/EQ/CF note, in addition to candidate statement lines and raw trial-balance account rows. These mapping rows show the **source account code and name**, original XLSX row, original source row, mapping ID and mapping-row number, target statement/section/note and **unrounded source closing exposure**. An account may legitimately appear in multiple statements, but this does **not** cause its closing balance to be summed twice in global account coverage.
+
+These rows are read-only **source traces, not additional presentation lines or journal entries**. The source amount is shown in the source column, not as a fabricated presentation amount. The application checks that every account/amount/Excel/source row agrees with the actual trial-balance candidate, that included mapping note exposures reconcile from account rows, and that BS/IS/EQ candidate note inputs match the same snapshot and mapped exposures. Inconsistent lineage **fails closed** before any table rows are displayed.
+
+An `included` mapping means only that the user-supplied workbook passes its file-level mapping conditions. **It is not proof of approved accounting classifications, source completeness, or finance-owner signoff.** Blocked runs retain explicit diagnostic wording. The usual 75,000 total detail-row cap remains enforced; no source files are rewritten or exported.
+
