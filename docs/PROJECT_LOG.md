@@ -347,3 +347,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Actor: ChatGPT engineering; branch `codex/aram-cross-statement-controls-20261031`, parent PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`.
 - Added `cross_statement_reconciliation.py` and synthetic adversarial tests. Recomputes internal bridges and five-statement ties; cash account balances/turnovers/source rows are tied back to trial-balance trace. BS cash-note selection is explicit and untrusted.
 - No official report, source completeness, financial owner signoff, independent review, database write or export. Full exact-head CI pending.
+
+### 2026-10-31 — cross-statement line-level verification hardening
+- Expanded `cross_statement_reconciliation.py` to recompute direct cash-flow category totals from individual cash-flow lines, internal transfer totals, TB totals from the full account trace, and cash-account source-row/debit/credit/opening/closing matches to TB.
+- Added adversarial tests for aggregate tampering, duplicate BS note rows, cash account trace mismatches and transfer totals. Documentation updated. Parent PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`; this branch remains unmerged and awaits final CI.
