@@ -16,8 +16,13 @@ from aram_backend.coverage_preview import CoverageError
 from aram_backend.cross_statement_reconciliation import (
     CashBalanceNoteSelection, reconcile_cross_statements,
 )
-from aram_backend.equity_changes_candidate import EquityChangesCandidate
-from aram_backend.income_statement_candidate import IncomeStatementCandidate
+from aram_backend.equity_changes_candidate import (
+    EquityAccountMovement, EquityChangesCandidate, EquityComponentTotal,
+    EquityNoteMovement,
+)
+from aram_backend.income_statement_candidate import (
+    CandidateIncomeStatementLine, IncomeStatementCandidate,
+)
 from aram_backend.trial_balance_diagnostic import TrialBalanceAccount, TrialBalanceDiagnostic
 
 
@@ -67,11 +72,60 @@ def income(*, net="40", gross="60", eligible=True):
         operating_profit="40", other_income_total="5",
         other_expense_total="2", profit_before_tax="43",
         tax_expense_total="3", net_result=net,
-        lines=(), findings=(), eligible_for_analyst_review=eligible,
+        lines=(
+            CandidateIncomeStatementLine(
+                "Revenue", "R01", "", "REVENUE", -1, "Revenue",
+                "-100", "100", "REF-REV", "POL-REV",
+            ),
+            CandidateIncomeStatementLine(
+                "Cost", "C01", "", "COST_OF_REVENUE", 1, "Cost of revenue",
+                "40", "40", "REF-COST", "POL-COST",
+            ),
+            CandidateIncomeStatementLine(
+                "Operating", "O01", "", "OPERATING_EXPENSE", 1, "Operating expense",
+                "20", "20", "REF-OPEX", "POL-OPEX",
+            ),
+            CandidateIncomeStatementLine(
+                "Other income", "I01", "", "OTHER_INCOME", -1, "Other income",
+                "-5", "5", "REF-OIN", "POL-OIN",
+            ),
+            CandidateIncomeStatementLine(
+                "Other expense", "X01", "", "OTHER_EXPENSE", 1, "Other expense",
+                "2", "2", "REF-OEX", "POL-OEX",
+            ),
+            CandidateIncomeStatementLine(
+                "Tax", "T01", "", "TAX_EXPENSE", 1, "Tax",
+                "3", "3", "REF-TAX", "POL-TAX",
+            ),
+        ), findings=(), eligible_for_analyst_review=eligible,
     )
 
 
 def equity(*, closing="100", profit="40", eligible=True):
+    closing_value = Decimal(closing)
+    profit_value = Decimal(profit)
+    rollforward = Decimal("60") + profit_value - closing_value
+    account = EquityAccountMovement(
+        account_code="EQ1", account_name="Equity", source_excel_row=3,
+        source_row=2, statement_section="Equity", note_number="E01",
+        subnote_code="", equity_component="RETAINED_EARNINGS",
+        movement_category="NET_PROFIT_LOSS", sign_multiplier=-1,
+        opening_balance="60", debit_turnover="0", credit_turnover=profit,
+        movement_amount=profit, closing_balance=closing,
+        policy_evidence_ref="POL-EQ",
+    )
+    note = EquityNoteMovement(
+        statement_section="Equity", note_number="E01", subnote_code="",
+        equity_component="RETAINED_EARNINGS", movement_category="NET_PROFIT_LOSS",
+        line_label="Retained earnings", opening_balance="60",
+        movement_amount=profit, closing_balance=closing,
+        source_closing_exposure=str(-closing_value),
+        note_reference_evidence="REF-EQ", policy_evidence_ref="POL-EQ",
+    )
+    component = EquityComponentTotal(
+        equity_component="RETAINED_EARNINGS", opening_balance="60",
+        movement_amount=profit, closing_balance=closing,
+    )
     return EquityChangesCandidate(
         company_code="001", fiscal_year=1404, source_sha256=SOURCE,
         note_references_sha256=REFS, presentation_policies_sha256=POLICY,
@@ -79,9 +133,9 @@ def equity(*, closing="100", profit="40", eligible=True):
         net_profit_loss_movements=profit, dividends="0",
         other_comprehensive_income="0", transfers="0",
         prior_period_adjustments="0", other_movements="0",
-        total_movement="40", closing_equity_total=closing,
-        rollforward_difference="0", component_totals=(),
-        note_movements=(), account_movements=(), findings=(),
+        total_movement=profit, closing_equity_total=closing,
+        rollforward_difference=str(rollforward), component_totals=(component,),
+        note_movements=(note,), account_movements=(account,), findings=(),
         eligible_for_analyst_review=eligible,
     )
 
@@ -116,16 +170,63 @@ def cash(*, closing="50", net="10", eligible=True):
 
 
 def trial(*, balanced=True):
+    accounts = (
+        TrialBalanceAccount("CASH1", "Cash", 2, 1, "40", "30", "20", "50", "10"),
+        TrialBalanceAccount("EQ1", "Equity", 3, 2, "-60", "0", "40", "-100", "-40"),
+        TrialBalanceAccount("REV", "Revenue", 4, 3, "0", "0", "30", "-30", "-30"),
+        TrialBalanceAccount("EXP", "Expense", 5, 4, "0", "20", "0", "20", "20"),
+        TrialBalanceAccount("OFFSET", "Offset", 6, 5, "20", "40", "0", "60", "40"),
+    )
     return TrialBalanceDiagnostic(
         company_code="001", fiscal_year=1404, source_sha256=SOURCE,
-        account_count=2, opening_debit_net_total="0",
-        debit_turnover_total="100", credit_turnover_total="100",
+        account_count=5, opening_debit_net_total="0",
+        debit_turnover_total="90", credit_turnover_total="90",
         closing_debit_net_total="0", movement_difference="0",
-        opening_to_closing_difference="0", findings=(), accounts=(
-            TrialBalanceAccount("CASH1", "Cash", 2, 1, "40", "30", "20", "50", "10"),
-            TrialBalanceAccount("OFFSET", "Offset", 3, 2, "-40", "70", "80", "-50", "-10"),
-        ),
+        opening_to_closing_difference="0", findings=(), accounts=accounts,
         balanced_for_analyst_review=balanced,
+    )
+
+
+
+def cash_with_transfer():
+    base = cash()
+    cash_one = replace(
+        base.account_reconciliations[0],
+        source_credit_turnover="30", closing_balance="40",
+        transaction_credit_turnover="30",
+    )
+    cash_two = CashAccountReconciliation(
+        account_code="CASH2", account_name="Cash two", source_row=6,
+        opening_balance="0", source_debit_turnover="10",
+        source_credit_turnover="0", closing_balance="10",
+        transaction_debit_turnover="10", transaction_credit_turnover="0",
+        debit_difference="0", credit_difference="0",
+        rollforward_difference="0", policy_evidence_ref="CASH2-POLICY",
+    )
+    transfer = CashFlowLine(
+        "L3", "V3", "1404-01-03", "CASH1", "CASH2",
+        "CASH_TRANSFER", "0", "10", "SRC3", "CASH2-POLICY",
+    )
+    return replace(
+        base, cash_account_count=2, transaction_count=3,
+        internal_transfer_inflows="10", internal_transfer_outflows="10",
+        account_reconciliations=(cash_one, cash_two),
+        cash_flow_lines=base.cash_flow_lines + (transfer,),
+    )
+
+
+def trial_with_transfer():
+    base = trial()
+    rows = list(base.accounts)
+    rows[0] = replace(
+        rows[0], credit="30", closing="40", debit_net_movement="0",
+    )
+    rows.append(
+        TrialBalanceAccount("CASH2", "Cash two", 7, 6, "0", "10", "0", "10", "10")
+    )
+    return replace(
+        base, account_count=6, debit_turnover_total="100",
+        credit_turnover_total="100", accounts=tuple(rows),
     )
 
 
@@ -146,7 +247,7 @@ def reconcile(**overrides):
 
 def test_all_five_statements_tie_exactly_without_claiming_approval():
     result = reconcile()
-    assert result.eligible_for_analyst_review
+    assert result.eligible_for_analyst_review, result.findings
     assert not result.findings
     assert result.same_source_snapshot
     assert result.balance_sheet_difference == "0"
@@ -353,3 +454,91 @@ def test_internal_cash_transfer_totals_must_be_derived_from_line_trace():
     result = reconcile(cash_flow=bad)
     assert not result.cash_flow_bridge_valid
     assert "CASH_FLOW_BRIDGE_INVALID" in result.findings
+
+
+def test_balance_sheet_line_detail_must_support_summary_totals():
+    source = bs()
+    lines = list(source.lines)
+    lines[0] = replace(lines[0], presentation_amount="51")
+    result = reconcile(balance_sheet=replace(source, lines=tuple(lines)))
+    assert "BALANCE_SHEET_DETAIL_INVALID" in result.findings
+    assert not result.eligible_for_analyst_review
+
+
+def test_income_statement_line_detail_must_support_summary_totals():
+    source = income()
+    lines = list(source.lines)
+    lines[0] = replace(lines[0], presentation_amount="101")
+    result = reconcile(income_statement=replace(source, lines=tuple(lines)))
+    assert not result.income_statement_bridge_valid
+    assert "INCOME_STATEMENT_BRIDGE_INVALID" in result.findings
+
+
+def test_equity_account_detail_must_support_note_and_summary_movements():
+    source = equity()
+    account = replace(source.account_movements[0], credit_turnover="39")
+    result = reconcile(equity_changes=replace(
+        source, account_movements=(account,),
+    ))
+    assert not result.equity_rollforward_valid
+    assert "EQUITY_STATEMENT_ROLLFORWARD_INVALID" in result.findings
+
+
+def test_trial_balance_row_rollforward_mismatch_cannot_net_off_globally():
+    source = trial()
+    rows = list(source.accounts)
+    rows[0] = replace(rows[0], closing="51")
+    rows[4] = replace(rows[4], closing="59")
+    assert sum(Decimal(row.closing) for row in rows) == 0
+    result = reconcile(trial_balance=replace(source, accounts=tuple(rows)))
+    assert not result.trial_balance_arithmetic_valid
+    assert "TRIAL_BALANCE_ARITHMETIC_INVALID" in result.findings
+
+
+def test_cash_account_transaction_turnovers_must_match_cash_flow_line_trace():
+    source = cash()
+    account = replace(source.account_reconciliations[0], transaction_debit_turnover="29")
+    result = reconcile(cash_flow=replace(
+        source, account_reconciliations=(account,),
+    ))
+    assert not result.cash_account_totals_valid
+    assert "CASH_ACCOUNT_TURNOVER_OR_TOTALS_INVALID" in result.findings
+
+
+def test_all_statement_candidates_must_share_one_note_reference_snapshot():
+    result = reconcile(income_statement=replace(
+        income(), note_references_sha256="e" * 64,
+    ))
+    assert "CROSS_STATEMENT_NOTE_REFERENCE_SNAPSHOT_MISMATCH" in result.findings
+    assert not result.eligible_for_analyst_review
+
+
+def test_candidate_eligibility_must_be_a_real_boolean():
+    with pytest.raises(CoverageError):
+        reconcile(income_statement=replace(
+            income(), eligible_for_analyst_review="False",
+        ))
+
+
+def test_cash_scope_and_ledger_completeness_flags_cannot_be_smuggled_in():
+    with pytest.raises(CoverageError):
+        reconcile(cash_flow=replace(
+            cash(), cash_account_scope_owner_approved=True,
+        ))
+
+
+def test_equity_account_movement_must_match_trial_balance_source_row():
+    source = trial()
+    rows = list(source.accounts)
+    rows[1] = replace(rows[1], credit="39", closing="-99", debit_net_movement="-39")
+    result = reconcile(trial_balance=replace(source, accounts=tuple(rows)))
+    assert not result.equity_rollforward_valid
+    assert "EQUITY_STATEMENT_ROLLFORWARD_INVALID" in result.findings
+
+
+def test_internal_cash_transfer_line_ties_both_cash_accounts_to_trial_balance():
+    result = reconcile(cash_flow=cash_with_transfer(), trial_balance=trial_with_transfer())
+    assert result.eligible_for_analyst_review, result.findings
+    assert result.cash_flow_bridge_valid
+    assert result.cash_accounts_match_trial_balance
+    assert result.cash_account_totals_valid

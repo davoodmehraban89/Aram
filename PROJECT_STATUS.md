@@ -161,3 +161,15 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## 2026-10-31 — multi-statement mapping exact-head CI checkpoint
 - Final implementation head `3b40f298aa5c59a0360c57ea6821636c54e87e16` passed [Backend CI 41175299724](https://github.com/davoodmehraban89/Aram/actions/runs/41175299724): 396 tests passed, one existing GitHub Actions Node.js deprecation warning; Alembic upgrade/downgrade and Python compileall succeeded.
 - PR #68 remains Draft and unmerged. Mapping labels and accounting classifications are still untrusted workbook inputs; no official financial statement, authenticated source completeness, finance-owner approval or C1/C2/C3 signoff is claimed.
+
+
+## 2026-10-31 — actual five-statement builder integration and detail hardening (DRAFT)
+- Child branch `codex/aram-five-statement-integration-20261031`, Draft PR #69, based on PR #68's multi-statement mapping branch.
+- Added an end-to-end synthetic Pilot workbook test that invokes the actual BS, IS, EQ, direct-CF and TB builders against identical workbook bytes, then reconciles the five resulting candidates. Expected synthetic outputs: BS 100=10+90; IS net 20=EQ net-profit movement 20; EQ 70+20=90; cash 40+10=50; TB debit/credit turnover 60/60 and opening/closing net zero.
+- A second end-to-end test omits a cash transaction and verifies the combined gate blocks. Cross-check now re-aggregates BS/IS/EQ details, ties EQ account movement rows to TB, validates each TB row roll-forward, ties cash-flow line turnovers to each cash account including both transfer sides, and requires a common BS/IS/EQ reference snapshot.
+- Synthetic CI and final-head verification pending. No real finance files, DB migration, accepted branch, approvals or release changed.
+
+
+## 2026-10-31 — five-statement integration exact-head checkpoint
+- PR #69 final implementation SHA `b669fc29ab8f85a44b57655b23e26d12b705e215` passed [Backend CI 41183115444](https://github.com/davoodmehraban89/Aram/actions/runs/41183115444): 408 tests passed; Alembic upgrade/downgrade and compileall passed. One GitHub Actions Node.js 20 deprecation warning remains for the existing checkout/setup-python actions.
+- Three sequential internal engineering passes (functional, quality/security, edge/misuse) recorded in PR #69. These are not independent C1/C2/C3 or finance-owner approvals. PR remains Draft/unmerged.
