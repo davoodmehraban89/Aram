@@ -154,6 +154,8 @@ def test_all_five_statements_tie_exactly_without_claiming_approval():
     assert result.cash_flow_bridge_valid
     assert result.equity_rollforward_valid
     assert result.trial_balance_arithmetic_valid
+    assert result.cash_accounts_match_trial_balance
+    assert result.cash_account_totals_valid
     assert len(result.selected_cash_notes) == 1
     assert not result.source_ledger_completeness_verified
     assert not result.accounting_policy_authorized
