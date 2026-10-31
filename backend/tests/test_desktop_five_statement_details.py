@@ -220,7 +220,7 @@ def test_detail_filter_is_casefolded_and_handles_no_match():
     assert filter_preview_details(rows, statement="همه", query="no-such-account") == ()
 
 
-@pytest.mark.parametrize("query", ["x" * 257, "bad\\nquery", "bad\\u202equery"])
+@pytest.mark.parametrize("query", ["x" * 257, "bad\nquery", "bad\u202equery"])
 def test_detail_filter_rejects_oversized_and_unsafe_queries(query):
     from aram_backend.desktop_five_statement_details import filter_preview_details
     rows = build_preview_details(build_pipeline())
@@ -236,7 +236,7 @@ def test_detail_filter_rejects_invalid_statement_or_mutated_row():
     rows = build_preview_details(build_pipeline())
     with pytest.raises(CoverageError, match="SEARCH_STATEMENT"):
         filter_preview_details(rows, statement="all", query="")
-    forged = (replace(rows[0], trace="hidden\\ncontrol"),) + rows[1:]
+    forged = (replace(rows[0], trace="hidden\ncontrol"),) + rows[1:]
     with pytest.raises(CoverageError, match="SEARCH_ROW"):
         filter_preview_details(forged, statement="همه", query="")
     with pytest.raises(CoverageError, match="SEARCH_ROWS"):
