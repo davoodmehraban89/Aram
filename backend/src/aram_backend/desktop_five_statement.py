@@ -804,8 +804,10 @@ def ui_valid_smoke_test() -> int:
             original_details = window._detail_rows
             if not original_details:
                 return 34
-            repeats = MAX_DETAIL_ROWS // len(original_details)
-            window._detail_rows = original_details * repeats
+            repeats, remainder = divmod(MAX_DETAIL_ROWS, len(original_details))
+            window._detail_rows = (
+                original_details * repeats + original_details[:remainder]
+            )
             if len(window._detail_rows) != MAX_DETAIL_ROWS:
                 return 46
             window.detail_filter_var.set("تراز آزمایشی")
@@ -815,9 +817,13 @@ def ui_valid_smoke_test() -> int:
             window.update_idletasks()
             if not wait_for_filter(window):
                 return 42
-            expected_trial_balance = sum(
-                row.statement == "تراز آزمایشی" for row in original_details
-            ) * repeats
+            expected_trial_balance = (
+                sum(row.statement == "تراز آزمایشی" for row in original_details) * repeats
+                + sum(
+                    row.statement == "تراز آزمایشی"
+                    for row in original_details[:remainder]
+                )
+            )
             if len(window._filtered_detail_rows) != expected_trial_balance:
                 return 48
             if len(window.detail_tree.get_children()) != 200:
