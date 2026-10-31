@@ -722,7 +722,7 @@ def ui_valid_smoke_test() -> int:
             ):
                 return 31
             window.detail_filter_var.set("سود و زیان")
-            window.detail_search_var.set("Revenue")
+            window.detail_search_var.set("یادداشت R01")
             window._apply_detail_filter()
             filtered = window.detail_tree.get_children()
             if len(filtered) != 1:
