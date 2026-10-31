@@ -5,7 +5,7 @@ from io import BytesIO
 import json
 
 import pytest
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.pilot_workbook import SHEET_HEADERS
@@ -231,3 +231,43 @@ def test_all_zero_note_reference_does_not_crash_exact_decimal_difference():
     assert reviewed.matched_for_analyst_review
     assert reviewed.notes[0].difference == "0"
     assert reviewed.candidate_closing_exposure == "0"
+
+
+def test_one_account_can_reconcile_to_multiple_distinct_statement_notes():
+    source = workbook()
+    book = load_workbook(BytesIO(source))
+    book["Notes"].append([
+        "001", 1404, "EQ", "Equity", "E01", "Equity note", "", "",
+    ])
+    headers = SHEET_HEADERS["Mapping"]
+    base = {
+        header: book["Mapping"].cell(2, index + 1).value
+        for index, header in enumerate(headers)
+    }
+    equity_mapping = dict(base)
+    equity_mapping.update({
+        "mapping_id": "M-EQ-001", "target_statement": "EQ",
+        "statement_section": "Equity", "note_number": "E01",
+    })
+    book["Mapping"].append([
+        equity_mapping.get(header) for header in headers
+    ])
+    updated = BytesIO()
+    book.save(updated)
+    book.close()
+
+    result = reconcile_workbook_for_review(
+        updated.getvalue(), company_code="001", fiscal_year=1404,
+        references=[
+            NoteReference("BS", "Assets", "N01", "", "126", "REF-BS"),
+            NoteReference("EQ", "Equity", "E01", "", "110.25", "REF-EQ"),
+        ],
+    )
+    assert result.matched_for_analyst_review
+    assert result.account_count == 2
+    assert result.candidate_mapped_accounts == 2
+    assert result.blocked_accounts == 0
+    notes = {(note.statement, note.note_number): note for note in result.notes}
+    assert notes[("BS", "N01")].candidate_closing_exposure == "126"
+    assert notes[("EQ", "E01")].candidate_closing_exposure == "110.25"
+    assert all(note.matched for note in result.notes)
