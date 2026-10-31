@@ -169,3 +169,7 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — cross-statement gate hardening
 - Cross-statement control now recomputes from detail: P&L totals from statement bridge, cash-flow categories from classified cash lines, TB totals from all account rows, and cash-account opening/turnover/closing/source-row against TB. Internal transfers are checked from line trace.
 - Based on PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`; exact final-head CI pending. Still no authenticated source completeness, financial approval, C1/C2/C3, official export or release.
+
+## 2026-10-31 — cross-statement exact-head verification
+- Cross-statement implementation SHA `34bf411430a2a87d2909c9dc5feb3ab65cb9294a`, CI [41171545629](https://github.com/davoodmehraban89/Aram/actions/runs/41171545629): 390 tests passed; Alembic round-trip and compileall passed.
+- PR #67 remains Draft. It is an arithmetic gate only; no source completeness proof, signed financial-owner policy, C1/C2/C3 approval, official report, GUI or installer.
