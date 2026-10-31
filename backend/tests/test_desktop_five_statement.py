@@ -239,6 +239,9 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
         window.detail_filter_var.set("سود و زیان")
         window.detail_search_var.set("یادداشت R01")
         window._apply_detail_filter()
+        assert window._filtering
+        assert str(window.detail_search_button.cget("state")) == "disabled"
+        window.update_idletasks()
         for _ in range(500):
             window.update()
             if not window._filtering:
