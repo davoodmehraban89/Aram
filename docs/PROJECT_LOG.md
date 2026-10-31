@@ -355,3 +355,10 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — cross-statement gate verification
 - Candidate implementation SHA `34bf411430a2a87d2909c9dc5feb3ab65cb9294a`, [CI 41171545629](https://github.com/davoodmehraban89/Aram/actions/runs/41171545629): 390 passed, 1 existing third-party deprecation warning; Alembic round-trip and compileall passed.
 - Exact final head includes cash account↔TB detail, line-level cash flow bridge and five-statement checks. PR #67 remains Draft; no release or finance approval.
+
+
+### 2026-10-31 — actual five-statement pipeline integration
+- Actor: ChatGPT engineering; branch `codex/aram-five-statement-integration-20261031`, child of Draft PR #68.
+- Added `tests/test_five_statement_pipeline_integration.py`: a single synthetic Pilot XLSX is passed through the actual BS, IS, EQ, direct cash flow and TB builders. The five typed candidates then pass through the cross-statement gate. The fixture exercises multi-statement account mappings and a current-year profit note; a missing cash transaction blocks the pipeline.
+- Hardened cross-statement detail: BS/IS line totals, EQ account→note→component summaries and EQ account↔TB source rows, row-level TB rollforwards, cash-flow lines↔per-cash-account transaction turnovers (including transfer counterpart side), shared note-reference hash and non-forgeable false approval flags.
+- PR #69 remains Draft. Exact-head CI and three internal adversarial reviews are pending. All inputs synthetic; no production financial workbook, migration, release or finance approval touched.
