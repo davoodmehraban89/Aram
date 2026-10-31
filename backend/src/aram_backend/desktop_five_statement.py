@@ -19,7 +19,9 @@ from aram_backend.desktop_five_statement_core import (
     DesktopFiveInputError, DesktopFiveStatementController,
 )
 from aram_backend.desktop_five_statement_figures import build_preview_figures
-from aram_backend.desktop_five_statement_details import PreviewDetail, build_preview_details
+from aram_backend.desktop_five_statement_details import (
+    PreviewDetail, build_preview_details, filter_preview_details,
+)
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.synthetic_five_statement_demo import (
     pipeline_manifest, source_workbook,
@@ -63,6 +65,9 @@ class FiveStatementWindow(tk.Tk):
         self._busy = False
         self._detail_rows: tuple[PreviewDetail, ...] = ()
         self._filtered_detail_rows: tuple[PreviewDetail, ...] = ()
+        self._filter_events: Queue[tuple[int, tuple[PreviewDetail, ...], str | None]] = Queue()
+        self._detail_filter_generation = 0
+        self._filtering = False
         self._detail_page = 0
         self._detail_page_size = 200
         self.title(TITLE)
@@ -385,24 +390,62 @@ class FiveStatementWindow(tk.Tk):
         self.manifest_button.configure(state=selectable)
         self.clear_button.configure(state=selectable)
         self.run_button.configure(state=executable)
-        self.detail_filter_combo.configure(state="disabled" if self._busy else "readonly")
-        self.detail_search_entry.configure(state=selectable)
-        self.detail_search_button.configure(state=selectable)
+        filter_disabled = self._busy or self._filtering
+        self.detail_filter_combo.configure(state="disabled" if filter_disabled else "readonly")
+        self.detail_search_entry.configure(state="disabled" if filter_disabled else "normal")
+        self.detail_search_button.configure(state="disabled" if filter_disabled else "normal")
         for i in (0, 1, 3):
             self.file_menu.entryconfigure(i, state=selectable)
         self.file_menu.entryconfigure(2, state=executable)
         self._render_detail_page()
 
     def _apply_detail_filter(self) -> None:
+        if self._busy or self._filtering:
+            return
         statement = self.detail_filter_var.get()
-        query = self.detail_search_var.get().strip().casefold()
-        self._filtered_detail_rows = tuple(
-            row for row in self._detail_rows
-            if (statement == "همه" or row.statement == statement)
-            and (not query or query in " ".join(row.values()).casefold())
-        )
-        self._detail_page = 0
-        self._render_detail_page()
+        query = self.detail_search_var.get()
+        self._detail_filter_generation += 1
+        token = self._detail_filter_generation
+        rows = self._detail_rows
+        self._filtering = True
+        self.detail_status.set("جستجو در ریز اقلام در حال انجام است…")
+        self._refresh()
+
+        def worker() -> None:
+            try:
+                filtered = filter_preview_details(
+                    rows, statement=statement, query=query,
+                )
+            except CoverageError as exc:
+                self._filter_events.put((token, (), str(exc)))
+            except Exception:
+                self._filter_events.put((token, (), "DETAIL_SEARCH_FAILED"))
+            else:
+                self._filter_events.put((token, filtered, None))
+
+        Thread(target=worker, daemon=True).start()
+        self.after(50, lambda: self._poll_detail_filter(token))
+
+    def _poll_detail_filter(self, token: int) -> None:
+        if token != self._detail_filter_generation or not self._filtering:
+            return
+        try:
+            event_token, filtered, error = self._filter_events.get_nowait()
+        except Empty:
+            self.after(50, lambda: self._poll_detail_filter(token))
+            return
+        if event_token != self._detail_filter_generation:
+            self.after(50, lambda: self._poll_detail_filter(token))
+            return
+        self._filtering = False
+        if error is not None:
+            self._filtered_detail_rows = ()
+            self.detail_status.set("جستجو انجام نشد؛ کد خطا: " + error)
+            self._detail_page = 0
+        else:
+            self._filtered_detail_rows = filtered
+            self._detail_page = 0
+        self._refresh()
 
     def _render_detail_page(self) -> None:
         if not hasattr(self, "detail_tree") or not self.detail_tree.winfo_exists():
@@ -424,7 +467,7 @@ class FiveStatementWindow(tk.Tk):
             )
         else:
             self.detail_status.set("ردیفی با این فیلتر پیدا نشد")
-        button_state = "disabled" if self._busy else "normal"
+        button_state = "disabled" if self._busy or self._filtering else "normal"
         self.detail_prev_button.configure(
             state=(button_state if self._detail_page > 0 else "disabled"),
         )
@@ -433,7 +476,7 @@ class FiveStatementWindow(tk.Tk):
         )
 
     def _change_detail_page(self, delta: int) -> None:
-        if self._busy:
+        if self._busy or self._filtering:
             return
         self._detail_page += delta
         self._render_detail_page()
@@ -443,6 +486,8 @@ class FiveStatementWindow(tk.Tk):
             children = tree.get_children()
             if children:
                 tree.delete(*children)
+        self._detail_filter_generation += 1
+        self._filtering = False
         self._detail_rows = ()
         self._filtered_detail_rows = ()
         self._detail_page = 0
