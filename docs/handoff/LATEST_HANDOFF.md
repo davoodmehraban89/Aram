@@ -173,3 +173,10 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — cross-statement exact-head verification
 - Cross-statement implementation SHA `34bf411430a2a87d2909c9dc5feb3ab65cb9294a`, CI [41171545629](https://github.com/davoodmehraban89/Aram/actions/runs/41171545629): 390 tests passed; Alembic round-trip and compileall passed.
 - PR #67 remains Draft. It is an arithmetic gate only; no source completeness proof, signed financial-owner policy, C1/C2/C3 approval, official report, GUI or installer.
+
+
+## 2026-10-31 — actual five-statement pipeline integration (verification pending)
+- Current branch `codex/aram-five-statement-integration-20261031`, Draft PR #69, based on PR #68.
+- New end-to-end synthetic test runs the actual five builders (BS/IS/EQ/CF/TB) on the same immutable XLSX bytes, with BS 100=10+90, IS net 20=EQ profit movement 20, EQ 70+20=90, cash 40+10=50, and balanced TB turnover 60/60. A missing transaction blocks the combined gate.
+- Detail hardening: BS/IS line re-aggregation; EQ account/note/component rollforwards tied to TB account rows; TB per-account rollforward; cash line turnover recomputed for each cash account including both sides of internal transfers; shared note-reference snapshot; explicit rejection of forged approval/completeness flags.
+- See `docs/CROSS_STATEMENT_RECONCILIATION.md`. Synthetic-only. Exact-head CI and adversarial reviews remain pending. No finance-owner signoff, source completeness, C1/C2/C3 acceptance, official export, GUI, installer or release.
