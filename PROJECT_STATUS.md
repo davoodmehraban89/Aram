@@ -229,3 +229,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Backend CI 41229238766](https://github.com/davoodmehraban89/Aram/actions/runs/41229238766): **565 passed**, one Windows-only test skipped on Linux, one existing third-party warning; migration round-trip and compileall passed.
 - [Windows CI 41229238757](https://github.com/davoodmehraban89/Aram/actions/runs/41229238757): **95 passed**, one existing third-party warning; native Tk and frozen EXE validate synthetic five-statement preview, 28 summary metrics, detail search/filter, 200-row paging, blocked input and reset. Unsigned EXE and synthetic demo artifact uploaded for 7 days.
 - Three sequential internal engineering passes completed. PR #78 remains Draft/unmerged. No real source completeness, accounting approval, independent finance C1/C2/C3, signed installer or official release.
+
+
+## 2026-10-31 — asynchronous 75k-row detail search (DRAFT)
+- Child branch `codex/aram-windows-background-detail-search-20261031`, based on PR #78 head `7894ab136d5dfb9ae4076a98dd76e12f13e2e106`.
+- Moved statement detail filtering/search off Tk event loop to a generation-token-protected worker queue; UI displays a searching state, disables only filter/page controls, and ignores stale search results after reset or file change. Search helper validates query and each displayed cell, rejects >256-character/control/bidi queries, and avoids concatenating 11 cells into large temporary strings.
+- Tests cover all filter paths, unsafe/malformed query and rows, exact 75,000-row boundary; frozen Windows smoke runs a 75,000-row search and page navigation. Exact-head CI pending. No production writes, report export, official statements or approvals.
