@@ -180,3 +180,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - New end-to-end synthetic test runs the actual five builders (BS/IS/EQ/CF/TB) on the same immutable XLSX bytes, with BS 100=10+90, IS net 20=EQ profit movement 20, EQ 70+20=90, cash 40+10=50, and balanced TB turnover 60/60. A missing transaction blocks the combined gate.
 - Detail hardening: BS/IS line re-aggregation; EQ account/note/component rollforwards tied to TB account rows; TB per-account rollforward; cash line turnover recomputed for each cash account including both sides of internal transfers; shared note-reference snapshot; explicit rejection of forged approval/completeness flags.
 - See `docs/CROSS_STATEMENT_RECONCILIATION.md`. Synthetic-only. Exact-head CI and adversarial reviews remain pending. No finance-owner signoff, source completeness, C1/C2/C3 acceptance, official export, GUI, installer or release.
+
+
+## 2026-10-31 — five-statement integration verification
+- PR #69 exact implementation SHA `b669fc29ab8f85a44b57655b23e26d12b705e215` passed [Backend CI 41183115444](https://github.com/davoodmehraban89/Aram/actions/runs/41183115444): 408 tests; Alembic round-trip and compileall passed.
+- Three sequential internal engineering passes completed. PR #69 is still Draft/unmerged; no source completeness, authenticated cash scope, finance-owner signoff, independent C1/C2/C3, official export, GUI, installer or release.
