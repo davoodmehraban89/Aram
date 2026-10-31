@@ -200,3 +200,10 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 ## 2026-10-31 — five-statement CLI documentation-inclusive exact-head checkpoint
 - Latest PR #71 head `a5a874b1d227e52c1e70e00edcb8dc5b96a77c6a` passed [Backend CI 41184045992](https://github.com/davoodmehraban89/Aram/actions/runs/41184045992): 413 tests; Alembic upgrade/downgrade and compileall passed. Existing Actions Node.js 20 deprecation warning only.
 - PR #71 remains Draft/unmerged. CLI is local-only and nonofficial; no real source files, database writes, approval or release.
+
+
+## 2026-10-31 — Windows pilot bundled synthetic demonstration (DRAFT)
+- Child branch `codex/aram-synthetic-windows-demo-20261031`, based on PR #75 exact validated head `04397f8ad6c329d1f16d0e2d41981f57be43426d`.
+- Added an explicit opt-in generator for **entirely artificial** Pilot XLSX and manifest JSON, plus a warning notice; output path must be new and cannot overwrite existing files. Integration tests now share these synthetic fixtures with the generator to prevent drift.
+- Windows CI produces the synthetic bundle, runs it through the actual CLI, and exercises both the Python Tk success path and the **frozen EXE** success path via `--ui-valid-smoke` before uploading the unsigned inspection artifact.
+- No real financial/customer input, authoritative approvals, official financial statements, DB writes or release. CI and independent reviews still required.
