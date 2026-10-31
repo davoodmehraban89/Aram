@@ -213,3 +213,11 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Child branch `codex/aram-windows-statement-figures-20261031`, based on Draft PR #76 exact head `94e3e19fff7f8bd12fe3e4c0fe3479657d89c889`.
 - Adds 28 exact read-only typed candidate figures and cross-statement differences to a new Persian amounts tab; quantities retain Decimal scale without rounding. Blocked results are labeled diagnostic-only; new file selection or failure clears figures and status rows. Tests include typed synthetic figures, malformed amounts, blocked candidate display and actual Windows GUI/frozen EXE figures.
 - Not an official financial statement. No finance-owner approval, independent C1/C2/C3, real financial data, DB write, official export or release. Exact-head Backend/Windows CI pending.
+
+
+
+## 2026-10-31 — statement-detail drill-down for Windows pilot (DRAFT)
+- Child branch `codex/aram-windows-detail-review-20261031`, Draft PR #78, based on Draft PR #77.
+- Adds read-only line/account/transaction details for all five candidates: BS/IS note lines, EQ note and account movements, CF transactions and cash-account rollforwards, and TB accounts. Persian grid supports statement filtering, text search and 200-row pagination, with 75,000-row hard cap and no silent truncation.
+- Adds strict desktop provenance guard for exact typed candidate/reconciliation objects, non-approval flags, same source SHA-256/company/year, common BS/IS/EQ reference hash and critical cross-statement ties. All source/presentation/movement numeric strings are parsed as bounded Decimals before rendering.
+- Exact-head CI and Windows EXE verification pending. No official report, source-completeness proof, finance owner approval or production release.
