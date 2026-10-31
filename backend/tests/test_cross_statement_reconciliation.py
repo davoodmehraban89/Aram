@@ -445,7 +445,8 @@ def test_trial_balance_row_rollforward_mismatch_cannot_net_off_globally():
     source = trial()
     rows = list(source.accounts)
     rows[0] = replace(rows[0], closing="51")
-    rows[3] = replace(rows[3], closing="-41")
+    rows[4] = replace(rows[4], closing="59")
+    assert sum(Decimal(row.closing) for row in rows) == 0
     result = reconcile(trial_balance=replace(source, accounts=tuple(rows)))
     assert not result.trial_balance_arithmetic_valid
     assert "TRIAL_BALANCE_ARITHMETIC_INVALID" in result.findings
