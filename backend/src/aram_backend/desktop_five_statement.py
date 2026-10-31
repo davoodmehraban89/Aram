@@ -382,6 +382,15 @@ class FiveStatementWindow(tk.Tk):
         else:
             outcome = result
             try:
+                if (
+                    outcome.balance_sheet.equity_total
+                    != outcome.reconciliation.balance_sheet_equity_total
+                    or outcome.income_statement.net_result
+                    != outcome.reconciliation.income_statement_net_result
+                    or outcome.cash_flow.closing_cash_and_equivalents
+                    != outcome.reconciliation.cash_flow_closing_cash
+                ):
+                    raise CoverageError("DESKTOP_FIGURES_SUMMARY_MISMATCH")
                 figure_rows = build_preview_figures(outcome)
             except (CoverageError, AttributeError, TypeError, ValueError):
                 # Refuse to render unverified numeric data as a green preview.
