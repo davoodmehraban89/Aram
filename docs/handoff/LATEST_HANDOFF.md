@@ -224,3 +224,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — financial figures in Windows pilot (verification pending)
 - Branch `codex/aram-windows-statement-figures-20261031`, Draft PR child of #76. New `desktop_five_statement_figures.py` displays 28 exact, read-only, clearly nonofficial statement and reconciliation metrics in Persian, without new financial assumptions. Tk new tab clears on input changes, errors or reset. Windows valid smoke asserts key values.
 - Exact final-head CI still required; no source completeness, finance-owner approval, independent C1/C2/C3, signed installer, official export or release.
+
+
+
+## 2026-10-31 — Windows statement-detail review (verification pending)
+- Current child branch `codex/aram-windows-detail-review-20261031`, Draft PR #78 based on Draft PR #77.
+- New `desktop_five_statement_details.py` maps all BS/IS note lines, EQ note and account movements, cash transaction and cash-account reconciliation rows, and TB account details. Persian UI adds search, statement filter, 200-row pages and a 75k fail-closed cap.
+- `desktop_five_statement_integrity.py` verifies exact typed candidate/reconciliation objects, all approval flags remain false, common source hash/company/year/reference snapshot, and critical cross-statement ties before desktop figures/details. All displayed monetary fields are validated as bounded Decimals.
+- Backend/Windows exact-head CI pending. No real source files, official report, finance owner signoff, signed installer or production release.
