@@ -48,10 +48,44 @@ class AccountTrace:
     closing_exposure: str
     mapping_excel_row: int | None
     mapping_id: str | None
+    mapping_count: int
     target_statement: str | None
     target_section: str | None
     target_note: str | None
     target_subnote: str | None
+    included: bool
+
+
+@dataclass(frozen=True)
+class MappingTrace:
+    account_code: str
+    account_name: str
+    account_excel_row: int
+    source_row: int
+    closing_exposure: str
+    mapping_excel_row: int
+    mapping_id: str
+    target_statement: str
+    target_section: str
+    target_note: str
+    target_subnote: str
+    included: bool
+    mapping_count: int
+
+
+@dataclass(frozen=True)
+class MappingTrace:
+    account_code: str
+    account_name: str
+    account_excel_row: int
+    source_row: int
+    closing_exposure: str
+    mapping_excel_row: int
+    mapping_id: str
+    target_statement: str
+    target_section: str
+    target_note: str
+    target_subnote: str
     included: bool
 
 
@@ -79,6 +113,7 @@ class CoveragePreview:
     blocked_closing_exposure: str
     notes: tuple[NoteExposure, ...]
     accounts: tuple[AccountTrace, ...]
+    mappings: tuple[MappingTrace, ...]
     exceptions: tuple[CoverageException, ...]
     kind: str = "UNAPPROVED_MAPPING_COVERAGE_PREVIEW"
     financial_statement: bool = False
@@ -149,11 +184,13 @@ def _assert_visible(sheet: Any) -> None:
 def preview_mapping_coverage(
     content: bytes, *, company_code: str, fiscal_year: int
 ) -> CoveragePreview:
-    """Inspect one explicit company/year in a structurally valid Pilot workbook.
+    """Preview one source account against one mapping per target statement.
 
-    Only unique mapping rows marked Approved+Valid *inside the untrusted file*
-    contribute to a CANDIDATE closing-exposure grouping. Ambiguous, missing
-    and non-approved mappings stay blocked. No financial statement is created.
+    One account may feed multiple distinct statements (for example BS and EQ),
+    but may not feed multiple notes within the same statement. Each target is
+    independently file-marked Approved+Valid; those flags remain untrusted.
+    Source totals count each account once, while note exposures are grouped by
+    every approved mapping. No financial statement or approval is created.
     """
     if not isinstance(company_code, str) or not company_code.strip():
         raise CoverageError("COMPANY_SCOPE_REQUIRED")
@@ -181,21 +218,19 @@ def preview_mapping_coverage(
         )
 
     try:
-        book = load_workbook(BytesIO(content), read_only=False, data_only=False,
-                             keep_links=False)
+        book = load_workbook(
+            BytesIO(content), read_only=False, data_only=False, keep_links=False,
+        )
     except Exception as exc:
         raise CoverageError("WORKBOOK_INVALID") from exc
 
     try:
-        # The read-only preview must not ignore concealed data in helper
-        # sheets or unexpected extra tabs, even when Pilot preflight does.
         for sheet in book.worksheets:
             _assert_visible(sheet)
         for name, expected in SHEET_HEADERS.items():
             if name not in book:
                 raise CoverageError("WORKBOOK_INVALID")
-            headers = tuple(cell.value for cell in book[name][1])
-            if headers != expected:
+            if tuple(cell.value for cell in book[name][1]) != expected:
                 raise CoverageError("WORKBOOK_INVALID")
 
         company_rows = [
@@ -228,80 +263,114 @@ def preview_mapping_coverage(
             if scoped(row)
         }
 
-        mappings: dict[str, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+        mappings_by_account: dict[str, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
         for excel_row, row in _read_rows(book["Mapping"], SHEET_HEADERS["Mapping"]):
             if not scoped(row):
                 continue
             code = _literal_code(row["account_full_code"])
             if code not in accounts:
                 raise CoverageError("UNKNOWN_MAPPING_ACCOUNT")
-            mappings[code].append((excel_row, row))
+            mappings_by_account[code].append((excel_row, row))
 
         exceptions: list[CoverageException] = []
-        traces: list[AccountTrace] = []
+        account_traces: list[AccountTrace] = []
+        mapping_traces: list[MappingTrace] = []
         grouped: dict[tuple[str, str, str, str], list[tuple[str, Decimal]]] = defaultdict(list)
-        eligible: list[Decimal] = []
-        blocked: list[Decimal] = []
+        eligible_amounts: list[Decimal] = []
+        blocked_amounts: list[Decimal] = []
         all_amounts: list[Decimal] = []
 
         for code in sorted(accounts):
             excel_row, source, closing = accounts[code]
             all_amounts.append(closing)
-            matches = mappings.get(code, [])
-            candidate = False
-            target: tuple[str, str, str, str] | None = None
-            mapping_row: int | None = None
-            mapping_id: str | None = None
+            matches = mappings_by_account.get(code, [])
+            parsed: list[tuple[int, str, tuple[str, str, str, str], dict[str, Any]]] = []
+            by_statement: dict[str, list[tuple[int, str, tuple[str, str, str, str], dict[str, Any]]]] = defaultdict(list)
+
+            for mapping_row, mapping in matches:
+                mapping_id = _literal_code(mapping["mapping_id"])
+                target = (
+                    str(mapping["target_statement"]).strip(),
+                    str(mapping["statement_section"]).strip(),
+                    _literal_code(mapping["note_number"]),
+                    mapping["subnote_code"].strip()
+                    if isinstance(mapping["subnote_code"], str) else "",
+                )
+                if target not in note_keys:
+                    raise CoverageError("UNKNOWN_MAPPING_NOTE")
+                item = (mapping_row, mapping_id, target, mapping)
+                parsed.append(item)
+                by_statement[target[0]].append(item)
+
+            included_rows: list[tuple[int, str, tuple[str, str, str, str], dict[str, Any]]] = []
             if not matches:
                 exceptions.append(CoverageException("UNMAPPED_ACCOUNT", code, excel_row, ()))
-            elif len(matches) != 1:
-                exceptions.append(CoverageException(
-                    "AMBIGUOUS_ACCOUNT_MAPPING", code, excel_row,
-                    tuple(number for number, _ in matches),
-                ))
             else:
-                mapping_row, mapping = matches[0]
-                mapping_id = _literal_code(mapping["mapping_id"])
-                if (mapping["approval_status"] != "Approved"
-                        or mapping["validation_status"] != "Valid"):
-                    exceptions.append(CoverageException(
-                        "MAPPING_NOT_FILE_MARKED_APPROVED", code, excel_row,
-                        (mapping_row,),
-                    ))
-                else:
-                    target = (
-                        str(mapping["target_statement"]).strip(),
-                        str(mapping["statement_section"]).strip(),
-                        _literal_code(mapping["note_number"]),
-                        mapping["subnote_code"].strip()
-                        if isinstance(mapping["subnote_code"], str) else "",
-                    )
-                    if target not in note_keys:
-                        raise CoverageError("UNKNOWN_MAPPING_NOTE")
+                for statement in sorted(by_statement):
+                    statement_rows = by_statement[statement]
+                    if len(statement_rows) > 1:
+                        exceptions.append(CoverageException(
+                            "AMBIGUOUS_ACCOUNT_MAPPING", code, excel_row,
+                            tuple(sorted(item[0] for item in statement_rows)),
+                        ))
+                        continue
+                    mapping_row, mapping_id, target, mapping = statement_rows[0]
+                    if (mapping["approval_status"] != "Approved"
+                            or mapping["validation_status"] != "Valid"):
+                        exceptions.append(CoverageException(
+                            "MAPPING_NOT_FILE_MARKED_APPROVED", code, excel_row,
+                            (mapping_row,),
+                        ))
+                        continue
+                    included_rows.append((mapping_row, mapping_id, target, mapping))
                     grouped[target].append((code, closing))
-                    candidate = True
-            (eligible if candidate else blocked).append(closing)
-            traces.append(AccountTrace(
+
+            candidate = bool(included_rows)
+            if candidate:
+                eligible_amounts.append(closing)
+            else:
+                blocked_amounts.append(closing)
+
+            for mapping_row, mapping_id, target, mapping in parsed:
+                mapping_traces.append(MappingTrace(
+                    account_code=code, account_name=str(source["account_name"]),
+                    account_excel_row=excel_row, source_row=int(source["source_row"]),
+                    closing_exposure=str(closing), mapping_excel_row=mapping_row,
+                    mapping_id=mapping_id, target_statement=target[0],
+                    target_section=target[1], target_note=target[2],
+                    target_subnote=target[3],
+                    included=any(row[0] == mapping_row for row in included_rows),
+                ))
+
+            single = parsed[0] if len(parsed) == 1 else None
+            single_included = bool(single and any(row[0] == single[0] for row in included_rows))
+            account_traces.append(AccountTrace(
                 account_code=code, account_name=str(source["account_name"]),
                 account_excel_row=excel_row, source_row=int(source["source_row"]),
-                closing_exposure=str(closing), mapping_excel_row=mapping_row,
-                mapping_id=mapping_id,
-                target_statement=target[0] if target else None,
-                target_section=target[1] if target else None,
-                target_note=target[2] if target else None,
-                target_subnote=target[3] if target else None,
+                closing_exposure=str(closing),
+                mapping_excel_row=single[0] if single else None,
+                mapping_id=single[1] if single else None,
+                mapping_count=len(matches),
+                target_statement=single[2][0] if single and single_included else None,
+                target_section=single[2][1] if single and single_included else None,
+                target_note=single[2][2] if single and single_included else None,
+                target_subnote=single[2][3] if single and single_included else None,
                 included=candidate,
             ))
 
-        # Exact decimal aggregation, including mixed tiny and huge balances.
-        positive_digits = max((amount.adjusted() + 1 for amount in all_amounts if amount), default=1)
+        positive_digits = max(
+            (amount.adjusted() + 1 for amount in all_amounts if amount),
+            default=1,
+        )
         fractional_digits = max(0, *(-amount.as_tuple().exponent for amount in all_amounts))
-        precision = max(100, positive_digits + fractional_digits + len(str(len(all_amounts))) + 4)
+        precision = max(
+            100, positive_digits + fractional_digits + len(str(len(all_amounts))) + 4,
+        )
         with localcontext() as ctx:
             ctx.prec = precision
             source_total = sum(all_amounts, Decimal(0))
-            eligible_total = sum(eligible, Decimal(0))
-            blocked_total = sum(blocked, Decimal(0))
+            eligible_total = sum(eligible_amounts, Decimal(0))
+            blocked_total = sum(blocked_amounts, Decimal(0))
             if source_total != eligible_total + blocked_total:
                 raise CoverageError("COVERAGE_RECONCILIATION_FAILED")
             note_results = tuple(
@@ -309,7 +378,7 @@ def preview_mapping_coverage(
                     statement=key[0], section=key[1],
                     note_number=key[2], subnote_code=key[3],
                     closing_exposure=str(sum(
-                        (amount for _, amount in grouped[key]), Decimal(0)
+                        (amount for _, amount in grouped[key]), Decimal(0),
                     )),
                     account_codes=tuple(code for code, _ in grouped[key]),
                 )
@@ -320,13 +389,20 @@ def preview_mapping_coverage(
             company_code=scope[0], fiscal_year=fiscal_year,
             source_sha256=sha256(content).hexdigest(),
             workbook_company_status=status, account_count=len(accounts),
-            candidate_mapped_accounts=len(eligible), blocked_accounts=len(blocked),
+            candidate_mapped_accounts=len(eligible_amounts),
+            blocked_accounts=len(blocked_amounts),
             source_closing_exposure=str(source_total),
             candidate_closing_exposure=str(eligible_total),
             blocked_closing_exposure=str(blocked_total),
-            notes=note_results, accounts=tuple(traces),
+            notes=note_results, accounts=tuple(account_traces),
+            mappings=tuple(sorted(
+                mapping_traces,
+                key=lambda item: (item.account_code, item.mapping_excel_row),
+            )),
             exceptions=tuple(sorted(
-                exceptions, key=lambda entry: (entry.account_code, entry.code)
+                exceptions, key=lambda entry: (
+                    entry.account_code, entry.code, entry.mapping_excel_rows,
+                ),
             )),
         )
     finally:
