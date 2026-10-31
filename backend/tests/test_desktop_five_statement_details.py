@@ -32,7 +32,7 @@ def test_details_cover_every_candidate_line_and_account_row():
         "جریان وجوه نقد", "تراز آزمایشی",
     }
     cash = next(row for row in rows if row.item == "Cash and cash equivalents")
-    assert cash.opening_or_source == "50"
+    assert cash.source_detail == "50"
     assert cash.closing_or_presentation == "50"
     profit = next(row for row in rows if row.item == "Revenue")
     assert profit.closing_or_presentation == "40"
