@@ -338,3 +338,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Added paired transaction-level direct cash-flow calculator, strict bounded local manifest CLI, synthetic tests and `docs/CASH_FLOW_DIRECT_CANDIDATE.md`.
 - Aggregate debit/credit alone cannot identify operating/investing/financing. The candidate requires one cash/counterpart pair per transaction line, explicit cash-account registry and counterpart classification; cash-to-cash transfers excluded from activity totals and reconciled on both sides.
 - No real ledger/bank statement, database write, migration, customer data, financial approval or release touched. Keep Draft pending final-head CI, finance-owner policy and independent review.
+
+### 2026-10-31 — cash flow implementation verification
+- Candidate implementation SHA `392ac9e8d2a9806843bb572b8e4032d7e75e9843`, [CI 41170694898](https://github.com/davoodmehraban89/Aram/actions/runs/41170694898): 365 passed, 1 pre-existing third-party deprecation warning; Alembic round-trip and compileall successful.
+- Fixed CLI/module counterpart policy constant import mismatch after initial collection failure. Added explicit documentation for one-activity-per-counterpart-account limitation and a policy-hash regression test. Draft PR #66, no production release.
