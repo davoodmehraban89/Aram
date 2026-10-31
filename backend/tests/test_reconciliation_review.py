@@ -284,3 +284,63 @@ def test_preview_integrity_rejects_mapping_trace_amount_tampering():
     with pytest.raises(CoverageError) as exc:
         _validated_preview(data, altered)
     assert exc.value.code == "MAPPING_TRACE_SOURCE_MISMATCH"
+
+
+def test_ambiguous_bs_mapping_does_not_hide_valid_eq_mapping_or_pass_review():
+    source = workbook()
+    book = load_workbook(BytesIO(source))
+    book["Notes"].append([
+        "001", 1404, "BS", "Assets", "N02", "Second BS note", "", "",
+    ])
+    book["Notes"].append([
+        "001", 1404, "EQ", "Equity", "E01", "Equity note", "", "",
+    ])
+    headers = SHEET_HEADERS["Mapping"]
+    base = {
+        header: book["Mapping"].cell(2, index + 1).value
+        for index, header in enumerate(headers)
+    }
+    second_bs = dict(base)
+    second_bs.update({"mapping_id": "M-BS-SECOND", "note_number": "N02"})
+    book["Mapping"].append([second_bs.get(header) for header in headers])
+    equity_mapping = dict(base)
+    equity_mapping.update({
+        "mapping_id": "M-EQ-001", "target_statement": "EQ",
+        "statement_section": "Equity", "note_number": "E01",
+    })
+    book["Mapping"].append([equity_mapping.get(header) for header in headers])
+    output = BytesIO()
+    book.save(output)
+    book.close()
+    data = output.getvalue()
+
+    preview = preview_mapping_coverage(data, company_code="001", fiscal_year=1404)
+    account = next(row for row in preview.accounts if row.account_code == "0010")
+    assert account.included
+    assert account.mapping_count == 3
+    assert account.mapping_id is None
+    assert any(
+        item.included and item.target_statement == "EQ"
+        and item.account_code == "0010" for item in preview.mappings
+    )
+    assert not any(
+        item.included and item.target_statement == "BS"
+        and item.account_code == "0010" for item in preview.mappings
+    )
+    assert any(
+        item.code == "AMBIGUOUS_ACCOUNT_MAPPING"
+        and item.account_code == "0010" for item in preview.exceptions
+    )
+
+    reviewed = reconcile_workbook_for_review(
+        data, company_code="001", fiscal_year=1404,
+        references=[
+            ref("15.75", note="N01"),
+            ref("110.25", note="E01", statement="EQ", section="Equity"),
+        ],
+    )
+    assert not reviewed.matched_for_analyst_review
+    assert any(
+        finding.code == "BLOCKED_ACCOUNT_AMBIGUOUS_ACCOUNT_MAPPING"
+        and finding.account_code == "0010" for finding in reviewed.findings
+    )
