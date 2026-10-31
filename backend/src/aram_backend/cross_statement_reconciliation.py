@@ -174,7 +174,8 @@ def _balance_sheet_detail_bridge(balance: BalanceSheetCandidate) -> bool:
             _text(line.note_number, "BS_DETAIL_NOTE"),
             _text(line.subnote_code, "BS_DETAIL_SUBNOTE", blank_ok=True),
         )
-        if key in seen or line.category not in BALANCE_SHEET_CATEGORIES:
+        if (key in seen or not isinstance(line.category, str)
+                or line.category not in BALANCE_SHEET_CATEGORIES):
             return False
         seen.add(key)
         if type(line.sign_multiplier) is not int or line.sign_multiplier not in (-1, 1):
@@ -215,7 +216,8 @@ def _income_detail_bridge(income: IncomeStatementCandidate) -> bool:
             _text(line.note_number, "IS_DETAIL_NOTE"),
             _text(line.subnote_code, "IS_DETAIL_SUBNOTE", blank_ok=True),
         )
-        if key in seen or line.category not in INCOME_STATEMENT_CATEGORIES:
+        if (key in seen or not isinstance(line.category, str)
+                or line.category not in INCOME_STATEMENT_CATEGORIES):
             return False
         seen.add(key)
         if type(line.sign_multiplier) is not int or line.sign_multiplier not in (-1, 1):
@@ -286,7 +288,9 @@ def _equity_detail_bridge(
             _text(account.note_number, "EQ_DETAIL_NOTE"),
             _text(account.subnote_code, "EQ_DETAIL_SUBNOTE", blank_ok=True),
         )
-        if (account.equity_component not in EQUITY_COMPONENTS
+        if (not isinstance(account.equity_component, str)
+                or account.equity_component not in EQUITY_COMPONENTS
+                or not isinstance(account.movement_category, str)
                 or account.movement_category not in MOVEMENT_CATEGORIES
                 or type(account.sign_multiplier) is not int
                 or account.sign_multiplier not in (-1, 1)
@@ -335,7 +339,9 @@ def _equity_detail_bridge(
         )
         if key in note_by_key or key not in accounts_by_note:
             return False
-        if (note.equity_component not in EQUITY_COMPONENTS
+        if (not isinstance(note.equity_component, str)
+                or note.equity_component not in EQUITY_COMPONENTS
+                or not isinstance(note.movement_category, str)
                 or note.movement_category not in MOVEMENT_CATEGORIES):
             return False
         _text(note.line_label, "EQ_DETAIL_LABEL")
@@ -382,7 +388,9 @@ def _equity_detail_bridge(
     for item in equity.component_totals:
         if not isinstance(item, EquityComponentTotal):
             return False
-        if item.equity_component not in EQUITY_COMPONENTS or item.equity_component in component_by_key:
+        if (not isinstance(item.equity_component, str)
+                or item.equity_component not in EQUITY_COMPONENTS
+                or item.equity_component in component_by_key):
             return False
         component_by_key[item.equity_component] = item
     if set(component_by_key) != set(component_values):
@@ -572,13 +580,15 @@ def _cash_accounts_match_trial_balance(
 ) -> tuple[bool, bool]:
     findings_valid = True
     totals_valid = True
+    if (not isinstance(trial.accounts, tuple)
+            or not isinstance(cash.account_reconciliations, tuple)
+            or not isinstance(cash.cash_flow_lines, tuple)):
+        return False, False
     if (type(trial.account_count) is not int
             or trial.account_count != len(trial.accounts)
             or type(cash.cash_account_count) is not int
-            or not isinstance(cash.account_reconciliations, tuple)
             or cash.cash_account_count != len(cash.account_reconciliations)
-            or cash.cash_account_count < 1
-            or not isinstance(cash.cash_flow_lines, tuple)):
+            or cash.cash_account_count < 1):
         findings_valid = False
 
     trial_by_code: dict[str, TrialBalanceAccount] = {}
