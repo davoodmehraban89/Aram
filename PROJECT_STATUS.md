@@ -207,3 +207,9 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Added an explicit opt-in generator for **entirely artificial** Pilot XLSX and manifest JSON, plus a warning notice; output path must be new and cannot overwrite existing files. Integration tests now share these synthetic fixtures with the generator to prevent drift.
 - Windows CI produces the synthetic bundle, runs it through the actual CLI, and exercises both the Python Tk success path and the **frozen EXE** success path via `--ui-valid-smoke` before uploading the unsigned inspection artifact.
 - No real financial/customer input, authoritative approvals, official financial statements, DB writes or release. CI and independent reviews still required.
+
+
+## 2026-10-31 — native Windows financial-figures preview (DRAFT)
+- Child branch `codex/aram-windows-statement-figures-20261031`, based on Draft PR #76 exact head `94e3e19fff7f8bd12fe3e4c0fe3479657d89c889`.
+- Adds 28 exact read-only typed candidate figures and cross-statement differences to a new Persian amounts tab; quantities retain Decimal scale without rounding. Blocked results are labeled diagnostic-only; new file selection or failure clears figures and status rows. Tests include typed synthetic figures, malformed amounts, blocked candidate display and actual Windows GUI/frozen EXE figures.
+- Not an official financial statement. No finance-owner approval, independent C1/C2/C3, real financial data, DB write, official export or release. Exact-head Backend/Windows CI pending.
