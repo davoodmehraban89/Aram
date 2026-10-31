@@ -284,3 +284,33 @@ def test_decimal_differences_are_not_rounded_or_tolerated():
     result = reconcile(equity_changes=equity(closing="100.0000000001"))
     assert result.balance_sheet_equity_difference == "-1E-10"
     assert "BALANCE_SHEET_EQUITY_CLOSING_MISMATCH" in result.findings
+
+
+def test_cash_account_source_balances_and_turnovers_must_match_trial_balance():
+    source = trial()
+    rows = list(source.accounts)
+    rows[0] = replace(rows[0], debit="31")
+    result = reconcile(trial_balance=replace(source, accounts=tuple(rows)))
+    assert not result.cash_accounts_match_trial_balance
+    assert "CASH_ACCOUNTS_TRIAL_BALANCE_MISMATCH" in result.findings
+
+
+def test_cash_account_reconciliation_differences_block_cross_statement_gate():
+    source = cash()
+    row = replace(source.account_reconciliations[0], debit_difference="1")
+    result = reconcile(cash_flow=replace(source, account_reconciliations=(row,)))
+    assert not result.cash_account_totals_valid
+    assert "CASH_ACCOUNT_TURNOVER_OR_TOTALS_INVALID" in result.findings
+
+
+def test_duplicate_balance_sheet_note_rows_are_not_silently_overwritten():
+    source = bs()
+    result = reconcile(balance_sheet=bs(lines=source.lines + (source.lines[0],)))
+    assert "DUPLICATE_BALANCE_SHEET_NOTE_LINE" in result.findings
+
+
+def test_trial_balance_account_trace_count_must_be_complete():
+    source = trial()
+    result = reconcile(trial_balance=replace(source, account_count=3))
+    assert not result.cash_accounts_match_trial_balance
+    assert "CASH_ACCOUNTS_TRIAL_BALANCE_MISMATCH" in result.findings
