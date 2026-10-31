@@ -735,6 +735,13 @@ def reconcile_cross_statements(
     same_snapshot = len(hashes) == 1
     if not same_snapshot:
         findings.append("CROSS_STATEMENT_SOURCE_SNAPSHOT_MISMATCH")
+    reference_hashes = {
+        balance_sheet.note_references_sha256,
+        income_statement.note_references_sha256,
+        equity_changes.note_references_sha256,
+    }
+    if len(reference_hashes) != 1:
+        findings.append("CROSS_STATEMENT_NOTE_REFERENCE_SNAPSHOT_MISMATCH")
     source_hash = base.source_sha256
 
     for label, candidate, _ in candidates:
@@ -745,6 +752,9 @@ def reconcile_cross_statements(
         )
         if not eligible:
             findings.append(label.upper() + "_CANDIDATE_BLOCKED")
+
+    if not _balance_sheet_detail_bridge(balance_sheet):
+        findings.append("BALANCE_SHEET_DETAIL_INVALID")
 
     bs_computed_difference = _sum_exact([
         _money(balance_sheet.assets_total),
@@ -781,14 +791,19 @@ def reconcile_cross_statements(
         -_money(equity_changes.closing_equity_total),
     ])
     equity_rollforward_valid = (
-        equity_rollforward == 0
+        _equity_detail_bridge(equity_changes)
+        and equity_rollforward == 0
         and _money(equity_changes.rollforward_difference) == 0
     )
     if not equity_rollforward_valid:
         findings.append("EQUITY_STATEMENT_ROLLFORWARD_INVALID")
 
     bs_lines = {}
-    for line in balance_sheet.lines:
+    for line in (
+        balance_sheet.lines if isinstance(balance_sheet.lines, (tuple, list)) else ()
+    ):
+        if not isinstance(line, CandidateBalanceSheetLine):
+            continue
         key = (line.statement_section, line.note_number, line.subnote_code)
         if key in bs_lines:
             findings.append("DUPLICATE_BALANCE_SHEET_NOTE_LINE")
