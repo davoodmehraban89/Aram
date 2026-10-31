@@ -150,7 +150,7 @@ def analyze_trial_balance(
                 _money(str(row[key])) for key in ("opening", "debit", "credit", "closing")
             )
             movement = _sum_exact([debit, -credit])
-            if opening + movement != closing:
+            if _sum_exact([opening, movement, -closing]) != 0:
                 raise CoverageError("TRIAL_BALANCE_ROW_DELTA_INVALID")
             if debit < 0 or credit < 0:
                 raise CoverageError("TRIAL_BALANCE_NEGATIVE_TURNOVER")
