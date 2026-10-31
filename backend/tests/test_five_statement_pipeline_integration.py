@@ -1,7 +1,9 @@
 """End-to-end synthetic integration tests for all five ARAM statement engines."""
 from __future__ import annotations
 
+from dataclasses import asdict
 from io import BytesIO
+import json
 
 import pytest
 from openpyxl import Workbook
@@ -17,6 +19,7 @@ from aram_backend.income_statement_candidate import IncomeStatementLinePolicy
 from aram_backend.pilot_workbook import SHEET_HEADERS
 from aram_backend.reconciliation_review import NoteReference
 from aram_backend.five_statement_pipeline import build_five_statement_pipeline
+from aram_backend.five_statement_pipeline_cli import main as pipeline_cli_main
 
 
 COMPANY = "001"
@@ -209,6 +212,86 @@ def build_all(data: bytes | None = None, *, transactions=None):
     )
 
 
+
+def pipeline_manifest(*, transactions=None):
+    return {
+        "schema_version": 1,
+        "company_code": COMPANY,
+        "fiscal_year": YEAR,
+        "currency": "IRR",
+        "unit": "Rial",
+        "references": [asdict(item) for item in references()],
+        "balance_sheet_policies": [
+            {
+                "statement_section": "Current assets", "note_number": "C01",
+                "subnote_code": "", "category": "ASSETS", "sign_multiplier": 1,
+                "line_label": "Cash and cash equivalents",
+                "policy_evidence_ref": "SYNTH-POL-BS-CASH",
+            },
+            {
+                "statement_section": "Current assets", "note_number": "A01",
+                "subnote_code": "", "category": "ASSETS", "sign_multiplier": 1,
+                "line_label": "Trade receivables", "policy_evidence_ref": "SYNTH-POL-BS-AR",
+            },
+            {
+                "statement_section": "Current liabilities", "note_number": "L01",
+                "subnote_code": "", "category": "LIABILITIES", "sign_multiplier": -1,
+                "line_label": "Trade payables", "policy_evidence_ref": "SYNTH-POL-BS-AP",
+            },
+            {
+                "statement_section": "Equity", "note_number": "E01",
+                "subnote_code": "", "category": "EQUITY", "sign_multiplier": -1,
+                "line_label": "Total equity", "policy_evidence_ref": "SYNTH-POL-BS-EQ",
+            },
+        ],
+        "income_statement_policies": [
+            {
+                "statement_section": "Revenue", "note_number": "R01",
+                "subnote_code": "", "category": "REVENUE", "sign_multiplier": -1,
+                "line_label": "Revenue", "policy_evidence_ref": "SYNTH-POL-IS-REV",
+            },
+            {
+                "statement_section": "Cost of revenue", "note_number": "X01",
+                "subnote_code": "", "category": "COST_OF_REVENUE", "sign_multiplier": 1,
+                "line_label": "Cost of revenue", "policy_evidence_ref": "SYNTH-POL-IS-COST",
+            },
+        ],
+        "equity_movement_policies": [
+            {
+                "statement_section": "Share capital", "note_number": "E01",
+                "subnote_code": "", "equity_component": "SHARE_CAPITAL",
+                "movement_category": "CAPITAL_CONTRIBUTION", "sign_multiplier": -1,
+                "line_label": "Share capital", "policy_evidence_ref": "SYNTH-POL-EQ-CAP",
+            },
+            {
+                "statement_section": "Current year result", "note_number": "P01",
+                "subnote_code": "", "equity_component": "RETAINED_EARNINGS",
+                "movement_category": "NET_PROFIT_LOSS", "sign_multiplier": -1,
+                "line_label": "Current year profit", "policy_evidence_ref": "SYNTH-POL-EQ-PROFIT",
+            },
+        ],
+        "cash_accounts": [
+            {"account_code": "CASH", "evidence_ref": "SYNTH-CASH-SCOPE"},
+        ],
+        "counterpart_policies": [
+            {"account_code": "REV", "activity": "OPERATING", "evidence_ref": "SYNTH-REV-CLASS"},
+            {"account_code": "EXP", "activity": "OPERATING", "evidence_ref": "SYNTH-EXP-CLASS"},
+        ],
+        "transactions": [
+            asdict(item) for item in (
+                cash_transactions() if transactions is None else transactions
+            )
+        ],
+        "cash_balance_notes": [
+            {
+                "statement_section": "Current assets", "note_number": "C01",
+                "subnote_code": "", "evidence_ref": "SYNTH-CASH-NOTE-SELECTION",
+            },
+        ],
+    }
+
+
+
 def test_all_five_real_builders_reconcile_from_one_immutable_workbook():
     bs, income, equity, cash, trial, result = build_all()
 
@@ -284,4 +367,78 @@ def test_pipeline_result_is_nonofficial_and_freezes_reference_collection():
     with pytest.raises(CoverageError) as error:
         build_pipeline(refs=iter(references()))
     assert error.value.code == "INVALID_FIVE_STATEMENT_NOTE_REFERENCES"
+
+
+def test_offline_pipeline_cli_emits_json_without_creating_output_files(tmp_path, capsys):
+    workbook_path = tmp_path / "synthetic.xlsx"
+    manifest_path = tmp_path / "pipeline.json"
+    workbook_path.write_bytes(source_workbook())
+    manifest_path.write_text(
+        json.dumps(pipeline_manifest(), ensure_ascii=True),
+        encoding="utf-8",
+    )
+
+    exit_code = pipeline_cli_main([
+        "--file", str(workbook_path), "--manifest", str(manifest_path),
+    ])
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["eligible_for_analyst_review"] is True
+    assert payload["kind"] == "UNAPPROVED_FIVE_STATEMENT_PIPELINE_CANDIDATE"
+    assert payload["official_financial_statement"] is False
+    assert payload["releasable"] is False
+    assert {item.name for item in tmp_path.iterdir()} == {
+        "synthetic.xlsx", "pipeline.json",
+    }
+
+
+def test_offline_pipeline_cli_returns_blocked_exit_for_incomplete_transactions(
+    tmp_path, capsys,
+):
+    workbook_path = tmp_path / "synthetic.xlsx"
+    manifest_path = tmp_path / "pipeline.json"
+    workbook_path.write_bytes(source_workbook())
+    manifest_path.write_text(
+        json.dumps(pipeline_manifest(transactions=cash_transactions()[:-1])),
+        encoding="utf-8",
+    )
+
+    exit_code = pipeline_cli_main([
+        "--file", str(workbook_path), "--manifest", str(manifest_path),
+    ])
+    payload = json.loads(capsys.readouterr().out)
+    assert exit_code == 3
+    assert payload["eligible_for_analyst_review"] is False
+    assert "CASH_FLOW_CANDIDATE_BLOCKED" in payload["findings"]
+
+
+def test_pipeline_manifest_rejects_duplicate_keys_and_nonfinite_numbers():
+    from aram_backend.five_statement_pipeline_cli import parse_pipeline_manifest
+
+    with pytest.raises(CoverageError) as duplicate:
+        parse_pipeline_manifest(b'{"schema_version":1,"schema_version":1}')
+    assert duplicate.value.code == "DUPLICATE_MANIFEST_KEY"
+
+    document = pipeline_manifest()
+    document["fiscal_year"] = float("nan")
+    with pytest.raises(CoverageError) as nonfinite:
+        parse_pipeline_manifest(json.dumps(document).encode("utf-8"))
+    assert nonfinite.value.code == "PIPELINE_MANIFEST_NONFINITE_NUMBER"
+
+
+def test_pipeline_manifest_rejects_unknown_fields_and_missing_cash_registry():
+    from aram_backend.five_statement_pipeline_cli import parse_pipeline_manifest
+
+    document = pipeline_manifest()
+    document["unexpected"] = True
+    with pytest.raises(CoverageError) as unknown:
+        parse_pipeline_manifest(json.dumps(document).encode("utf-8"))
+    assert unknown.value.code == "PIPELINE_MANIFEST_SCHEMA_INVALID"
+
+    document = pipeline_manifest()
+    document["cash_accounts"] = []
+    with pytest.raises(CoverageError) as missing:
+        parse_pipeline_manifest(json.dumps(document).encode("utf-8"))
+    assert missing.value.code == "PIPELINE_MANIFEST_CASH_ACCOUNTS_INVALID"
 
