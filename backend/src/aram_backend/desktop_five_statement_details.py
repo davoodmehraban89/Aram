@@ -68,13 +68,17 @@ def _row(
     statement: str, item: object, reference: object, source_detail: object,
     opening: object = None, debit: object = None, credit: object = None,
     movement: object = None, closing: object = None, trace: object = "",
-    state: str = "",
+    state: str = "", source_amount: bool = False,
 ) -> PreviewDetail:
+    source_value = (
+        _amount(source_detail, "SOURCE") if source_amount
+        else _text(source_detail, "SOURCE", blank_ok=True)
+    )
     return PreviewDetail(
         statement=_text(statement, "STATEMENT"),
         item=_text(item, "ITEM"),
         reference=_text(reference, "REFERENCE", blank_ok=True),
-        source_detail=_text(source_detail, "SOURCE", blank_ok=True),
+        source_detail=source_value,
         opening_or_source=_optional_amount(opening, "OPENING"),
         debit_or_inflow=_optional_amount(debit, "DEBIT"),
         credit_or_outflow=_optional_amount(credit, "CREDIT"),
@@ -101,6 +105,7 @@ def build_preview_details(
             "ترازنامه", line.line_label,
             _note_reference(line.statement_section, line.note_number, line.subnote_code),
             line.source_closing_exposure, closing=line.presentation_amount,
+            source_amount=True,
             trace=(
                 f"دسته: {line.category} | ضریب: {line.sign_multiplier} | "
                 f"مرجع: {line.note_reference_evidence} | سیاست: {line.policy_evidence_ref}"
@@ -123,6 +128,7 @@ def build_preview_details(
             "تغییرات حقوق مالکانه", line.line_label,
             _note_reference(line.statement_section, line.note_number, line.subnote_code),
             line.source_closing_exposure, opening=line.opening_balance,
+            source_amount=True,
             movement=line.movement_amount, closing=line.closing_balance,
             trace=(
                 f"جزء: {line.equity_component} | نوع تغییر: {line.movement_category} | "
