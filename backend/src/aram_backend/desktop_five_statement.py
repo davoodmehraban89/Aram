@@ -720,6 +720,15 @@ def ui_valid_smoke_test() -> int:
     This is an automated widget check, not human review or official approval.
     """
     import time
+
+    def wait_for_filter(window: FiveStatementWindow) -> bool:
+        for _ in range(500):
+            window.update()
+            if not window._filtering:
+                return True
+            time.sleep(0.01)
+        return False
+
     with tempfile.TemporaryDirectory() as directory:
         folder = Path(directory)
         workbook = folder / "ARAM-SYNTHETIC-ONLY.xlsx"
@@ -747,6 +756,8 @@ def ui_valid_smoke_test() -> int:
                 time.sleep(0.02)
             if window._busy or window.controller.state != "ELIGIBLE":
                 return 22
+            if not wait_for_filter(window):
+                return 40
             if not window.controller.result or not window.controller.result.eligible_for_analyst_review:
                 return 23
             rows = window.outcome_tree.get_children()
@@ -774,6 +785,8 @@ def ui_valid_smoke_test() -> int:
             window.detail_filter_var.set("سود و زیان")
             window.detail_search_var.set("یادداشت R01")
             window._apply_detail_filter()
+            if not wait_for_filter(window):
+                return 41
             filtered = window.detail_tree.get_children()
             if len(filtered) != 1:
                 return 32
@@ -788,6 +801,8 @@ def ui_valid_smoke_test() -> int:
             repeats = 200 // len(original_details) + 1
             window._detail_rows = original_details * repeats
             window._apply_detail_filter()
+            if not wait_for_filter(window):
+                return 42
             if len(window.detail_tree.get_children()) != 200:
                 return 35
             if str(window.detail_next_button.cget("state")) != "normal":
@@ -802,6 +817,8 @@ def ui_valid_smoke_test() -> int:
                 return 39
             window._detail_rows = original_details
             window._apply_detail_filter()
+            if not wait_for_filter(window):
+                return 43
             if any(
                 window.outcome_tree.item(row, "values")[1] != "قابل بررسی"
                 for row in rows
