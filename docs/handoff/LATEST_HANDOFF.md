@@ -160,3 +160,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — direct cash flow exact-head verification
 - Cash flow implementation SHA `392ac9e8d2a9806843bb572b8e4032d7e75e9843`, CI [41170694898](https://github.com/davoodmehraban89/Aram/actions/runs/41170694898): 365 tests passed; migration round-trip and compileall passed.
 - PR #66 is still Draft. Direct cash flow requires paired source journal lines, cash account scope approval and counterpart activity policies; existing aggregated Pilot workbook alone is insufficient. No official statement, source completeness proof, independent approval, GUI or release.
+
+## 2026-10-31 — five-statement reconciliation gate
+- Current branch `codex/aram-cross-statement-controls-20261031`, parent unmerged PR #66 `6d7f949caeb73d3afefb7416608f06452df605e6`.
+- Adds typed cross-statement gate for same-source BS/IS/EQ/CF/TB candidates, including P&L↔equity profit, BS equity↔EQ closing, selected BS cash notes↔CF closing and cash-account↔TB account trace. See `docs/CROSS_STATEMENT_RECONCILIATION.md`.
+- Synthetic candidate tests only. Still no authenticated source completeness, signed accounting policy, C1/C2/C3 approvals, official exports, GUI or installer. Exact-head CI required.
