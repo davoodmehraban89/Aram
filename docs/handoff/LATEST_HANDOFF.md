@@ -185,3 +185,9 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 ## 2026-10-31 — five-statement integration verification
 - PR #69 exact implementation SHA `b669fc29ab8f85a44b57655b23e26d12b705e215` passed [Backend CI 41183115444](https://github.com/davoodmehraban89/Aram/actions/runs/41183115444): 408 tests; Alembic round-trip and compileall passed.
 - Three sequential internal engineering passes completed. PR #69 is still Draft/unmerged; no source completeness, authenticated cash scope, finance-owner signoff, independent C1/C2/C3, official export, GUI, installer or release.
+
+
+## 2026-10-31 — shared-snapshot five-statement orchestrator (verification pending)
+- Current branch `codex/aram-five-statement-orchestrator-20261031`, Draft PR #70, based on PR #69.
+- New `aram_backend.five_statement_pipeline.build_five_statement_pipeline(...)` freezes input collections, passes the same immutable workbook bytes to all five builders, shares one references tuple across BS/IS/EQ and calls the cross-statement gate. See `docs/FIVE_STATEMENT_PIPELINE.md`.
+- Returns a typed nonofficial result with all candidates/findings; blocked upstream candidates remain blocked. Tests now invoke the orchestrator end-to-end. Exact-head CI pending. No filesystem access, DB write, CLI, GUI, installer, approval or release.
