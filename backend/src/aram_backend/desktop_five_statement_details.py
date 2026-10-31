@@ -117,6 +117,7 @@ def build_preview_details(
             "سود و زیان", line.line_label,
             _note_reference(line.statement_section, line.note_number, line.subnote_code),
             line.source_closing_exposure, closing=line.presentation_amount,
+            source_amount=True,
             trace=(
                 f"دسته: {line.category} | ضریب: {line.sign_multiplier} | "
                 f"مرجع: {line.note_reference_evidence} | سیاست: {line.policy_evidence_ref}"
