@@ -430,23 +430,31 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
     line_ids: set[str] = set()
     transfer_values: list[Decimal] = []
     if (type(cash.transaction_count) is not int
+            or not isinstance(cash.cash_flow_lines, tuple)
             or cash.transaction_count != len(cash.cash_flow_lines)):
         return False
     for line in cash.cash_flow_lines:
         if not isinstance(line, CashFlowLine):
             return False
         line_id = _text(line.line_id, "CASH_FLOW_LINE_ID")
-        if line_id in line_ids:
+        _text(line.transaction_id, "CASH_FLOW_TRANSACTION_ID")
+        _text(line.posting_date, "CASH_FLOW_POSTING_DATE")
+        cash_code = _text(line.cash_account_code, "CASH_FLOW_CASH_ACCOUNT")
+        counterpart_code = _text(line.counterpart_account_code, "CASH_FLOW_COUNTERPART")
+        activity = _text(line.activity, "CASH_FLOW_ACTIVITY")
+        _text(line.source_evidence_ref, "CASH_FLOW_SOURCE_EVIDENCE")
+        _text(line.classification_evidence_ref, "CASH_FLOW_CLASSIFICATION_EVIDENCE")
+        if line_id in line_ids or cash_code == counterpart_code:
             return False
         line_ids.add(line_id)
         inflow = _money(line.cash_inflow)
         outflow = _money(line.cash_outflow)
         if inflow < 0 or outflow < 0 or not ((inflow > 0) ^ (outflow > 0)):
             return False
-        if line.activity in categories:
-            categories[line.activity]["inflows"].append(inflow)
-            categories[line.activity]["outflows"].append(outflow)
-        elif line.activity == "CASH_TRANSFER":
+        if activity in categories:
+            categories[activity]["inflows"].append(inflow)
+            categories[activity]["outflows"].append(outflow)
+        elif activity == "CASH_TRANSFER":
             transfer_values.append(_sum_exact([inflow, outflow]))
         else:
             return False
@@ -488,13 +496,16 @@ def _cash_flow_bridge(cash: DirectCashFlowCandidate) -> bool:
 
 def _trial_balance_bridge(trial: TrialBalanceDiagnostic) -> bool:
     if (type(trial.account_count) is not int
-            or trial.account_count != len(trial.accounts) or not trial.accounts):
+            or not isinstance(trial.accounts, tuple)
+            or trial.account_count != len(trial.accounts) or not trial.accounts
+            or type(trial.balanced_for_analyst_review) is not bool):
         return False
     seen: set[str] = set()
     openings: list[Decimal] = []
     debits: list[Decimal] = []
     credits: list[Decimal] = []
     closings: list[Decimal] = []
+    source_rows: set[int] = set()
     for account in trial.accounts:
         if not isinstance(account, TrialBalanceAccount):
             return False
@@ -502,11 +513,18 @@ def _trial_balance_bridge(trial: TrialBalanceDiagnostic) -> bool:
         if code in seen:
             return False
         seen.add(code)
+        if (type(account.source_row) is not int or account.source_row <= 0
+                or account.source_row in source_rows):
+            return False
+        source_rows.add(account.source_row)
+        _text(account.account_name, "TRIAL_BALANCE_ACCOUNT_NAME")
         opening = _money(account.opening)
         debit = _money(account.debit)
         credit = _money(account.credit)
         closing = _money(account.closing)
-        if _sum_exact([debit, -credit]) != _money(account.debit_net_movement):
+        if (debit < 0 or credit < 0
+                or _sum_exact([debit, -credit]) != _money(account.debit_net_movement)
+                or _sum_exact([opening, debit, -credit, -closing]) != 0):
             return False
         openings.append(opening)
         debits.append(debit)
@@ -536,34 +554,88 @@ def _cash_accounts_match_trial_balance(
     findings_valid = True
     totals_valid = True
     if (type(trial.account_count) is not int
-            or trial.account_count != len(trial.accounts)):
+            or trial.account_count != len(trial.accounts)
+            or type(cash.cash_account_count) is not int
+            or not isinstance(cash.account_reconciliations, tuple)
+            or cash.cash_account_count != len(cash.account_reconciliations)
+            or cash.cash_account_count < 1
+            or not isinstance(cash.cash_flow_lines, tuple)):
         findings_valid = False
+
     trial_by_code: dict[str, TrialBalanceAccount] = {}
     for account in trial.accounts:
         if (not isinstance(account, TrialBalanceAccount)
                 or not isinstance(account.account_code, str)
+                or account.account_code != account.account_code.strip()
+                or not account.account_code
                 or account.account_code in trial_by_code):
             findings_valid = False
             continue
         trial_by_code[account.account_code] = account
 
-    if (type(cash.cash_account_count) is not int
-            or cash.cash_account_count != len(cash.account_reconciliations)):
-        findings_valid = False
-    seen: set[str] = set()
-    opening_values: list[Decimal] = []
-    closing_values: list[Decimal] = []
+    cash_by_code: dict[str, CashAccountReconciliation] = {}
     for item in cash.account_reconciliations:
         if (not isinstance(item, CashAccountReconciliation)
                 or not isinstance(item.account_code, str)
-                or item.account_code in seen):
+                or item.account_code != item.account_code.strip()
+                or not item.account_code or item.account_code in cash_by_code):
             findings_valid = False
             continue
-        seen.add(item.account_code)
-        trial_account = trial_by_code.get(item.account_code)
+        cash_by_code[item.account_code] = item
+
+    line_debits: dict[str, list[Decimal]] = {
+        code: [] for code in cash_by_code
+    }
+    line_credits: dict[str, list[Decimal]] = {
+        code: [] for code in cash_by_code
+    }
+    for line in cash.cash_flow_lines:
+        if not isinstance(line, CashFlowLine):
+            findings_valid = False
+            continue
+        cash_code = line.cash_account_code
+        counterpart_code = line.counterpart_account_code
+        if (not isinstance(cash_code, str) or cash_code not in cash_by_code
+                or not isinstance(counterpart_code, str)
+                or counterpart_code not in trial_by_code):
+            findings_valid = False
+            continue
+        inflow = _money(line.cash_inflow)
+        outflow = _money(line.cash_outflow)
+        if inflow > 0:
+            line_debits[cash_code].append(inflow)
+        if outflow > 0:
+            line_credits[cash_code].append(outflow)
+        if line.activity == "CASH_TRANSFER":
+            if counterpart_code not in cash_by_code:
+                findings_valid = False
+                continue
+            if inflow > 0:
+                line_credits[counterpart_code].append(inflow)
+            elif outflow > 0:
+                line_debits[counterpart_code].append(outflow)
+            else:
+                findings_valid = False
+        elif counterpart_code in cash_by_code:
+            findings_valid = False
+
+    seen: set[str] = set()
+    opening_values: list[Decimal] = []
+    closing_values: list[Decimal] = []
+    for code, item in cash_by_code.items():
+        if code in seen:
+            findings_valid = False
+            continue
+        seen.add(code)
+        trial_account = trial_by_code.get(code)
         if trial_account is None:
             findings_valid = False
             continue
+        if (type(item.source_row) is not int or item.source_row <= 0
+                or item.source_row != trial_account.source_row
+                or item.account_name != trial_account.account_name):
+            findings_valid = False
+        _text(item.policy_evidence_ref, "CASH_ACCOUNT_POLICY_EVIDENCE")
         source_values = (
             _money(item.opening_balance), _money(item.source_debit_turnover),
             _money(item.source_credit_turnover), _money(item.closing_balance),
@@ -572,16 +644,20 @@ def _cash_accounts_match_trial_balance(
             _money(trial_account.opening), _money(trial_account.debit),
             _money(trial_account.credit), _money(trial_account.closing),
         )
-        if (source_values != trial_values
-                or item.source_row != trial_account.source_row):
+        if source_values != trial_values:
             findings_valid = False
+        transaction_debit = _sum_exact(line_debits[code])
+        transaction_credit = _sum_exact(line_credits[code])
+        if (
+            transaction_debit != _money(item.transaction_debit_turnover)
+            or transaction_credit != _money(item.transaction_credit_turnover)
+        ):
+            totals_valid = False
         debit_difference = _sum_exact([
-            _money(item.transaction_debit_turnover),
-            -_money(item.source_debit_turnover),
+            transaction_debit, -_money(item.source_debit_turnover),
         ])
         credit_difference = _sum_exact([
-            _money(item.transaction_credit_turnover),
-            -_money(item.source_credit_turnover),
+            transaction_credit, -_money(item.source_credit_turnover),
         ])
         rollforward = _sum_exact([
             source_values[0], source_values[1], -source_values[2], -source_values[3],
