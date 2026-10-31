@@ -233,6 +233,7 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
             + len(window.controller.result.cash_flow.cash_flow_lines)
             + len(window.controller.result.cash_flow.account_reconciliations)
             + len(window.controller.result.trial_balance.accounts)
+            + len(window.controller.result.mapping_coverage.mappings)
         )
         assert len(window._detail_rows) == expected_details
         assert any(row.item == "Revenue" for row in window._detail_rows)
@@ -248,10 +249,12 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
                 break
             time.sleep(0.01)
         assert not window._filtering
-        assert len(window.detail_tree.get_children()) == 1
-        assert window.detail_tree.item(
-            window.detail_tree.get_children()[0], "values",
-        )[1] == "Revenue"
+        filtered = [
+            window.detail_tree.item(row, "values")
+            for row in window.detail_tree.get_children()
+        ]
+        assert len(filtered) == 2
+        assert {row[1] for row in filtered} == {"Revenue", "حساب REV / Revenue"}
         window.clear_button.invoke()
         assert not window.outcome_tree.get_children()
         assert not window.figures_tree.get_children()
@@ -311,8 +314,10 @@ def test_new_detail_query_supersedes_inflight_search_and_ignores_stale_reply(
             time.sleep(0.01)
         assert not window._filtering
         rows = window.detail_tree.get_children()
-        assert len(rows) == 1
-        assert window.detail_tree.item(rows[0], "values")[1] == "Revenue"
+        assert len(rows) == 2
+        assert {window.detail_tree.item(row, "values")[1] for row in rows} == {
+            "Revenue", "حساب REV / Revenue",
+        }
 
         release_old.set()
         for _ in range(30):
@@ -322,8 +327,10 @@ def test_new_detail_query_supersedes_inflight_search_and_ignores_stale_reply(
         # in the pending event queue after the newer search finishes.
         assert window._filter_events.empty()
         rows = window.detail_tree.get_children()
-        assert len(rows) == 1
-        assert window.detail_tree.item(rows[0], "values")[1] == "Revenue"
+        assert len(rows) == 2
+        assert {window.detail_tree.item(row, "values")[1] for row in rows} == {
+            "Revenue", "حساب REV / Revenue",
+        }
         window.clear_button.invoke()
         assert not window.detail_tree.get_children()
         assert not window._detail_rows
