@@ -450,6 +450,11 @@ class FiveStatementWindow(tk.Tk):
     def _render_detail_page(self) -> None:
         if not hasattr(self, "detail_tree") or not self.detail_tree.winfo_exists():
             return
+        if self._filtering:
+            self.detail_status.set("جستجو در ریز اقلام در حال انجام است…")
+            self.detail_prev_button.configure(state="disabled")
+            self.detail_next_button.configure(state="disabled")
+            return
         children = self.detail_tree.get_children()
         if children:
             self.detail_tree.delete(*children)
