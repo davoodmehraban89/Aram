@@ -237,7 +237,7 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
         assert len(window._detail_rows) == expected_details
         assert any(row.item == "Revenue" for row in window._detail_rows)
         window.detail_filter_var.set("سود و زیان")
-        window.detail_search_var.set("Revenue")
+        window.detail_search_var.set("یادداشت R01")
         window._apply_detail_filter()
         assert len(window.detail_tree.get_children()) == 1
         assert window.detail_tree.item(
