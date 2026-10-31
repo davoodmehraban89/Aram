@@ -720,6 +720,7 @@ def ui_valid_smoke_test() -> int:
     This is an automated widget check, not human review or official approval.
     """
     import time
+    from aram_backend.desktop_five_statement_details import MAX_DETAIL_ROWS
 
     def wait_for_filter(window: FiveStatementWindow) -> bool:
         for _ in range(500):
@@ -785,6 +786,11 @@ def ui_valid_smoke_test() -> int:
             window.detail_filter_var.set("سود و زیان")
             window.detail_search_var.set("یادداشت R01")
             window._apply_detail_filter()
+            if not window._filtering:
+                return 44
+            if str(window.detail_search_button.cget("state")) != "disabled":
+                return 45
+            window.update_idletasks()
             if not wait_for_filter(window):
                 return 41
             filtered = window.detail_tree.get_children()
@@ -798,11 +804,22 @@ def ui_valid_smoke_test() -> int:
             original_details = window._detail_rows
             if not original_details:
                 return 34
-            repeats = 200 // len(original_details) + 1
+            repeats = MAX_DETAIL_ROWS // len(original_details)
             window._detail_rows = original_details * repeats
+            if len(window._detail_rows) != MAX_DETAIL_ROWS:
+                return 46
+            window.detail_filter_var.set("تراز آزمایشی")
             window._apply_detail_filter()
+            if not window._filtering:
+                return 47
+            window.update_idletasks()
             if not wait_for_filter(window):
                 return 42
+            expected_trial_balance = sum(
+                row.statement == "تراز آزمایشی" for row in original_details
+            ) * repeats
+            if len(window._filtered_detail_rows) != expected_trial_balance:
+                return 48
             if len(window.detail_tree.get_children()) != 200:
                 return 35
             if str(window.detail_next_button.cget("state")) != "normal":
@@ -816,6 +833,7 @@ def ui_valid_smoke_test() -> int:
             if len(window.detail_tree.get_children()) != 200:
                 return 39
             window._detail_rows = original_details
+            window.detail_filter_var.set("همه")
             window._apply_detail_filter()
             if not wait_for_filter(window):
                 return 43
