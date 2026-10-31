@@ -20,8 +20,8 @@ The five independent previews now need a single arithmetic gate before any combi
 4. **Equity:** balance-sheet equity total must exactly equal the statement-of-changes-in-equity closing total.
 5. **Profit:** income-statement net result must exactly equal the equity movement explicitly classified as `NET_PROFIT_LOSS`.
 6. **Cash:** caller must select the exact BS asset note/subnote keys that represent cash and cash equivalents, with a separate evidence reference for each. Their presentation total must exactly equal direct cash-flow closing cash.
-7. **Internal bridges:** recomputes the P&L bridge, equity opening + movement = closing, cash operating/investing/financing net flows and cash opening + net change = closing.
-8. **Cash account trace:** every cash account in the direct cash-flow candidate must exist in the trial-balance trace; opening, debit turnover, credit turnover, closing and source-row lineage must match exactly. The cash account list and opening/closing totals must also reconcile.
+7. **Internal bridges:** recomputes P&L and equity arithmetic, and re-aggregates operating/investing/financing cash inflows/outflows from the individual classified cash-flow lines. Internal transfers are recomputed from line trace and must net to zero. Cash opening + net change = closing.
+8. **Cash account trace:** every cash account in the direct cash-flow candidate must exist in the trial-balance trace; opening, debit turnover, credit turnover, closing and source-row lineage must match exactly. Transaction turnover differences and account roll-forward are recomputed, not trusted from summary fields. The cash account list and opening/closing totals must also reconcile.
 
 All comparisons use exact Decimal values and zero tolerance. A missing note selection, duplicate BS note line, mismatched source hash, wrong scope, blocked upstream candidate or arithmetic mismatch makes the result ineligible.
 
