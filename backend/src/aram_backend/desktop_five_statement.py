@@ -1,0 +1,473 @@
+"""Native, offline Windows pilot for five nonofficial ARAM statement candidates.
+
+No official statements, accounting approvals, database writes, or report exports.
+Tk is a presentation layer over the existing bounded local preview pipeline.
+"""
+from __future__ import annotations
+
+from queue import Empty, Queue
+import sys
+import tempfile
+from threading import Thread
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+from pathlib import Path
+from typing import Callable
+
+from aram_backend.desktop_five_statement_core import (
+    DesktopFiveInputError, DesktopFiveStatementController,
+)
+
+TITLE = "آرام | پنج صورت مالی — پیش‌نمایش آزمایشی و غیررسمی"
+ACTIONS = {
+    "file.workbook": "select_workbook",
+    "file.manifest": "select_manifest",
+    "file.run": "run_review",
+    "file.clear": "clear_selection",
+    "file.exit": "exit_application",
+    "help.about": "show_about",
+}
+MAX_VISIBLE_FINDINGS = 2000
+TAB_NAMES = ("بررسی پنج صورت مالی", "محدودیت‌ها", "راهنما")
+CANDIDATE_NAMES = (
+    ("balance_sheet", "ترازنامه"),
+    ("income_statement", "سود و زیان"),
+    ("equity_changes", "تغییرات حقوق مالکانه"),
+    ("cash_flow", "جریان وجوه نقد"),
+    ("trial_balance", "تراز آزمایشی"),
+)
+
+
+class FiveStatementWindow(tk.Tk):
+    """Only implemented native controls are enabled and clickable."""
+
+    def __init__(
+        self, *,
+        picker: Callable[[str], str] | None = None,
+        info: Callable[[str, str], None] | None = None,
+    ) -> None:
+        super().__init__()
+        self.controller = DesktopFiveStatementController()
+        self._picker = picker or self._pick_file
+        self._info = info or (
+            lambda heading, msg: messagebox.showinfo(heading, msg, parent=self)
+        )
+        self._events: Queue[tuple[int, object, str | None]] = Queue()
+        self._busy = False
+        self.title(TITLE)
+        self.geometry("1060x730")
+        self.minsize(840, 610)
+        self.configure(bg="#f3f6fa")
+        self.workbook_label = tk.StringVar(value="فایل اکسل انتخاب نشده است")
+        self.manifest_label = tk.StringVar(value="فایل سیاست‌ها/اسناد انتخاب نشده است")
+        self.overview = tk.StringVar(value="ابتدا هر دو فایل را انتخاب کنید")
+        self.status = tk.StringVar(value="آفلاین | فقط خواندن | بدون صدور یا تأیید")
+        self._configure_styles()
+        self._build_menu()
+        self._build_tabs()
+        self._register_shortcuts()
+        self._refresh()
+
+    def _configure_styles(self) -> None:
+        style = ttk.Style(self)
+        if "clam" in style.theme_names():
+            style.theme_use("clam")
+        style.configure("Aram.Title.TLabel", font=("Tahoma", 18, "bold"))
+        style.configure("Aram.Banner.TLabel", font=("Tahoma", 10, "bold"),
+                        background="#fff4d6", foreground="#76480d", padding=12)
+        style.configure("Aram.TButton", font=("Tahoma", 10), padding=(12, 8))
+        style.configure("Aram.Treeview", font=("Tahoma", 10), rowheight=28)
+        style.configure("Aram.Treeview.Heading", font=("Tahoma", 10, "bold"))
+
+    def _pick_file(self, kind: str) -> str:
+        if kind == "workbook":
+            return filedialog.askopenfilename(
+                parent=self, title="انتخاب اکسل پایلوت",
+                filetypes=[("Excel Workbook", "*.xlsx")],
+            )
+        return filedialog.askopenfilename(
+            parent=self, title="انتخاب JSON سیاست‌ها و اسناد",
+            filetypes=[("Pipeline JSON", "*.json")],
+        )
+
+    def _build_menu(self) -> None:
+        menu = tk.Menu(self)
+        self.file_menu = tk.Menu(menu, tearoff=0)
+        self.file_menu.add_command(
+            label="انتخاب اکسل", command=self.select_workbook, accelerator="Ctrl+O",
+        )
+        self.file_menu.add_command(
+            label="انتخاب فایل تنظیمات", command=self.select_manifest, accelerator="Ctrl+M",
+        )
+        self.file_menu.add_command(
+            label="اجرای کنترل", command=self.run_review, accelerator="Ctrl+R",
+        )
+        self.file_menu.add_command(
+            label="پاک‌کردن انتخاب", command=self.clear_selection,
+            accelerator="Ctrl+L",
+        )
+        self.file_menu.add_separator()
+        self.file_menu.add_command(
+            label="خروج", command=self.exit_application, accelerator="Ctrl+Q",
+        )
+        menu.add_cascade(label="فایل", menu=self.file_menu)
+        self.help_menu = tk.Menu(menu, tearoff=0)
+        self.help_menu.add_command(
+            label="درباره", command=self.show_about, accelerator="F1",
+        )
+        menu.add_cascade(label="راهنما", menu=self.help_menu)
+        self.config(menu=menu)
+
+    def _build_tabs(self) -> None:
+        outer = ttk.Frame(self, padding=18)
+        outer.pack(fill="both", expand=True)
+        ttk.Label(
+            outer, text="آرام — بررسی آزمایشی پنج صورت مالی",
+            style="Aram.Title.TLabel", anchor="e",
+        ).pack(fill="x")
+        ttk.Label(
+            outer,
+            text=(
+                "آزمایشی و فاقد مجوز انتشار | فقط پیش‌نمایش حسابداری "
+                "بر مبنای فایل‌های ارائه‌شده | بدون ثبت، تأیید یا خروجی رسمی"
+            ),
+            style="Aram.Banner.TLabel", anchor="e",
+        ).pack(fill="x", pady=(12, 16))
+        self.tabs = ttk.Notebook(outer)
+        self.tabs.pack(fill="both", expand=True)
+        main = ttk.Frame(self.tabs, padding=12)
+        limitations = ttk.Frame(self.tabs, padding=18)
+        help_tab = ttk.Frame(self.tabs, padding=18)
+        for tab, title in zip((main, limitations, help_tab), TAB_NAMES):
+            self.tabs.add(tab, text=title)
+
+        ttk.Label(main, textvariable=self.workbook_label, anchor="e").pack(
+            fill="x", pady=(0, 8),
+        )
+        ttk.Label(main, textvariable=self.manifest_label, anchor="e").pack(
+            fill="x", pady=(0, 8),
+        )
+        buttons = ttk.Frame(main)
+        buttons.pack(fill="x", pady=(4, 12))
+        self.workbook_button = ttk.Button(
+            buttons, text="انتخاب اکسل", command=self.select_workbook,
+            style="Aram.TButton",
+        )
+        self.workbook_button.pack(side="right", padx=4)
+        self.manifest_button = ttk.Button(
+            buttons, text="انتخاب تنظیمات", command=self.select_manifest,
+            style="Aram.TButton",
+        )
+        self.manifest_button.pack(side="right", padx=4)
+        self.run_button = ttk.Button(
+            buttons, text="اجرای کنترل پنج صورت مالی", command=self.run_review,
+            style="Aram.TButton",
+        )
+        self.run_button.pack(side="right", padx=4)
+        self.clear_button = ttk.Button(
+            buttons, text="پاک‌کردن انتخاب", command=self.clear_selection,
+            style="Aram.TButton",
+        )
+        self.clear_button.pack(side="right", padx=4)
+
+        ttk.Label(
+            main, textvariable=self.overview, anchor="e",
+            font=("Tahoma", 11, "bold"),
+        ).pack(fill="x", pady=(0, 8))
+        area = ttk.Frame(main)
+        area.pack(fill="both", expand=True)
+        columns = ("kind", "state", "detail")
+        self.outcome_tree = ttk.Treeview(
+            area, columns=columns, show="headings", style="Aram.Treeview",
+        )
+        for key, heading, width in (
+            ("kind", "خروجی", 230),
+            ("state", "وضعیت", 135),
+            ("detail", "توضیح / کد مغایرت", 560),
+        ):
+            self.outcome_tree.heading(key, text=heading)
+            self.outcome_tree.column(
+                key, width=width, anchor="e",
+                stretch=(key == "detail"),
+            )
+        scrollbar = ttk.Scrollbar(
+            area, orient="vertical", command=self.outcome_tree.yview,
+        )
+        self.outcome_tree.configure(yscrollcommand=scrollbar.set)
+        self.outcome_tree.grid(row=0, column=0, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
+        area.grid_columnconfigure(0, weight=1)
+        area.grid_rowconfigure(0, weight=1)
+
+        for item in (
+            "• موفقیت آزمون به‌معنای کامل‌بودن سندها، مانده‌ها یا نگاشت‌های حسابداری نیست.",
+            "• طبقه‌بندی جریان نقد به ریزاسناد جفت‌شده و فهرست حساب‌های نقد نیاز دارد.",
+            "• انتخاب یادداشت‌های نقد و سیاست‌های ارائه در JSON، صرفاً ادعای فایل است.",
+            "• تأیید مدیر مالی، کنترل مستقل C1/C2/C3 و قابلیت استناد رسمی وجود ندارد.",
+            "• تهیه، امضای دیجیتال، چاپ و صدور PDF/Excel رسمی در این پایلوت غیرفعال است.",
+            "• برای اجرای واقعی، کارشناس مسئول باید محرمانگی فایل‌ها را بررسی کند.",
+        ):
+            ttk.Label(
+                limitations, text=item, anchor="e", justify="right",
+                wraplength=900, font=("Tahoma", 11),
+            ).pack(fill="x", pady=9)
+        ttk.Label(
+            help_tab, anchor="e", justify="right", wraplength=920,
+            font=("Tahoma", 11),
+            text=(
+                "۱. یک فایل XLSX منطبق با قرارداد Pilot و یک manifest.json "
+                "مطابق docs/FIVE_STATEMENT_PIPELINE_CLI.md انتخاب کنید.\n\n"
+                "۲. کنترل را اجرا کنید. نتیجه‌ها و کدهای مغایرت فقط در حافظه "
+                "نمایش داده می‌شوند و در هیچ فایلی ذخیره نمی‌شوند.\n\n"
+                "۳. پاک‌کردن انتخاب، تمام نتایج قبلی را از پنجره پاک می‌کند.\n\n"
+                "۴. اجرای موفق فقط مجوز بررسی کارشناسی است؛ "
+                "نه صورت مالی قانونی، نه تأیید، نه مجوز چاپ یا صدور."
+            ),
+        ).pack(fill="x")
+        ttk.Label(outer, textvariable=self.status, anchor="e").pack(
+            fill="x", pady=(12, 0),
+        )
+
+    def _register_shortcuts(self) -> None:
+        keys = {
+            "<Control-o>": self.select_workbook,
+            "<Control-m>": self.select_manifest,
+            "<Control-r>": self.run_review,
+            "<Control-l>": self.clear_selection,
+            "<Control-q>": self.exit_application,
+            "<F1>": self.show_about,
+        }
+        for key, action in keys.items():
+            self.bind_all(key, lambda event, callback=action: callback())
+
+    def _refresh(self) -> None:
+        if not self.winfo_exists():
+            return
+        selectable = "disabled" if self._busy else "normal"
+        executable = (
+            "normal" if self.controller.can_run and not self._busy else "disabled"
+        )
+        self.workbook_button.configure(state=selectable)
+        self.manifest_button.configure(state=selectable)
+        self.clear_button.configure(state=selectable)
+        self.run_button.configure(state=executable)
+        for i in (0, 1, 3):
+            self.file_menu.entryconfigure(i, state=selectable)
+        self.file_menu.entryconfigure(2, state=executable)
+
+    def _clear_rows(self) -> None:
+        children = self.outcome_tree.get_children()
+        if children:
+            self.outcome_tree.delete(*children)
+
+    def select_workbook(self) -> None:
+        if self._busy:
+            return
+        selected = self._picker("workbook")
+        if not selected:
+            return
+        try:
+            self.controller.select_workbook(selected)
+        except DesktopFiveInputError as exc:
+            self.workbook_label.set("فایل اکسل معتبر انتخاب نشده است")
+            self.status.set(str(exc))
+        else:
+            self.workbook_label.set(str(self.controller.workbook_path))
+            self.status.set("اکسل انتخاب شد؛ کنترل مالی هنوز انجام نشده است")
+        self._clear_rows()
+        self.overview.set("نتیجه قبلی نامعتبر شد؛ کنترل را دوباره اجرا کنید")
+        self._refresh()
+
+    def select_manifest(self) -> None:
+        if self._busy:
+            return
+        selected = self._picker("manifest")
+        if not selected:
+            return
+        try:
+            self.controller.select_manifest(selected)
+        except DesktopFiveInputError as exc:
+            self.manifest_label.set("فایل JSON معتبر انتخاب نشده است")
+            self.status.set(str(exc))
+        else:
+            self.manifest_label.set(str(self.controller.manifest_path))
+            self.status.set("تنظیمات انتخاب شد؛ صحت آن هنوز تأیید نشده است")
+        self._clear_rows()
+        self.overview.set("نتیجه قبلی نامعتبر شد؛ کنترل را دوباره اجرا کنید")
+        self._refresh()
+
+    def run_review(self) -> None:
+        if self._busy or not self.controller.can_run:
+            return
+        self._busy = True
+        self._clear_rows()
+        self.overview.set("کنترل پنج صورت مالی در حال اجراست")
+        self.status.set("در حال خواندن امن فایل‌ها؛ هیچ داده‌ای نوشته نمی‌شود")
+        generation = self.controller.generation
+        self._refresh()
+
+        def worker() -> None:
+            try:
+                result = self.controller.validate()
+            except DesktopFiveInputError as exc:
+                self._events.put((generation, None, str(exc)))
+            except Exception:
+                # Do not disclose a private filesystem or financial traceback.
+                self._events.put((generation, None, "INTERNAL_REVIEW_FAILED"))
+            else:
+                self._events.put((generation, result, None))
+
+        Thread(target=worker, daemon=True).start()
+        self.after(80, self._poll)
+
+    def _poll(self) -> None:
+        try:
+            generation, result, error = self._events.get_nowait()
+        except Empty:
+            if self._busy:
+                self.after(80, self._poll)
+            return
+        if generation != self.controller.generation:
+            self._busy = False
+            self._refresh()
+            return
+        self._busy = False
+        if error is not None:
+            self.controller.result = None
+            self.controller.state = "INPUT_ERROR"
+            self._clear_rows()
+            self.overview.set("ورودی نامعتبر یا کنترل ناموفق")
+            self.status.set("کد خطا: " + error)
+        else:
+            outcome = result
+            eligible = outcome.eligible_for_analyst_review
+            self.overview.set(
+                "تطبیق حسابی مناسب بررسی کارشناسی؛ نه تأیید رسمی"
+                if eligible else "تطبیق مسدود شد؛ مغایرت‌ها را بررسی کنید"
+            )
+            for key, label in CANDIDATE_NAMES:
+                candidate = getattr(outcome, key)
+                approved = (
+                    candidate.balanced_for_analyst_review if key == "trial_balance"
+                    else candidate.eligible_for_analyst_review
+                )
+                self.outcome_tree.insert(
+                    "", "end", values=(
+                        label, "قابل بررسی" if approved else "مسدود",
+                        "صرفاً کنترل‌های تحلیلی؛ نه صدور صورت مالی",
+                    ),
+                )
+            for code in outcome.findings[:MAX_VISIBLE_FINDINGS]:
+                self.outcome_tree.insert("", "end", values=("مغایرت", "مسدود", code))
+            overflow = len(outcome.findings) - MAX_VISIBLE_FINDINGS
+            self.status.set(
+                ("منبع SHA256: " + outcome.source_sha256[:16] + "… | "
+                 + ("نتایج کامل نمایش داده شد" if overflow <= 0
+                    else f"{overflow} مغایرت دیگر نمایش داده نشده"))
+            )
+        self._refresh()
+
+    def clear_selection(self) -> None:
+        if self._busy:
+            return
+        self.controller.clear()
+        self.workbook_label.set("فایل اکسل انتخاب نشده است")
+        self.manifest_label.set("فایل سیاست‌ها/اسناد انتخاب نشده است")
+        self.overview.set("ابتدا هر دو فایل را انتخاب کنید")
+        self.status.set("انتخاب و نمایش پاک شد؛ فایل‌های ورودی تغییر نکردند")
+        self._clear_rows()
+        self._refresh()
+
+    def exit_application(self) -> None:
+        self.destroy()
+
+    def show_about(self) -> None:
+        self._info(
+            "درباره آرام",
+            "ARAM Five-Statement Pilot — UNSIGNED / UNRELEASED\n"
+            "Read-only local analyst preview. No accounting posting or approval.\n"
+            "Not an official financial statement, signed release, or audited source.",
+        )
+
+
+def self_test() -> int:
+    ctrl = DesktopFiveStatementController()
+    if ctrl.state != "EMPTY" or ctrl.can_run or ctrl.result is not None:
+        return 3
+    if len(ACTIONS) != 6 or len(CANDIDATE_NAMES) != 5:
+        return 4
+    return 0
+
+
+def ui_smoke_test() -> int:
+    """Windows-only actual Tk widget smoke against synthetic invalid inputs."""
+    with tempfile.TemporaryDirectory() as directory:
+        folder = Path(directory)
+        xlsx = folder / "synthetic.xlsx"
+        manifest = folder / "synthetic.json"
+        xlsx.write_bytes(b"not a valid workbook")
+        manifest.write_bytes(b"not valid json")
+        files = {"workbook": str(xlsx), "manifest": str(manifest)}
+        dialogs = []
+        window = FiveStatementWindow(
+            picker=lambda kind: files[kind],
+            info=lambda title, msg: dialogs.append(title),
+        )
+        try:
+            window.withdraw()
+            window.update_idletasks()
+            if str(window.run_button.cget("state")) != "disabled":
+                return 10
+            if window.tabs.index("end") != len(TAB_NAMES):
+                return 11
+            for key in ("<Control-o>", "<Control-m>", "<Control-r>",
+                        "<Control-l>", "<Control-q>", "<F1>"):
+                if not window.bind_all(key):
+                    return 12
+            window.workbook_button.invoke()
+            window.manifest_button.invoke()
+            if not window.controller.can_run:
+                return 13
+            if str(window.run_button.cget("state")) != "normal":
+                return 14
+            window.run_button.invoke()
+            import time
+            for _ in range(400):
+                window.update()
+                if not window._busy:
+                    break
+                time.sleep(0.02)
+            if window._busy or window.controller.state != "INPUT_ERROR":
+                return 15
+            window.help_menu.invoke(0)
+            if dialogs != ["درباره آرام"]:
+                return 16
+            window.clear_button.invoke()
+            if window.controller.can_run or window.outcome_tree.get_children():
+                return 17
+            window.file_menu.invoke(5)
+            return 0
+        finally:
+            try:
+                if window.winfo_exists():
+                    window.destroy()
+            except tk.TclError:
+                pass
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = list(sys.argv[1:] if argv is None else argv)
+    if args == ["--self-test"]:
+        return self_test()
+    if args == ["--ui-smoke"]:
+        return ui_smoke_test()
+    if args:
+        print("Supported: --self-test, --ui-smoke, or no arguments", file=sys.stderr)
+        return 2
+    window = FiveStatementWindow()
+    window.mainloop()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
