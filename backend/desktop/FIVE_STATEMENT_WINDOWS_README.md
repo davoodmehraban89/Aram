@@ -14,6 +14,24 @@ This is a **nonofficial, local-only Tkinter/ttk Windows inspection UI** for the 
 
 Selection checks file extensions, regular-file status, symlinks and size. Execution delegates to `safe_read_workbook` and `safe_read_cash_manifest` through the existing CLI function, which reopens local files with bounded reads and checks inode, modification and replacement. A failed input cannot leave a previous eligible result in view.
 
+## Try the application using a safe synthetic demonstration
+
+No company information is needed. The Windows CI inspection artifact now contains three separately labeled companion demo files in `DEMO-SYNTHETIC-ONLY/`:
+
+- `ARAM-SYNTHETIC-ONLY.xlsx` — six entirely artificial general ledger accounts and account-to-note mappings.
+- `ARAM-SYNTHETIC-ONLY.json` — matching synthetic note controls, presentation and equity policies, cash account scope and paired cash transactions.
+- `READ-ME-SYNTHETIC-ONLY.txt` — clear warning that this is neither a real company nor an approved financial statement.
+
+Extract the GitHub Actions artifact ZIP. Run the unsigned `AramFivePilot-UNRELEASED.exe` only if you understand and accept the risks of an unsigned test build. Select the demo XLSX with **انتخاب اکسل**, select the JSON with **انتخاب تنظیمات**, then press **اجرای کنترل پنج صورت مالی**. Five candidates should show **قابل بررسی**; this means *synthetic arithmetic checks passed*, never that a real financial statement was approved.
+
+Alternatively generate an identical *structural* demo locally using the backend source (the spreadsheet package metadata may differ between runs):
+
+```powershell
+python -m aram_backend.synthetic_five_statement_demo --output-dir "C:\\Temp\\ARAM-DEMO-SYNTHETIC-ONLY"
+```
+
+The target directory must **not already exist**. The generator never overwrites an existing directory or its contents. It writes exactly the labeled XLSX, JSON and notice and does not use external/customer data. The Windows pipeline tests both the generated inputs and the **frozen EXE** through the new `--ui-valid-smoke` flag.
+
 ## Development mode
 
 Install backend project dependencies and run:
@@ -29,6 +47,7 @@ For offline diagnostics without opening a Tk window:
 ```powershell
 python -m aram_backend.desktop_five_statement --self-test
 python -m aram_backend.desktop_five_statement --ui-smoke
+python -m aram_backend.desktop_five_statement --ui-valid-smoke
 ```
 
 The UI smoke opens native widgets, exercises buttons/menu/shortcuts and runs an intentionally malformed synthetic manifest to verify blocked handling. It is **not** a human usability acceptance test.
