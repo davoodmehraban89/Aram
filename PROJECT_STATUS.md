@@ -190,3 +190,8 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Child branch `codex/aram-five-statement-cli-20261031`, Draft PR #71, based on PR #70.
 - Adds a strict local JSON manifest CLI to run the five-statement orchestrator against a local XLSX. Uses existing stable regular-file/no-symlink readers, 20 MiB manifest bound, exact schemas, duplicate-key/nonfinite rejection and bounded row counts. Prints JSON to stdout; exit 0 = analyst preview, 3 = blocked candidate, 2 = unsafe/malformed input.
 - Added synthetic CLI success/block/schema tests. Exact-head CI pending. No real finance data, DB writes, official export or release.
+
+
+## 2026-10-31 — five-statement CLI exact-head checkpoint
+- PR #71 final implementation SHA `3a1d6988fb1f5049681f4668aa14a96321cc93b7` passed [Backend CI 41183945204](https://github.com/davoodmehraban89/Aram/actions/runs/41183945204): 413 tests passed; Alembic upgrade/downgrade and compileall passed. One existing GitHub Actions Node.js 20 deprecation warning remains.
+- Internal functional, quality/security and edge/misuse passes recorded in PR #71. PR remains Draft/unmerged; no real financial inputs, finance approvals or release.
