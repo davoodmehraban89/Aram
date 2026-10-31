@@ -270,6 +270,30 @@ def validate_desktop_pipeline_result(result: FiveStatementPipelineResult) -> Non
     if seen_note_keys != set(note_amounts):
         raise CoverageError("DESKTOP_PREVIEW_MAPPING_NOTE_INVALID")
 
+    # Every displayed BS/IS/EQ candidate note must use the same exact
+    # unrounded exposure as the account-to-note mapping built from this XLSX.
+    # Do not infer accounting signs or reconcile unlike statements together.
+    candidates_by_statement = (
+        ("BS", result.balance_sheet.lines),
+        ("IS", result.income_statement.lines),
+        ("EQ", result.equity_changes.note_movements),
+    )
+    covered_notes = {
+        (note.statement, note.section, note.note_number, note.subnote_code):
+            _money(note.closing_exposure)
+        for note in coverage.notes
+    }
+    for statement, lines in candidates_by_statement:
+        for line in lines:
+            key = (
+                statement, line.statement_section,
+                line.note_number, line.subnote_code,
+            )
+            if key not in covered_notes:
+                raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_MISSING")
+            if _money(line.source_closing_exposure) != covered_notes[key]:
+                raise CoverageError("DESKTOP_PREVIEW_NOTE_SOURCE_MISMATCH")
+
     overall = _require_bool(result, "eligible_for_analyst_review")
     if overall:
         if (not _require_bool(reconciliation, "eligible_for_analyst_review")
