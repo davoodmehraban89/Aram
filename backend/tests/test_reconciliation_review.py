@@ -1,16 +1,17 @@
 """Synthetic tests for independent reference reconciliation; no real finance data."""
 from __future__ import annotations
 
+from dataclasses import replace
 from io import BytesIO
 import json
 
 import pytest
 from openpyxl import Workbook, load_workbook
 
-from aram_backend.coverage_preview import CoverageError
+from aram_backend.coverage_preview import CoverageError, preview_mapping_coverage
 from aram_backend.pilot_workbook import SHEET_HEADERS
 from aram_backend.reconciliation_review import (
-    NoteReference, reconcile_workbook_for_review,
+    NoteReference, _validated_preview, reconcile_workbook_for_review,
 )
 
 
