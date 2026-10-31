@@ -250,7 +250,8 @@ def build_equity_changes_candidate(
             row = dict(zip(SHEET_HEADERS["Accounts"], values))
             if not any(value is not None and str(value).strip() for value in row.values()):
                 continue
-            if (row.get("company_code") == review.company_code
+            if (isinstance(row.get("company_code"), str)
+                    and row["company_code"].strip() == review.company_code
                     and type(row.get("fiscal_year")) is int
                     and row["fiscal_year"] == review.fiscal_year):
                 code = row.get("account_full_code")
