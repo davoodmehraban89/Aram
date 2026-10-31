@@ -136,3 +136,8 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Child working branch `codex/aram-bs-candidate-statement-20261031` adds pure read-only explicit-policy balance-sheet candidate; docs: `docs/BALANCE_SHEET_CANDIDATE.md`.
 - A zero arithmetic difference is **not accounting authorization**, audited sign policy, accepted note disclosure, or a released report. No real company financial source changed.
 - Independent C1/C2/C3, accepted parent chain, financial owner review, complete UI/installer and release validation remain pending.
+
+## 2026-10-31 — dependent income-statement candidate
+- Current candidate branch: `codex/aram-income-statement-candidate-20261031`, parent unmerged PR #62 SHA `d6d0fc5da47e7209fe21fe96d48548d1489ef8a7`.
+- Explicit six-category IS note presentation, exact Decimal bridge, synthetic tests and safe offline CLI. Documentation `docs/INCOME_STATEMENT_CANDIDATE.md`.
+- Still **not** an approved P&L report, tax statement, posted financial entry or releasable output. Actual ledger movements, verified finance policies, three independent approvals, GUI integration and Windows installer remain pending.
