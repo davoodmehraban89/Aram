@@ -835,7 +835,11 @@ def ui_valid_smoke_test() -> int:
             if str(window.detail_next_button.cget("state")) != "normal":
                 return 36
             window._change_detail_page(1)
-            if len(window.detail_tree.get_children()) != len(window._detail_rows) - 200:
+            # Each page is bounded to 200 *filtered* rows; it must not
+            # materialize the entire remaining 75k-row dataset into Tk.
+            if len(window.detail_tree.get_children()) != min(
+                window._detail_page_size, expected_trial_balance - window._detail_page_size,
+            ):
                 return 37
             if str(window.detail_prev_button.cget("state")) != "normal":
                 return 38
