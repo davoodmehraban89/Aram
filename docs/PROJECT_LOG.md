@@ -389,3 +389,8 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 ### 2026-10-31 — five-statement CLI verification
 - Exact implementation SHA `3a1d6988fb1f5049681f4668aa14a96321cc93b7`, [Backend CI 41183945204](https://github.com/davoodmehraban89/Aram/actions/runs/41183945204): 413 passed; Alembic round-trip and compileall passed. One existing Actions Node.js 20 deprecation warning.
 - Internal functional, quality/security and edge/misuse passes completed. PR #71 remains Draft; no finance-owner signoff, independent C1/C2/C3, official export or release.
+
+
+### 2026-10-31 — five-statement CLI documentation-inclusive verification
+- Latest PR #71 head `a5a874b1d227e52c1e70e00edcb8dc5b96a77c6a`, [CI 41184045992](https://github.com/davoodmehraban89/Aram/actions/runs/41184045992): 413 passed; migration round-trip and compileall passed. Existing Actions Node.js 20 deprecation warning only.
+- Draft PR #71 remains unmerged. No real financial data, finance-owner signoff, independent C1/C2/C3, official export or release.
