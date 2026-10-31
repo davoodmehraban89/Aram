@@ -147,3 +147,7 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Based on unmerged PR #66 SHA `6d7f949caeb73d3afefb7416608f06452df605e6`.
 - Gate now recomputes P&L/CF from statement lines and TB totals from all account rows; verifies every cash account's source row and balances/turnovers against TB; recomputes internal transfer neutrality; rejects duplicate BS note rows.
 - Cash-note selection is still user-supplied/untrusted. No authenticated finance policy, source completeness, independent C1/C2/C3 approval, official export or release. Exact-head CI pending.
+
+## 2026-10-31 — cross-statement exact-head CI checkpoint
+- Implementation head `34bf411430a2a87d2909c9dc5feb3ab65cb9294a` passed [Backend CI 41171545629](https://github.com/davoodmehraban89/Aram/actions/runs/41171545629): 390 tests, reversible Alembic upgrade/downgrade and compileall successful; one pre-existing third-party deprecation warning.
+- PR #67 remains Draft/unmerged. All results are unsigned analyst diagnostics; source completeness, accounting owner approval and independent C1/C2/C3 remain pending.
