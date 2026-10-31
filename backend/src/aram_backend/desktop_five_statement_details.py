@@ -110,7 +110,7 @@ def build_preview_details(
     for line in result.income_statement.lines:
         rows.append(_row(
             "سود و زیان", line.line_label,
-            f"{line.statement_section} / یادداشت {line.note_number} / {line.subnote_code}",
+            _note_reference(line.statement_section, line.note_number, line.subnote_code),
             line.source_closing_exposure, closing=line.presentation_amount,
             trace=(
                 f"دسته: {line.category} | ضریب: {line.sign_multiplier} | "
@@ -121,7 +121,7 @@ def build_preview_details(
     for line in result.equity_changes.note_movements:
         rows.append(_row(
             "تغییرات حقوق مالکانه", line.line_label,
-            f"{line.statement_section} / یادداشت {line.note_number} / {line.subnote_code}",
+            _note_reference(line.statement_section, line.note_number, line.subnote_code),
             line.source_closing_exposure, opening=line.opening_balance,
             movement=line.movement_amount, closing=line.closing_balance,
             trace=(
