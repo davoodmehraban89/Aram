@@ -225,9 +225,29 @@ def test_native_window_shows_real_successful_five_statement_result(tmp_path):
         assert len(amounts) == 28
         assert ("ترازنامه", "دارایی‌ها", "100", "پیش‌نویس قابل بررسی؛ غیررسمی") in amounts
         assert ("سود و زیان", "سود خالص", "20", "پیش‌نویس قابل بررسی؛ غیررسمی") in amounts
+        expected_details = (
+            len(window.controller.result.balance_sheet.lines)
+            + len(window.controller.result.income_statement.lines)
+            + len(window.controller.result.equity_changes.note_movements)
+            + len(window.controller.result.equity_changes.account_movements)
+            + len(window.controller.result.cash_flow.cash_flow_lines)
+            + len(window.controller.result.cash_flow.account_reconciliations)
+            + len(window.controller.result.trial_balance.accounts)
+        )
+        assert len(window._detail_rows) == expected_details
+        assert any(row.item == "Revenue" for row in window._detail_rows)
+        window.detail_filter_var.set("سود و زیان")
+        window.detail_search_var.set("Revenue")
+        window._apply_detail_filter()
+        assert len(window.detail_tree.get_children()) == 1
+        assert window.detail_tree.item(
+            window.detail_tree.get_children()[0], "values",
+        )[1] == "Revenue"
         window.clear_button.invoke()
         assert not window.outcome_tree.get_children()
         assert not window.figures_tree.get_children()
+        assert not window.detail_tree.get_children()
+        assert not window._detail_rows
         assert window.controller.result is None
         assert str(window.run_button.cget("state")) == "disabled"
     finally:
