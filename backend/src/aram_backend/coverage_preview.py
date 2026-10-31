@@ -70,23 +70,6 @@ class MappingTrace:
     target_note: str
     target_subnote: str
     included: bool
-    mapping_count: int
-
-
-@dataclass(frozen=True)
-class MappingTrace:
-    account_code: str
-    account_name: str
-    account_excel_row: int
-    source_row: int
-    closing_exposure: str
-    mapping_excel_row: int
-    mapping_id: str
-    target_statement: str
-    target_section: str
-    target_note: str
-    target_subnote: str
-    included: bool
 
 
 @dataclass(frozen=True)
