@@ -19,6 +19,7 @@ from aram_backend.desktop_five_statement_core import (
     DesktopFiveInputError, DesktopFiveStatementController,
 )
 from aram_backend.desktop_five_statement_figures import build_preview_figures
+from aram_backend.desktop_five_statement_details import PreviewDetail, build_preview_details
 from aram_backend.coverage_preview import CoverageError
 from aram_backend.synthetic_five_statement_demo import (
     pipeline_manifest, source_workbook,
@@ -34,7 +35,7 @@ ACTIONS = {
     "help.about": "show_about",
 }
 MAX_VISIBLE_FINDINGS = 2000
-TAB_NAMES = ("بررسی پنج صورت مالی", "خلاصه مبالغ", "محدودیت‌ها", "راهنما")
+TAB_NAMES = ("بررسی پنج صورت مالی", "خلاصه مبالغ", "ریز اقلام", "محدودیت‌ها", "راهنما")
 CANDIDATE_NAMES = (
     ("balance_sheet", "ترازنامه"),
     ("income_statement", "سود و زیان"),
@@ -60,6 +61,10 @@ class FiveStatementWindow(tk.Tk):
         )
         self._events: Queue[tuple[int, object, str | None]] = Queue()
         self._busy = False
+        self._detail_rows: tuple[PreviewDetail, ...] = ()
+        self._filtered_detail_rows: tuple[PreviewDetail, ...] = ()
+        self._detail_page = 0
+        self._detail_page_size = 200
         self.title(TITLE)
         self.geometry("1060x730")
         self.minsize(840, 610)
