@@ -113,10 +113,13 @@ def cash(*, closing="50", net="10", eligible=True):
 def trial(*, balanced=True):
     return TrialBalanceDiagnostic(
         company_code="001", fiscal_year=1404, source_sha256=SOURCE,
-        account_count=4, opening_debit_net_total="0",
+        account_count=2, opening_debit_net_total="0",
         debit_turnover_total="100", credit_turnover_total="100",
         closing_debit_net_total="0", movement_difference="0",
-        opening_to_closing_difference="0", findings=(), accounts=(),
+        opening_to_closing_difference="0", findings=(), accounts=(
+            TrialBalanceAccount("CASH1", "Cash", 2, 1, "40", "30", "20", "50", "10"),
+            TrialBalanceAccount("OFFSET", "Offset", 3, 2, "-40", "70", "80", "-50", "-10"),
+        ),
         balanced_for_analyst_review=balanced,
     )
 
