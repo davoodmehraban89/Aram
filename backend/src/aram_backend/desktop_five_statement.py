@@ -381,6 +381,30 @@ class FiveStatementWindow(tk.Tk):
             self.status.set("کد خطا: " + error)
         else:
             outcome = result
+            try:
+                figure_rows = build_preview_figures(outcome)
+            except (CoverageError, AttributeError, TypeError, ValueError):
+                # Refuse to render unverified numeric data as a green preview.
+                self.controller.result = None
+                self.controller.state = "INPUT_ERROR"
+                self._clear_rows()
+                self.overview.set("نمایش مبالغ نامعتبر؛ پیش‌نمایش مسدود شد")
+                self.status.set("DESKTOP_FIGURES_INVALID")
+                self._refresh()
+                return
+            self.amount_units.set(
+                "شرکت " + outcome.company_code
+                + " | سال " + str(outcome.fiscal_year)
+                + " | واحد " + outcome.cash_flow.unit
+                + " | ارز " + outcome.cash_flow.currency
+                + " | غیررسمی"
+            )
+            for figure in figure_rows:
+                self.figures_tree.insert(
+                    "", "end",
+                    values=(figure.statement, figure.label,
+                            figure.value, figure.state),
+                )
             eligible = outcome.eligible_for_analyst_review
             self.overview.set(
                 "تطبیق حسابی مناسب بررسی کارشناسی؛ نه تأیید رسمی"
