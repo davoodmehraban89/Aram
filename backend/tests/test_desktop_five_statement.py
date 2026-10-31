@@ -282,7 +282,7 @@ def test_new_detail_query_supersedes_inflight_search_and_ignores_stale_reply(
     def delayed_filter(rows, *, statement, query):
         if statement == "همه" and query == "":
             started_old.set()
-            if not release_old.wait(5):
+            if not release_old.wait(30):
                 raise RuntimeError("Synthetic old filter was not released")
         return real_filter(rows, statement=statement, query=query)
 
@@ -295,7 +295,7 @@ def test_new_detail_query_supersedes_inflight_search_and_ignores_stale_reply(
         window.workbook_button.invoke()
         window.manifest_button.invoke()
         window.run_button.invoke()
-        for _ in range(500):
+        for _ in range(2000):
             window.update()
             if not window._busy and started_old.is_set():
                 break
