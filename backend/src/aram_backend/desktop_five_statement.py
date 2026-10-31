@@ -385,16 +385,72 @@ class FiveStatementWindow(tk.Tk):
         self.manifest_button.configure(state=selectable)
         self.clear_button.configure(state=selectable)
         self.run_button.configure(state=executable)
+        self.detail_filter_combo.configure(state="disabled" if self._busy else "readonly")
+        self.detail_search_entry.configure(state=selectable)
+        self.detail_search_button.configure(state=selectable)
         for i in (0, 1, 3):
             self.file_menu.entryconfigure(i, state=selectable)
         self.file_menu.entryconfigure(2, state=executable)
+        self._render_detail_page()
+
+    def _apply_detail_filter(self) -> None:
+        statement = self.detail_filter_var.get()
+        query = self.detail_search_var.get().strip().casefold()
+        self._filtered_detail_rows = tuple(
+            row for row in self._detail_rows
+            if (statement == "همه" or row.statement == statement)
+            and (not query or query in " ".join(row.values()).casefold())
+        )
+        self._detail_page = 0
+        self._render_detail_page()
+
+    def _render_detail_page(self) -> None:
+        if not hasattr(self, "detail_tree") or not self.detail_tree.winfo_exists():
+            return
+        children = self.detail_tree.get_children()
+        if children:
+            self.detail_tree.delete(*children)
+        total = len(self._filtered_detail_rows)
+        pages = max(1, (total + self._detail_page_size - 1) // self._detail_page_size)
+        self._detail_page = min(max(0, self._detail_page), pages - 1)
+        start = self._detail_page * self._detail_page_size
+        end = min(start + self._detail_page_size, total)
+        for row in self._filtered_detail_rows[start:end]:
+            self.detail_tree.insert("", "end", values=row.values())
+        if total:
+            self.detail_status.set(
+                f"نمایش {start + 1} تا {end} از {total} ردیف | "
+                f"صفحه {self._detail_page + 1} از {pages} | هر صفحه حداکثر ۲۰۰ ردیف"
+            )
+        else:
+            self.detail_status.set("ردیفی با این فیلتر پیدا نشد")
+        button_state = "disabled" if self._busy else "normal"
+        self.detail_prev_button.configure(
+            state=(button_state if self._detail_page > 0 else "disabled"),
+        )
+        self.detail_next_button.configure(
+            state=(button_state if self._detail_page + 1 < pages else "disabled"),
+        )
+
+    def _change_detail_page(self, delta: int) -> None:
+        if self._busy:
+            return
+        self._detail_page += delta
+        self._render_detail_page()
 
     def _clear_rows(self) -> None:
-        for tree in (self.outcome_tree, self.figures_tree):
+        for tree in (self.outcome_tree, self.figures_tree, self.detail_tree):
             children = tree.get_children()
             if children:
                 tree.delete(*children)
+        self._detail_rows = ()
+        self._filtered_detail_rows = ()
+        self._detail_page = 0
+        self.detail_filter_var.set("همه")
+        self.detail_search_var.set("")
+        self.detail_status.set("پس از اجرای کنترل، ریز اقلام نمایش داده می‌شود")
         self.amount_units.set("واحد: طبق داده‌های ورودی | هنوز محاسبه نشده")
+        self._render_detail_page()
 
     def select_workbook(self) -> None:
         if self._busy:
