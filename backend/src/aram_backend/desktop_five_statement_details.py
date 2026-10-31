@@ -41,6 +41,16 @@ def _text(value: object, label: str, *, blank_ok: bool = False) -> str:
     return value
 
 
+def _note_reference(section: object, note: object, subnote: object) -> str:
+    section_text = _text(section, "SECTION")
+    note_text = _text(note, "NOTE")
+    subnote_text = _text(subnote, "SUBNOTE", blank_ok=True)
+    parts = [section_text, "یادداشت " + note_text]
+    if subnote_text:
+        parts.append("زیرعنوان " + subnote_text)
+    return " / ".join(parts)
+
+
 def _amount(value: object, label: str) -> str:
     try:
         return format(_money(value), ",f")
@@ -89,7 +99,7 @@ def build_preview_details(
     for line in result.balance_sheet.lines:
         rows.append(_row(
             "ترازنامه", line.line_label,
-            f"{line.statement_section} / یادداشت {line.note_number} / {line.subnote_code}",
+            _note_reference(line.statement_section, line.note_number, line.subnote_code),
             line.source_closing_exposure, closing=line.presentation_amount,
             trace=(
                 f"دسته: {line.category} | ضریب: {line.sign_multiplier} | "
@@ -123,8 +133,9 @@ def build_preview_details(
     for line in result.equity_changes.account_movements:
         rows.append(_row(
             "تغییرات حقوق مالکانه", line.account_name,
-            f"حساب {line.account_code} / {line.statement_section} / "
-            f"یادداشت {line.note_number} / {line.subnote_code}",
+            f"حساب {line.account_code} / " + _note_reference(
+                line.statement_section, line.note_number, line.subnote_code,
+            ),
             f"ردیف اکسل {line.source_excel_row} / ردیف منبع {line.source_row}",
             opening=line.opening_balance, debit=line.debit_turnover,
             credit=line.credit_turnover, movement=line.movement_amount,
