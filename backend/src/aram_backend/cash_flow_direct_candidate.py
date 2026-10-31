@@ -178,7 +178,7 @@ def _policies(
         evidence = _text(policy.evidence_ref, "COUNTERPART_EVIDENCE")
         if code in cash:
             raise CoverageError("CASH_ACCOUNT_CANNOT_BE_COUNTERPART_POLICY")
-        if policy.activity not in ACTIVITIES:
+        if not isinstance(policy.activity, str) or policy.activity not in ACTIVITIES:
             raise CoverageError("INVALID_CASH_FLOW_ACTIVITY")
         if code in other:
             raise CoverageError("DUPLICATE_CASH_COUNTERPART_POLICY")
