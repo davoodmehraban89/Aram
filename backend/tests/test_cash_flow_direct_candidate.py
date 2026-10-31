@@ -320,6 +320,16 @@ def test_policy_and_transaction_hashes_are_stable_and_source_unchanged():
     assert not first.releasable
 
 
+def test_classification_policy_change_changes_policy_hash_without_rounding_cash():
+    first = build()
+    changed = counterpart_policies()
+    changed[0] = replace(changed[0], activity="INVESTING")
+    second = build(policies=changed)
+    assert first.classification_policies_sha256 != second.classification_policies_sha256
+    assert first.net_change_in_cash == second.net_change_in_cash
+    assert second.eligible_for_analyst_review
+
+
 def test_input_size_and_transaction_count_are_bounded():
     with pytest.raises(CoverageError):
         build(data=b"x" * (20 * 1024 * 1024 + 1))
