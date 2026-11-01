@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Iterable, Iterator, Mapping
 from dataclasses import dataclass
-from decimal import Decimal
+from decimal import Decimal, localcontext
 
 from aram_backend.ledger_parser import LedgerRecord
 from aram_backend.mapping_source_parser import MappingSourceRow
@@ -150,13 +150,15 @@ def summarize_mapping_coverage(
     amounts = {key: Decimal(0) for key in counts}
     total_rows = 0
     source_closing = Decimal(0)
-    for result in results:
-        if result.status not in counts:
-            raise MappingMatchError(f"unknown result status: {result.status}")
-        total_rows += 1
-        source_closing += result.closing
-        counts[result.status] += 1
-        amounts[result.status] += result.closing
+    with localcontext() as context:
+        context.prec = 1000
+        for result in results:
+            if result.status not in counts:
+                raise MappingMatchError(f"unknown result status: {result.status}")
+            total_rows += 1
+            source_closing += result.closing
+            counts[result.status] += 1
+            amounts[result.status] += result.closing
 
     return MappingCoverageSummary(
         total_source_rows=total_rows,
