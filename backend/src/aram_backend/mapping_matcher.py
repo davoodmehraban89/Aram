@@ -9,7 +9,7 @@ from aram_backend.ledger_parser import LedgerRecord
 from aram_backend.mapping_source_parser import MappingSourceRow
 
 
-DIMENSION_HEADERS = ("T1_CODE", "جاري / سرمایه ای", "T4_CODE")
+DIMENSION_HEADERS = ("T1_CODE", "جاری / سرمایه ای", "T4_CODE")
 DEFAULT_EXCLUDED_ACCOUNT_CODES = frozenset({"8999"})
 
 
@@ -74,6 +74,8 @@ def build_mapping_rules(
     rules: list[MappingRule] = []
     for row in rows:
         raw = dict(row.source_values)
+        if "جاري / سرمایه ای" in raw and "جاری / سرمایه ای" not in raw:
+            raw["جاری / سرمایه ای"] = raw["جاري / سرمایه ای"]
         missing = set(dimension_headers).difference(raw)
         if missing:
             raise MappingMatchError(
@@ -179,7 +181,7 @@ def summarize_mapping_coverage(
 def _matches(ledger: LedgerRecord, rule: MappingRule) -> bool:
     ledger_dimensions = {
         "T1_CODE": ledger.t1_code,
-        "جاري / سرمایه ای": None,
+        "جاری / سرمایه ای": None,
         "T4_CODE": ledger.t4_code,
     }
     for header, rule_value in rule.dimensions:
