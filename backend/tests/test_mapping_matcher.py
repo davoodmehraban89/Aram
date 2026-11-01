@@ -23,7 +23,7 @@ def mapping_row(row, account="8161", t1=None, js=None, t4=None, note="10-1"):
         sub_formula="",
         source_values=(
             ("T1_CODE", t1),
-            ("جاري / سرمایه ای", js),
+            ("جاری / سرمایه ای", js),
             ("T4_CODE", t4),
         ),
     )
