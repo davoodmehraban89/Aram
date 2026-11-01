@@ -33,6 +33,7 @@ class MappingDecision:
     status: str
     reviewer: str | None
     source: str
+    review_date: str | None = None
 
 
 @dataclass(frozen=True)
@@ -86,7 +87,8 @@ class MappingWorkspace:
         self._check_scope(decision)
         if not actor.strip() or not decision.mapping_id.strip() or not decision.account_full_code.strip():
             raise MappingWorkflowError("actor, mapping_id and account are required")
-        if decision.status != "Draft" or decision.version != 1 or decision.reviewer is not None:
+        if (decision.status != "Draft" or decision.version != 1
+                or decision.reviewer is not None or decision.review_date is not None):
             raise MappingWorkflowError("new decisions must begin as unreviewed Draft v1")
         if decision.mapping_id in self._decisions:
             raise MappingWorkflowError("mapping_id already exists; use revise")
@@ -104,9 +106,16 @@ class MappingWorkspace:
             raise MappingWorkflowError("invalid mapping lifecycle transition")
         if not actor.strip():
             raise MappingWorkflowError("reviewer identity required")
+        if status == "Reviewed" and any(
+            event.mapping_id == mapping_id and event.new_status == "Draft"
+            and event.actor == actor for event in self._audit
+        ):
+            raise MappingWorkflowError("maker cannot review own mapping")
         if status == "Approved" and actor == old.reviewer:
             raise MappingWorkflowError("approval requires independent reviewer")
-        new = replace(old, status=status, reviewer=actor, version=old.version + 1)
+        new = replace(old, status=status, reviewer=actor,
+                      review_date=datetime.now(timezone.utc).date().isoformat(),
+                      version=old.version + 1)
         self._record(old, new, actor)
         return new
 
@@ -120,6 +129,7 @@ class MappingWorkspace:
         new = replace(old, target_statement=target_statement,
                       statement_section=statement_section, note_number=note_number,
                       subnote_code=subnote_code, status="Draft", reviewer=None,
+                      review_date=None,
                       version=old.version + 1)
         self._record(old, new, actor)
         return new
@@ -138,7 +148,8 @@ class MappingWorkspace:
                 raise MappingWorkflowError("only approved mappings may be carried forward")
         for d in candidates:
             self.propose(replace(d, fiscal_year=self.fiscal_year, status="Draft",
-                                 reviewer=None, version=1, source="CarryForward"), actor=actor)
+                                 reviewer=None, review_date=None, version=1,
+                                 source="CarryForward"), actor=actor)
         return len(candidates)
 
 
@@ -161,7 +172,8 @@ def import_mapping_workbook(content: bytes, company_code: str, fiscal_year: int)
                 row["mapping_id"], row["company_code"], row["fiscal_year"],
                 row["account_full_code"], row["target_statement"],
                 row["statement_section"], row["note_number"], row["subnote_code"],
-                row["mapping_version"], row["approval_status"], row["reviewer"], row["source"],
+                row["mapping_version"], row["approval_status"], row["reviewer"],
+                row["source"], row["review_date"],
             ))
         return tuple(decisions)
     finally:
@@ -251,10 +263,13 @@ def export_pilot_mapping_workbook(
                 notes.add((row["company_code"], row["fiscal_year"], row["statement"],
                            row["statement_section"], row["note_number"], row["subnote_code"]))
         previous = {}
+        foreign_rows = []
         for values in mapping_sheet.iter_rows(min_row=2, values_only=True):
             if any(v is not None for v in values):
                 row = dict(zip(headers, values))
                 previous[row["mapping_id"]] = row
+                if (row["company_code"], row["fiscal_year"]) != (company_code, fiscal_year):
+                    foreign_rows.append(tuple(row[field] for field in headers))
         replacements = []
         seen = set()
         for d in decisions:
@@ -269,8 +284,10 @@ def export_pilot_mapping_workbook(
             if (company_code, fiscal_year, d.target_statement, d.statement_section,
                 d.note_number, d.subnote_code) not in notes:
                 raise MappingWorkflowError("unknown note/subnote in export")
-            if d.status != "Draft":
-                raise MappingWorkflowError("approved/reviewed mappings require dated review evidence")
+            if d.status not in {"Draft", "Reviewed", "Approved"}:
+                raise MappingWorkflowError("invalid mapping status")
+            if d.status != "Draft" and (not d.reviewer or not d.review_date):
+                raise MappingWorkflowError("review evidence required")
             row = {field: None for field in headers}
             row.update({
                 "mapping_id": d.mapping_id, "company_code": company_code,
@@ -281,7 +298,9 @@ def export_pilot_mapping_workbook(
                 "statement_section": d.statement_section,
                 "note_number": d.note_number, "subnote_code": d.subnote_code,
                 "mapping_version": d.version, "approval_status": d.status,
-                "source": d.source, "validation_status": "Pending",
+                "source": d.source, "reviewer": d.reviewer,
+                "review_date": d.review_date,
+                "validation_status": "Valid" if d.status == "Approved" else "Pending",
             })
             for field in ("general_code", "subsidiary_code", "detail1_code",
                           "detail2_code", "detail3_code", "detail4_code"):
@@ -289,7 +308,7 @@ def export_pilot_mapping_workbook(
             replacements.append(tuple(row[field] for field in headers))
         if mapping_sheet.max_row > 1:
             mapping_sheet.delete_rows(2, mapping_sheet.max_row - 1)
-        for values in replacements:
+        for values in foreign_rows + replacements:
             mapping_sheet.append(values)
         stream = BytesIO()
         workbook.save(stream)

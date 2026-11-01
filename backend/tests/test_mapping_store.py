@@ -100,3 +100,12 @@ def test_export_rejects_foreign_and_unverifiable_approval():
     with pytest.raises(MappingWorkflowError, match="review"):
         export_pilot_mapping_workbook(original, [replace(decision(), status="Approved")],
                                       company_code="001", fiscal_year=1405)
+
+
+def test_approved_workbook_roundtrip_with_review_evidence():
+    original = workbook_bytes(valid_rows())
+    approved = replace(decision(), version=3, status="Approved",
+                       reviewer="approver", review_date="2026-11-01")
+    exported = export_pilot_mapping_workbook(original, [approved],
+                                              company_code="001", fiscal_year=1405)
+    assert import_mapping_workbook(exported, "001", 1405) == (approved,)

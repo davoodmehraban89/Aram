@@ -121,3 +121,11 @@ def test_unknown_queue_rejects_foreign_scope():
     with pytest.raises(MappingWorkflowError, match="foreign mapping"):
         unknown_account_queue([], [sample(company="002")],
                               company_code="001", fiscal_year=1405)
+
+
+def test_maker_cannot_review_own_mapping():
+    space = MappingWorkspace("001", 1405)
+    space.propose(sample(), actor="maker")
+    with pytest.raises(MappingWorkflowError, match="maker"):
+        space.transition("M001", "Reviewed", actor="maker")
+    assert len(space.audit) == 1
