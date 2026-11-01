@@ -60,3 +60,5 @@ review and updated final-head CI are required before formal acceptance.
 - No merge, release or production financial data modification is authorized.
 - Final CI and full local test evidence must be checked against the new head before any acceptance decision.
 - Decision: CHANGES REQUESTED; PR remains Draft pending independent review and closure of material controls.
+
+- Additional architecture finding: sqlite3.Connection context managers do not close connections. Fixed init/load/audit_log paths using contextlib.closing to prevent leaked file descriptors and Windows DB locks.

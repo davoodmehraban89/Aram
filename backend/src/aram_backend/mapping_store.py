@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import closing
 from dataclasses import asdict
 from pathlib import Path
 
@@ -16,7 +17,7 @@ class MappingStore:
         self.path = str(path)
         if self.path == ":memory:":
             raise MappingWorkflowError("durable store requires a filesystem path")
-        with self._connect() as db:
+        with closing(self._connect()) as db:
             db.execute("PRAGMA journal_mode=WAL")
             db.executescript("""
                 CREATE TABLE IF NOT EXISTS mapping_state (
@@ -40,7 +41,7 @@ class MappingStore:
 
     def load(self, company: str, year: int) -> tuple[MappingWorkspace, int]:
         workspace = MappingWorkspace(company, year)
-        with self._connect() as db:
+        with closing(self._connect()) as db:
             row = db.execute(
                 "SELECT revision, payload FROM mapping_state WHERE company=? AND year=?",
                 (workspace.company_code, year),
@@ -144,7 +145,7 @@ class MappingStore:
             db.close()
 
     def audit_log(self, company: str, year: int) -> tuple[MappingAuditEvent, ...]:
-        with self._connect() as db:
+        with closing(self._connect()) as db:
             rows = db.execute(
                 "SELECT payload FROM mapping_audit WHERE company=? AND year=? ORDER BY sequence",
                 (company, year),
