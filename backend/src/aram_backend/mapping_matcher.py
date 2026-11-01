@@ -74,8 +74,17 @@ def build_mapping_rules(
     rules: list[MappingRule] = []
     for row in rows:
         raw = dict(row.source_values)
-        if "جاري / سرمایه ای" in raw and "جاری / سرمایه ای" not in raw:
-            raw["جاری / سرمایه ای"] = raw["جاري / سرمایه ای"]
+        legacy_dimension = "جاري / سرمایه ای"
+        canonical_dimension = "جاری / سرمایه ای"
+        if legacy_dimension in raw and canonical_dimension in raw:
+            legacy_value = _dimension_value(raw[legacy_dimension], row.row_number, legacy_dimension)
+            canonical_value = _dimension_value(raw[canonical_dimension], row.row_number, canonical_dimension)
+            if legacy_value != canonical_value:
+                raise MappingMatchError(
+                    f"mapping row {row.row_number}: conflicting current/capital dimension aliases"
+                )
+        elif legacy_dimension in raw:
+            raw[canonical_dimension] = raw[legacy_dimension]
         missing = set(dimension_headers).difference(raw)
         if missing:
             raise MappingMatchError(
