@@ -294,3 +294,12 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Three sequential self-audits in docs/GATE3_PACKAGE4_REVIEW.md; not independent review.
 - No financial-data or canonical artifact modification; no production database migrations.
 - Formal status CHANGES REQUESTED pending independent review and remaining security/financial/operational evidence. Rollback by reverting focused feature-branch commits.
+
+## 2026-11-01 — Gate 3 Package 5
+- Isolated branch, approved base and PR #82 checked before modifications; no unrelated local edits at start.
+- New mapping API routes protected by injected identity resolver and fail-closed default; added HTTP role/scope regression tests.
+- SHA-256 event audit chain and external terminal receipt verification added with integrity/restore tests. Historical-event backfill deliberately not automated.
+- Reviewed finance/scope/Excel, architecture/security, adversarial/recovery as three self-audit perspectives only; independent approval remains absent.
+- Acceptance evidence and Gate 4 handoff: docs/GATE3_PACKAGE5_ACCEPTANCE.md.
+- No canonical XLSX/PDF, financial data, production database, Merge or Release changed. Rollback: revert feature-branch commits.
+- Decision NO-GO pending external IdP, external audit anchor, authorized financial reconciliation, operational DR drill and independent review.

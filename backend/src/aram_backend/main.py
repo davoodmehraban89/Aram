@@ -2,11 +2,18 @@ from fastapi import FastAPI
 
 from aram_backend import __version__
 from aram_backend.config import get_settings
+from aram_backend.mapping_api import router as mapping_router
 from aram_backend.models import FiscalYearStatus, StatementType
-from aram_backend.schemas import EntityDescriptor, EnumCatalog, HealthResponse, SchemaCatalog
+from aram_backend.schemas import (
+    EntityDescriptor,
+    EnumCatalog,
+    HealthResponse,
+    SchemaCatalog,
+)
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version=__version__)
+app.include_router(mapping_router)
 
 
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["system"])

@@ -7,6 +7,7 @@ from contextlib import closing
 from dataclasses import asdict
 from pathlib import Path
 
+from aram_backend.mapping_integrity import GENESIS, audit_chain, verify_audit_chain
 from aram_backend.mapping_workflow import (
     MappingAuditEvent,
     MappingDecision,
@@ -33,6 +34,11 @@ class MappingStore:
                     company TEXT NOT NULL, year INTEGER NOT NULL,
                     revision INTEGER NOT NULL, payload TEXT NOT NULL,
                     UNIQUE(company, year, revision)
+                );
+                CREATE TABLE IF NOT EXISTS mapping_audit_hash (
+                    sequence INTEGER PRIMARY KEY,
+                    digest TEXT NOT NULL,
+                    FOREIGN KEY(sequence) REFERENCES mapping_audit(sequence)
                 );
             """)
 
@@ -133,11 +139,17 @@ class MappingStore:
                 "ON CONFLICT(company,year) DO UPDATE SET revision=excluded.revision,payload=excluded.payload",
                 (workspace.company_code, workspace.fiscal_year, new_revision, payload),
             )
+            digests = audit_chain(workspace.audit)
+            old_count = len(workspace.audit) - len(appended)
             for index, event in enumerate(appended):
-                db.execute(
+                cursor = db.execute(
                     "INSERT INTO mapping_audit(company,year,revision,payload) VALUES(?,?,?,?)",
                     (workspace.company_code, workspace.fiscal_year,
                      new_revision * 1000000 + index, json.dumps(event, ensure_ascii=False)),
+                )
+                db.execute(
+                    "INSERT INTO mapping_audit_hash(sequence,digest) VALUES(?,?)",
+                    (cursor.lastrowid, digests[old_count + index]),
                 )
             db.commit()
             return new_revision
@@ -172,6 +184,18 @@ class MappingStore:
                 )]
                 if state["audit"] != audit:
                     raise MappingWorkflowError("persisted audit/state mismatch")
+                chain_rows = db.execute(
+                    "SELECT h.digest FROM mapping_audit a "
+                    "LEFT JOIN mapping_audit_hash h ON h.sequence=a.sequence "
+                    "WHERE a.company=? AND a.year=? ORDER BY a.sequence",
+                    (company, year),
+                ).fetchall()
+                if any(row[0] is None for row in chain_rows):
+                    raise MappingWorkflowError("audit hash chain missing event digest")
+                verify_audit_chain(
+                    tuple(MappingAuditEvent(**item) for item in audit),
+                    tuple(row[0] for row in chain_rows),
+                )
                 workspace, _ = self.load(company, year)
                 latest = {}
                 for event in workspace.audit:
@@ -215,3 +239,29 @@ class MappingStore:
         except Exception:
             target.unlink(missing_ok=True)
             raise
+
+
+    def audit_receipt(self, company: str, year: int) -> dict:
+        """Operator must export the receipt to an independently protected store."""
+        from aram_backend.mapping_integrity import integrity_receipt
+
+        workspace, revision = self.load(company, year)
+        self.verify_integrity()
+        hashes = audit_chain(workspace.audit)
+        return integrity_receipt(
+            company_code=company, fiscal_year=year, revision=revision,
+            terminal_digest=hashes[-1] if hashes else GENESIS,
+        )
+
+    def verify_external_receipt(self, receipt: dict) -> None:
+        """Check a trusted externally retained receipt against current state."""
+        company = receipt["company_code"]
+        year = receipt["fiscal_year"]
+        workspace, revision = self.load(company, year)
+        self.verify_integrity()
+        if revision != receipt["revision"]:
+            raise MappingWorkflowError("audit external anchor revision mismatch")
+        hashes = audit_chain(workspace.audit)
+        verify_audit_chain(
+            workspace.audit, hashes, trusted_terminal_digest=receipt["sha256"],
+        )

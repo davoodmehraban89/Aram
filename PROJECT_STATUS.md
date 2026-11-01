@@ -106,3 +106,11 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Review evidence: docs/GATE3_PACKAGE4_REVIEW.md (three self-review perspectives, not independent reviewers).
 - Formal Gate 3 status: CHANGES REQUESTED; PR must remain Draft. Do not merge/release/start Gate 4 implementation before independent acceptance.
 - Remaining blockers: independent reviewer approval, API/IdP authorization integration, external audit integrity, authorized financial reconciliation and operational recovery evidence.
+
+## 2026-11-01 — Gate 3 Package 5 (current status)
+- Branch feat/gate3-governed-mapping-20261101; PR #82 remains Draft; base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914 unchanged.
+- Protected mapping HTTP endpoints added; server-only resolver required and absent by default (fail closed). No real production IdP integration is claimed.
+- SHA-256 per-event audit chain and externally verifiable receipt support added. No separately protected receipt anchor configured; privileged tampering remains possible.
+- Synthetic HTTP, audit tamper, backup/restore and financial mapping tests added; no authorized real financial data or production DR drill performed.
+- Three perspective-based self-audits, NOT three independent reviewers. See docs/GATE3_PACKAGE5_ACCEPTANCE.md.
+- Decision: NO-GO / CHANGES REQUESTED. Do not merge, release or begin Gate 4 until policy prerequisites satisfied.
