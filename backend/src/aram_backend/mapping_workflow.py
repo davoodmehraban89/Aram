@@ -278,7 +278,9 @@ def export_pilot_mapping_workbook(
         for d in decisions:
             if (d.company_code, d.fiscal_year) != (company_code, fiscal_year):
                 raise MappingWorkflowError("foreign company/year in export")
-            if d.mapping_id in seen:
+            if d.mapping_id in seen or any(
+                existing[0] == d.mapping_id for existing in foreign_rows
+            ):
                 raise MappingWorkflowError("duplicate mapping ID in export")
             seen.add(d.mapping_id)
             account = accounts.get((company_code, fiscal_year, d.account_full_code))
@@ -295,8 +297,14 @@ def export_pilot_mapping_workbook(
             row.update({
                 "mapping_id": d.mapping_id, "company_code": company_code,
                 "fiscal_year": fiscal_year, "account_full_code": d.account_full_code,
-                "account_level": previous[d.mapping_id]["account_level"]
-                if d.mapping_id in previous else "General",
+                "account_level": next(
+                    level for field, level in (
+                        ("detail4_code", "Detail4"), ("detail3_code", "Detail3"),
+                        ("detail2_code", "Detail2"), ("detail1_code", "Detail1"),
+                        ("subsidiary_code", "Subsidiary"), ("general_code", "General"),
+                    ) if account[field] is not None
+                ),
+                "notes": previous.get(d.mapping_id, {}).get("notes"),
                 "target_statement": d.target_statement,
                 "statement_section": d.statement_section,
                 "note_number": d.note_number, "subnote_code": d.subnote_code,

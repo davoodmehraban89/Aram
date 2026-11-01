@@ -97,3 +97,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Status: CHANGES REQUESTED; Gate 3 is not formally accepted. No merge or release.
 - Unresolved: authenticated identity and authorization, privileged-database tamper resistance, independent review, operational recovery drill, mapping ambiguity and real-data acceptance.
 - Rollback: revert isolated PR commits; accepted base and canonical financial source files remain untouched.
+
+## 2026-11-01 — Gate 3 Package 4 (supersedes earlier Gate 3 summaries)
+- Isolated branch and Draft PR #82; accepted base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914 unchanged.
+- New security facade: role/scope checks with injected trusted identity resolver; NOT connected to production API/IdP.
+- New integrity verification and consistent SQLite backup-to-fresh-file test; no external tamper-evident audit anchor.
+- Conservative ambiguity assessment; Excel hierarchy/notes roundtrip fixes; no real-ledger reconciliation claimed.
+- Review evidence: docs/GATE3_PACKAGE4_REVIEW.md (three self-review perspectives, not independent reviewers).
+- Formal Gate 3 status: CHANGES REQUESTED; PR must remain Draft. Do not merge/release/start Gate 4 implementation before independent acceptance.
+- Remaining blockers: independent reviewer approval, API/IdP authorization integration, external audit integrity, authorized financial reconciliation and operational recovery evidence.

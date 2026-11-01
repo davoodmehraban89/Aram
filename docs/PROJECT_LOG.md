@@ -287,3 +287,10 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Three sequential adversarial self-audits documented in docs/GATE3_REVIEW_82.md. No claim of independent reviewers.
 - Formal decision: CHANGES REQUESTED, Gate 3 not accepted; independent reviewer and material operational/security controls outstanding.
 - Rollback: revert Package 3 commits on isolated feature branch; no production schema/data migration.
+
+## 2026-11-01 — Gate 3 Package 4
+- Approved scope: harden mapping lifecycle, access, audit, workbook roundtrip, ambiguity handling, recovery tests, three-perspective review, CI and handoff.
+- Changes: mapping_access.py and tests; mapping_quality.py and tests; MappingStore.verify_integrity/backup_to; Excel mapping hierarchy and notes preservation.
+- Three sequential self-audits in docs/GATE3_PACKAGE4_REVIEW.md; not independent review.
+- No financial-data or canonical artifact modification; no production database migrations.
+- Formal status CHANGES REQUESTED pending independent review and remaining security/financial/operational evidence. Rollback by reverting focused feature-branch commits.

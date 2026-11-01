@@ -154,3 +154,64 @@ class MappingStore:
                 (company, year),
             ).fetchall()
         return tuple(MappingAuditEvent(**json.loads(row[0])) for row in rows)
+
+
+    def verify_integrity(self) -> None:
+        """Detect corruption and state/audit disagreement; not privileged tamper-proof."""
+        with closing(self._connect()) as db:
+            if db.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+                raise MappingWorkflowError("SQLite integrity check failed")
+            rows = db.execute(
+                "SELECT company, year, payload FROM mapping_state ORDER BY company, year"
+            ).fetchall()
+            for company, year, payload in rows:
+                state = json.loads(payload)
+                audit = [json.loads(r[0]) for r in db.execute(
+                    "SELECT payload FROM mapping_audit WHERE company=? AND year=? ORDER BY sequence",
+                    (company, year),
+                )]
+                if state["audit"] != audit:
+                    raise MappingWorkflowError("persisted audit/state mismatch")
+                workspace, _ = self.load(company, year)
+                latest = {}
+                for event in workspace.audit:
+                    prior = latest.get(event.mapping_id)
+                    if prior is None:
+                        valid = (event.previous_status is None
+                                 and event.previous_version is None
+                                 and event.new_status == "Draft"
+                                 and event.new_version == 1)
+                    else:
+                        valid = (event.previous_status == prior[0]
+                                 and event.previous_version == prior[1]
+                                 and event.new_version == prior[1] + 1
+                                 and ((prior[0] == "Draft" and event.new_status == "Reviewed")
+                                      or (prior[0] == "Reviewed" and event.new_status == "Approved")
+                                      or event.new_status == "Draft"))
+                    if not valid:
+                        raise MappingWorkflowError("invalid persisted audit chain")
+                    latest[event.mapping_id] = (event.new_status, event.new_version)
+                if latest != {d.mapping_id: (d.status, d.version)
+                              for d in workspace.decisions}:
+                    raise MappingWorkflowError("persisted mapping state diverged")
+            orphan = db.execute(
+                "SELECT 1 FROM mapping_audit a WHERE NOT EXISTS "
+                "(SELECT 1 FROM mapping_state s WHERE s.company=a.company AND s.year=a.year) "
+                "LIMIT 1"
+            ).fetchone()
+            if orphan:
+                raise MappingWorkflowError("orphan audit events")
+
+    def backup_to(self, destination: str | Path) -> None:
+        """Create consistent SQLite snapshot; never overwrite an existing backup."""
+        target = Path(destination)
+        if target.exists() or target.resolve() == Path(self.path).resolve():
+            raise MappingWorkflowError("backup destination must be new and distinct")
+        self.verify_integrity()
+        try:
+            with closing(self._connect()) as source, closing(sqlite3.connect(target)) as backup:
+                source.backup(backup)
+            MappingStore(target).verify_integrity()
+        except Exception:
+            target.unlink(missing_ok=True)
+            raise
