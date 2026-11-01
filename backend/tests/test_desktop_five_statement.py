@@ -289,7 +289,18 @@ def test_new_detail_query_supersedes_inflight_search_and_ignores_stale_reply(
     monkeypatch.setattr(desktop_module, "filter_preview_details", delayed_filter)
     paths = fixtures(tmp_path)
     file_names = {"workbook": str(paths[0]), "manifest": str(paths[1])}
-    window = FiveStatementWindow(picker=lambda kind: file_names[kind])
+    try:
+        window = FiveStatementWindow(picker=lambda kind: file_names[kind])
+    except Exception as exc:
+        # Hosted Windows Python images can lack Tcl/Tk runtime files.
+        # Skip only missing runtime, never application behavior errors.
+        import tkinter
+        if isinstance(exc, tkinter.TclError) and (
+            "usable tk.tcl" in str(exc)
+            or "no display name" in str(exc)
+        ):
+            pytest.skip(f"Native Tk runtime unavailable on runner: {exc}")
+        raise
     try:
         window.withdraw()
         window.workbook_button.invoke()
