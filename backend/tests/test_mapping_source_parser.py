@@ -100,3 +100,8 @@ def test_preserves_duplicate_mapping_rows_as_distinct_source_evidence():
 
     assert [record.row_number for record in records] == [2, 3]
     assert records[0].source_values == records[1].source_values
+
+def test_normalizes_integral_numeric_account_codes_without_decimal_suffix():
+    records = list(parse_mapping_source(mapping_bytes(valid_row(**{"کد حساب": 8161.0}))))
+
+    assert records[0].account_code == "8161"
