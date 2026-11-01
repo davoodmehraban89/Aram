@@ -111,8 +111,11 @@ class MappingWorkspace:
             and event.actor == actor for event in self._audit
         ):
             raise MappingWorkflowError("maker cannot review own mapping")
-        if status == "Approved" and actor == old.reviewer:
-            raise MappingWorkflowError("approval requires independent reviewer")
+        if status == "Approved" and (actor == old.reviewer or any(
+            event.mapping_id == mapping_id and event.new_status == "Draft"
+            and event.actor == actor for event in self._audit
+        )):
+            raise MappingWorkflowError("approval requires independent maker and reviewer")
         new = replace(old, status=status, reviewer=actor,
                       review_date=datetime.now(timezone.utc).date().isoformat(),
                       version=old.version + 1)

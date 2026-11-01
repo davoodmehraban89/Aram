@@ -87,3 +87,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+
+## 2026-11-01 — Gate 3 current review status (supersedes older Gate 3 status above)
+- Candidate: Draft PR #82 on feat/gate3-governed-mapping-20261101, based on source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Local Gate 3 implementation includes scoped mapping lifecycle, SQLite state/audit, optimistic concurrency, Pilot workbook roundtrip and unknown-account queue.
+- Package 3 hardening adds separation of maker/reviewer/approver and validation that persisted mapping state agrees with append-only audit transitions.
+- Three sequential self-audit passes documented at docs/GATE3_REVIEW_82.md; independent GitHub reviewers have not signed off.
+- Status: CHANGES REQUESTED; Gate 3 is not formally accepted. No merge or release.
+- Unresolved: authenticated identity and authorization, privileged-database tamper resistance, independent review, operational recovery drill, mapping ambiguity and real-data acceptance.
+- Rollback: revert isolated PR commits; accepted base and canonical financial source files remain untouched.

@@ -46,3 +46,17 @@ production data. This PR remains Draft.
 These are three sequential self-audit perspectives, not three independent
 human or separately instantiated reviewer identities. External independent
 review and updated final-head CI are required before formal acceptance.
+
+
+## Package 3 review extension — 2026-11-01
+- Exact approved base checked locally: source-data-cleanup at 7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Prior reviewed head: ff6843cd0a1544a3a5355a8d555d4d692b8716fc.
+- Working tree initially clean; feature branch isolated.
+- Reviewer 1 (functional self-audit): found that maker could approve after another user reviewed; fixed maker/approver separation and added regression test.
+- Reviewer 2 (security/architecture self-audit): found state could be persisted with a forged final status/version inconsistent with audit. Added audit-transition/version-chain and state consistency checks plus regression test.
+- Reviewer 3 (adversarial self-audit): exercised invalid state and forged audit, rollback, stale concurrent writers, workbook roundtrip and foreign scope. New tests cover forged status and event version.
+- These are three sequential self-audits by the implementation assistant, **not independent reviewers**. GitHub review list was empty at start.
+- Known unresolved risks: no trusted identity provider / role authorization; SQLite audit is not cryptographically tamper-evident against privileged DB writers; no production recovery drill; no independent reviewer sign-off; Gate 3 financial mapping ambiguity remains material. These require separate controls and block acceptance.
+- No merge, release or production financial data modification is authorized.
+- Final CI and full local test evidence must be checked against the new head before any acceptance decision.
+- Decision: CHANGES REQUESTED; PR remains Draft pending independent review and closure of material controls.

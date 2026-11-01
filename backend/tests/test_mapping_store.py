@@ -68,7 +68,7 @@ def test_append_only_audit_and_scope(tmp_path):
     store.save(space, rev)
     loaded, rev = store.load("001", 1405)
     loaded._audit.clear()
-    with pytest.raises(MappingWorkflowError, match="append-only"):
+    with pytest.raises(MappingWorkflowError, match="audit history diverged"):
         store.save(loaded, rev)
     assert len(store.audit_log("001", 1405)) == 1
     other, rev = store.load("002", 1405)
@@ -109,3 +109,17 @@ def test_approved_workbook_roundtrip_with_review_evidence():
     exported = export_pilot_mapping_workbook(original, [approved],
                                               company_code="001", fiscal_year=1405)
     assert import_mapping_workbook(exported, "001", 1405) == (approved,)
+
+
+def test_store_rejects_forged_mapping_state_and_audit_chain(tmp_path):
+    store = MappingStore(tmp_path / "forged.db")
+    state, revision = store.load("001", 1405)
+    state.propose(decision(), actor="maker")
+    state._decisions["M001"] = replace(decision(), status="Approved", version=3)
+    with pytest.raises(MappingWorkflowError, match="diverged"):
+        store.save(state, revision)
+    state._decisions["M001"] = decision()
+    state._audit[0] = replace(state._audit[0], new_version=99)
+    with pytest.raises(MappingWorkflowError, match="audit"):
+        store.save(state, revision)
+    assert store.load("001", 1405)[1] == 0

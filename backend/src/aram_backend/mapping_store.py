@@ -70,6 +70,27 @@ class MappingStore:
         for event in workspace.audit:
             if (event.company_code, event.fiscal_year) != (workspace.company_code, workspace.fiscal_year):
                 raise MappingWorkflowError("foreign audit event")
+        # Reject forged state and invalid audit sequences before starting a write.
+        latest = {}
+        for event in workspace.audit:
+            prior = latest.get(event.mapping_id)
+            if prior is None:
+                valid = (event.previous_status is None and
+                         event.previous_version is None and
+                         event.new_status == "Draft" and event.new_version == 1)
+            else:
+                previous_status, previous_version = prior
+                valid = (event.previous_status == previous_status and
+                         event.previous_version == previous_version and
+                         event.new_version == previous_version + 1 and
+                         ((previous_status == "Draft" and event.new_status == "Reviewed") or
+                          (previous_status == "Reviewed" and event.new_status == "Approved") or
+                          event.new_status == "Draft"))
+            if not valid or not event.actor.strip():
+                raise MappingWorkflowError("invalid audit transition or version chain")
+            latest[event.mapping_id] = (event.new_status, event.new_version)
+        if {d.mapping_id: (d.status, d.version) for d in workspace.decisions} != latest:
+            raise MappingWorkflowError("mapping state and audit history diverged")
         payload = json.dumps({
             "decisions": [asdict(item) for item in workspace.decisions],
             "audit": [asdict(item) for item in workspace.audit],

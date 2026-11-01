@@ -129,3 +129,13 @@ def test_maker_cannot_review_own_mapping():
     with pytest.raises(MappingWorkflowError, match="maker"):
         space.transition("M001", "Reviewed", actor="maker")
     assert len(space.audit) == 1
+
+
+def test_maker_cannot_approve_own_mapping_even_after_independent_review():
+    space = MappingWorkspace("001", 1405)
+    space.propose(sample(), actor="maker")
+    space.transition("M001", "Reviewed", actor="reviewer")
+    with pytest.raises(MappingWorkflowError, match="independent"):
+        space.transition("M001", "Approved", actor="maker")
+    assert space.decisions[0].status == "Reviewed"
+    assert len(space.audit) == 2

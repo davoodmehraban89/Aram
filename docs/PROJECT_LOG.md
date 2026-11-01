@@ -278,3 +278,12 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+## 2026-11-01 — Gate 3 PR #82 Package 3
+- Branch: feat/gate3-governed-mapping-20261101; base: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Initial reviewed head: ff6843cd0a1544a3a5355a8d555d4d692b8716fc.
+- Scope: MappingWorkflow maker/approver separation; MappingStore audit-chain/state integrity; regression tests; Gate 3 review evidence and project status.
+- Three sequential adversarial self-audits documented in docs/GATE3_REVIEW_82.md. No claim of independent reviewers.
+- Formal decision: CHANGES REQUESTED, Gate 3 not accepted; independent reviewer and material operational/security controls outstanding.
+- Rollback: revert Package 3 commits on isolated feature branch; no production schema/data migration.
