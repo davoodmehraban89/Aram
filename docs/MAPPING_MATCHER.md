@@ -28,3 +28,6 @@ Account `8999` is excluded from the mapping-eligible denominator, consistent wit
 ## Required next gate
 
 Before calling this production-ready, add the source ledger's approved current/capital classification field (if present) to `LedgerRecord`, verify the exact workbook header/value domain with an authorized source workbook, and run the full 252,898-row reconciliation. Do not interpret this preview as finance approval.
+
+## Header consistency correction
+The mapping workbook fixture uses `جاری / سرمایه ای` (Arabic/Persian yeh variants matter). The matcher now accepts the canonical spelling and its documented alternate spelling; this does not imply the ledger has a current/capital classification field. Populated current/capital mapping constraints continue to fail closed until an approved ledger-side source is available.
