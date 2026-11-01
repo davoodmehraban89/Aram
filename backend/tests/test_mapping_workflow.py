@@ -99,3 +99,25 @@ def test_import_preflight_and_export_review_rows():
         assert book["Mapping"]["C2"].value == 1405
     finally:
         book.close()
+
+
+def test_unknown_queue_only_excludes_approved_and_is_sorted():
+    from aram_backend.mapping_workflow import unknown_account_queue
+    draft = sample()
+    approved = replace(sample(), status="Approved")
+    accounts = [("001", 1405, "0020"), ("001", 1405, "0010"),
+                ("001", 1405, "0020"), ("001", 1405, "0030")]
+    queue = unknown_account_queue(accounts, [draft], company_code="001", fiscal_year=1405)
+    assert [item.account_full_code for item in queue] == ["0010", "0020", "0030"]
+    queue = unknown_account_queue(accounts, [approved], company_code="001", fiscal_year=1405)
+    assert [item.account_full_code for item in queue] == ["0020", "0030"]
+
+
+def test_unknown_queue_rejects_foreign_scope():
+    from aram_backend.mapping_workflow import unknown_account_queue
+    with pytest.raises(MappingWorkflowError, match="foreign account"):
+        unknown_account_queue([("002", 1405, "0010")], [],
+                              company_code="001", fiscal_year=1405)
+    with pytest.raises(MappingWorkflowError, match="foreign mapping"):
+        unknown_account_queue([], [sample(company="002")],
+                              company_code="001", fiscal_year=1405)

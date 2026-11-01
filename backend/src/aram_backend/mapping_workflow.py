@@ -186,3 +186,42 @@ def export_mapping_rows(decisions: Iterable[MappingDecision]) -> bytes:
     workbook.save(buffer)
     workbook.close()
     return buffer.getvalue()
+
+
+@dataclass(frozen=True)
+class UnknownAccount:
+    company_code: str
+    fiscal_year: int
+    account_full_code: str
+
+
+def unknown_account_queue(
+    accounts: Iterable[tuple[str, int, str]],
+    decisions: Iterable[MappingDecision],
+    *,
+    company_code: str,
+    fiscal_year: int,
+) -> tuple[UnknownAccount, ...]:
+    """Return unapproved/unmapped accounts, deduplicated and deterministically sorted.
+
+    A Draft or Reviewed mapping does not remove an account from the queue.
+    Foreign-scope account input fails closed rather than silently disappearing.
+    """
+    if not company_code.strip() or isinstance(fiscal_year, bool) or fiscal_year <= 0:
+        raise MappingWorkflowError("invalid queue company/year")
+    approved: set[str] = set()
+    for decision in decisions:
+        if (decision.company_code, decision.fiscal_year) != (company_code, fiscal_year):
+            raise MappingWorkflowError("foreign mapping in unknown-account queue")
+        if decision.status == "Approved":
+            approved.add(decision.account_full_code)
+    unknown: set[str] = set()
+    for company, year, account in accounts:
+        if (company, year) != (company_code, fiscal_year):
+            raise MappingWorkflowError("foreign account in unknown-account queue")
+        if not isinstance(account, str) or not account.strip():
+            raise MappingWorkflowError("invalid account code in unknown-account queue")
+        if account not in approved:
+            unknown.add(account)
+    return tuple(UnknownAccount(company_code, fiscal_year, account)
+                 for account in sorted(unknown))
