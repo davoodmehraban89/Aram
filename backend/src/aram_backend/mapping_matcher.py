@@ -159,6 +159,7 @@ def summarize_mapping_coverage(
             source_closing += result.closing
             counts[result.status] += 1
             amounts[result.status] += result.closing
+        eligible_closing = source_closing - amounts["EXCLUDED"]
 
     return MappingCoverageSummary(
         total_source_rows=total_rows,
@@ -168,7 +169,7 @@ def summarize_mapping_coverage(
         ambiguous_rows=counts["AMBIGUOUS"],
         unmapped_rows=counts["UNMAPPED"],
         source_closing=source_closing,
-        eligible_closing=source_closing - amounts["EXCLUDED"],
+        eligible_closing=eligible_closing,
         unique_closing=amounts["UNIQUE"],
         ambiguous_closing=amounts["AMBIGUOUS"],
         unmapped_closing=amounts["UNMAPPED"],
