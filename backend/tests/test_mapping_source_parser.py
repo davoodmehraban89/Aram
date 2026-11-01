@@ -105,3 +105,14 @@ def test_normalizes_integral_numeric_account_codes_without_decimal_suffix():
     records = list(parse_mapping_source(mapping_bytes(valid_row(**{"کد حساب": 8161.0}))))
 
     assert records[0].account_code == "8161"
+
+def test_rejects_invalid_zip_archive_before_workbook_parsing():
+    with pytest.raises(MappingSourceParseError, match="archive is invalid"):
+        list(parse_mapping_source(b"not-an-xlsx-archive"))
+
+
+def test_rejects_oversized_mapping_input_before_workbook_parsing():
+    from aram_backend.mapping_source_parser import MAX_MAPPING_INPUT_BYTES
+
+    with pytest.raises(MappingSourceParseError, match="size is invalid"):
+        list(parse_mapping_source(b"x" * (MAX_MAPPING_INPUT_BYTES + 1)))
