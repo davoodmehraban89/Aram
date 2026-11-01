@@ -101,10 +101,10 @@ def test_system_closing_account_is_excluded_but_preserved_in_totals():
 
 
 def test_summary_uses_exact_decimal_exposure():
-    rules = build_mapping_rules([mapping_row(2)])
+    rules = build_mapping_rules([mapping_row(2, t1="A")])
     rows = [
-        ledger_row(3, closing="0.1"),
-        ledger_row(4, closing="0.2"),
+        ledger_row(3, t1="A", closing="0.1"),
+        ledger_row(4, t1="A", closing="0.2"),
         ledger_row(5, t1="X", closing="-0.3"),
     ]
 
