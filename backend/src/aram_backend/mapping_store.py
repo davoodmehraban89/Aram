@@ -17,6 +17,7 @@ class MappingStore:
         if self.path == ":memory:":
             raise MappingWorkflowError("durable store requires a filesystem path")
         with self._connect() as db:
+            db.execute("PRAGMA journal_mode=WAL")
             db.executescript("""
                 CREATE TABLE IF NOT EXISTS mapping_state (
                     company TEXT NOT NULL, year INTEGER NOT NULL,
@@ -34,7 +35,6 @@ class MappingStore:
     def _connect(self):
         db = sqlite3.connect(self.path, timeout=15, isolation_level=None)
         db.execute("PRAGMA busy_timeout=15000")
-        db.execute("PRAGMA journal_mode=WAL")
         db.execute("PRAGMA synchronous=FULL")
         return db
 
@@ -93,6 +93,11 @@ class MappingStore:
                 if len(new_events) == len(old_events) and payload != row[1]:
                     raise MappingWorkflowError("state changed without audit event")
                 appended = new_events[len(old_events):]
+                if appended and not all(
+                    event["mapping_id"] in {d.mapping_id for d in workspace.decisions}
+                    for event in appended
+                ):
+                    raise MappingWorkflowError("audit event references unknown mapping")
             else:
                 appended = [asdict(e) for e in workspace.audit]
                 if workspace.decisions and not appended:
