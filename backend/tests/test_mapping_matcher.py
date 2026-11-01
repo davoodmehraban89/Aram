@@ -135,3 +135,11 @@ def test_ledger_row_order_and_source_ids_are_preserved():
 
     assert [item.ledger_row for item in results] == [99, 11]
     assert [item.matching_mapping_rows for item in results] == [(7,), (7,)]
+
+def test_populated_current_capital_dimension_fails_closed_until_ledger_exposes_it():
+    rules = build_mapping_rules([mapping_row(2, js="جاری")])
+
+    result = list(classify_ledger_rows([ledger_row(3)], rules))
+
+    assert result[0].status == "UNMAPPED"
+    assert result[0].matching_mapping_rows == ()
