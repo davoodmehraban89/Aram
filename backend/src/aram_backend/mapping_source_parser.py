@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from dataclasses import dataclass
 from io import BytesIO
+from zipfile import BadZipFile, ZipFile
 from typing import Any
 
 from openpyxl import load_workbook
@@ -11,6 +12,9 @@ from aram_backend.workbook_inspection import inspect_xlsx
 
 
 MAX_MAPPING_ROWS = 100_000
+MAX_MAPPING_INPUT_BYTES = 20 * 1024 * 1024
+MAX_MAPPING_ZIP_ENTRIES = 500
+MAX_MAPPING_EXPANDED_BYTES = 128 * 1024 * 1024
 
 _REQUIRED_HEADERS = (
     "کد حساب",
@@ -48,6 +52,7 @@ def parse_mapping_source(content: bytes) -> Iterator[MappingSourceRow]:
     Formula cells are read as formulas (data_only=False), never executed.
     """
 
+    _guard_mapping_archive(content)
     inspection = inspect_xlsx(content, document_type="mapping")
     workbook = load_workbook(
         BytesIO(content), read_only=True, data_only=False, keep_links=False
@@ -149,3 +154,24 @@ def _required_code(value: object, row_number: int, field: str) -> str:
     if isinstance(value, float):
         return str(int(value))
     return result
+
+
+def _guard_mapping_archive(content: bytes) -> None:
+    if not isinstance(content, bytes) or not 0 < len(content) <= MAX_MAPPING_INPUT_BYTES:
+        raise MappingSourceParseError("mapping workbook size is invalid")
+    try:
+        with ZipFile(BytesIO(content)) as archive:
+            members = archive.infolist()
+            if len(members) > MAX_MAPPING_ZIP_ENTRIES:
+                raise MappingSourceParseError("mapping workbook archive has too many entries")
+            expanded = 0
+            for member in members:
+                if member.file_size < 0 or member.file_size > MAX_MAPPING_EXPANDED_BYTES:
+                    raise MappingSourceParseError("mapping workbook expanded size is excessive")
+                expanded += member.file_size
+                if expanded > MAX_MAPPING_EXPANDED_BYTES:
+                    raise MappingSourceParseError("mapping workbook expanded size is excessive")
+    except (BadZipFile, OSError, ValueError) as exc:
+        if isinstance(exc, MappingSourceParseError):
+            raise
+        raise MappingSourceParseError("mapping workbook archive is invalid") from exc
