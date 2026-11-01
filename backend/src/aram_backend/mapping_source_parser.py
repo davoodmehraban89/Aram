@@ -8,7 +8,7 @@ from typing import Any
 
 from openpyxl import load_workbook
 
-from aram_backend.workbook_inspection import inspect_xlsx
+from aram_backend.workbook_inspection import MAX_HEADER_COLUMNS, inspect_xlsx
 
 
 MAX_MAPPING_ROWS = 100_000
@@ -59,6 +59,8 @@ def parse_mapping_source(content: bytes) -> Iterator[MappingSourceRow]:
     )
     try:
         worksheet = workbook[inspection.data_sheet]
+        if worksheet.max_column > MAX_HEADER_COLUMNS:
+            raise MappingSourceParseError("mapping workbook has too many columns")
         header_values = next(
             worksheet.iter_rows(
                 min_row=inspection.header_row,
