@@ -143,3 +143,35 @@ def test_populated_current_capital_dimension_fails_closed_until_ledger_exposes_i
 
     assert result[0].status == "UNMAPPED"
     assert result[0].matching_mapping_rows == ()
+
+
+def test_conflicting_persian_dimension_aliases_are_rejected():
+    original = mapping_row(8, js="جاری")
+    conflicting = MappingSourceRow(
+        row_number=original.row_number,
+        account_code=original.account_code,
+        mapping_type=original.mapping_type,
+        note_code=original.note_code,
+        note_description=original.note_description,
+        main_formula=original.main_formula,
+        sub_formula=original.sub_formula,
+        source_values=original.source_values + (("جاري / سرمایه ای", "سرمایه ای"),),
+    )
+    with pytest.raises(MappingMatchError, match="conflicting current/capital dimension aliases"):
+        build_mapping_rules([conflicting])
+
+
+def test_equivalent_persian_dimension_aliases_are_accepted_but_not_inferred():
+    original = mapping_row(9, js="جاری")
+    equivalent = MappingSourceRow(
+        row_number=original.row_number,
+        account_code=original.account_code,
+        mapping_type=original.mapping_type,
+        note_code=original.note_code,
+        note_description=original.note_description,
+        main_formula=original.main_formula,
+        sub_formula=original.sub_formula,
+        source_values=original.source_values + (("جاري / سرمایه ای", "جاری"),),
+    )
+    rules = build_mapping_rules([equivalent])
+    assert list(classify_ledger_rows([ledger_row(10)], rules))[0].status == "UNMAPPED"
