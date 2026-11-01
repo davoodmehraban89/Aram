@@ -87,3 +87,44 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+
+## 2026-11-01 — Gate 3 current review status (supersedes older Gate 3 status above)
+- Candidate: Draft PR #82 on feat/gate3-governed-mapping-20261101, based on source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Local Gate 3 implementation includes scoped mapping lifecycle, SQLite state/audit, optimistic concurrency, Pilot workbook roundtrip and unknown-account queue.
+- Package 3 hardening adds separation of maker/reviewer/approver and validation that persisted mapping state agrees with append-only audit transitions.
+- Three sequential self-audit passes documented at docs/GATE3_REVIEW_82.md; independent GitHub reviewers have not signed off.
+- Status: CHANGES REQUESTED; Gate 3 is not formally accepted. No merge or release.
+- Unresolved: authenticated identity and authorization, privileged-database tamper resistance, independent review, operational recovery drill, mapping ambiguity and real-data acceptance.
+- Rollback: revert isolated PR commits; accepted base and canonical financial source files remain untouched.
+
+## 2026-11-01 — Gate 3 Package 4 (supersedes earlier Gate 3 summaries)
+- Isolated branch and Draft PR #82; accepted base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914 unchanged.
+- New security facade: role/scope checks with injected trusted identity resolver; NOT connected to production API/IdP.
+- New integrity verification and consistent SQLite backup-to-fresh-file test; no external tamper-evident audit anchor.
+- Conservative ambiguity assessment; Excel hierarchy/notes roundtrip fixes; no real-ledger reconciliation claimed.
+- Review evidence: docs/GATE3_PACKAGE4_REVIEW.md (three self-review perspectives, not independent reviewers).
+- Formal Gate 3 status: CHANGES REQUESTED; PR must remain Draft. Do not merge/release/start Gate 4 implementation before independent acceptance.
+- Remaining blockers: independent reviewer approval, API/IdP authorization integration, external audit integrity, authorized financial reconciliation and operational recovery evidence.
+
+## 2026-11-01 — Gate 3 Package 5 (current status)
+- Branch feat/gate3-governed-mapping-20261101; PR #82 remains Draft; base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914 unchanged.
+- Protected mapping HTTP endpoints added; server-only resolver required and absent by default (fail closed). No real production IdP integration is claimed.
+- SHA-256 per-event audit chain and externally verifiable receipt support added. No separately protected receipt anchor configured; privileged tampering remains possible.
+- Synthetic HTTP, audit tamper, backup/restore and financial mapping tests added; no authorized real financial data or production DR drill performed.
+- Three perspective-based self-audits, NOT three independent reviewers. See docs/GATE3_PACKAGE5_ACCEPTANCE.md.
+- Decision: NO-GO / CHANGES REQUESTED. Do not merge, release or begin Gate 4 until policy prerequisites satisfied.
+
+## 2026-11-01 — Gate 3 Package 6 (latest)
+- Branch feat/gate3-governed-mapping-20261101, PR #82 Draft, base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Fail-closed resolver exceptions and separate-directory experimental audit receipt archive with exclusive creation, fsync, verification and tamper tests.
+- Full local backend suite, scoped Ruff and CI evidence are in PR #82; see docs/GATE3_PACKAGE6_FINAL.md for final acceptance matrix.
+- Three self-audit perspectives are not independent reviewers. Real IdP, protected external anchor, authorized financial reconciliation, operational DR drill and independent signoffs remain external prerequisites.
+- **NO-GO — Gate 3 NOT accepted.** No Merge, Release, production data edits or Gate 4 implementation.
+
+## 2026-11-01 — Gate 3 Package 7: closure dossier (latest)
+- Initial feature SHA 1856de1beaf32073932a4d9c17b6364438a603e1, approved base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914, PR #82 Draft, working tree clean.
+- All 98 backend tests passed locally. No production identity provider, independently protected audit receipt repository, approved real-ledger reconciliation, staging DR evidence or independent PR review was available.
+- Closure dossier and reviewer signoff checklist: docs/GATE3_PACKAGE7_CLOSURE_DOSSIER.md.
+- **Formal decision: NO-GO / CHANGES REQUESTED.** Assistant's technical work package closes; Gate 3 remains blocked on named external owners. No further assistant-only packages without new evidence or verified defect.
+- No Merge, Release, canonical data changes or Gate 4 implementation.

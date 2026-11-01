@@ -278,3 +278,44 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+## 2026-11-01 — Gate 3 PR #82 Package 3
+- Branch: feat/gate3-governed-mapping-20261101; base: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Initial reviewed head: ff6843cd0a1544a3a5355a8d555d4d692b8716fc.
+- Scope: MappingWorkflow maker/approver separation; MappingStore audit-chain/state integrity; regression tests; Gate 3 review evidence and project status.
+- Three sequential adversarial self-audits documented in docs/GATE3_REVIEW_82.md. No claim of independent reviewers.
+- Formal decision: CHANGES REQUESTED, Gate 3 not accepted; independent reviewer and material operational/security controls outstanding.
+- Rollback: revert Package 3 commits on isolated feature branch; no production schema/data migration.
+
+## 2026-11-01 — Gate 3 Package 4
+- Approved scope: harden mapping lifecycle, access, audit, workbook roundtrip, ambiguity handling, recovery tests, three-perspective review, CI and handoff.
+- Changes: mapping_access.py and tests; mapping_quality.py and tests; MappingStore.verify_integrity/backup_to; Excel mapping hierarchy and notes preservation.
+- Three sequential self-audits in docs/GATE3_PACKAGE4_REVIEW.md; not independent review.
+- No financial-data or canonical artifact modification; no production database migrations.
+- Formal status CHANGES REQUESTED pending independent review and remaining security/financial/operational evidence. Rollback by reverting focused feature-branch commits.
+
+## 2026-11-01 — Gate 3 Package 5
+- Isolated branch, approved base and PR #82 checked before modifications; no unrelated local edits at start.
+- New mapping API routes protected by injected identity resolver and fail-closed default; added HTTP role/scope regression tests.
+- SHA-256 event audit chain and external terminal receipt verification added with integrity/restore tests. Historical-event backfill deliberately not automated.
+- Reviewed finance/scope/Excel, architecture/security, adversarial/recovery as three self-audit perspectives only; independent approval remains absent.
+- Acceptance evidence and Gate 4 handoff: docs/GATE3_PACKAGE5_ACCEPTANCE.md.
+- No canonical XLSX/PDF, financial data, production database, Merge or Release changed. Rollback: revert feature-branch commits.
+- Decision NO-GO pending external IdP, external audit anchor, authorized financial reconciliation, operational DR drill and independent review.
+
+## 2026-11-01 — Gate 3 Package 6
+- Rechecked approved base, PR #82 Draft, starting SHA and clean isolated branch.
+- Hardened mapping_access.py resolver exception path; added mapping_receipts.py for separately configured exclusive-write receipt archive and test_mapping_receipts.py for backup, tamper, invalid path and outage.
+- Three sequential self-review perspectives; no claim of independent reviewers or production security boundary.
+- Final technical handoff, acceptance matrix and external-owner action list in docs/GATE3_PACKAGE6_FINAL.md.
+- NO-GO until IdP, independently administered anchor, financial signoff, operational recovery evidence and independent reviews exist.
+- No production migration, Merge, Release or canonical financial artifact edits. Rollback via isolated commit revert.
+
+## 2026-11-01 — Gate 3 Package 7 final closure attempt
+- Revalidated accepted base SHA, isolated feature branch, clean working tree, Draft PR #82 and zero independent reviews.
+- Inspected changed-file list: no canonical financial source XLSX/PDF or data paths changed. Existing repository ledger files were NOT treated as authorized real-ledger reconciliation evidence.
+- Re-ran complete backend pytest (98 tests, exit 0), lint/compile and diff checks. Revisited finance, security and adversarial tests; these are self-review perspectives, not independent approvals.
+- Prepared docs/GATE3_PACKAGE7_CLOSURE_DOSSIER.md with reviewer signature template, evidence matrix, owner-specific action list and Gate 4 handoff.
+- NO-GO until external identity, independent audit anchor, finance owner signoff, staging DR drill and independent review are evidenced.
+- No Merge, Release, production data mutation or Gate 4 implementation; no further repetitive development packages without new evidence.
