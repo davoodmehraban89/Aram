@@ -225,3 +225,78 @@ def unknown_account_queue(
             unknown.add(account)
     return tuple(UnknownAccount(company_code, fiscal_year, account)
                  for account in sorted(unknown))
+
+
+def export_pilot_mapping_workbook(
+    source: bytes, decisions: Iterable[MappingDecision], *,
+    company_code: str, fiscal_year: int,
+) -> bytes:
+    """Produce a complete Pilot workbook, validated for re-import."""
+    check = preflight_pilot_workbook(source)
+    if not check.valid:
+        raise MappingWorkflowError("source workbook failed preflight")
+    workbook = load_workbook(BytesIO(source))
+    try:
+        headers = SHEET_HEADERS["Mapping"]
+        mapping_sheet = workbook["Mapping"]
+        accounts = {}
+        for values in workbook["Accounts"].iter_rows(min_row=2, values_only=True):
+            if any(v is not None for v in values):
+                row = dict(zip(SHEET_HEADERS["Accounts"], values))
+                accounts[(row["company_code"], row["fiscal_year"], row["account_full_code"])] = row
+        notes = set()
+        for values in workbook["Notes"].iter_rows(min_row=2, values_only=True):
+            if any(v is not None for v in values):
+                row = dict(zip(SHEET_HEADERS["Notes"], values))
+                notes.add((row["company_code"], row["fiscal_year"], row["statement"],
+                           row["statement_section"], row["note_number"], row["subnote_code"]))
+        previous = {}
+        for values in mapping_sheet.iter_rows(min_row=2, values_only=True):
+            if any(v is not None for v in values):
+                row = dict(zip(headers, values))
+                previous[row["mapping_id"]] = row
+        replacements = []
+        seen = set()
+        for d in decisions:
+            if (d.company_code, d.fiscal_year) != (company_code, fiscal_year):
+                raise MappingWorkflowError("foreign company/year in export")
+            if d.mapping_id in seen:
+                raise MappingWorkflowError("duplicate mapping ID in export")
+            seen.add(d.mapping_id)
+            account = accounts.get((company_code, fiscal_year, d.account_full_code))
+            if account is None:
+                raise MappingWorkflowError("unknown account in export")
+            if (company_code, fiscal_year, d.target_statement, d.statement_section,
+                d.note_number, d.subnote_code) not in notes:
+                raise MappingWorkflowError("unknown note/subnote in export")
+            if d.status != "Draft":
+                raise MappingWorkflowError("approved/reviewed mappings require dated review evidence")
+            row = {field: None for field in headers}
+            row.update({
+                "mapping_id": d.mapping_id, "company_code": company_code,
+                "fiscal_year": fiscal_year, "account_full_code": d.account_full_code,
+                "account_level": previous[d.mapping_id]["account_level"]
+                if d.mapping_id in previous else "General",
+                "target_statement": d.target_statement,
+                "statement_section": d.statement_section,
+                "note_number": d.note_number, "subnote_code": d.subnote_code,
+                "mapping_version": d.version, "approval_status": d.status,
+                "source": d.source, "validation_status": "Pending",
+            })
+            for field in ("general_code", "subsidiary_code", "detail1_code",
+                          "detail2_code", "detail3_code", "detail4_code"):
+                row[field] = account[field]
+            replacements.append(tuple(row[field] for field in headers))
+        if mapping_sheet.max_row > 1:
+            mapping_sheet.delete_rows(2, mapping_sheet.max_row - 1)
+        for values in replacements:
+            mapping_sheet.append(values)
+        stream = BytesIO()
+        workbook.save(stream)
+        output = stream.getvalue()
+    finally:
+        workbook.close()
+    validation = preflight_pilot_workbook(output)
+    if not validation.valid:
+        raise MappingWorkflowError(f"export preflight failed: {validation.issues[0].code}")
+    return output

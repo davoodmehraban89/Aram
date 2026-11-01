@@ -1,0 +1,126 @@
+"""Durable SQLite mapping store with serialized writes and optimistic concurrency."""
+from __future__ import annotations
+
+import json
+import sqlite3
+from dataclasses import asdict
+from pathlib import Path
+
+from aram_backend.mapping_workflow import (
+    MappingAuditEvent, MappingDecision, MappingWorkflowError, MappingWorkspace,
+)
+
+
+class MappingStore:
+    def __init__(self, path: str | Path):
+        self.path = str(path)
+        if self.path == ":memory:":
+            raise MappingWorkflowError("durable store requires a filesystem path")
+        with self._connect() as db:
+            db.executescript("""
+                CREATE TABLE IF NOT EXISTS mapping_state (
+                    company TEXT NOT NULL, year INTEGER NOT NULL,
+                    revision INTEGER NOT NULL, payload TEXT NOT NULL,
+                    PRIMARY KEY(company, year)
+                );
+                CREATE TABLE IF NOT EXISTS mapping_audit (
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+                    company TEXT NOT NULL, year INTEGER NOT NULL,
+                    revision INTEGER NOT NULL, payload TEXT NOT NULL,
+                    UNIQUE(company, year, revision)
+                );
+            """)
+
+    def _connect(self):
+        db = sqlite3.connect(self.path, timeout=15, isolation_level=None)
+        db.execute("PRAGMA busy_timeout=15000")
+        db.execute("PRAGMA journal_mode=WAL")
+        db.execute("PRAGMA synchronous=FULL")
+        return db
+
+    def load(self, company: str, year: int) -> tuple[MappingWorkspace, int]:
+        workspace = MappingWorkspace(company, year)
+        with self._connect() as db:
+            row = db.execute(
+                "SELECT revision, payload FROM mapping_state WHERE company=? AND year=?",
+                (workspace.company_code, year),
+            ).fetchone()
+            if row is None:
+                return workspace, 0
+            revision, payload = row
+            state = json.loads(payload)
+            for item in state["decisions"]:
+                decision = MappingDecision(**item)
+                workspace._check_scope(decision)
+                if decision.mapping_id in workspace._decisions:
+                    raise MappingWorkflowError("duplicate persisted mapping")
+                workspace._decisions[decision.mapping_id] = decision
+            for item in state["audit"]:
+                event = MappingAuditEvent(**item)
+                if (event.company_code, event.fiscal_year) != (workspace.company_code, year):
+                    raise MappingWorkflowError("foreign audit entry")
+                workspace._audit.append(event)
+            return workspace, revision
+
+    def save(self, workspace: MappingWorkspace, expected_revision: int) -> int:
+        if isinstance(expected_revision, bool) or not isinstance(expected_revision, int) or expected_revision < 0:
+            raise MappingWorkflowError("invalid expected revision")
+        for decision in workspace.decisions:
+            workspace._check_scope(decision)
+        for event in workspace.audit:
+            if (event.company_code, event.fiscal_year) != (workspace.company_code, workspace.fiscal_year):
+                raise MappingWorkflowError("foreign audit event")
+        payload = json.dumps({
+            "decisions": [asdict(item) for item in workspace.decisions],
+            "audit": [asdict(item) for item in workspace.audit],
+        }, ensure_ascii=False, sort_keys=True)
+        db = self._connect()
+        try:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT revision, payload FROM mapping_state WHERE company=? AND year=?",
+                (workspace.company_code, workspace.fiscal_year),
+            ).fetchone()
+            current = row[0] if row else 0
+            if current != expected_revision:
+                raise MappingWorkflowError("concurrent update: stale revision")
+            if row:
+                previous = json.loads(row[1])
+                old_events = previous["audit"]
+                new_events = [asdict(e) for e in workspace.audit]
+                if new_events[:len(old_events)] != old_events:
+                    raise MappingWorkflowError("audit history must be append-only")
+                if len(new_events) == len(old_events) and payload != row[1]:
+                    raise MappingWorkflowError("state changed without audit event")
+                appended = new_events[len(old_events):]
+            else:
+                appended = [asdict(e) for e in workspace.audit]
+                if workspace.decisions and not appended:
+                    raise MappingWorkflowError("decisions require audit events")
+            new_revision = current + 1
+            db.execute(
+                "INSERT INTO mapping_state(company,year,revision,payload) VALUES(?,?,?,?) "
+                "ON CONFLICT(company,year) DO UPDATE SET revision=excluded.revision,payload=excluded.payload",
+                (workspace.company_code, workspace.fiscal_year, new_revision, payload),
+            )
+            for index, event in enumerate(appended):
+                db.execute(
+                    "INSERT INTO mapping_audit(company,year,revision,payload) VALUES(?,?,?,?)",
+                    (workspace.company_code, workspace.fiscal_year,
+                     new_revision * 1000000 + index, json.dumps(event, ensure_ascii=False)),
+                )
+            db.commit()
+            return new_revision
+        except Exception:
+            db.rollback()
+            raise
+        finally:
+            db.close()
+
+    def audit_log(self, company: str, year: int) -> tuple[MappingAuditEvent, ...]:
+        with self._connect() as db:
+            rows = db.execute(
+                "SELECT payload FROM mapping_audit WHERE company=? AND year=? ORDER BY sequence",
+                (company, year),
+            ).fetchall()
+        return tuple(MappingAuditEvent(**json.loads(row[0])) for row in rows)
