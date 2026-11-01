@@ -1,15 +1,16 @@
-from dataclasses import replace
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from io import BytesIO
 
 import pytest
-from openpyxl import load_workbook
-
 from aram_backend.mapping_store import MappingStore
 from aram_backend.mapping_workflow import (
-    MappingDecision, MappingWorkflowError, export_pilot_mapping_workbook,
+    MappingDecision,
+    MappingWorkflowError,
+    export_pilot_mapping_workbook,
     import_mapping_workbook,
 )
+from openpyxl import load_workbook
 from test_pilot_workbook import valid_rows, workbook_bytes
 
 

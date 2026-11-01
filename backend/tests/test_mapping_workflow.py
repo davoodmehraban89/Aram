@@ -2,12 +2,14 @@ from dataclasses import replace
 from io import BytesIO
 
 import pytest
-from openpyxl import load_workbook
-
 from aram_backend.mapping_workflow import (
-    MappingDecision, MappingWorkflowError, MappingWorkspace, export_mapping_rows,
+    MappingDecision,
+    MappingWorkflowError,
+    MappingWorkspace,
+    export_mapping_rows,
     import_mapping_workbook,
 )
+from openpyxl import load_workbook
 from test_pilot_workbook import valid_rows, workbook_bytes
 
 

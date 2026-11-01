@@ -8,7 +8,10 @@ from dataclasses import asdict
 from pathlib import Path
 
 from aram_backend.mapping_workflow import (
-    MappingAuditEvent, MappingDecision, MappingWorkflowError, MappingWorkspace,
+    MappingAuditEvent,
+    MappingDecision,
+    MappingWorkflowError,
+    MappingWorkspace,
 )
 
 

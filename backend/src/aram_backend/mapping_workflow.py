@@ -5,10 +5,10 @@ and append-only audit entries; caller owns durable storage and transactionality.
 """
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass, replace
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from io import BytesIO
-from typing import Iterable
 
 from openpyxl import Workbook, load_workbook
 
@@ -79,7 +79,7 @@ class MappingWorkspace:
         self._audit.append(MappingAuditEvent(
             new.mapping_id, new.company_code, new.fiscal_year,
             old.status if old else None, new.status, actor,
-            datetime.now(timezone.utc).isoformat(),
+            datetime.now(UTC).isoformat(),
             old.version if old else None, new.version,
         ))
 
@@ -117,7 +117,7 @@ class MappingWorkspace:
         )):
             raise MappingWorkflowError("approval requires independent maker and reviewer")
         new = replace(old, status=status, reviewer=actor,
-                      review_date=datetime.now(timezone.utc).date().isoformat(),
+                      review_date=datetime.now(UTC).date().isoformat(),
                       version=old.version + 1)
         self._record(old, new, actor)
         return new
