@@ -34,7 +34,10 @@ class MappingAccess:
     def _authorize(self, credential: str, workspace: MappingWorkspace, role: Role) -> str:
         if not isinstance(credential, str) or not credential:
             raise MappingWorkflowError("authenticated credential required")
-        principal = self._resolve(credential)
+        try:
+            principal = self._resolve(credential)
+        except Exception as exc:
+            raise MappingWorkflowError("mapping access denied") from exc
         if (principal is None or not isinstance(principal, AuthenticatedPrincipal)
                 or not principal.subject.strip()
                 or workspace.company_code not in principal.company_scopes

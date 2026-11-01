@@ -114,3 +114,10 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Synthetic HTTP, audit tamper, backup/restore and financial mapping tests added; no authorized real financial data or production DR drill performed.
 - Three perspective-based self-audits, NOT three independent reviewers. See docs/GATE3_PACKAGE5_ACCEPTANCE.md.
 - Decision: NO-GO / CHANGES REQUESTED. Do not merge, release or begin Gate 4 until policy prerequisites satisfied.
+
+## 2026-11-01 — Gate 3 Package 6 (latest)
+- Branch feat/gate3-governed-mapping-20261101, PR #82 Draft, base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Fail-closed resolver exceptions and separate-directory experimental audit receipt archive with exclusive creation, fsync, verification and tamper tests.
+- Full local backend suite, scoped Ruff and CI evidence are in PR #82; see docs/GATE3_PACKAGE6_FINAL.md for final acceptance matrix.
+- Three self-audit perspectives are not independent reviewers. Real IdP, protected external anchor, authorized financial reconciliation, operational DR drill and independent signoffs remain external prerequisites.
+- **NO-GO — Gate 3 NOT accepted.** No Merge, Release, production data edits or Gate 4 implementation.
