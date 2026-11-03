@@ -1,6 +1,7 @@
 import sqlite3
 
 import pytest
+
 from aram_backend.mapping_store import MappingStore
 from aram_backend.mapping_workflow import MappingDecision, MappingWorkflowError
 

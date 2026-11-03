@@ -1,6 +1,7 @@
 import sqlite3
 
 import pytest
+
 from aram_backend.mapping_access import MappingAccess
 from aram_backend.mapping_receipts import ReceiptArchive
 from aram_backend.mapping_store import MappingStore

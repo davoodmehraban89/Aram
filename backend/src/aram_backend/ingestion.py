@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 
 from aram_backend.models import FiscalYear, FiscalYearStatus, SourceDocument
 
-
 ALLOWED_SOURCE_SUFFIXES = frozenset({".csv", ".xlsx"})
 ALLOWED_DOCUMENT_TYPES = frozenset(
     {"financial_statement", "general_ledger", "mapping", "trial_balance"}
@@ -60,11 +59,11 @@ def register_source_document(
     )
     if existing is not None:
         if existing.document_type != document_type and existing.filename != safe_name:
-            raise SourceRegistrationError(f"document type and filename mismatch for existing content hash")
+            raise SourceRegistrationError("document type and filename mismatch for existing content hash")
         if existing.document_type != document_type:
-            raise SourceRegistrationError(f"document type mismatch for existing content hash")
+            raise SourceRegistrationError("document type mismatch for existing content hash")
         if existing.filename != safe_name:
-            raise SourceRegistrationError(f"filename mismatch for existing content hash")
+            raise SourceRegistrationError("filename mismatch for existing content hash")
         return existing
 
     source = SourceDocument(

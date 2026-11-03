@@ -7,7 +7,6 @@ from zipfile import BadZipFile
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
-
 MAX_WORKSHEETS = 100
 MAX_HEADER_COLUMNS = 256
 

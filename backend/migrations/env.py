@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from aram_backend import models  # noqa: F401
 from aram_backend.config import get_settings
 from aram_backend.database import Base
-from aram_backend import models  # noqa: F401
 
 config = context.config
 if config.config_file_name:

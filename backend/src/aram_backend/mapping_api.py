@@ -60,6 +60,9 @@ class Proposal(BaseModel):
     source: str = "Manual"
 
 
+class OwnerAcceptance(BaseModel):
+    reason: str = Field(min_length=15, max_length=2000)
+
 class Revision(BaseModel):
     target_statement: str = Field(min_length=1)
     statement_section: str = Field(min_length=1)
@@ -103,6 +106,13 @@ def review(company: str, year: int, mapping_id: str, token: str = Depends(_crede
 def approve(company: str, year: int, mapping_id: str, token: str = Depends(_credential)):
     return _apply(company, year, token, lambda a, w, t: a.approve(t, w, mapping_id))
 
+
+@router.post("/{company}/{year}/{mapping_id}/owner-accept", response_model=MappingDecision)
+def owner_accept(company: str, year: int, mapping_id: str, payload: OwnerAcceptance,
+                 token: str = Depends(_credential)):
+    """Exception acceptance; never equivalent to independent Approved status."""
+    return _apply(company, year, token,
+                  lambda a, w, t: a.owner_accept(t, w, mapping_id, reason=payload.reason))
 
 @router.post("/{company}/{year}/{mapping_id}/revise", response_model=MappingDecision)
 def revise(company: str, year: int, mapping_id: str, payload: Revision,

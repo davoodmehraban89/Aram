@@ -4,8 +4,8 @@ Revision ID: 20260820_01
 """
 from alembic import op
 
-from aram_backend.database import Base
 from aram_backend import models  # noqa: F401
+from aram_backend.database import Base
 
 revision = "20260820_01"
 down_revision = None
