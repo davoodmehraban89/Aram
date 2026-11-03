@@ -47,6 +47,7 @@ class MappingAuditEvent:
     timestamp: str
     previous_version: int | None
     new_version: int
+    reason: str | None = None
 
 
 class MappingWorkspace:
@@ -74,13 +75,13 @@ class MappingWorkspace:
         if (decision.company_code, decision.fiscal_year) != (self.company_code, self.fiscal_year):
             raise MappingWorkflowError("company/year isolation violation")
 
-    def _record(self, old: MappingDecision | None, new: MappingDecision, actor: str) -> None:
+    def _record(self, old: MappingDecision | None, new: MappingDecision, actor: str, reason: str | None = None) -> None:
         self._decisions[new.mapping_id] = new
         self._audit.append(MappingAuditEvent(
             new.mapping_id, new.company_code, new.fiscal_year,
             old.status if old else None, new.status, actor,
             datetime.now(UTC).isoformat(),
-            old.version if old else None, new.version,
+            old.version if old else None, new.version, reason,
         ))
 
     def propose(self, decision: MappingDecision, *, actor: str) -> MappingDecision:
@@ -120,6 +121,21 @@ class MappingWorkspace:
                       review_date=datetime.now(UTC).date().isoformat(),
                       version=old.version + 1)
         self._record(old, new, actor)
+        return new
+
+    def owner_accept(self, mapping_id: str, *, actor: str, reason: str) -> MappingDecision:
+        """Record explicit owner exception; NEVER impersonate independent approval."""
+        old = self._decisions.get(mapping_id)
+        if old is None:
+            raise MappingWorkflowError("unknown mapping_id")
+        if old.status != "Draft":
+            raise MappingWorkflowError("owner acceptance requires unreviewed Draft")
+        if not actor.strip() or not isinstance(reason, str) or len(reason.strip()) < 15:
+            raise MappingWorkflowError("owner acceptance requires identity and reason (15+ chars)")
+        new = replace(old, status="OwnerAcceptedWithException", reviewer=None,
+                      review_date=datetime.now(UTC).date().isoformat(),
+                      version=old.version + 1)
+        self._record(old, new, actor, reason.strip())
         return new
 
     def revise(self, mapping_id: str, *, actor: str, target_statement: str,

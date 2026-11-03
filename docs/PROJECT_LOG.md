@@ -8,7 +8,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 
 ## Historical entries imported from GitHub
 
-### 2026-08-18T11:08:12Z — Phase 1B-1
+### 2026-08-18T11:08:12Z â€” Phase 1B-1
 
 - Actor: Jules / repository owner
 - Base: `source-data-cleanup@d18287a74c9453e8071ed03db6b369805b5ccde3`
@@ -23,7 +23,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: historical test evidence not recorded here
 - Next action: Phase 1B-2
 
-### 2026-08-19T16:29:06Z — Phase 1B-2 corrections
+### 2026-08-19T16:29:06Z â€” Phase 1B-2 corrections
 
 - Actor: Jules / repository owner
 - Base: `source-data-cleanup@cd074095c3d63a4a2da1ab8490ce772f555fc91d`
@@ -38,7 +38,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: claims must still be interpreted against the source evidence
 - Next action: Phase 2A
 
-### 2026-08-20T18:53:39Z — Phase 2A backend foundation
+### 2026-08-20T18:53:39Z â€” Phase 2A backend foundation
 
 - Actor: ChatGPT/Codex implementation; repository owner
 - Base: `source-data-cleanup@f8084268c1080595d9da672d490834ed677ad77f`
@@ -55,7 +55,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: preserve data and fiscal-year invariants
 - Next action: focused ingestion work
 
-### 2026-08-24T00:34:12Z — Model refactor
+### 2026-08-24T00:34:12Z â€” Model refactor
 
 - Actor: Jules / repository owner
 - Base: `source-data-cleanup@84b19ef1a6efe3e82291a565829ba3e1fc47d246`
@@ -72,7 +72,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: none newly recorded
 - Next action: Phase 2B review
 
-### 2026-08-24T00:34:36Z — Parallel V1 prototype closed
+### 2026-08-24T00:34:36Z â€” Parallel V1 prototype closed
 
 - Actor: Jules / repository owner
 - Base: `source-data-cleanup@84b19ef1a6efe3e82291a565829ba3e1fc47d246`
@@ -88,7 +88,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: large parallel implementation; do not merge directly
 - Next action: recover feature-by-feature through focused PRs
 
-### 2026-08-24T01:34:25Z — Phase 2B ingestion foundation opened
+### 2026-08-24T01:34:25Z â€” Phase 2B ingestion foundation opened
 
 - Actor: ChatGPT/Codex implementation; repository owner
 - Base: `source-data-cleanup@5122fd052ebe0ffe0e07dbb8153a872a4f047355`
@@ -112,7 +112,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Verified CI evidence: GitHub Backend CI run #16 successful on PR #12.
 - Updated docs to ensure Phase 2B metadata-registration conflict rejection is thoroughly tested and verified.
 
-### 2026-08-24T08:00:00Z — PR #12 corrective evidence and documentation finalization
+### 2026-08-24T08:00:00Z â€” PR #12 corrective evidence and documentation finalization
 
 - Actor: Jules implementation; ChatGPT/Codex independent remote verification and documentation correction
 - Task/phase: Phase 2B ingestion foundation replacement candidate
@@ -132,7 +132,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close PR #12 without merging to leave the accepted branch unchanged
 - Next action: independently review the final remote head and record an explicit decision
 
-### 2026-08-24T08:35:40Z — Phase 2B accepted; superseded candidate closed
+### 2026-08-24T08:35:40Z â€” Phase 2B accepted; superseded candidate closed
 
 - Actor: ChatGPT/Codex independent reviewer; repository owner authorization
 - Task/phase: Phase 2B ingestion foundation acceptance and post-merge control reconciliation
@@ -156,7 +156,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risk: PR #13 must be independently reviewed before its documentation becomes accepted
 - Next action: review PR #13, then select the next focused Issue #11 roadmap task
 
-### 2026-08-24T09:29:00Z — Gate 2A implementation candidate prepared
+### 2026-08-24T09:29:00Z â€” Gate 2A implementation candidate prepared
 
 - Actor: ChatGPT/Codex implementation
 - Task/phase: Issue #14, Pilot workbook contract and read-only preflight
@@ -177,7 +177,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: full Backend CI and independent diff review are required
 - Recovery: close the Draft PR without merge; accepted branch remains unchanged
 
-### 2026-08-24T09:40:00Z — Gate 2A Draft PR and CI verified
+### 2026-08-24T09:40:00Z â€” Gate 2A Draft PR and CI verified
 
 - Draft PR: [#15](https://github.com/davoodmehraban89/Aram/pull/15)
 - Published head: `8b0431b54392e3c19ae995e2b38bdf08a56a0473`
@@ -187,7 +187,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - PR state: Draft, open, mergeable, and unmerged
 - Acceptance: `IN_PROGRESS`; independent diff review and explicit merge decision remain required
 
-### 2026-08-25T06:30:00Z — Post-Gate-2A control reconciliation and stale-work cleanup
+### 2026-08-25T06:30:00Z â€” Post-Gate-2A control reconciliation and stale-work cleanup
 
 - Actor: Codex successor project manager / independent GitHub reviewer; cleanup authorized by repository owner
 - Task/phase: reconcile accepted Gate 2A evidence, close its duplicate candidate, and block stale-base Gate 2B work before continuation
@@ -212,7 +212,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: branch protection is disabled; PR #17 reference work remains unaccepted; Mapping/UI/release work is incomplete
 - Next action: independently review Draft PR #18; do not start or merge Gate 2B work before the control decision
 
-### 2026-08-25T06:46:16Z — PR #18 accepted; time-bound candidate record reconciled
+### 2026-08-25T06:46:16Z â€” PR #18 accepted; time-bound candidate record reconciled
 
 - Actor: ChatGPT/Codex independent reviewer; repository owner explicit authorization
 - Task/phase: accept the post-Gate-2A control reconciliation and correct the preceding time-bound candidate snapshot
@@ -234,7 +234,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: the accepted branch is unprotected; Mapping, note/sub-note workflow/UI, reproducible Windows packaging, and end-to-end Pilot acceptance remain incomplete
 - Next action: fetch the live accepted head and define one new focused Gate 3 / Gate 2B Mapping task; do not revive or merge PR #17
 
-### 2026-08-25T07:37:08Z — Role-based operating model prepared
+### 2026-08-25T07:37:08Z â€” Role-based operating model prepared
 
 - Actor: project manager / repository maintainer; requested by Davood
 - Task/phase: record the complete Aram responsibility model in the permanent recovery prompt
@@ -256,7 +256,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: the accepted branch is unprotected; role assignments do not replace evidence gates; Gate 3 Mapping and all later V1 gates remain incomplete
 - Next action: finish the five-file remote candidate, independently review PR #20, and record one acceptance decision
 
-### 2026-08-26T15:36:29Z — V1-01 safety-gate hardening prepared
+### 2026-08-26T15:36:29Z â€” V1-01 safety-gate hardening prepared
 
 - Actor: Codex Work authorized maintainer / implementation agent for the critical fix
 - Task/phase: V1-01 safety-gate hardening before Gate 3 Mapping
@@ -280,7 +280,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Next action: publish the focused PR and obtain independent remote review after CI
 
 
-## 2026-11-01 — Gate 3 PR #82 Package 3
+## 2026-11-01 â€” Gate 3 PR #82 Package 3
 - Branch: feat/gate3-governed-mapping-20261101; base: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
 - Initial reviewed head: ff6843cd0a1544a3a5355a8d555d4d692b8716fc.
 - Scope: MappingWorkflow maker/approver separation; MappingStore audit-chain/state integrity; regression tests; Gate 3 review evidence and project status.
@@ -288,14 +288,14 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Formal decision: CHANGES REQUESTED, Gate 3 not accepted; independent reviewer and material operational/security controls outstanding.
 - Rollback: revert Package 3 commits on isolated feature branch; no production schema/data migration.
 
-## 2026-11-01 — Gate 3 Package 4
+## 2026-11-01 â€” Gate 3 Package 4
 - Approved scope: harden mapping lifecycle, access, audit, workbook roundtrip, ambiguity handling, recovery tests, three-perspective review, CI and handoff.
 - Changes: mapping_access.py and tests; mapping_quality.py and tests; MappingStore.verify_integrity/backup_to; Excel mapping hierarchy and notes preservation.
 - Three sequential self-audits in docs/GATE3_PACKAGE4_REVIEW.md; not independent review.
 - No financial-data or canonical artifact modification; no production database migrations.
 - Formal status CHANGES REQUESTED pending independent review and remaining security/financial/operational evidence. Rollback by reverting focused feature-branch commits.
 
-## 2026-11-01 — Gate 3 Package 5
+## 2026-11-01 â€” Gate 3 Package 5
 - Isolated branch, approved base and PR #82 checked before modifications; no unrelated local edits at start.
 - New mapping API routes protected by injected identity resolver and fail-closed default; added HTTP role/scope regression tests.
 - SHA-256 event audit chain and external terminal receipt verification added with integrity/restore tests. Historical-event backfill deliberately not automated.
@@ -304,7 +304,7 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - No canonical XLSX/PDF, financial data, production database, Merge or Release changed. Rollback: revert feature-branch commits.
 - Decision NO-GO pending external IdP, external audit anchor, authorized financial reconciliation, operational DR drill and independent review.
 
-## 2026-11-01 — Gate 3 Package 6
+## 2026-11-01 â€” Gate 3 Package 6
 - Rechecked approved base, PR #82 Draft, starting SHA and clean isolated branch.
 - Hardened mapping_access.py resolver exception path; added mapping_receipts.py for separately configured exclusive-write receipt archive and test_mapping_receipts.py for backup, tamper, invalid path and outage.
 - Three sequential self-review perspectives; no claim of independent reviewers or production security boundary.
@@ -312,10 +312,65 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - NO-GO until IdP, independently administered anchor, financial signoff, operational recovery evidence and independent reviews exist.
 - No production migration, Merge, Release or canonical financial artifact edits. Rollback via isolated commit revert.
 
-## 2026-11-01 — Gate 3 Package 7 final closure attempt
+## 2026-11-01 â€” Gate 3 Package 7 final closure attempt
 - Revalidated accepted base SHA, isolated feature branch, clean working tree, Draft PR #82 and zero independent reviews.
 - Inspected changed-file list: no canonical financial source XLSX/PDF or data paths changed. Existing repository ledger files were NOT treated as authorized real-ledger reconciliation evidence.
 - Re-ran complete backend pytest (98 tests, exit 0), lint/compile and diff checks. Revisited finance, security and adversarial tests; these are self-review perspectives, not independent approvals.
 - Prepared docs/GATE3_PACKAGE7_CLOSURE_DOSSIER.md with reviewer signature template, evidence matrix, owner-specific action list and Gate 4 handoff.
 - NO-GO until external identity, independent audit anchor, finance owner signoff, staging DR drill and independent review are evidenced.
 - No Merge, Release, production data mutation or Gate 4 implementation; no further repetitive development packages without new evidence.
+
+## 2026-11-02 - Gate 3 personal Windows dependency repair (local, uncommitted)
+- Baseline: feat/gate3-governed-mapping-20261101 at 9d346f098a0a2159d96080715322879b08d9a1f8; no canonical financial files modified.
+- Created isolated backend/.venv on Windows with Python 3.12.10.
+- Reproduced failure of pip install -e '.[test]' caused by unavailable optional uvicorn[standard] packages (including websockets) in the accessible package index.
+- Changed backend/pyproject.toml to depend on plain uvicorn and moved standard extras to optional server-standard group. Added Windows localhost setup instructions in backend/README.md.
+- Retested exact pip install -e '.[test]' successfully; backend pytest suite passed on Windows, pip check reported no broken requirements.
+- Remaining: production identity, independent receipt anchor, financial reconciliation, operational recovery, independent reviewer. Gate 3 NO-GO; no Merge or Release.
+## 2026-11-02 - Gate 3 owner API and remote destination preparation
+- Implemented owner-role-gated `owner-accept` API with reason validation and preserved Approved-only segregation; verified negative HTTP authorization tests.
+- Windows backend full pytest run passed 104 tests (exit 0). `httpx`/Starlette deprecation warning remains.
+- Created remote Drive folder under existing Aram folder for future encrypted backup/receipts. No data uploaded. Immutable retention, upload transport, readback and restore remain unverified.
+- NO-GO; no Merge, Release, source-ledger edits or production credential provisioning.
+## 2026-11-02 - Windows synthetic DR validation
+- Confirmed GoogleDriveFS running and E: My Drive mounted, but connector-created Aram folder not visible on local mount. No cloud file copied.
+- Added isolated synthetic SQLite snapshot/restore/receipt tamper test; full backend suite 105 passed. Remote recovery and independent retention remain unverified; Gate 3 NO-GO.
+## 2026-11-02 - Cloud sync probe
+- Verified 66-byte non-sensitive Windows E: sync probe and synthetic folder appear via connected Google Drive. Remote connector folder still not listed on Windows mount.
+- Encryption dependency installation failed due to network read timeout; no unencrypted DB uploaded. Gate 3 NO-GO.
+## 2026-11-02 - Encrypted cloud integrity milestone
+- Installed cryptography; AES-256-GCM synthetic backup and tamper tests passed. Windows-to-Drive uploaded 28,700-byte synthetic ciphertext; independently fetched from Drive, SHA-256 matched source exactly.
+- Full backend 106 tests passed. One-off ephemeral cloud key not retained, so this is not a full cloud recovery drill. No real ledger uploaded; Gate 3 NO-GO.
+## 2026-11-02 - Gate 3 independent synthetic cloud restore
+- Generated synthetic SQLite encrypted with AES-256-GCM on Windows; uploaded through mounted Google Drive.
+- Independently downloaded cloud object 1XdEzsFMcZ0RsoRON6ZgKrGveeIZrgWGR (28700 bytes) via Google Drive connector into separate container.
+- SHA-256 matched source: a0e724bd2a10ed49945ef1a09d64909b420dc587d3e23904178132eb0786a3e4.
+- Decrypted independent downloaded bytes and restored 28672-byte SQLite DB; PRAGMA integrity_check = ok; mapping_state, mapping_audit, mapping_audit_hash each contain one row.
+- Only synthetic data. Temporary one-off diagnostic script with exposed synthetic test key removed. Production key custody, access controls, audit immutability, reconciliation, independent reviewer remain unverified; Gate 3 NO-GO.
+
+
+## 2026-11-03 — Windows reconnection, Gate 3 worktree audit, and test dependency repair
+- Reconnected to Windows device Aram and inspected local branch `feat/gate3-governed-mapping-20261101`, HEAD `9d346f098a0a2159d96080715322879b08d9a1f8`. This matches PR #82 head; no commit was created during this session.
+- Found existing uncommitted local work: backend API/access/store/workflow changes, local_auth prototype, four test modules, two synthetic backup tools, and two Gate 3 documents. Preserved all existing changes; no reset, checkout, clean, merge, push, or release performed.
+- Full local Backend pytest suite passed (exit 0); compileall passed; pip check passed; TOML parsed; git diff --check passed (only Git LF/CRLF advisory warnings).
+- Found CI reproducibility defect: `test_gate3_encrypted_backup.py` imports `cryptography`, but the test extra did not declare it. Added `cryptography>=44,<47` to `[project.optional-dependencies].test`, matching CI workflow install command `pip install -e '.[test]'`. Re-ran full pytest successfully after repair.
+- Ruff is not installed in this Windows venv; Ruff verification NOT RUN. No network installation attempted. Starlette/httpx TestClient deprecation warning remains.
+- Security review: `local_auth.py` is explicitly a local prototype, single configured credential, in-memory volatile sessions, no rate limiting or production IdP/JWKS integration; it is not wired to the public API and is NOT operational authentication. Owner-accept is an exception status and must not be treated as independent review/approval.
+- Synthetic cloud backup scripts use ephemeral in-process keys and synthetic SQLite only; they do not constitute key custody, WORM retention, or operational recovery evidence.
+- GitHub PR #82 remains Draft/NO-GO, exact head unchanged; final-head Backend CI run #41339488244 is SUCCESS; zero independent reviews. Issues #83–#87 remain the documented external evidence blockers.
+- Decision: Phase 3 Step 1 baseline/worktree inspection and one CI reproducibility repair completed locally; production identity integration remains BLOCKED pending trusted IdP contract and secure provisioning. Changes remain uncommitted and unpushed pending full review because the worktree contains pre-existing mixed changes.
+
+
+## 2026-11-03 — Package 8 execution on Windows (local worktree only)
+- Device Aram reconnected; repository inspected at branch `feat/gate3-governed-mapping-20261101`, HEAD unchanged at `9d346f098a0a2159d96080715322879b08d9a1f8`, matching Draft PR #82 head. Existing uncommitted work was preserved; no reset, clean, commit, push, merge, release, or financial-data mutation.
+- Local authentication prototype hardened: PBKDF2-HMAC-SHA256 remains at 600,000 iterations; added input bounds, role allow-list, bounded lockout, session cap, expiry pruning, thread synchronization and revoke-all. Added lockout/session-limit/role-boundary regression tests. This is still volatile, single-credential local prototype; not wired to API, no persistent account provisioning, DPAPI key protection or cross-process throttling. It is NOT operational authentication.
+- Added Ruff to backend test extra and a Ruff CI step. Ran Ruff against src/tests/tools/migrations; final result PASS. Ruff initially exposed 30 findings across imports, unused f-prefixes, a late-bound row accessor, broad exception assertion and unused assignments; fixed them without unsafe automatic fixes. The row accessor now binds the current row explicitly; AES-GCM tamper test asserts InvalidTag.
+- Full backend pytest after repairs: 110/110 PASS (pytest --collect-only confirms 110 collected tests). compileall PASS; pip check PASS; git diff --check PASS.
+- Alembic SQLite migration round-trip in a newly-created temporary database: upgrade head PASS; downgrade base PASS; temporary database and WAL/SHM files removed.
+- Existing Starlette/httpx TestClient deprecation warning remains; no test failures.
+- GitHub PR #82 still Draft, unmerged, head SHA unchanged; exact-head CI run 41339488244 success; zero submitted independent reviews. Current local changes are not published, so the new Ruff CI step and local fixes have not yet run on GitHub.
+- Security/operational gates remain blocked: trusted IdP integration; independently administered immutable audit receipt anchor; DPAPI-backed recoverable production key custody and scheduled retention; authorized finance reconciliation; measured staging RPO/RTO drill with witness; named independent reviewer. No GO decision.
+- Stage 1 is only partially completed: local prototype hardening and regression tests pass, but operational identity is not complete. Stages 2–4 remain partial or blocked; no stage may be declared complete based solely on local tests.
+
+
+- Detailed seven-stage matrix and three sequential (non-independent) review findings recorded in `docs/GATE3_PACKAGE8_EXECUTION_REPORT_20261103.md`; 110/110 collected tests confirmed.

@@ -15,7 +15,7 @@ from aram_backend.mapping_workflow import (
     MappingWorkspace,
 )
 
-Role = Literal["maker", "reviewer", "approver"]
+Role = Literal["maker", "reviewer", "approver", "owner"]
 
 
 @dataclass(frozen=True)
@@ -59,6 +59,11 @@ class MappingAccess:
                 mapping_id: str) -> MappingDecision:
         actor = self._authorize(credential, workspace, "approver")
         return workspace.transition(mapping_id, "Approved", actor=actor)
+
+    def owner_accept(self, credential: str, workspace: MappingWorkspace,
+                     mapping_id: str, *, reason: str) -> MappingDecision:
+        actor = self._authorize(credential, workspace, "owner")
+        return workspace.owner_accept(mapping_id, actor=actor, reason=reason)
 
     def revise(self, credential: str, workspace: MappingWorkspace, mapping_id: str,
                *, target_statement: str, statement_section: str, note_number: str,

@@ -93,7 +93,7 @@ class MappingStore:
                 valid = (event.previous_status == previous_status and
                          event.previous_version == previous_version and
                          event.new_version == previous_version + 1 and
-                         ((previous_status == "Draft" and event.new_status == "Reviewed") or
+                         ((previous_status == "Draft" and event.new_status in ("Reviewed", "OwnerAcceptedWithException")) or
                           (previous_status == "Reviewed" and event.new_status == "Approved") or
                           event.new_status == "Draft"))
             if not valid or not event.actor.strip():
@@ -209,7 +209,7 @@ class MappingStore:
                         valid = (event.previous_status == prior[0]
                                  and event.previous_version == prior[1]
                                  and event.new_version == prior[1] + 1
-                                 and ((prior[0] == "Draft" and event.new_status == "Reviewed")
+                                 and ((prior[0] == "Draft" and event.new_status in ("Reviewed", "OwnerAcceptedWithException"))
                                       or (prior[0] == "Reviewed" and event.new_status == "Approved")
                                       or event.new_status == "Draft"))
                     if not valid:

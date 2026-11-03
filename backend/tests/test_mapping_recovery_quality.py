@@ -2,6 +2,7 @@ import sqlite3
 from dataclasses import replace
 
 import pytest
+
 from aram_backend.mapping_quality import assess_mapping_quality
 from aram_backend.mapping_store import MappingStore
 from aram_backend.mapping_workflow import MappingDecision, MappingWorkflowError
@@ -62,13 +63,14 @@ def test_quality_never_auto_approves_ambiguous_accounts():
 def test_workbook_mapping_notes_preserved_on_roundtrip():
     from io import BytesIO
 
+    from openpyxl import load_workbook
+    from test_pilot_workbook import valid_rows, workbook_bytes
+
     from aram_backend.mapping_workflow import (
         export_pilot_mapping_workbook,
         import_mapping_workbook,
     )
     from aram_backend.pilot_workbook import SHEET_HEADERS
-    from openpyxl import load_workbook
-    from test_pilot_workbook import valid_rows, workbook_bytes
 
     wb = load_workbook(BytesIO(workbook_bytes(valid_rows())))
     columns = SHEET_HEADERS["Mapping"]

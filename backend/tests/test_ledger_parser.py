@@ -6,7 +6,6 @@ from openpyxl import Workbook
 
 from aram_backend.ledger_parser import LedgerParseError, parse_general_ledger
 
-
 HEADERS = [
     "حساب",
     "ACCOUNT_NAME",
@@ -62,8 +61,8 @@ def test_streams_typed_records_without_calculation():
     assert len(records) == 1
     assert records[0].row_number == 3
     assert records[0].account_code == "0001"
-    assert records[0].opening == Decimal("0")
-    assert records[0].closing == Decimal("0")
+    assert records[0].opening == Decimal(0)
+    assert records[0].closing == Decimal(0)
 
 
 def test_skips_completely_blank_rows():

@@ -34,6 +34,24 @@ Open `http://127.0.0.1:8000/docs`. The health endpoint is
 `GET /api/v1/health`; read-only schema catalogs are available at
 `GET /api/v1/schema/entities` and `GET /api/v1/schema/enums`.
 
+## Personal Windows setup (local-only pilot)
+
+In PowerShell, from the `backend` directory:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e '.[test]'
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m uvicorn aram_backend.main:app --host 127.0.0.1 --port 8000
+```
+
+If `py` is not on PATH, use the installed Python 3.12 executable directly.
+The default install uses plain `uvicorn`; optional optimized `uvicorn[standard]`
+extras are available with `pip install -e '.[server-standard,test]'` when the
+package index supplies compatible Windows wheels. WebSockets are not required
+for the current HTTP-only pilot. Do not bind to `0.0.0.0` or expose this API
+outside localhost until real authentication and deployment hardening are verified.
+Passing tests does not authorize production financial processing or Gate 3 GO.
 ## Tests
 
 ```bash

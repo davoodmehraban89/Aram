@@ -1,8 +1,9 @@
+from fastapi.testclient import TestClient
+
 from aram_backend.main import app
 from aram_backend.mapping_access import AuthenticatedPrincipal
 from aram_backend.mapping_api import configure_mapping_service, reset_mapping_service
 from aram_backend.mapping_store import MappingStore
-from fastapi.testclient import TestClient
 
 
 def test_mapping_http_fail_closed_and_three_party_approval(tmp_path):

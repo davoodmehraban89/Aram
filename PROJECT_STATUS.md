@@ -128,3 +128,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Closure dossier and reviewer signoff checklist: docs/GATE3_PACKAGE7_CLOSURE_DOSSIER.md.
 - **Formal decision: NO-GO / CHANGES REQUESTED.** Assistant's technical work package closes; Gate 3 remains blocked on named external owners. No further assistant-only packages without new evidence or verified defect.
 - No Merge, Release, canonical data changes or Gate 4 implementation.
+
+
+## 2026-11-03 — Package 8 local execution update
+- Local Windows worktree on `feat/gate3-governed-mapping-20261101`, HEAD `9d346f098a0a2159d96080715322879b08d9a1f8`; existing changes preserved and not published.
+- Local authentication prototype now has bounded lockout, session cap, thread safety, expiry pruning, revoke-all and role allow-list; still not wired to API and not a production identity service.
+- Ruff added to test extra and CI workflow; local Ruff, backend pytest, compileall, pip check, diff check and SQLite Alembic upgrade/downgrade round-trip passed.
+- PR #82 remains Draft / NO-GO; no independent reviews. New local changes have not yet been committed or run in remote CI.
+- Remaining mandatory blockers: trusted IdP/provisioning, independent immutable audit anchor, protected recoverable key custody and scheduled backup retention, authorized finance reconciliation, witnessed staging RPO/RTO drill, independent reviewer approval.
+- No canonical financial data changed; no commit, push, merge or release performed. See `docs/PROJECT_LOG.md` for execution detail.

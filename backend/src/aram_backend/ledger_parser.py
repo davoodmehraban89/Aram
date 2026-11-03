@@ -78,8 +78,8 @@ def parse_general_ledger(content: bytes) -> Iterator[LedgerRecord]:
             if not any(value is not None for value in values):
                 continue
 
-            def value(field: str):
-                return values[indexes[_FIELDS[field]]]
+            def value(field: str, row_values=values):
+                return row_values[indexes[_FIELDS[field]]]
 
             yield LedgerRecord(
                 row_number=row_number,

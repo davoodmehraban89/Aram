@@ -127,7 +127,7 @@ def test_duplicate_registration_different_document_type_rejected(session):
         "content": b"safe-test-bytes-conflict",
     }
 
-    first = register_source_document(session, **arguments)
+    register_source_document(session, **arguments)
     session.commit()
 
     conflict_arguments = arguments.copy()
@@ -151,7 +151,7 @@ def test_duplicate_registration_different_filename_rejected(session):
         "content": b"safe-test-bytes-conflict-2",
     }
 
-    first = register_source_document(session, **arguments)
+    register_source_document(session, **arguments)
     session.commit()
 
     conflict_arguments = arguments.copy()
@@ -175,7 +175,7 @@ def test_duplicate_registration_different_both_rejected(session):
         "content": b"safe-test-bytes-conflict-3",
     }
 
-    first = register_source_document(session, **arguments)
+    register_source_document(session, **arguments)
     session.commit()
 
     conflict_arguments = arguments.copy()
