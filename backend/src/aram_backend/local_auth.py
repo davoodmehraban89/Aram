@@ -1,21 +1,24 @@
-"""Opt-in local password verification and bounded opaque sessions.
+"""Single-owner local session adapter; not a substitute for an enterprise IdP.
 
-This remains a single-owner local adapter. It is not a production IdP and must
-not be enabled until credential provisioning, DPAPI key custody, API wiring,
-and deployment binding have been reviewed.
+Credentials use Argon2id. Imported PBKDF2 credentials are upgraded after a
+successful login. Sessions and lockout state are process-local and fail closed
+on restart; do not expose this adapter publicly without persistent controls.
 """
 from __future__ import annotations
 
 import hashlib
-import hmac
 import secrets
 import threading
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from aram_backend.mapping_access import AuthenticatedPrincipal
+from aram_backend.password_security import (
+    encode_legacy_credential,
+    hash_password,
+    verify_password,
+)
 
-_PBKDF2_ITERATIONS = 600_000
 _MAX_PASSWORD_LENGTH = 1024
 _ALLOWED_ROLES = frozenset({"maker", "reviewer", "approver", "owner"})
 
@@ -25,8 +28,7 @@ class LocalCredential:
     subject: str
     company_scopes: frozenset[str]
     roles: frozenset[str]
-    salt: bytes
-    password_hash: bytes
+    password_hash: str
 
 
 def create_credential(
@@ -47,19 +49,34 @@ def create_credential(
         or not roles.issubset(_ALLOWED_ROLES)
     ):
         raise ValueError("invalid local credential configuration")
-    salt = secrets.token_bytes(32)
-    digest = hashlib.pbkdf2_hmac(
-        "sha256", password.encode("utf-8"), salt, _PBKDF2_ITERATIONS
+    return LocalCredential(
+        subject.strip(), frozenset(companies), frozenset(roles), hash_password(password)
     )
-    return LocalCredential(subject.strip(), frozenset(companies), frozenset(roles), salt, digest)
+
+
+def import_legacy_credential(
+    subject: str,
+    companies: frozenset[str],
+    roles: frozenset[str],
+    salt: bytes,
+    password_hash: bytes,
+) -> LocalCredential:
+    """Import old PBKDF2 material without receiving or storing plaintext."""
+    if (
+        not isinstance(subject, str) or not subject.strip() or len(subject) > 200
+        or not companies or any(not isinstance(c, str) or not c.strip() or len(c) > 64 for c in companies)
+        or not roles or not roles.issubset(_ALLOWED_ROLES)
+    ):
+        raise ValueError("invalid local credential configuration")
+    encoded = encode_legacy_credential(salt, password_hash)
+    return LocalCredential(subject.strip(), frozenset(companies), frozenset(roles), encoded)
 
 
 class LocalSessionAuthority:
-    """Volatile, single-credential session authority with bounded lockout.
+    """Volatile single-credential sessions with bounded lockout.
 
-    Restart revokes all sessions and clears lockout state. Persisted identity,
-    multi-user account management, and cross-process rate limiting are out of
-    scope; do not expose this adapter on a public network.
+    Restart revokes all sessions and clears lockout. Lockout is process-local;
+    persistent cross-process rate limiting and durable identity are not provided.
     """
 
     def __init__(
@@ -89,6 +106,10 @@ class LocalSessionAuthority:
         self._sessions: dict[bytes, float] = {}
         self._lock = threading.RLock()
 
+    @property
+    def lifetime_seconds(self) -> int:
+        return self._lifetime
+
     def login(self, password: str) -> str | None:
         if not isinstance(password, str) or len(password) > _MAX_PASSWORD_LENGTH:
             return None
@@ -96,19 +117,18 @@ class LocalSessionAuthority:
             now = time.monotonic()
             if now < self._locked_until:
                 return None
-            candidate = hashlib.pbkdf2_hmac(
-                "sha256",
-                password.encode("utf-8"),
-                self._credential.salt,
-                _PBKDF2_ITERATIONS,
-            )
-            if not hmac.compare_digest(candidate, self._credential.password_hash):
+            verification = verify_password(password, self._credential.password_hash)
+            if not verification.valid:
                 self._failed_attempts += 1
                 if self._failed_attempts >= self._max_failed_attempts:
                     self._locked_until = now + self._lockout_seconds
                     self._failed_attempts = 0
                 return None
 
+            if verification.upgraded_hash is not None:
+                self._credential = replace(
+                    self._credential, password_hash=verification.upgraded_hash
+                )
             self._failed_attempts = 0
             self._locked_until = 0.0
             self._prune_expired(now)

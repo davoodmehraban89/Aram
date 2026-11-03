@@ -59,3 +59,40 @@ def test_local_auth_rejects_unknown_roles_and_oversized_password():
     authority = LocalSessionAuthority(credential)
     assert authority.login("x" * 1025) is None
     assert authority.resolve("x" * 1000) is None
+
+def test_local_auth_upgrades_legacy_pbkdf2_after_successful_login():
+    import hashlib
+    import secrets
+
+    from aram_backend.local_auth import import_legacy_credential
+
+    password = "correct horse battery staple"
+    salt = secrets.token_bytes(32)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 600_000)
+    legacy = import_legacy_credential(
+        "owner", frozenset({"001"}), frozenset({"owner"}), salt, digest
+    )
+    assert legacy.password_hash.startswith("pbkdf2_sha256$")
+    authority = LocalSessionAuthority(legacy)
+    token = authority.login(password)
+    assert token is not None
+    assert authority._credential.password_hash.startswith("$argon2id$")
+    assert authority.resolve(token).subject == "owner"
+
+
+def test_local_auth_does_not_upgrade_legacy_hash_on_wrong_password():
+    import hashlib
+    import secrets
+
+    from aram_backend.local_auth import import_legacy_credential
+
+    salt = secrets.token_bytes(32)
+    digest = hashlib.pbkdf2_hmac(
+        "sha256", b"correct horse battery staple", salt, 600_000
+    )
+    legacy = import_legacy_credential(
+        "owner", frozenset({"001"}), frozenset({"owner"}), salt, digest
+    )
+    authority = LocalSessionAuthority(legacy)
+    assert authority.login("wrong password") is None
+    assert authority._credential.password_hash == legacy.password_hash
