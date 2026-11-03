@@ -1,8 +1,15 @@
 from fastapi import FastAPI
 
 from aram_backend import __version__
+from aram_backend.auth_api import (
+    configure_local_auth_from_vault,
+)
+from aram_backend.auth_api import (
+    router as auth_router,
+)
 from aram_backend.config import get_settings
 from aram_backend.mapping_api import router as mapping_router
+from aram_backend.mapping_store import MappingStore
 from aram_backend.models import FiscalYearStatus, StatementType
 from aram_backend.schemas import (
     EntityDescriptor,
@@ -13,7 +20,13 @@ from aram_backend.schemas import (
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version=__version__)
+app.include_router(auth_router)
 app.include_router(mapping_router)
+if settings.credential_vault_path:
+    configure_local_auth_from_vault(
+        credential_path=settings.credential_vault_path,
+        store=MappingStore(settings.mapping_store_path),
+    )
 
 
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["system"])
