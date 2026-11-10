@@ -336,3 +336,22 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: FS-1403-EQ-01, FS-1404-CF-01, FS-1404-CF-02, and auditor PDF opinion text as documented in the report.
 - Rollback: close PR #90 without merge or revert the two documentation commits; canonical source files remain untouched.
 - Next action: independent technical review and accounting-owner disposition, then continue note-level and ledger-level reconciliation.
+
+
+### 2026-11-10 — PR #90 head and check-run verification
+
+- Actor: ChatGPT Operational Coordinator.
+- Task/phase: final remote metadata check for the financial statement reconciliation documentation PR.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90), open and unmerged.
+- Remote head observed immediately before this control-record update: 2d4eba9c1fc0fd0a89c550651b9a1c7ea138b015; live PR metadata is authoritative after this update.
+- Exact changed files: PROJECT_STATUS.md, docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: 66 arithmetic checks PASS; 3 cross-statement cash checks PASS; git diff --check PASS.
+- GitHub Actions: zero check-runs on observed head 2d4eba9c1fc0fd0a89c550651b9a1c7ea138b015; no docs workflow observed.
+- Artifacts/releases: NONE.
+- Protected data: no canonical source bytes, ledger rows, Mapping rows, database, application code, or financial values changed.
+- Acceptance: IN_PROGRESS; independent technical review and accounting-owner disposition remain pending.
+- Remaining risks: FS-1403-EQ-01, FS-1404-CF-01, FS-1404-CF-02, and auditor PDF opinion text remain open as documented.
+- Rollback: close PR #90 without merge or revert the documentation-only commits.
+- Next action: independent review and accounting-owner disposition; then continue note-level and ledger-level reconciliation.

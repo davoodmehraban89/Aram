@@ -124,5 +124,14 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - All ten canonical source files SHA-256 hashed; no canonical data, ledger row, Mapping row, database, or code changed.
 - Detailed evidence: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md.
 - Status: PRESENT_BUT_UNVERIFIED; independent finance and technical review pending.
-- Draft PR: https://github.com/davoodmehraban89/Aram/pull/90, latest verified head 0213f049dd0530f5660e8a57deb574deb61c75f5, base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914. Not merged.
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/90, latest verified head at publication update 0213f049dd0530f5660e8a57deb574deb61c75f5, base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914. Not merged.
 - Next action: independent review of PR #90 and accounting disposition of the open equity / FX support items; then continue note-level and ledger-level reconciliation. Do not merge this candidate.
+
+
+## 2026-11-10 — PR #90 current-head note
+
+- PR #90 remains Draft / open / unmerged.
+- The remote head was verified as 2d4eba9c1fc0fd0a89c550651b9a1c7ea138b015 immediately before this control-record update; the live GitHub PR metadata is authoritative for the subsequent control-record commit.
+- The latest commit had zero GitHub check-runs; no workflow was observed for this documentation-only PR.
+- No source data changed. The PR contains four documentation files only.
+- Next action remains independent review and accounting-owner disposition; do not merge.
