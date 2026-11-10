@@ -278,3 +278,23 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+### 2026-11-10 — Read-only financial statement reconciliation (1402–1404)
+
+- Actor: ChatGPT Operational Coordinator; accounting treatment clarified by Project Owner.
+- Task/phase: primary financial statement arithmetic, cross-statement cash, and comparative restatement reconciliation.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR / commit: NOT_CREATED_AT_ENTRY_CREATION; update this entry after publication.
+- Exact changed files intended: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, PROJECT_STATUS.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: read-only openpyxl validation against the canonical workbooks; 66 primary-statement arithmetic checks PASS; 3 cash closing cross-statement checks PASS. No application test suite was changed or claimed.
+- GitHub Actions: NOT_APPLICABLE_YET; docs-only candidate, remote run must be checked after publication.
+- Artifacts/releases: NONE.
+- Protected data: all ten canonical XLSX/PDF files SHA-256 hashed; no source bytes, ledger rows, Mapping rows, financial values, database, or code changed.
+- Acceptance: IN_PROGRESS; independent accounting / technical review pending.
+- Findings: 1404 Note 22 comparative restatements reconcile; 1403 equity opening restatement has a possible duplicated 43,241,509 million Rial correction; 1404 FX effect support and a +1/-1 million Rial comparative cash-flow presentation difference remain documented.
+- Owner rule: auxiliary Excel errors are ignored only when outside official statement/note use and tied to zero-closing or proven offset accounts; original source rows are preserved.
+- Remaining risks: no signed finance sign-off; 1403 equity presentation disposition pending; 1404 FX support pending; auditor PDF opinion text not verified because the 1404 PDF is image-only in extraction.
+- Rollback: revert this documentation-only commit; canonical financial sources remain untouched.
+- Next action: publish a focused Draft PR for independent review, then continue note/ledger reconciliation.

@@ -87,3 +87,16 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+
+## 2026-11-10 — Financial statement reconciliation (1402–1404)
+
+- Status: PRESENT_BUT_UNVERIFIED; statement arithmetic is reconciled, but independent accounting sign-off is pending.
+- Read-only review: 66 primary-statement arithmetic checks plus 3 cash-flow-to-balance-sheet closing-cash checks passed.
+- 1404 Note 22 restatement of 1402/1403 comparative figures reconciles to the 1404 statements.
+- Open accounting presentation item: 1403 Statement of Changes in Equity appears to repeat the 43,241,509 million Rial prior-period correction in its opening-balance section while its closing balance does not carry that repeated adjustment. See docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, FS-1403-EQ-01.
+- Open support item: 1404 cash-flow FX effect of 12,556 million Rials ties mathematically to closing cash; separate support / note cross-reference not yet identified.
+- 1404 comparative cash-flow operating/investing lines differ from 1403 current figures by +1/-1 million Rials, with no net cash effect.
+- Owner-confirmed rule: ignore only irrelevant auxiliary errors and zero-closing / proven offset accounts in statement calculations; preserve original source rows. Do not suppress all errors or auto-net accounts without evidence.
+- All ten canonical source files were SHA-256 hashed. No source file, database, financial value, code, or Mapping row was modified.
+- Next action: continue note-level and ledger-level reconciliation under the documented exclusion rule; keep ambiguous and non-zero exposure accounts visible.

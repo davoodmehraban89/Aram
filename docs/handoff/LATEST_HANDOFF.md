@@ -108,3 +108,20 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+
+## 2026-11-10 — Financial statement reconciliation snapshot (1402–1404)
+
+- Accepted base at task start: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- Read-only primary statement reconciliation: 66 arithmetic checks PASS and 3 closing-cash cross-statement checks PASS.
+- 1404 Note 22 restated 1402/1403 comparative figures reconcile to the presented financial statements.
+- Open item FS-1403-EQ-01: the 1403 equity statement appears to repeat a 43,241,509 million Rial prior-period correction in its opening balance, although the 1402 closing balance already includes it and the 1403 closing row does not carry the repeated adjustment.
+- Open item FS-1404-CF-01: 12,556 million Rial FX effect ties mathematically to cash closing; detailed source support / note cross-reference is pending.
+- Open item FS-1404-CF-02: +1/-1 million Rial 1404 comparative cash-flow presentation differences offset and have no net cash effect.
+- 1404 auditor PDF is image-only in extraction; auditor opinion wording remains unverified.
+- Owner-confirmed exclusion rule: ignore auxiliary errors only when outside official statement/note use and related to zero-closing or proven offset accounts; preserve all source rows. Never auto-net an account based on amount equality alone.
+- All ten canonical source files SHA-256 hashed; no canonical data, ledger row, Mapping row, database, or code changed.
+- Detailed evidence: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md.
+- Status: PRESENT_BUT_UNVERIFIED; independent finance and technical review pending.
+- Next action: publish the focused documentation-only Draft PR, then continue note-level and ledger-level reconciliation. Do not merge this candidate.
