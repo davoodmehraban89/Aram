@@ -317,3 +317,22 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: 1403 equity opening presentation, 1404 FX supporting schedule, one-million-Rial comparative cash-flow presentation, and auditor PDF opinion text remain as documented in the reconciliation report.
 - Rollback: close PR #90 without merge or revert its documentation-only commits; canonical sources remain unchanged.
 - Next action: independent technical review and accounting-owner disposition of open items, then continue note-level and ledger-level reconciliation.
+
+
+### 2026-11-10 — Final publication evidence for financial reconciliation PR #90
+
+- Actor: ChatGPT Operational Coordinator.
+- Task/phase: verify the published Draft PR and reconcile durable control records.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90), open and unmerged.
+- Latest verified head: 0213f049dd0530f5660e8a57deb574deb61c75f5; prior report commit: 1767b2c91e8f4aaabe7c443befa55cebc36324fa.
+- Exact PR file list remains four documentation files: PROJECT_STATUS.md, docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: 66 statement arithmetic checks PASS; 3 cash closing cross-statement checks PASS; git diff --check PASS.
+- GitHub Actions: zero check-runs were returned for the latest commit; docs-only PR did not trigger a workflow in the observed check-runs endpoint.
+- Artifacts/releases: NONE.
+- Protected data: no canonical financial XLSX/PDF, ledger rows, Mapping rows, database, application code, or financial values changed; source-data diff against the accepted base is empty.
+- Acceptance: IN_PROGRESS; PR remains Draft and unmerged. Independent review and accounting-owner disposition remain pending.
+- Remaining risks: FS-1403-EQ-01, FS-1404-CF-01, FS-1404-CF-02, and auditor PDF opinion text as documented in the report.
+- Rollback: close PR #90 without merge or revert the two documentation commits; canonical source files remain untouched.
+- Next action: independent technical review and accounting-owner disposition, then continue note-level and ledger-level reconciliation.
