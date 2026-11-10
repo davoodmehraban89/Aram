@@ -99,4 +99,5 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - 1404 comparative cash-flow operating/investing lines differ from 1403 current figures by +1/-1 million Rials, with no net cash effect.
 - Owner-confirmed rule: ignore only irrelevant auxiliary errors and zero-closing / proven offset accounts in statement calculations; preserve original source rows. Do not suppress all errors or auto-net accounts without evidence.
 - All ten canonical source files were SHA-256 hashed. No source file, database, financial value, code, or Mapping row was modified.
-- Next action: continue note-level and ledger-level reconciliation under the documented exclusion rule; keep ambiguous and non-zero exposure accounts visible.
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/90 (head 1767b2c91e8f4aaabe7c443befa55cebc36324fa; base 7dc864fd032f0c4ae4d650d89304a01286a6d914). Not merged; independent review pending.
+- Next action: independent review of PR #90 and accounting disposition of FS-1403-EQ-01 / FS-1404-CF-01; continue note-level and ledger-level reconciliation under the documented exclusion rule.

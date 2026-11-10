@@ -298,3 +298,22 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: no signed finance sign-off; 1403 equity presentation disposition pending; 1404 FX support pending; auditor PDF opinion text not verified because the 1404 PDF is image-only in extraction.
 - Rollback: revert this documentation-only commit; canonical financial sources remain untouched.
 - Next action: publish a focused Draft PR for independent review, then continue note/ledger reconciliation.
+
+
+### 2026-11-10 — Publication update for financial statement reconciliation
+
+- Actor: ChatGPT Operational Coordinator.
+- Task/phase: publish the read-only 1402–1404 financial statement reconciliation.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90).
+- Initial published commit: 1767b2c91e8f4aaabe7c443befa55cebc36324fa; follow-up control-record commit is pending this entry's publication.
+- Exact PR file list: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, PROJECT_STATUS.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: 66 primary-statement arithmetic checks PASS; 3 closing-cash cross-statement checks PASS; git diff --check PASS.
+- GitHub Actions: NOT_VERIFIED at publication update; verify the remote PR checks before acceptance.
+- Artifacts/releases: NONE.
+- Protected data: no canonical XLSX/PDF, ledger row, Mapping row, database, code, or financial value changed.
+- Acceptance: IN_PROGRESS; Draft PR only, not merged.
+- Remaining risks: 1403 equity opening presentation, 1404 FX supporting schedule, one-million-Rial comparative cash-flow presentation, and auditor PDF opinion text remain as documented in the reconciliation report.
+- Rollback: close PR #90 without merge or revert its documentation-only commits; canonical sources remain unchanged.
+- Next action: independent technical review and accounting-owner disposition of open items, then continue note-level and ledger-level reconciliation.

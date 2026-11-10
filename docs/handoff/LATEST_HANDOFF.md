@@ -124,4 +124,5 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - All ten canonical source files SHA-256 hashed; no canonical data, ledger row, Mapping row, database, or code changed.
 - Detailed evidence: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md.
 - Status: PRESENT_BUT_UNVERIFIED; independent finance and technical review pending.
-- Next action: publish the focused documentation-only Draft PR, then continue note-level and ledger-level reconciliation. Do not merge this candidate.
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/90, initial head 1767b2c91e8f4aaabe7c443befa55cebc36324fa, base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914. Not merged.
+- Next action: independent review of PR #90 and accounting disposition of the open equity / FX support items; then continue note-level and ledger-level reconciliation. Do not merge this candidate.
