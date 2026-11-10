@@ -149,3 +149,22 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Detailed evidence: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, section 9.
 - Account 8161 unmapped exposure remains separate and is not excluded.
 - PR #90 remains Draft / open / unmerged. Next action: independent review and continue note/ledger reconciliation.
+
+
+## 2026-11-10 — Note-level reconciliation and note-reference audit
+
+- Accepted base: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- Draft PR: #90; open, not merged.
+- The 1404 primary Income Statement notes 5–9 tie to the statement amounts; Note 20-3 ties to income-tax expense.
+- The 1404 asset side ties line-by-line to Notes 10–15; total assets = 733,743,718 million Rials.
+- The 1404 liability/equity side ties to Notes 16–21; total liabilities = 917,629,178, equity = -183,885,460, and liabilities plus equity = 733,743,718 million Rials.
+- Note 9-3 identifies the 12,556 million Rial FX effect and cites NIGC letter No. 1830 dated 1405/01/16. Detailed rate-calculation reperformance remains outside this pass.
+- New open issue: FS-1403/1404-NOTE-REF-01. The 1403/1404 Statement of Financial Position retains note references 17–22 that lag actual note-page headings after the separate 1402 Note 17 capital-in-progress section disappears. Amounts tie when matched to content; do not alter source workbooks.
+- NOTE_CATALOG.md and NOTE_TO_SHEET_MATRIX.md now use year-aware note numbering and actual physical sheet names. Multiple notes can share one sheet; a note can span several sheets.
+- FS-1403-EQ-01 remains open; FS-1404-CF-02 remains a +1/-1 million Rial comparative cash-flow difference with no net cash effect; 1404 auditor opinion wording remains unverified.
+- Owner-confirmed rule: exclude only non-presented auxiliary errors and zero-closing / proven-offset accounts from statement calculations; preserve all source rows and drill-downs.
+- Exact changed files: NOTE_CATALOG.md; NOTE_TO_SHEET_MATRIX.md; PROJECT_STATUS.md; docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md; docs/PROJECT_LOG.md; docs/handoff/LATEST_HANDOFF.md.
+- git diff --check passed. The data/ path diff is empty.
+- No canonical XLSX/PDF, ledger row, Mapping row, database, code or financial value changed.
+- Next action: publish the documentation update to Draft PR #90, verify remote head/checks, then route it to an independent reviewer. Do not merge.

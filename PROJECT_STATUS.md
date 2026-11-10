@@ -111,3 +111,17 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - T1-level exceptions remain: 8708/8709 has 4 unmatched T1 groups in 1403 and 2 in 1404; 8718/8719 has 6 in 1403 and none in 1404. Netting is therefore approved only at the full reporting-entity level, not per T1 subgroup.
 - Preserve all source rows, turnovers, mappings and drill-downs. Exclude only the combined net effect from statement totals.
 - Evidence and amounts are recorded in docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, section 9.
+
+
+## 2026-11-10 — Note-level reconciliation and year-aware note map
+
+- Expanded read-only reconciliation on Draft PR #90. The 1404 income-statement notes 5–9 tie to the primary statement; all seven asset-side balance-sheet lines tie to Notes 10–15; liability/equity lines tie to Notes 16–21 when matched to actual note-page headings.
+- 1404 total assets 733,743,718; total liabilities 917,629,178; equity -183,885,460; liabilities plus equity equal assets.
+- Note 9-3 explicitly identifies the 12,556 million Rial exchange-rate effect and cites NIGC letter No. 1830 dated 1405/01/16. The earlier no-note-reference finding is superseded; detailed rate-calculation reperformance remains outside this pass.
+- New issue FS-1403/1404-NOTE-REF-01: 1403/1404 balance-sheet note references 17–22 lag the actual note-page headings after the separate Note 17 capital-in-progress section disappears. Amounts tie when matched to actual note content; source workbook is not modified.
+- NOTE_CATALOG.md and NOTE_TO_SHEET_MATRIX.md now record year-aware note numbering and actual physical sheet names. Physical sheet names are not logical note IDs; multiple notes can share a sheet and one note can span sheets.
+- FS-1403-EQ-01 remains open. FS-1404-CF-02 remains a +1/-1 million Rial comparative cash-flow presentation difference with no net cash effect. The 1404 auditor PDF opinion wording remains unverified due image-only extraction.
+- Owner-confirmed exclusion rule remains in force: ignore only non-presented auxiliary errors and zero-closing / proven-offset accounts in statement calculations; preserve every source row.
+- Draft PR: https://github.com/davoodmehraban89/Aram/pull/90. Base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914; not merged; independent review pending.
+- No canonical workbook/PDF, ledger row, Mapping row, database, code, or financial value was modified.
+- Next action: independent review of the expanded documentation and continued read-only reconciliation of remaining 1402/1403 note amounts and relevant ledger ties.

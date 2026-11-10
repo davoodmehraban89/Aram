@@ -11,7 +11,7 @@
 - 3 additional cross-statement cash checks passed: each year's cash-flow closing balance equals the cash balance in the corresponding Statement of Financial Position.
 - The restated 1403 comparative figures presented in the 1404 statements reconcile to Note 22.
 - One equity rollforward presentation inconsistency remains in the 1403 workbook: the opening balance appears to repeat a 43,241,509 million Rial prior-period correction already reflected in the 1402 closing balance, while the 1402 closing row does not carry that repeated adjustment through.
-- The 1404 exchange-rate effect of 12,556 million Rials mathematically reconciles the cash-flow closing balance, but a separate supporting schedule / note cross-reference was not identified in this pass.
+- The 1404 exchange-rate effect of 12,556 million Rials mathematically reconciles the cash-flow closing balance and is explicitly discussed in Note 9-3, which cites NIGC letter No. 1830 dated 1405/01/16. The prior claim that no note cross-reference existed is withdrawn; a separate rate-calculation schedule was not independently reproduced.
 - A one-million-Rial difference exists between 1403 current and 1404 comparative operating and investing cash-flow lines; the differences offset and do not affect net cash movement or closing cash.
 
 These results are a statement-level arithmetic and disclosure cross-check, not an independent audit opinion, signed finance approval, or full transaction-level reconciliation to the General Ledger.
@@ -126,12 +126,14 @@ Assessment: likely duplicated / inconsistently rolled-forward opening restatemen
 
 ### FS-1404-CF-01 — Exchange-rate effect support
 
-The official Cash Flow amount in جريان هاي نقدي!E22 is 12,556 million Rials. It mathematically reconciles closing cash:
+The official Cash Flow amount in جريان هاي نقدي!E22 is 12,556 million Rials.
 
-3,368,287 + 16,570,293 + 12,556 = 19,951,136.
+- Closing-cash bridge: 3,368,287 + 16,570,293 + 12,556 = 19,951,136.
+- Note 9-3 explicitly describes the 12,556 million Rial exchange-rate effect and cites National Iranian Gas Company letter No. 1830 dated 1405/01/16.
+- The previous statement that no supporting note cross-reference had been identified is superseded.
+- A separate detailed rate-calculation schedule was not independently reproduced from the workbook; this is a limitation of this read-only pass, not evidence that the disclosed amount lacks support.
 
-A separate detailed FX support schedule / explicit note cross-reference was not identified. The stray C22=46268 is outside the authoritative amount column and is not used in this reconciliation. Keep the 12,556 amount as ARITHMETICALLY_RECONCILED_SUPPORT_PENDING.
-
+Disposition: DISCLOSURE_REFERENCE_IDENTIFIED; CASH_BRIDGE_PASS; RATE_CALCULATION_NOT_INDEPENDENTLY_REPERFORMED.
 ### FS-1404-CF-02 — One-million-Rial comparative presentation difference
 
 The 1404 comparative Cash Flow column differs from 1403 current figures by +1 in operating cash flow and -1 in investing cash flow (million Rials). Both differences offset; pre-financing net cash movement and closing cash remain identical. Classify as ROUNDING_OR_PRESENTATION_DIFFERENCE_NO_NET_EFFECT, subject to finance confirmation.
@@ -155,10 +157,10 @@ The existing 1404 Mapping analysis remains separate from this statement arithmet
 - All ten source files were hashed; their bytes were not modified by this task.
 - No canonical XLSX/PDF, ledger row, Mapping row, database, application code, or financial value was changed.
 - This report is a read-only reconciliation record, not a formal independent audit or signed finance approval.
-- The 1403 equity presentation issue and 1404 FX support item remain open for disposition.
+- FS-1403-EQ-01 remains open. The 1404 FX disclosure reference is now identified in Note 9-3; only independent reproduction of the underlying rate calculation remains outside this pass. A separate 1403/1404 balance-sheet note-reference drift is newly documented in FS-1403/1404-NOTE-REF-01.
 - Auditor PDF opinion text remains unverified due image-only source extraction.
 
-Recommended next action: continue note-level and ledger-level reconciliation using the verified entity-level control-pair rule, while preserving all source rows and keeping ambiguous / non-zero exposure accounts visible for accounting disposition.
+Recommended next action: complete the remaining read-only 1402/1403 note-amount and ledger tie-outs, resolve the documented year-specific note-reference drift through accounting-owner disposition, and route the expanded Draft PR #90 for independent review. Preserve all source rows and keep ambiguous / non-zero exposure accounts visible.
 
 
 ## 9. Control-account pairs verified in the 1403/1404 source ledger
@@ -184,3 +186,85 @@ The account-level pair totals do not mean every T1 subgroup nets to zero:
 **Presentation rule:** Under the accounting owner's confirmation that these are non-presented control accounts, their combined net closing balance may be excluded from the financial-statement total at the full reporting-entity level. Do not net them independently within each T1 dimension where the subgroup does not match. Preserve both accounts, every underlying ledger row, debit/credit turnover, original Mapping rules, and full drill-down traceability. Their gross balances must not be silently deleted or hidden from the audit trail.
 
 This evidence supports the user's control-account treatment for these two pairs. It does not justify automatically excluding other accounts, including account 8161's separate unmapped non-zero exposure.
+
+
+## 10. Note-level tie-outs completed — 1404
+
+The following checks were performed against the canonical financial_1404.xlsx workbook. Amounts are million Rials.
+
+### 10.1 Income Statement
+
+| Statement line | Statement amount | Actual note-page content | Result |
+|---|---:|---:|---|
+| Operating revenue | 243,097,686 | Note 5 — 243,097,686 | MATCH |
+| Cost of revenue | -245,897,444 | Note 6 — 245,897,444 | MATCH |
+| Selling, administrative and general expenses | -62,814,143 | Note 7 dedicated SGA column — 62,814,143 | MATCH |
+| Other income | 1,543,514 | Note 8 — 1,543,514 | MATCH |
+| Other non-operating income / expenses | -10,601,182 | Note 9 — -10,601,182 | MATCH |
+| Income-tax expense | -4,697,329 | Note 20-3 — 4,697,329 | MATCH |
+
+Note 9 arithmetic: 143,087 + 103,822 + 12,556 - 10,860,647 = -10,601,182. Note 9-3 is the supporting narrative for the exchange-rate effect and cites letter No. 1830 dated 1405/01/16.
+
+Note 7's dedicated selling / administrative / general expense column agrees with the Statement of Profit or Loss. Its gross expense and production/project allocation columns were not assumed to be mutually exclusive or additive without a documented allocation basis; no unsupported cross-foot assertion was imposed.
+
+### 10.2 Statement of Financial Position — asset side
+
+| Asset line | Statement amount | Actual note-page content | Result |
+|---|---:|---|---|
+| Tangible fixed assets | 673,740,637 | Note 10 | MATCH |
+| Intangible assets | 242,194 | Note 11 | MATCH |
+| Non-current receivables | 8,310,168 | Note 12-2 | MATCH |
+| Prepayments | 6,839,535 | Note 13 | MATCH |
+| Inventories | 11,273,650 | Note 14 | MATCH |
+| Current receivables | 13,386,398 | Note 12-1 | MATCH |
+| Cash | 19,951,136 | Note 15 and Cash Flow closing cash | MATCH |
+| **Total assets** | **733,743,718** | Sum of the above seven lines | **MATCH** |
+
+Non-current assets total 682,292,999; current assets total 51,450,719; together they equal total assets of 733,743,718.
+
+### 10.3 Statement of Financial Position — liabilities and equity
+
+| Liability / equity line | Statement amount | Actual note-page content | Result |
+|---|---:|---|---|
+| Current payables | 145,241,976 | Note 18 current payables | MATCH |
+| Non-current payables | 630,414,220 | Note 18 non-current payables | MATCH |
+| Employee benefits / future staff obligations | 133,078,121 | Note 19 (34,744,097 + 98,334,024) | MATCH |
+| Tax payable | 8,833,412 | Note 20 closing balance | MATCH |
+| Advances received | 61,449 | Note 21 | MATCH |
+| Share capital | 20,000,000 | Note 16 | MATCH |
+| Legal reserve | 1,614 | Note 17 | MATCH |
+| Accumulated losses | -203,887,074 | Statement of Changes in Equity | MATCH |
+
+Payables total 775,656,196 (145,241,976 current + 630,414,220 non-current). Total liabilities are 917,629,178. Equity is -183,885,460. Liabilities plus equity equal total assets: 917,629,178 - 183,885,460 = 733,743,718.
+
+The amounts reconcile; the separate statement-reference / note-heading drift is recorded as FS-1403/1404-NOTE-REF-01.
+
+### 10.4 Cash Flow
+
+- Cash from operations: 99,230,533, agreeing to the Note 23 disclosure.
+- Cash tax paid: -149,426, agreeing to Note 20-1.
+- Exchange-rate effect: 12,556, with Note 9-3 narrative support.
+- Closing cash: 19,951,136, agreeing to Note 15 and the Statement of Financial Position.
+
+## 11. Year-aware note structure and ingestion consequence
+
+The former generic note catalog and one-to-one sheet matrix were not reliable. A source-heading audit across the three workbooks established that:
+
+1. One physical worksheet may contain multiple logical notes.
+2. One logical note may span several physical worksheets.
+3. The logical note sequence changes by fiscal year.
+4. In 1403/1404, the separate Note 17 capital-in-progress section present in 1402 is absent; Note 17 becomes legal reserve, and later note numbers shift.
+5. The 1403/1404 Statement of Financial Position retained several older note references, creating the cross-reference drift documented in FS-1403/1404-NOTE-REF-01.
+6. Physical sheet names are not logical note identifiers. For example, 1404 physical sheet 13 contains Notes 7, 8 and 9; physical sheet 22 contains Notes 13 and 14; physical sheet 23 contains Notes 15, 16 and 17.
+
+The corrected year-aware catalog and physical-sheet matrix are recorded in NOTE_CATALOG.md and NOTE_TO_SHEET_MATRIX.md. The ingestion model must store at least: fiscal year, statement cell/reference, logical note number, printed heading, physical sheet name, and sub-note identifier. Do not infer a note identifier from the sheet name alone.
+
+## 12. Current disposition and next action
+
+- 1404 primary Income Statement and all primary Statement of Financial Position lines now have note-level amount tie-outs recorded above.
+- 1404 cash-flow closing cash and Note 9-3 exchange-rate disclosure are identified; detailed FX rate calculation is not independently reperformed.
+- The 1403 equity rollforward presentation remains open (FS-1403-EQ-01).
+- The 1403/1404 balance-sheet note-reference drift remains open for document-owner disposition (FS-1403/1404-NOTE-REF-01).
+- The +1/-1 million Rial comparative cash-flow presentation difference remains documented (FS-1404-CF-02).
+- Auditor PDF opinion wording remains unverified because the 1404 PDF is image-only in text extraction.
+- Next action: independent review of the expanded documentation PR and a separate read-only reconciliation of the remaining 1402/1403 note amounts and relevant ledger ties. No source workbook correction is authorized in this task.

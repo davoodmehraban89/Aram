@@ -1,47 +1,106 @@
-# NOTE TO SHEET MATRIX
+# Year-Aware Note-to-Sheet Matrix — 1402–1404
 
-## Executive Summary
-This document defines the mapping between logical financial statement notes and their corresponding physical worksheet names in the official Excel workbooks (`data/official_statements/financial_1402.xlsx`, `financial_1403.xlsx`, and `financial_1404.xlsx`).
+**Status:** Reconstructed from canonical workbook section headings. This supersedes the previous one-to-one sheet-name matrix.
 
----
+## Rules
 
-## 1. Logical Note to Physical Sheet Mapping
+- The first column is the logical note number for that fiscal year; the sheet column contains the actual physical worksheet tab name(s).
+- A single physical sheet can contain multiple notes. A single note can span multiple sheets.
+- Logical note numbers differ across years. In particular, Note 17 is capital-in-progress in 1402 but legal reserve in 1403/1404.
+- Do not infer a logical note number from the physical sheet name.
+- In 1403/1404, several Statement of Financial Position references (17–22) are stale by one relative to note-page headings. See the cross-reference exception below.
 
-| Logical Note Ref | Description / Section | 1402 Sheet Name | 1403 Sheet Name | 1404 Sheet Name | Mapping Nature |
-| --- | --- | --- | --- | --- | --- |
-| **یادداشت ۵** | درآمدهای عملیاتی | `سودوزيان` / `10` | `سودوزيان` / `10` | `سودوزيان` / `10` | Embedded in Statement & Sheet 10 |
-| **یادداشت ۶** | بهای تمام شده درآمدهای عملیاتی | `6` | `6` | `6` | 1:1 Direct |
-| **یادداشت ۷** | هزینه‌های فروش، اداری و عمومی | `7` | `7` | `7` | 1:1 Direct |
-| **یادداشت ۸** | سایر درآمدها | `8` | `8` | `8` | 1:1 Direct |
-| **یادداشت ۹** | سایر درآمدها و هزینه‌های غیرعملیاتی | `9` | `9` | `9` | 1:1 Direct |
-| **یادداشت ۱۰** | دارایی‌های ثابت مشهود | `10` | `10` | `10` | 1:1 Direct |
-| **یادداشت ۱۱** | دارایی‌های نامشهود | `11` | `11` | `11` | 1:1 Direct |
-| **یادداشت ۱۲** | دریافتنی‌های تجاری و سایر دریافتنی‌ها (12-1 / 12-2) | `12` | `12` | `12` | 1:1 Direct |
-| **یادداشت ۱۳** | پیش‌پرداخت‌ها | `13` | `13` | `13` | 1:1 Direct |
-| **یادداشت ۱۴** | موجودی مواد و کالا | `14` | `14` | `14` | 1:1 Direct |
-| **یادداشت ۱۵** | موجودی نقد | `15` | `15` | `15` | 1:1 Direct |
-| **یادداشت ۱۶** | سرمایه | `16` | `16` | `16` | 1:1 Direct |
-| **یادداشت ۱۷** | افزایش / کاهش سرمایه در جریان (17-1 / 17-2) | `17` | `17` | `17` | 1:1 Direct |
-| **یادداشت ۱۸** | اندوخته قانونی | `18` | `18` | `18` | 1:1 Direct |
-| **یادداشت ۱۹** | پرداختنی‌های تجاری و سایر پرداختنی‌ها (19-1 / 19-2) | `19` | `19` | `19` | 1:1 Direct |
-| **یادداشت ۲۰** | ذخیره مزایای پایان خدمت و مالیات (20-1 / 20-3) | `20` | `20` | `20` | 1:1 Direct |
-| **یادداشت ۲۱** | مالیات پرداختنی / سود سهام پرداختنی | `21` | `21` | `21` | 1:1 Direct |
-| **یادداشت ۲۲** | پیش‌دریافت‌ها / نقد حاصل از عملیات / اصلاح اشتباهات | `22` | `22` | `22` | 1:1 Direct |
-| **یادداشت ۲۳** | نقد حاصل از عملیات / معاملات غیرنقدی | `23` | `23` | `23` | 1:1 Direct |
-| **یادداشت ۲۴** | معاملات غیر نقدی | `24` | `24` | `24` | 1:1 Direct |
-| **یادداشت ۲۵** | مدیریت ریسک مالی | `25` | `25` | `25` | 1:1 Direct |
-| **یادداشت ۲۶** | ارزش منصفانه دارایی‌ها و بدهی‌های مالی | `26` | `26` | `26` | 1:1 Direct |
-| **یادداشت ۲۷** | معاملات با اشخاص وابسته | `27` | `27` | `27` | 1:1 Direct |
-| **یادداشت ۲۸** | تعهدات و بدهی‌های احتمالی | `28` | `28` | `28` | 1:1 Direct |
-| **یادداشت ۲۹** | رویدادهای پس از تاریخ صورت وضعیت مالی | `29` | `29` | `29` | 1:1 Direct |
-| **یادداشت‌های ۳۰-۳۵** | سایر یادداشت‌های افشا | `30` to `35` | `30` to `35` | `30` to `35` | 1:1 Direct |
-| **یادداشت ۳۶** | تطبیق عملکرد بودجه (درآمدها) | `36` | `36-37` | `36-37` | Merged in 1403/1404 (`36-37`) |
-| **یادداشت ۳۷** | تطبیق عملکرد بودجه (هزینه‌ها) | `37` | `36-37` | `36-37` | Merged in 1403/1404 (`36-37`) |
-| **یادداشت ۳۸** | گزارش توجیهی بودجه | `38` | `38` | `38` | 1:1 Direct |
-| **یادداشت ۳۹** | خلاصه منابع و مصارف | *Absent* | `39` | `39` | Introduced in 1403 |
+## 1. Fiscal year 1402
 
----
+| Logical note | Physical sheet(s) | Content |
+|---:|---|---|
+| 5 | 10, 11 | Operating revenue |
+| 6 | 12 | Cost of revenue |
+| 7–9 | 13 | SG&A; other income; non-operating income/expenses |
+| 10 | 14–18 | Tangible fixed assets and subnotes |
+| 11 | 19 | Intangible assets |
+| 12 | 20, 21 | Trade and other receivables |
+| 13–14 | 22 | Prepayments; inventories |
+| 15–18 | 23 | Cash; capital; capital in progress; legal reserve |
+| 19 | 24–27 | Trade and other payables |
+| 20 | 27, 28 | Employee benefits / future staff obligations |
+| 21 | 28, 29 | Tax payable / dividends payable |
+| 22–24 | 29 | Advances received; corrections/reclassifications; cash from operations |
+| 25 | 30 | Non-cash transactions |
+| 26 | 30–32 | Financial risk management |
+| 27 | 32 | Foreign-currency position |
+| 28 | 33, 34 | Related-party transactions and balances |
+| 29–30 | 35 | Commitments/contingencies; subsequent events |
+| 36 | 36 | Budget performance — revenues |
+| 37 | 37 | Budget performance — expenses |
+| 38 | 38 | Budget justification |
+| 39 | Absent | Not present in 1402 |
 
-## 2. Ingestion Rules
-1. **Multi-Note Parsing**: The ingestion engine must support multi-note parsing from single sheets (such as sheet `36-37` containing both Note 36 and Note 37 disclosures in 1403 and 1404).
-2. **Year-Aware Sheet Resolution**: Logical Note references must be resolved using fiscal year context (e.g. Note 36 resolves to sheet `36` in 1402, but sheet `36-37` in 1403 and 1404).
+## 2. Fiscal year 1403
+
+| Logical note | Physical sheet(s) | Content |
+|---:|---|---|
+| 5 | 10, 11 | Operating revenue |
+| 6 | 12 | Cost of revenue |
+| 7–9 | 13 | SG&A; other income; non-operating income/expenses |
+| 10 | 14–18 | Tangible fixed assets and subnotes |
+| 11 | 19 | Intangible assets |
+| 12 | 20, 21 | Trade and other receivables |
+| 13–14 | 22 | Prepayments; inventories |
+| 15–17 | 23 | Cash; capital; legal reserve |
+| 18 | 24–27 | Trade and other payables |
+| 19 | 27 | Employee benefits / future staff obligations |
+| 20 | 28 | Tax payable |
+| 21–22 | 29 | Dividends payable / advances received; cash from operations |
+| 23 | 29, 30 | Corrections/reclassifications and non-cash transactions |
+| 24 | 30–32 | Financial risk management |
+| 25 | 32 | Foreign-currency position |
+| 26 | 33, 34 | Related-party transactions and balances |
+| 27–28 | 35 | Commitments/contingencies; subsequent events |
+| 36–37 | 36-37 | Merged budget-performance sheet |
+| 38 | 38 | Budget justification |
+| 39 | 39 | Summary of sources and uses |
+
+## 3. Fiscal year 1404
+
+| Logical note | Physical sheet(s) | Content |
+|---:|---|---|
+| 5 | 10, 11 | Operating revenue |
+| 6 | 12 | Cost of revenue |
+| 7–9 | 13 | SG&A; other income; non-operating income/expenses |
+| 10 | 14–18 | Tangible fixed assets and subnotes |
+| 11 | 19 | Intangible assets |
+| 12 | 20, 21 | Trade and other receivables |
+| 13–14 | 22 | Prepayments; inventories |
+| 15–17 | 23 | Cash; capital; legal reserve |
+| 18 | 24–27 | Trade and other payables |
+| 19 | 27 | Employee benefits / future staff obligations |
+| 20 | 28 | Tax payable |
+| 21 | 29 | Dividends payable / advances received |
+| 22 | 29 | Corrections and restatements |
+| 23 | 29, 30 | Cash from operations and supporting disclosures |
+| 24 | 30 | Non-cash transactions |
+| 25 | 30–32 | Financial risk management |
+| 26 | 32 | Foreign-currency position |
+| 27 | 33, 34 | Related-party transactions and balances |
+| 28–29 | 35 | Commitments/contingencies; subsequent events |
+| 36–37 | 36-37 | Merged budget-performance sheet |
+| 38 | 38 | Budget justification |
+| 39 | 39 | Summary of sources and uses |
+
+## 4. 1403/1404 Statement of Financial Position cross-reference drift
+
+The 1403 and 1404 balance sheets retain references that do not match the printed note-page headings:
+
+| Balance-sheet reference | Note-page heading actually found | Physical sheet |
+|---|---|---:|
+| 17-1 / 17-2 — capital in progress | No matching Note 17-1 / 17-2 heading; capital details appear under Note 16, while printed Note 17 is legal reserve | 23 |
+| 18 — legal reserve | 17 — legal reserve | 23 |
+| 19-1 / 19-2 — payables | 18 — payables | 24–27 |
+| 20 — employee benefits | 19 — employee benefits | 27 |
+| 21 — tax payable | 20 — tax payable | 28 |
+| 22 — advances received | 21 — advances received | 29 |
+
+The underlying amounts tie to the note-page content; this is a cross-reference / numbering defect. The 1402 workbook retains the earlier sequence (Note 17 capital-in-progress, Note 18 legal reserve, Note 19 payables, etc.) and does not have this same one-number drift.
+
+**Ingestion requirement:** store fiscal_year, statement_reference, logical_note_number, printed_heading, physical_sheet_name, and subnote_number separately. Preserve the source mismatch for review; do not rewrite canonical XLSX/PDF.

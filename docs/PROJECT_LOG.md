@@ -374,3 +374,26 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: the 1403 equity rollforward presentation and 1404 FX support items remain open; account 8161's 110 unmapped rows and 196,907,918,801 Rial unmapped closing exposure are not excluded by these pair findings.
 - Rollback: revert this documentation-only update; canonical source files remain unchanged.
 - Next action: continue note-level / ledger-level reconciliation and obtain independent review of PR #90.
+
+
+### 2026-11-10 — 1404 note-level tie-out and year-aware note-reference audit
+
+- Actor: ChatGPT Operational Coordinator; read-only accounting/documentation reconciliation under Project Owner's instruction to exclude irrelevant auxiliary errors while preserving source rows.
+- Task: extend PR #90 from primary-statement arithmetic and control-pair checks to note-level tie-outs and year-aware physical-sheet mapping.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft #90; open and unmerged.
+- 1404 Income Statement: Notes 5–9 tie exactly to revenue, cost of revenue, SG&A, other income and non-operating result. Note 20-3 ties to income-tax expense.
+- 1404 Statement of Financial Position: Notes 10–15 tie to every asset line; Notes 16–21 tie to capital, reserve, payables, employee benefits, tax and advances received. Total assets 733,743,718; liabilities 917,629,178; equity -183,885,460; liabilities plus equity equal assets (million Rials).
+- 1404 Note 9-3 explicitly describes the 12,556 million Rial FX effect and cites NIGC letter No. 1830 dated 1405/01/16. The former no-note-reference exception is superseded; detailed rate calculation was not independently reperformed.
+- New exception FS-1403/1404-NOTE-REF-01: after the 1402 Note 17 capital-in-progress section disappears, 1403/1404 balance-sheet note references 17–22 are not aligned with the actual printed note-page headings. The amounts reconcile when matched by content; the source workbooks remain unchanged.
+- Rebuilt NOTE_CATALOG.md and NOTE_TO_SHEET_MATRIX.md with year-aware note numbering and physical sheet names. The mapping records multiple notes per sheet and notes spanning multiple sheets.
+- Exact changed files: NOTE_CATALOG.md; NOTE_TO_SHEET_MATRIX.md; PROJECT_STATUS.md; docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md; docs/PROJECT_LOG.md; docs/handoff/LATEST_HANDOFF.md.
+- Tests/evidence: prior 66 primary-statement arithmetic checks PASS; 3 cash-flow-to-balance-sheet closing-cash checks PASS; additional 1404 note tie-outs and asset/liability cross-foot PASS; git diff --check PASS.
+- GitHub Actions: docs-only PR; verify live check-run state after push; no CI result is assumed.
+- Artifacts/releases: NONE.
+- Protected data: no canonical XLSX/PDF, ledger row, Mapping row, database, code or financial value changed.
+- Acceptance: IN_PROGRESS; PR remains Draft and unmerged; independent technical review and accounting-document-owner disposition of FS-1403-EQ-01 / FS-1403/1404-NOTE-REF-01 remain pending.
+- Remaining risks: FS-1403-EQ-01; FS-1403/1404-NOTE-REF-01; FS-1404-CF-02; image-only 1404 auditor PDF; account 8161 unmapped closing exposure remains separate.
+- Rollback: revert the documentation-only commit(s) or close PR #90 without merge; canonical financial sources remain untouched.
+- Next action: publish the reviewed documentation update on the existing Draft PR #90 and route it for independent review; do not merge.
