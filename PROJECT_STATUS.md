@@ -101,3 +101,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - All ten canonical source files were SHA-256 hashed. No source file, database, financial value, code, or Mapping row was modified.
 - Draft PR: https://github.com/davoodmehraban89/Aram/pull/90 (base 7dc864fd032f0c4ae4d650d89304a01286a6d914; see live PR metadata for current head). Not merged; independent review pending.
 - Next action: independent review of PR #90 and accounting disposition of FS-1403-EQ-01 / FS-1404-CF-01; continue note-level and ledger-level reconciliation under the documented exclusion rule.
+
+
+## 2026-11-10 — Control-account pair verification
+
+- Read-only aggregation of source_1404.xlsx by fiscal year confirms two owner-identified control-account pairs with exactly offsetting entity-level closing balances: 8708/8709 and 8718/8719.
+- Each account in both pairs maps to the same Note 12-1 sub-note (employees / advances), type O.
+- 1403 and 1404 pair totals each net to exactly zero independently.
+- T1-level exceptions remain: 8708/8709 has 4 unmatched T1 groups in 1403 and 2 in 1404; 8718/8719 has 6 in 1403 and none in 1404. Netting is therefore approved only at the full reporting-entity level, not per T1 subgroup.
+- Preserve all source rows, turnovers, mappings and drill-downs. Exclude only the combined net effect from statement totals.
+- Evidence and amounts are recorded in docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, section 9.

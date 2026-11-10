@@ -355,3 +355,22 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: FS-1403-EQ-01, FS-1404-CF-01, FS-1404-CF-02, and auditor PDF opinion text remain open as documented.
 - Rollback: close PR #90 without merge or revert the documentation-only commits.
 - Next action: independent review and accounting-owner disposition; then continue note-level and ledger-level reconciliation.
+
+
+### 2026-11-10 — Entity-level control-account pair verification
+
+- Actor: ChatGPT Operational Coordinator; scope interpreted under Project Owner's accounting clarification.
+- Task/phase: verify paired payroll allocation / control accounts in source_1404.xlsx separately for fiscal years 1403 and 1404.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90).
+- Exact changed files: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, PROJECT_STATUS.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: year-filtered, read-only ledger aggregation; account pairs 8708/8709 and 8718/8719 each net to zero independently in 1403 and 1404; Mapping rules confirm same Note 12-1 sub-note and type O.
+- Dimension result: T1 subgroup mismatches exist for 8708/8709 (4 in 1403, 2 in 1404) and 8718/8719 (6 in 1403, 0 in 1404). Netting is limited to the full reporting entity; no per-T1 elimination is authorized by this evidence.
+- GitHub Actions: NOT_VERIFIED for the subsequent documentation update; check remote head after push.
+- Artifacts/releases: NONE.
+- Protected data: no source workbook, ledger row, Mapping row, financial value, database or code changed.
+- Acceptance: IN_PROGRESS; Draft PR remains unmerged.
+- Remaining risks: the 1403 equity rollforward presentation and 1404 FX support items remain open; account 8161's 110 unmapped rows and 196,907,918,801 Rial unmapped closing exposure are not excluded by these pair findings.
+- Rollback: revert this documentation-only update; canonical source files remain unchanged.
+- Next action: continue note-level / ledger-level reconciliation and obtain independent review of PR #90.

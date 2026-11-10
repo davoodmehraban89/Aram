@@ -135,3 +135,17 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - The latest commit had zero GitHub check-runs; no workflow was observed for this documentation-only PR.
 - No source data changed. The PR contains four documentation files only.
 - Next action remains independent review and accounting-owner disposition; do not merge.
+
+
+## 2026-11-10 — Control-account pair verification update
+
+- Verified year-separated entity-level closing balance pairs in source_1404.xlsx:
+  - 1403: 8708 = -67,397,848,445,282 Rials; 8709 = +67,397,848,445,282 Rials.
+  - 1404: 8708 = -9,683,034,125,526 Rials; 8709 = +9,683,034,125,526 Rials.
+  - 1403: 8718 = -10,330,082,681,061 Rials; 8719 = +10,330,082,681,061 Rials.
+  - 1404: 8718 = -4,452,935,519,939 Rials; 8719 = +4,452,935,519,939 Rials.
+- All four accounts map to Note 12-1 / employees (advances), type O. Each pair nets to zero separately in each fiscal year.
+- T1 dimension mismatches exist for some groups; do not net by T1. Exclude only the pair's net effect at the full reporting-entity level, retaining all ledger rows and drill-down.
+- Detailed evidence: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, section 9.
+- Account 8161 unmapped exposure remains separate and is not excluded.
+- PR #90 remains Draft / open / unmerged. Next action: independent review and continue note/ledger reconciliation.

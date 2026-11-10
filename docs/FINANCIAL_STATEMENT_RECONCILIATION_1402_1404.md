@@ -158,4 +158,29 @@ The existing 1404 Mapping analysis remains separate from this statement arithmet
 - The 1403 equity presentation issue and 1404 FX support item remain open for disposition.
 - Auditor PDF opinion text remains unverified due image-only source extraction.
 
-Recommended next action: continue the note-level and ledger-level reconciliation using the owner-confirmed zero-balance exclusion rule, while preserving all source rows and keeping ambiguous / non-zero exposure accounts visible for accounting disposition.
+Recommended next action: continue note-level and ledger-level reconciliation using the verified entity-level control-pair rule, while preserving all source rows and keeping ambiguous / non-zero exposure accounts visible for accounting disposition.
+
+
+## 9. Control-account pairs verified in the 1403/1404 source ledger
+
+The 1404 source ledger contains rows for fiscal years 1403 and 1404. A separate year-by-year aggregation of closing balances identified two exact account-level control pairs:
+
+| Fiscal year | Debit-side account | Closing balance (Rials) | Credit-side account | Closing balance (Rials) | Combined |
+|---|---|---:|---|---:|---:|
+| 1403 | 8708 — تسهیم حقوق کارکنان | -67,397,848,445,282 | 8709 — کنترل حقوق کارکنان | +67,397,848,445,282 | 0 |
+| 1404 | 8708 — تسهیم حقوق کارکنان | -9,683,034,125,526 | 8709 — کنترل حقوق کارکنان | +9,683,034,125,526 | 0 |
+| 1403 | 8718 — تسهیم دستمزد کارگران | -10,330,082,681,061 | 8719 — کنترل دستمزد کارگران | +10,330,082,681,061 | 0 |
+| 1404 | 8718 — تسهیم دستمزد کارگران | -4,452,935,519,939 | 8719 — کنترل دستمزد کارگران | +4,452,935,519,939 | 0 |
+
+Both accounts in each pair have a Mapping rule to the same Note 12-1 sub-note, «کارکنان (وام مساعده)», with type O. The account-level balances net to exactly zero separately for 1403 and 1404.
+
+### Dimension caveat
+
+The account-level pair totals do not mean every T1 subgroup nets to zero:
+
+- 8708/8709: 4 T1-dimension mismatches in 1403 and 2 in 1404; the mismatches offset across T1 codes at the full reporting-entity total.
+- 8718/8719: 6 T1-dimension mismatches in 1403; all 46 compared T1 groups matched in 1404.
+
+**Presentation rule:** Under the accounting owner's confirmation that these are non-presented control accounts, their combined net closing balance may be excluded from the financial-statement total at the full reporting-entity level. Do not net them independently within each T1 dimension where the subgroup does not match. Preserve both accounts, every underlying ledger row, debit/credit turnover, original Mapping rules, and full drill-down traceability. Their gross balances must not be silently deleted or hidden from the audit trail.
+
+This evidence supports the user's control-account treatment for these two pairs. It does not justify automatically excluding other accounts, including account 8161's separate unmapped non-zero exposure.
