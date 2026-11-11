@@ -129,3 +129,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - All 62 entries have a proposed disposition and rationale.
 - This does not authorize integration. Keep original worktrees and snapshot untouched.
 - Phase 0 remains 65%; next task is independent disposition review and resolution of the Mapping / dependency / migration conflicts.
+
+
+## 2026-11-11 — Account 8161 dry-run update
+
+- The seven-rule proposal now has an in-memory simulation across 17,075 account-8161 rows.
+- It predicts 75 new unique matches (24 non-zero, 51 zero-balance), 35 remaining unmatched rows all zero-balance, and no ambiguity.
+- Simulated exposure ties exactly to 196,907,918,801 Rials.
+- No workbook was saved; official Mapping and ledgers remain unchanged.
+- Accounting-owner approval and independent review remain required before persistent changes.
