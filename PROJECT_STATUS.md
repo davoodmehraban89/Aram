@@ -87,3 +87,14 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+
+## 2026-11-11 — Execution progress dashboard established
+
+- Added [Aram Execution Progress Dashboard](docs/ARAM_EXECUTION_PROGRESS_DASHBOARD.md) on control branch `docs/aram-master-control-plan-20261111`.
+- The dashboard decomposes all eight roadmap phases into work items, evidence states, blockers, exit criteria and ordered next actions.
+- Initial estimates: Phase 0 65%; Phase 1 25%; Phase 2 30%; Phase 3 25%; Phase 4 10%; Phase 5 30%; Phase 6 10%; Phase 7 5%; unweighted portfolio indicator 25%.
+- Percentages are explicitly engineering estimates, not acceptance, production-readiness, or release claims.
+- No phase is accepted as a whole. Production / release remains NO-GO.
+- The master control plan now designates the dashboard as the single operational progress register; the master plan remains the governing policy and acceptance document.
+- Dashboard update rules require evidence URL / SHA, reason for every percentage change, remaining acceptance criteria, and append-only progress history.
