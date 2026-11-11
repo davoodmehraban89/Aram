@@ -424,3 +424,10 @@ The disposition register is a review proposal only. It does not authorize copyin
 ### 2026-11-11 — Account 8161 dry-run result
 
 The seven-rule proposal was tested in memory against all 17,075 account-8161 rows. The baseline unmatched counts were reproduced (61 for 1403; 49 for 1404). The simulated rules create 75 unique matches (24 non-zero and 51 zero-balance), leave 35 unmatched rows that all have zero statement balance, and produce no ambiguous matches. The simulated new exposure ties exactly to 196,907,918,801 Rials. No derived workbook was saved and no official source was changed. See [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md). Accounting-owner approval and independent review remain mandatory.
+
+
+### 2026-11-11 — Financial evidence refinement
+
+The latest Phase 1 evidence is maintained in the [execution dashboard](ARAM_EXECUTION_PROGRESS_DASHBOARD.md) and Draft PR #90. The 1403 equity difference of 43,241,509 million Rials is now traced to the same two prior-period adjustments already reflected in the 1402 workbook; the 1403 comparative opening appears to repeat them. The most likely correction is to remove/correct the duplicated comparative opening row, not restate the closing equity. Owner confirmation of journal entries and approved trial balances remains required.
+
+The 1403 workbook also prints two top-level Note 23 headings (corrections/reclassifications on sheet 29 and non-cash transactions on sheet 30); the catalog and matrix now preserve this duplicate section identity. The opening pages of 1402 and 1404 auditor PDFs were visually reviewed, but full report review remains open and 1403 PDF extraction failed. No source financial workbook or PDF was changed.
