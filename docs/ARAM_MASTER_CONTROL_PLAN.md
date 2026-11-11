@@ -391,3 +391,13 @@ No author may describe their own self-review as an independent approval. No test
 3. Reconcile the current project status and handoff documents against live PR / branch state.
 4. Obtain accounting-owner dispositions for FS-1403-EQ-01 and MAP-8161-01 before changing official mapping or statement sources.
 5. Keep production / Gate 3 decision NO-GO.
+
+
+### Phase 0 — file-overlap classification
+
+- Added [Aram Worktree Change Ownership Matrix](docs/ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md).
+- The 62-file snapshot inventory contains 10 paths present in multiple worktrees: 3 identical-content groups and 7 content-conflict groups.
+- Material conflicts are confirmed in `backend/src/aram_backend/mapping_workflow.py` (reviewer identity preservation), `backend/tests/test_mapping_workflow.py` (control regression assertions), `backend/pyproject.toml` (runtime security dependencies), and `backend/migrations/env.py` (identity metadata).
+- Gate3-Implementation's approval transition overwrites the reviewer field with the approver; this is not acceptable without an explicit control-model decision. G1/G2.1 preserve reviewer evidence.
+- Generated `egg-info` files are not source-of-truth and must be regenerated after the dependency contract is finalized.
+- No consolidation or source-file copying has been performed.
