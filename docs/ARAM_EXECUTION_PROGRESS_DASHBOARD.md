@@ -48,6 +48,7 @@
 | Inventory all open GitHub PRs | DONE_EVIDENCED | 55 open PRs; all 55 Draft; 13 target accepted baseline directly and 42 are stacked; [inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md) |
 | Build parent-child branch dependency graph | DONE_EVIDENCED | All 42 stacked PR bases match another PR head in the live inventory; [dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md) |
 | Build changed-file inventory and overlap matrix | DONE_EVIDENCED | 427 changed-file entries across 55 PRs; 221 unique paths; 64 shared paths across 1,048 PR-pair overlaps; [matrix](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md) |
+| Draft V1 scope / disposition proposal for 13 PR families | DONE_EVIDENCED | Each family has a proposed keep / hold / no-go / likely-superseded disposition; [proposal](OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md) |
 | Resolve all substantive conflicts | PARTIAL | Reviewer-preservation, dependency and Alembic metadata conflicts identified; no integration merge performed |
 | Reconcile status, log and handoff to live remote state | PARTIAL | Status / handoff records have historical inconsistencies; current PR metadata re-fetched, but durable docs still need full reconciliation |
 | Decide V1 scope / disposition for 55 open PRs | NOT_STARTED | Classify retain, consolidate, rebase, supersede or close-with-record; no mass close |
@@ -56,14 +57,14 @@
 
 **Remaining to close Phase 0**
 1. Independently review the 62 file dispositions and confirm the proposed retain / hold / exclude decisions.
-2. Decide V1 scope and disposition for all 55 open Draft PRs; preserve the 42-PR dependency chain and avoid mass merge/close.
+2. Obtain owner / reviewer decisions on the 13 PR-family dispositions in the proposal; do not mass merge or close.
 3. Review the 64 shared paths and compare commits / patches to distinguish intentional stacked history from independent conflicts.
 4. Resolve substantive conflicts with tests and explicit architecture decisions.
 5. Select one integration branch based on the accepted baseline.
 6. Reconcile all control documents and exact PR / CI heads.
 7. Obtain independent review and record the accepted baseline transition.
 
-**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), [62-entry file-level disposition register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md), [55-PR inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md), [branch dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md), [file overlap matrix](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
+**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), [62-entry file-level disposition register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md), [55-PR inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md), [branch dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md), [file overlap matrix](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md), [V1 scope disposition proposal](OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
 
 ## 3. Phase 1 — Financial exception closure
 
@@ -350,3 +351,11 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - These are path overlaps, not automatically semantic conflicts; stacked chains require comparison against immediate parent bases.
 - Phase 0 remains 55%; inventory is complete but V1 scope decisions and semantic/commit-level review remain open.
 - No source code, financial data, branch or PR state changed.
+
+
+### 2026-11-11 — V1 scope disposition proposal drafted
+
+- Grouped 55 open Draft PRs into 13 parent-rooted dependency families.
+- Added [OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md](OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md) with a recommended keep / hold / no-go / likely-superseded / owner-decision-required disposition for each family.
+- No PR was merged, closed, retargeted or deleted. This is a proposal only; owner and independent reviewer decisions remain open.
+- Phase 0 remains 55%; the remaining work is disposition approval, semantic patch review, conflict resolution and selection of an exact-baseline integration candidate.
