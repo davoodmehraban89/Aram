@@ -172,3 +172,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - 55 open PRs; 427 changed-file entries; 221 unique paths; 64 shared paths; 1,048 PR-pair/path overlaps.
 - Control docs are heavily shared across draft PRs; compare each stacked PR against its immediate base before merging or cherry-picking.
 - Phase 0 remains 55%; V1 scope classification and semantic/commit-level review remain the next gates.
+
+
+## 2026-11-11 — V1 PR-family disposition handoff
+
+- Review `docs/OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md` before any PR state change.
+- 55 open Draft PRs are grouped into 13 dependency families.
+- The #26 Gate3 Mapping chain and #60 five-statement / Windows chain must be treated as whole dependency families; #82/#88/#89/#92 remain NO-GO.
+- No PR was merged or closed. Owner / independent reviewer disposition is pending.
