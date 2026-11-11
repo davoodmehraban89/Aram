@@ -70,7 +70,7 @@
 | Simulate seven-rule Mapping outcome | DONE_EVIDENCED | In-memory simulation reproduced baseline (61 / 49 unmatched); proposed result: 75 new matches, 24 non-zero, 35 remaining unmatched all zero-balance, zero ambiguity; exposure ties exactly |
 | FY1403 equity rollforward difference | PARTIAL / BLOCKED_ON_OWNER | Root cause strongly indicates the 43,241,509 million Rial prior-period adjustment is duplicated in the 1403 comparative opening; 1402 statement already carries the same two components. Owner must confirm original journals / approved TBs before correction |
 | Note / sub-note reference reconciliation | PARTIAL | Issues identified; owner-approved final references not recorded |
-| Budget source errors and unit consistency | BLOCKED_ON_OWNER | #REF! and mixed Rial / million-Rial presentation require budget-owner source decision |
+| Budget source errors and unit consistency | PARTIAL / BLOCKED_ON_OWNER | Six #REF! cells confirmed as stored error values (not formulas); 1404 Note39 E22:E32 are 1,000,000x F; approved original budget source absent, so correction cannot be safely reconstructed |
 | Auditor PDF review | PARTIAL | First five pages of 1402 (48p) and 1404 (47p) visually inspected; fair-presentation wording and separate litigation emphasis sections visible. 1403 extraction failed; full-page / all-matters review remains NOT_VERIFIED |
 | Signed finance disposition and source hash recheck | NOT_STARTED | Mandatory exit evidence absent |
 
@@ -80,7 +80,7 @@
 - Only after approval, create a persistent derived Mapping copy; rerun exact workbook formulas / matcher and verify counts and source hashes.
 - Preserve all 86 zero-balance rows and verify unmatched / ambiguous / deterministic counts.
 - Never change the official Mapping workbook without the recorded approval and independent review.
-- Resolve equity, note references, budget units and #REF! source cells with named owners.
+- Resolve equity, note references, budget units and #REF! source cells with named owners and authoritative journals / approved budget source.
 - Inspect every auditor report page; record opinion, emphasis and other-matter paragraphs.
 - Re-run year-separated reconciliations from hashed source inputs and obtain signed finance acceptance.
 
@@ -313,3 +313,12 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - 1403 workbook prints two Note 23 headings: corrections/reclassifications (sheet 29, including 23-1-1) and non-cash transactions (sheet 30). The note catalog and matrix now distinguish these sections.
 - Auditor 1402 (48 pages) and 1404 (47 pages): first five pages visually reviewed; visible fair-presentation opinion wording and separate litigation emphasis sections. 1403 PDF extraction failed; full review remains incomplete.
 - No official financial workbook or PDF was changed. Phase 1 remains 25%; findings are more precise but not formally accepted.
+
+
+### 2026-11-11 — Budget unit and broken-reference root cause
+
+- Six #REF! cells are stored Excel error values (type e), not intact formulas: 1403 G120/G123; 1404 G127/G130; 1404 Note39 E9/E16.
+- 1404 Note39 E22:E32 are exactly 1,000,000x the revised-budget F values; 1403 comparator is consistently in million-Rial scale. E35 is 12,500,000 in both years and is not part of this anomaly.
+- The original approved budget source is not present in the inspected project data directory. No source correction is authorized.
+- Added [budget unit and error-cell memo](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md).
+- Phase 1 remains 25%; source evidence is improved but budget-owner approval / source recovery remains open.
