@@ -47,21 +47,23 @@
 | Complete file-level disposition for all snapshot entries | DONE_EVIDENCED | 62/62 current source files exist and still match snapshot SHA-256; every entry has a disposition and rationale in [file-level register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md) |
 | Inventory all open GitHub PRs | DONE_EVIDENCED | 55 open PRs; all 55 Draft; 13 target accepted baseline directly and 42 are stacked; [inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md) |
 | Build parent-child branch dependency graph | DONE_EVIDENCED | All 42 stacked PR bases match another PR head in the live inventory; [dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md) |
+| Build changed-file inventory and overlap matrix | DONE_EVIDENCED | 427 changed-file entries across 55 PRs; 221 unique paths; 64 shared paths across 1,048 PR-pair overlaps; [matrix](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md) |
 | Resolve all substantive conflicts | PARTIAL | Reviewer-preservation, dependency and Alembic metadata conflicts identified; no integration merge performed |
 | Reconcile status, log and handoff to live remote state | PARTIAL | Status / handoff records have historical inconsistencies; current PR metadata re-fetched, but durable docs still need full reconciliation |
 | Decide V1 scope / disposition for 55 open PRs | NOT_STARTED | Classify retain, consolidate, rebase, supersede or close-with-record; no mass close |
-| Build commit/file overlap matrix across PR chains | NOT_STARTED | Required to prevent duplicate or missing changes across 42 stacked PRs |
+| Review 64 shared paths and commit-level semantics | NOT_STARTED | Distinguish intentional stacked history from independent conflicts; especially shared control docs, desktop statement engine, main.py, pyproject and migration/security paths |
 | Select and validate one integration candidate | NOT_STARTED | Requires reviewed file ownership, PR DAG review and exact-base integration plan |
 
 **Remaining to close Phase 0**
 1. Independently review the 62 file dispositions and confirm the proposed retain / hold / exclude decisions.
 2. Decide V1 scope and disposition for all 55 open Draft PRs; preserve the 42-PR dependency chain and avoid mass merge/close.
-3. Build commit/file overlap matrix and resolve substantive conflicts with tests and explicit architecture decisions.
-4. Select one integration branch based on the accepted baseline.
-5. Reconcile all control documents and exact PR / CI heads.
-6. Obtain independent review and record the accepted baseline transition.
+3. Review the 64 shared paths and compare commits / patches to distinguish intentional stacked history from independent conflicts.
+4. Resolve substantive conflicts with tests and explicit architecture decisions.
+5. Select one integration branch based on the accepted baseline.
+6. Reconcile all control documents and exact PR / CI heads.
+7. Obtain independent review and record the accepted baseline transition.
 
-**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), [62-entry file-level disposition register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md), [55-PR inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md), [branch dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
+**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), [62-entry file-level disposition register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md), [55-PR inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md), [branch dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md), [file overlap matrix](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
 
 ## 3. Phase 1 — Financial exception closure
 
@@ -337,3 +339,14 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - Revised Phase 0 estimate from 65% to 55%, with reason: newly discovered 55-PR backlog and 42-edge dependency chain require V1 scope, supersession and commit/file-overlap review.
 - Other phase estimates unchanged. Indicative overall estimate revised from 25% to 24% (190/8 = 23.75%, rounded).
 - No PR merged, closed, retargeted or deleted. No source code or financial data changed.
+
+
+### 2026-11-11 — Open PR changed-file overlap matrix completed
+
+- Retrieved changed-file lists for all 55 open PRs.
+- Total: 427 changed-file entries, 221 unique repository paths, 64 paths touched by multiple PRs, and 1,048 PR-pair/path overlaps.
+- The most frequently shared files are control documents (PROJECT_LOG.md: 45 PRs; LATEST_HANDOFF.md: 41; PROJECT_STATUS.md: 31), followed by the Windows five-statement implementation, backend main.py and pyproject.toml.
+- Added [OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md).
+- These are path overlaps, not automatically semantic conflicts; stacked chains require comparison against immediate parent bases.
+- Phase 0 remains 55%; inventory is complete but V1 scope decisions and semantic/commit-level review remain open.
+- No source code, financial data, branch or PR state changed.
