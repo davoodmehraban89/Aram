@@ -397,3 +397,19 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: FS-1403-EQ-01; FS-1403/1404-NOTE-REF-01; FS-1404-CF-02; image-only 1404 auditor PDF; account 8161 unmapped closing exposure remains separate.
 - Rollback: revert the documentation-only commit(s) or close PR #90 without merge; canonical financial sources remain untouched.
 - Next action: publish the reviewed documentation update on the existing Draft PR #90 and route it for independent review; do not merge.
+
+
+## 2026-11-11 — 1402/1403 note-page tie-out extension
+
+- Actor: ChatGPT / Operational Coordinator; read-only accounting source review.
+- Base and PR branch: docs/financial-statement-reconciliation-1402-1404-20261110; Draft PR #90; accepted base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Added direct amount tie-outs for 1402/1403 income-statement and balance-sheet lines to actual printed note-page cells and narrative disclosures.
+- 1402 Income Statement: Notes 5–9 match; 1403 Income Statement: Notes 5–9 and Note 20-3 match.
+- 1402 Statement of Financial Position: Notes 10–22 match the listed asset/liability lines, with narrative-only share capital/capital-in-progress/legal-reserve evidence explicitly identified.
+- 1403 Statement of Financial Position: asset lines match Notes 10–15; liabilities and tax/advances match actual printed Notes 18–21. Stale statement references 17–22 are confirmed as a presentation cross-reference drift after the separate 1402 Note 17 capital-in-progress section disappears.
+- New issue FS-1402/1403-CF-FX-REF-01: 1403 FX cash-flow amount 4,403 is in Note 9-4 while the statement references 9-5; 1402 FX amount 819 is located on the Note 9 page but its printed sub-note identifier remains unconfirmed.
+- Auditor reports: initial pages of 1402/1404 visually show emphasis-of-matter paragraphs; full opinion and full report review remains pending. 1403 PDF did not return page content through the available reader.
+- No canonical source, financial value, ledger row, Mapping row, database, or application code changed.
+- git diff --check passed. All ten canonical source SHA-256 values were recomputed and match the baseline recorded in section 3 of the reconciliation report.
+- Acceptance: PRESENT_BUT_UNVERIFIED; accounting-owner and independent technical review pending. No merge.
+- Next action: publish documentation-only update to PR #90 after local integrity checks; request disposition of the two open accounting-reference issues and full auditor report OCR.

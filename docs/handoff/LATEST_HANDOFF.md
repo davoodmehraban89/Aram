@@ -168,3 +168,16 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - git diff --check passed. The data/ path diff is empty.
 - No canonical XLSX/PDF, ledger row, Mapping row, database, code or financial value changed.
 - Next action: publish the documentation update to Draft PR #90, verify remote head/checks, then route it to an independent reviewer. Do not merge.
+
+
+## 2026-11-11 — 1402/1403 note-level tie-out extension
+
+- Draft PR: #90; branch docs/financial-statement-reconciliation-1402-1404-20261110; base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- 1402 Income Statement Notes 5–9 and 1403 Income Statement Notes 5–9 / 20-3 were checked against actual note-page cells and match.
+- 1402 Statement of Financial Position lines tie to actual Notes 10–22; 1403 asset lines tie to Notes 10–15 and liability/tax/advance lines tie to actual printed Notes 18–21.
+- Confirmed presentation drift: 1403/1404 statement references 17–22 lag printed note headings after the 1402 capital-in-progress Note 17 is absent as a standalone disclosure. Amounts match actual note content; source workbooks remain unchanged.
+- New issue FS-1402/1403-CF-FX-REF-01: 1403 cash-flow FX amount 4,403 appears in Note 9-4 while statement reference is 9-5; 1402 amount 819 appears on Note 9 page but sub-note identifier is unconfirmed.
+- Initial 1402/1404 auditor report pages show emphasis-of-matter paragraphs; complete report and opinion review remains outstanding. 1403 PDF reader returned no page content.
+- FS-1403-EQ-01 remains open. No source XLSX/PDF, ledger row, Mapping row, database, code or financial value changed.
+- Status: PRESENT_BUT_UNVERIFIED. PR #90 remains Draft/open/unmerged; no merge.
+- Next action: accounting-owner disposition of FS-1403-EQ-01 and FS-1402/1403-CF-FX-REF-01, plus complete auditor report OCR/review.

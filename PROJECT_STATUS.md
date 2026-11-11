@@ -125,3 +125,18 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Draft PR: https://github.com/davoodmehraban89/Aram/pull/90. Base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914; not merged; independent review pending.
 - No canonical workbook/PDF, ledger row, Mapping row, database, code, or financial value was modified.
 - Next action: independent review of the expanded documentation and continued read-only reconciliation of remaining 1402/1403 note amounts and relevant ledger ties.
+
+
+## 2026-11-11 — 1402/1403 note-level reconciliation extension
+
+- Extended direct note-page amount tie-outs to 1402 and 1403 Income Statements and Statements of Financial Position; all listed numeric statement amounts match the actual note-page cells or narrative disclosures.
+- 1402 income statement Notes 5–9 match; 1403 income statement Notes 5–9 and Note 20-3 tax expense match.
+- 1402 asset-side and liability-side lines match the year-specific Notes 10–22. 1403 asset-side lines match Notes 10–15; liabilities and tax/advances match the actual printed Notes 18–21, despite the statement's stale references.
+- Confirmed year-aware note drift: after the standalone 1402 Note 17 capital-in-progress disclosure disappears, 1403/1404 printed Note 17 is legal reserve, Note 18 payables, Note 19 employee benefits, Note 20 tax, and Note 21 advances. Statement references 17–22 were not consistently updated.
+- New open issue FS-1402/1403-CF-FX-REF-01: 1403 cash-flow FX amount 4,403 appears in Note 9-4 while the statement points to 9-5; 1402 FX amount 819 appears on the Note 9 page but its sub-note identifier is not yet confirmed. 1404 FX support remains identified in Note 9-3.
+- Initial visual inspection of 1402/1404 auditor report pages found emphasis-of-matter paragraphs; this is not, by itself, a modified opinion. The 1403 PDF reader returned no page content. Full auditor report OCR/review remains outstanding.
+- Owner-confirmed exclusion rule applied: irrelevant auxiliary errors are ignored only when they do not feed official statement/note values; zero-balance / proven offset control accounts are excluded from statement totals only at the evidenced aggregation level. All source rows and workbooks remain preserved.
+- No canonical XLSX/PDF, ledger row, Mapping row, database, application code, or financial value was modified.
+- Evidence: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, section 13; NOTE_TO_STATEMENT_MATRIX.md; NOTE_CATALOG.md.
+- PR #90 remains Draft/open/unmerged; independent review pending. Do not merge.
+- Next action: accounting-owner disposition of FS-1403-EQ-01 and FS-1402/1403-CF-FX-REF-01, then complete OCR review of auditor reports.
