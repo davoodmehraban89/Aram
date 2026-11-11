@@ -278,3 +278,23 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+## 2026-11-11 — Eight-phase execution dashboard established
+
+- Actor: ChatGPT / operational coordinator.
+- Task: create durable evidence-based progress dashboard for Phases 0–7.
+- Base branch: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `docs/aram-master-control-plan-20261111`.
+- PR: Draft [#91](https://github.com/davoodmehraban89/Aram/pull/91).
+- Dashboard file: `docs/ARAM_EXECUTION_PROGRESS_DASHBOARD.md`.
+- Dashboard creation commit: `8891c614001eb5090363bf6f77be530f0edfa1f8`.
+- Related control files: `docs/ARAM_MASTER_CONTROL_PLAN.md`, `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`.
+- Initial estimates: P0 65%, P1 25%, P2 30%, P3 25%, P4 10%, P5 30%, P6 10%, P7 5%; simple unweighted mean 25%.
+- Method: task-level evidence states, explicit phase exit criteria, blockers, dependency path and ordered next actions. Estimates are not acceptance or production-readiness claims.
+- Tests / CI: documentation-only changes; no application test claim made for this dashboard commit. Exact-head CI status must be checked if the workflow is triggered.
+- Artifacts / release: none.
+- Acceptance: documentation candidate only; PR #91 remains Draft / open; no merge.
+- Reviewer: independent review pending.
+- Remaining risks: dashboard estimates are initial baselines; accounting, security, operational and phase acceptance evidence remains incomplete.
+- Next action: review dashboard arithmetic / evidence against current remote state, update the PR description, and maintain dashboard after every material phase event.
