@@ -147,3 +147,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - 1403 Note 23 is duplicated across sheet29 and sheet30; note catalog and matrix distinguish both sections.
 - 1402/1404 auditor opening pages reviewed; full report review incomplete; 1403 PDF extraction failed.
 - No source financial workbook/PDF modified.
+
+
+## 2026-11-11 — Budget source integrity handoff
+
+- Read `docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md`.
+- Do not repair #REF! cells or convert E22:E32 without the approved original budget source.
+- E22:E32 in 1404 are exactly 1,000,000x corresponding revised-budget F values; E35 is not part of the anomaly.
+- All source financial workbooks remain unchanged.
