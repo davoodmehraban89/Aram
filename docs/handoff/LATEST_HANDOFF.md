@@ -164,3 +164,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Do not merge children before reviewing parents. Do not mass-close or retarget branches.
 - Phase 0 estimate is now 55% (revised from 65% due expanded scope); overall unweighted estimate is 24%. Other phase estimates unchanged.
 - Next Phase 0 task: V1 scope classification and commit/file overlap matrix for the 55 PRs.
+
+
+## 2026-11-11 — Open PR file overlap handoff
+
+- Full changed-file inventory: `docs/OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md`.
+- 55 open PRs; 427 changed-file entries; 221 unique paths; 64 shared paths; 1,048 PR-pair/path overlaps.
+- Control docs are heavily shared across draft PRs; compare each stacked PR against its immediate base before merging or cherry-picking.
+- Phase 0 remains 55%; V1 scope classification and semantic/commit-level review remain the next gates.
