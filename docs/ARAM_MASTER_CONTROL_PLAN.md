@@ -450,3 +450,8 @@ This materially expands Phase 0 integration-control scope. The earlier Phase 0 e
 The changed-file listing was retrieved for all 55 open PRs. It contains 427 changed-file entries across 221 unique repository paths; 64 paths are touched by multiple PRs, producing 1,048 PR-pair/path overlaps. The most frequently shared paths are control documents (`docs/PROJECT_LOG.md`: 45 PRs; `docs/handoff/LATEST_HANDOFF.md`: 41; `PROJECT_STATUS.md`: 31), followed by the Windows five-statement implementation, backend `main.py`, and `pyproject.toml`. See [OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md).
 
 These are path overlaps, not automatic semantic conflicts. Stacked PRs must be compared to their immediate base to distinguish intentional history from independent modifications. Phase 0 remains 55%; V1 scope classification and commit-level review are still open.
+
+
+### 2026-11-11 — V1 scope disposition proposal
+
+The 55 open Draft PRs were grouped into 13 parent-rooted dependency families. A proposed keep / hold / no-go / likely-superseded / owner-decision-required disposition is recorded in [OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md](OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md). This is a proposal only: no PR was merged, closed, retargeted or deleted. Owner and independent reviewer decisions are still required before any branch state changes.
