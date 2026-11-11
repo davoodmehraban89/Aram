@@ -502,3 +502,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Windows OCR API exposes only English recognizer; Persian OCR unavailable locally.
 - No complete opinion classification or all-matters review is claimed. No PDF modified.
 - Next action: obtain a Persian-capable OCR route or inspect 1403 via a different reader, then complete all report pages and record opinion / emphasis / other-matter paragraphs.
+
+
+### 2026-11-11 — Budget unit and broken-reference validation
+
+- Artifact: `docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md`; Draft PR #90.
+- Confirmed #REF! cells are stored Excel error values, not intact formulas: 1403 G120/G123, 1404 G127/G130, 1404 Note39 E9/E16.
+- Confirmed 1404 Note39 E22:E32 values are exactly 1,000,000 times F revised-budget values; printed units are million Rials. 1403 comparator is consistently in million Rials.
+- E35 is 12,500,000 in both years and is not part of the 1,000,000 scale anomaly.
+- Original approved budget source file is not present in the inspected data folder. Any conversion is only a scenario, not an approved correction.
+- Tests: read-only openpyxl cell-type / value inspection and ratio checks.
+- Protected boundary: no source workbook modified.
+- Acceptance: technical issue confirmed; budget-owner source and approval pending.
