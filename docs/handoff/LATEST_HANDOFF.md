@@ -108,3 +108,15 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+
+## 2026-11-11 — Eight-phase progress dashboard handoff
+
+- Operational progress register: `docs/ARAM_EXECUTION_PROGRESS_DASHBOARD.md`.
+- Governing policy and phase acceptance rules: `docs/ARAM_MASTER_CONTROL_PLAN.md`.
+- Dashboard was added on control branch `docs/aram-master-control-plan-20261111`, commit `8891c614001eb5090363bf6f77be530f0edfa1f8`.
+- Draft PR #91 remains open; this is not merged into accepted baseline.
+- Initial estimates: Phase 0 65%, Phase 1 25%, Phase 2 30%, Phase 3 25%, Phase 4 10%, Phase 5 30%, Phase 6 10%, Phase 7 5%; unweighted mean 25%.
+- Percentages are estimates from available evidence. No phase is fully accepted; production / release remains NO-GO.
+- Dashboard records work-item evidence states, remaining work, blockers, exit criteria and immediate priorities. Any future percentage change must cite the exact evidence URL / SHA and preserve progress history.
+- Next action: independent review of dashboard and control-plan updates on PR #91; then keep the dashboard current as financial, mapping, security and operational gates progress.
