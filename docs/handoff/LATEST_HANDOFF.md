@@ -180,7 +180,16 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Initial 1402/1404 auditor report pages show emphasis-of-matter paragraphs; complete report and opinion review remains outstanding. 1403 PDF reader returned no page content.
 - FS-1403-EQ-01 remains open. No source XLSX/PDF, ledger row, Mapping row, database, code or financial value changed.
 - Status: PRESENT_BUT_UNVERIFIED. PR #90 remains Draft/open/unmerged; no merge.
-- Next action: accounting-owner disposition of FS-1403-EQ-01 and FS-1402/1403-CF-FX-REF-01, plus complete auditor report OCR/review.
+- Next action: accounting-owner disposition of FS-1403-EQ-01, FS-1402/1403-CF-FX-REF-01 and MAP-8161-01; complete auditor report OCR/review.
+
+## 2026-11-11 — Account 8161 unmapped exposure refinement
+
+- 1403: 61 unmapped rows; 41 zero-balance, 20 non-zero; exposure 144,125,670,091 Rials.
+- 1404: 49 unmapped rows; 45 zero-balance, 4 non-zero; exposure 52,782,248,710 Rials.
+- Combined 110 rows: 86 zero-balance, 24 non-zero; net exposure 196,907,918,801 Rials.
+- Seven distinct non-zero Mapping keys are absent; exact combinations are in report section 15.3.
+- MAP-8161-01: confirm those keys and rerun mapping counts. Do not exclude 8161 or modify Mapping/source ledgers before approval.
+- No canonical source changed.
 
 
 ## 2026-11-11 — FS-1403-EQ-01 arithmetic evidence

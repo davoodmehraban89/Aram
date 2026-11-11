@@ -165,7 +165,7 @@ The existing 1404 Mapping analysis remains separate from this statement arithmet
 - 214,848 rows have unique deterministic Mapping.
 - 37,907 rows are multi-match / ambiguous and are not proven lineage.
 - 132 rows are unmapped; 22 zero-closing rows across seven clearing accounts have no closing exposure.
-- 110 rows for account 8161 carry 196,907,918,801 Rials of non-zero closing exposure. This account must not be excluded solely because other zero-balance control accounts are irrelevant. A counterpart / netting relationship requires explicit source evidence and accounting classification.
+- 110 rows for account 8161 carry a net 196,907,918,801 Rial statement-balance exposure across 1403–1404. A year-by-year re-performance found 86 zero-balance rows and 24 non-zero rows within this population; the 24 non-zero rows account for the full net exposure. See section 15. This account must not be excluded solely because other zero-balance control accounts are irrelevant. A counterpart / netting relationship requires explicit source evidence and accounting classification.
 - Account 8999 has 11 system opening/closing rows; it is excluded from Mapping scope but retained in the source ledger.
 
 ## 8. Source-protection and acceptance
@@ -501,4 +501,54 @@ These are physical-output indicators, not financial statement amounts. They shou
 - Note 39 actual resources and uses reconcile exactly for all three years.
 - The 1404 performance story is not a simple across-the-board overspend: cost of services is materially over budget while distribution/administrative expenses are materially under budget. The note's own narrative identifies traditional cost allocation as a source of artificial variance.
 - The original-approved-budget columns in 1403/1404 have #REF! gaps; the 1404 Note 39 original-budget column additionally mixes Rial-scale and million-Rial-scale values. These do not invalidate the primary statements or the actual/revised-budget tie-outs, but they do prevent full reliance on those original-budget comparisons.
-- Next action: obtain accounting/budget-owner disposition for BUDGET-1403/1404-N36-37-APPROVED-01 and BUDGET-1404-N39-UNIT-01. Do not edit official workbooks in this task.
+- Next action: obtain accounting/budget-owner disposition for BUDGET-1403/1404-N36-37-APPROVED-01, BUDGET-1404-N39-UNIT-01 and MAP-8161-01. Do not edit official workbooks in this task.
+
+## 15. Account 8161 — year-by-year unmapped exposure refinement
+
+A targeted re-performance of the 1403 and 1404 source-ledger rows against the 1404 Mapping rules separates zero-balance rows from rows that affect the statement-balance column. Matching uses account, T1, current/capital, T4 and type; blank Mapping dimensions are treated as wildcards, consistent with the existing helper-key design.
+
+### 15.1 Reconciled population
+
+| Fiscal year | Unmapped rows | Zero statement-balance | Non-zero statement-balance | Net exposure (Rials) |
+|---|---:|---:|---:|---:|
+| 1403 | 61 | 41 | 20 | 144,125,670,091 |
+| 1404 | 49 | 45 | 4 | 52,782,248,710 |
+| **Total** | **110** | **86** | **24** | **196,907,918,801** |
+
+The source columns are AA (CLOSING) and AC (مانده صورت مالی) for 1403, and X (CLOSING) and Z (مانده صورت مالی) for 1404. Signed closing and statement-balance totals agree for the unmapped subsets in both years. The 86 zero-balance rows remain preserved but are not material statement exposure.
+
+### 15.2 Non-zero unmatched combinations
+
+| Year | T1 code | Current / capital | T4 code | Rows | Non-zero rows | Net statement balance (Rials) |
+|---|---:|---|---:|---:|---:|---:|
+| 1403 | 117001 | Current | 4512 | 2 | 1 | -5,425,842,707 |
+| 1403 | 117373 | Capital | 4512 | 2 | 1 | +5,000,000,000 |
+| 1403 | 117401 | Current | 4512 | 14 | 9 | +57,139,085,409 |
+| 1403 | 117488 | Current | 4502 | 22 | 7 | +48,274,392,545 |
+| 1403 | 117865 | Current | 4512 | 1 | 1 | +8,522,211,152 |
+| 1403 | 118701 | Current | 4512 | 4 | 1 | +30,615,823,692 |
+| 1404 | 117088 | Capital | 4512 | 2 | 1 | +11,365,395,802 |
+| 1404 | 117865 | Current | 4512 | 2 | 1 | +8,522,211,152 |
+| 1404 | 118701 | Current | 4512 | 7 | 2 | +32,894,641,756 |
+
+These nine year/key combinations represent seven distinct candidate mapping keys. The recurring 117865 and 118701 combinations appear in both years.
+
+### 15.3 Mapping disposition
+
+Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population:
+
+- 8161 / T1 117001 / current / T4 4512 / O
+- 8161 / T1 117373 / capital / T4 4512 / O
+- 8161 / T1 117401 / current / T4 4512 / O
+- 8161 / T1 117488 / current / T4 4502 / O
+- 8161 / T1 117865 / current / T4 4512 / O
+- 8161 / T1 118701 / current / T4 4512 / O
+- 8161 / T1 117088 / capital / T4 4512 / O
+
+Do not add or alter Mapping rows until the accounting/budget owner confirms the intended note classification and the source system's T1/T4 semantics. No ledger, mapping workbook, statement, or financial value was changed.
+
+**Open item MAP-8161-01:** confirm the seven non-zero mapping keys (or document an approved alternative), then rerun deterministic/ambiguous/unmapped counts and verify the 196,907,918,801 Rial statement-balance exposure is assigned to the appropriate note pages. Preserve the 86 zero-balance rows for drill-down traceability.
+
+### 15.4 Acceptance boundary
+
+This refinement does not establish that account 8161 is a zero-net control account, does not identify an offsetting counterpart, and does not authorize exclusion from the financial statements. The non-zero balances remain an open mapping/classification exposure until disposition.

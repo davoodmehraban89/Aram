@@ -435,4 +435,13 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - New BUDGET-1403/1404-N36-37-APPROVED-01: original-approved-budget cells G120/G123 (1403) and G127/G130 (1404) are #REF!, while revised-budget and actual columns are populated.
 - New BUDGET-1404-N39-UNIT-01: 1404 Note 39 original-budget column mixes Rial-scale values and million-Rial values; E22=7,771,200,000,000 vs F22=7,771,200; E32=97,000,000,000,000 vs F32=97,000,000; E35=12,500,000 is already million-Rial scale. E9/E16 are #REF!. Revised/actual totals remain valid and equal.
 - Zero/zero percentage cells are excluded as non-impacting ratios; no amount is affected.
-- No canonical financial data or code changed. Accounting/budget owner disposition required before correcting the official disclosure.
+- No canonical financial data or code changed.
+
+## 2026-11-11 — Account 8161 unmapped exposure refinement
+
+- Reperformed 8161 mapping against source_1403.xlsx, source_1404.xlsx and mapping_1404.xlsx using account/T1/current-capital/T4/type keys and existing wildcard behavior.
+- 1403: 61 unmapped rows; 41 zero-balance, 20 non-zero; net statement-balance exposure 144,125,670,091 Rials.
+- 1404: 49 unmapped rows; 45 zero-balance, 4 non-zero; net statement-balance exposure 52,782,248,710 Rials.
+- Combined: 110 rows; 86 zero-balance and 24 non-zero; net exposure 196,907,918,801 Rials. Closing and statement-balance columns agree for these unmapped subsets.
+- Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population; details are in reconciliation report section 15.2/15.3.
+- Open item MAP-8161-01 created. No mapping workbook or ledger rows changed; no netting or exclusion approved. Accounting/budget owner disposition required before correcting the official disclosure.
