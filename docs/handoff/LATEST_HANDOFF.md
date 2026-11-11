@@ -155,3 +155,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Do not repair #REF! cells or convert E22:E32 without the approved original budget source.
 - E22:E32 in 1404 are exactly 1,000,000x corresponding revised-budget F values; E35 is not part of the anomaly.
 - All source financial workbooks remain unchanged.
+
+
+## 2026-11-11 — Open PR backlog handoff
+
+- 55 open PRs exist; all are Draft.
+- 13 target `source-data-cleanup` directly; 42 are stacked on another PR head. See `docs/OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md` and `docs/OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md`.
+- Do not merge children before reviewing parents. Do not mass-close or retarget branches.
+- Phase 0 estimate is now 55% (revised from 65% due expanded scope); overall unweighted estimate is 24%. Other phase estimates unchanged.
+- Next Phase 0 task: V1 scope classification and commit/file overlap matrix for the 55 PRs.
