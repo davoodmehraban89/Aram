@@ -419,3 +419,8 @@ The dashboard must be updated after each material PR, exact-head test result, ac
 The 62-entry local snapshot manifest has now been revalidated against the live source worktrees: all 62 source files exist and all 62 current SHA-256 values match the snapshot manifest. No source file changed since the preservation snapshot. Every entry has a proposed disposition and rationale in [ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md).
 
 The disposition register is a review proposal only. It does not authorize copying, merging, deleting, resetting or cleaning any worktree. Substantive Mapping, dependency and Alembic conflicts remain unresolved. Phase 0 remains estimated at 65%; inventory evidence alone does not justify increasing the phase percentage.
+
+
+### 2026-11-11 — Account 8161 dry-run result
+
+The seven-rule proposal was tested in memory against all 17,075 account-8161 rows. The baseline unmatched counts were reproduced (61 for 1403; 49 for 1404). The simulated rules create 75 unique matches (24 non-zero and 51 zero-balance), leave 35 unmatched rows that all have zero statement balance, and produce no ambiguous matches. The simulated new exposure ties exactly to 196,907,918,801 Rials. No derived workbook was saved and no official source was changed. See [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md). Accounting-owner approval and independent review remain mandatory.
