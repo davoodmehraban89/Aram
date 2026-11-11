@@ -283,7 +283,8 @@ The corrected year-aware catalog and physical-sheet matrix are recorded in NOTE_
 - The 1403/1404 balance-sheet note-reference drift remains open for document-owner disposition (FS-1403/1404-NOTE-REF-01).
 - The +1/-1 million Rial comparative cash-flow presentation difference remains documented (FS-1404-CF-02).
 - Auditor PDF opinion wording and the complete set of report matters remain unverified pending OCR / full-page review.
-- Next action: resolve FS-1403-EQ-01 and FS-1402/1403-CF-FX-REF-01 with the accounting document owner; complete full auditor-report extraction; then route the expanded Draft PR #90 for independent review. No source workbook correction is authorized in this task.
+- Budget-note items BUDGET-1403/1404-N36-37-APPROVED-01 and BUDGET-1404-N39-UNIT-01 affect original-budget disclosure completeness, not actual/revised-budget or primary-statement totals.
+- Next action: obtain accounting/budget-owner disposition for FS-1403-EQ-01, FS-1402/1403-CF-FX-REF-01 and the two budget-note disclosure issues; complete full auditor-report extraction; then route the expanded Draft PR #90 for independent review. No source workbook correction is authorized in this task.
 
 
 ## 13. Note-level tie-outs — 1402 and 1403
@@ -395,3 +396,109 @@ The 1403/1404 balance-sheet note-reference cells retain several prior numbers (1
 - The 1402 and 1404 auditor reports were visually inspected only on their initial report pages; emphasis-of-matter paragraphs are present. This does not by itself establish a modified opinion. The 1403 auditor PDF did not return page content through the available reader. Full-page OCR and complete extraction of all three auditor reports remain outstanding.
 - The 1403 equity opening-balance presentation item FS-1403-EQ-01 remains open. The statement totals and closing equity still reconcile arithmetically.
 - No canonical source workbook/PDF, ledger row, Mapping row, database, application code, or financial value was modified.
+
+
+## 14. Budget performance, resources and uses — Notes 36–39
+
+This section checks the year-specific budget-performance disclosures against the primary statements and checks the resources-and-uses summaries. Amounts are in million Rials. It also distinguishes non-impacting zero-denominator ratio cells from separate budget-disclosure defects.
+
+### 14.1 Note 36/37 — Performance totals tie to the financial statements
+
+| Fiscal year | Budgeted revenue (revised) | Actual revenue | Revenue variance | Budgeted current expenses (revised) | Actual current expenses | Expense variance |
+|---|---:|---:|---:|---:|---:|---:|
+| 1402 | 129,806,500 | 127,264,495 | -2,542,005 (-1.96%) | 129,806,500 | 142,974,140 | +13,167,640 (+10.14% overrun) |
+| 1403 | 187,773,600 | 176,298,902 | -11,474,698 (-6.11%) | 187,773,600 | 182,831,079 | -4,942,521 (2.63% below budget) |
+| 1404 | 272,082,640 | 234,040,018 | -38,042,622 (-13.98%) | 272,082,640 | 308,711,587 | +36,628,947 (+13.46% overrun) |
+
+Primary-statement tie-outs:
+- 1402 actual revenue 127,264,495 = service revenue 123,297,650 + other income/non-operating income 3,966,845. Actual current expenses 142,974,140 = cost of revenue 123,355,486 + selling/administrative/general expenses 19,618,654. Net loss is 15,709,645.
+- 1403 actual revenue 176,298,902 = service revenue 174,585,508 + other income 1,085,594 + other non-operating income 627,800. Actual current expenses 182,831,079 = cost of revenue 157,476,581 + selling/administrative/general expenses 25,354,498. Pre-tax loss 6,532,177 less income-tax expense 2,922,215 gives net loss 9,454,392.
+- 1404 actual revenue 234,040,018 = service revenue 243,097,686 less other non-operating loss 9,057,668. Actual current expenses 308,711,587 = cost of services 245,897,444 + distribution/administrative/general expenses 62,814,143. Pre-tax loss 74,671,569 less income-tax expense 4,697,329 gives net loss 79,368,898.
+
+The actual and revised-budget columns reconcile to the statement amounts. The original-approved-budget column is treated separately below where its source cells are incomplete.
+
+### 14.2 1404 cost allocation and operating variance
+
+The 1403 budget note already shows the same allocation pattern:
+- Cost of services: revised budget 101,468,975; actual 157,476,581; overrun 56,007,606 (55.2%).
+- Distribution/administrative/general: revised budget 85,104,625; actual 25,354,498; underspend 59,750,127 (70.2%).
+- Combined actual current expenses 182,831,079 are 4,942,521 below the revised total budget 187,773,600. Thus a favourable total expense variance coexists with a large cost-of-service overrun.
+
+The 1403 gross-profit budget was 74,682,275 versus actual gross profit of 17,108,927, an adverse variance of 57,573,348. The 1404 budget note shows a larger split between service cost and distribution/administrative expenses:
+
+| Cost group | Revised budget | Actual | Variance | Interpretation |
+|---|---:|---:|---:|---|
+| Cost of services | 133,555,243 | 245,897,444 | +112,342,201 | 84.1% over budget |
+| Distribution and administrative/general | 136,145,357 | 62,814,143 | -73,331,214 | 53.9% below budget |
+| Cost-group subtotal (excluding other payments) | 269,700,600 | 308,711,587 | +39,010,987 | Subtotal only; see note below |
+
+**Important reconciliation boundary:** the first two revised-budget subtotals above are the actual note 36/37 category amounts. The note's overall revised-budget total for the full current-expense section is 272,082,640, not the simple sum 269,700,600, because the separate other-payments row carries a revised budget of 2,382,040 and actual zero. The authoritative total-row variance remains 36,628,947 as shown in section 14.1. Do not replace the official total with the subtotal arithmetic.
+
+The service-cost gross result also changed materially: revised-budget gross profit was 117,922,057, while actual gross result was a loss of 2,799,758 — an adverse movement of 120,721,815.
+
+The 1404 Note 38 narrative itself states that traditional budgeting rather than activity-based budgeting creates artificial deviations when costs are split between cost of services and distribution/administrative/general expenses. It says activity-based budgeting is expected to reduce this distortion. This is consistent with the large cost-of-service overrun and distribution/administrative underspend. It does not prove that every variance is only classification; the operational drivers still need separate validation.
+
+Other notable 1404 drivers documented in the note:
+- Depreciation of production factors: revised budget 36,440,000; actual 71,342,750; adverse variance 34,902,750. The narrative attributes the increase to assets transferred from the Gas Engineering and Development Company for the sixth national pipeline (BOT) and depreciation from the assets' commissioning date.
+- Legal-entity service contracts: revised budget 39,314,000; actual 72,323,422; adverse variance 33,009,422.
+- Future employee retirement obligations: actual 44,228,423 versus revised budget 18,524,000; adverse variance 25,704,423. The narrative attributes this to an updated actuarial estimate.
+- Other non-operating income/expense: revised budget +8,105,340 versus actual -9,057,668; adverse movement 17,163,008.
+- Other receipts: revised budget 12,500,000; actual zero.
+
+### 14.3 Note 39 — Resources and uses reconcile for all three years
+
+| Fiscal year | Revised-budget resources | Actual resources | Actual uses | Resource/uses tie |
+|---|---:|---:|---:|---|
+| 1402 | 65,000,000 | 47,443,159 | 47,443,159 | MATCH |
+| 1403 | 56,633,600 | 61,677,400 | 61,677,400 | MATCH |
+| 1404 | 117,000,000 | 71,738,067 | 71,738,067 | MATCH |
+
+Composition:
+- 1402 actual resources: depreciation reserve 47,443,159; actual capital investment 39,974,394 plus debt repayments 7,468,765 equals actual uses 47,443,159.
+- 1403 actual resources: depreciation reserve 54,138,598 plus other resources/receivables 7,538,802 equals 61,677,400; actual capital investment is 61,677,400 and debt repayment is zero.
+- 1404 actual resources: depreciation reserve 71,738,067 and other resources/receivables zero; actual capital investment 67,261,515 plus debt repayments 4,476,552 equals 71,738,067.
+
+1404 execution against revised budget:
+- Actual resources/uses 71,738,067 versus revised 117,000,000: shortfall 45,261,933 (38.69%).
+- Depreciation reserve 71,738,067 versus revised 64,000,000: 7,738,067 above budget (12.09%).
+- Other resources/receivables zero versus revised 53,000,000: 53,000,000 shortfall.
+- Capital investment 67,261,515 versus revised 97,000,000: 29,738,485 below budget (30.66%).
+- Debt repayments 4,476,552 versus revised 20,000,000: 15,523,448 below budget (77.62%).
+
+### 14.4 Quantitative operating targets
+
+| Measure | 1402 target / actual | 1403 target / actual | 1404 target / actual |
+|---|---:|---:|---:|
+| Coating replacement (km) | 43 / 20 (46.5%) | 60 / 56 (93.3%) | 22 / 17 (77.3%) |
+| Class change / pipe replacement (km) | 0 / 2 (ratio not meaningful; target zero) | 4 / 4 (100%) | 1 / 0.821 (82.1%) |
+| Intelligent pipeline pigging (km) | 566 / 504 (89.0%) | 1,915 / 1,406 (73.4%) | 1,100 / 807 (73.4%) |
+| Turbo-compressor repairs (units) | 217 / 188 (86.6%) | 75 / 70 (93.3%) | 75 / 54 (72.0%) |
+
+These are physical-output indicators, not financial statement amounts. They should not be combined with financial variances without considering project scope, commissioning, asset availability and approved work-program changes.
+
+### 14.5 Budget-note disclosure anomalies — separate from primary-statement errors
+
+**BUDGET-1403/1404-N36-37-APPROVED-01**
+- In 1403 Note 36-37, original-approved-budget cells G120 and G123 are stored as #REF!.
+- In 1404 Note 36-37, original-approved-budget cells G127 and G130 are stored as #REF!.
+- Revised-budget and actual columns (I/K in 1403; I/K in 1404) are populated and reconcile to the financial statements.
+- These errors do not change actual statement amounts or the revised-budget performance totals, but the original-approved-budget comparison is incomplete. They are not classified as zero-balance control-account errors.
+
+**BUDGET-1404-N39-UNIT-01**
+- Note 39 states that amounts are in million Rials.
+- In the 1404 workbook, original-budget cells E22:E32 contain raw Rial-scale values while revised-budget and actual cells F/G contain million-Rial values. Example: E22 = 7,771,200,000,000 while F22 = 7,771,200 and G22 = 4,537,751; E32 = 97,000,000,000,000 while F32 = 97,000,000 and G32 = 67,261,515.
+- The E-column cells use ordinary integer number formatting without a million-scale display adjustment. E35, by contrast, is 12,500,000, consistent with the million-Rial convention. The original-budget column is therefore mixed-unit, not simply a uniform Rial column.
+- E9 and E16 in the same original-budget column are #REF!. The revised-budget and actual resources/uses totals still tie at 71,738,067, but the original-budget comparison in Note 39 is not reliable as displayed.
+- Do not silently divide or repair the source values. Accounting/reporting owner must confirm whether the original-budget source values were entered in Rials and should be normalized for presentation.
+
+**BUDGET-ZERO-RATIO-01 — excluded from material issue count**
+- #DIV/0! occurs in percentage cells where the corresponding amount and budget denominator are both zero: 1402 Note 38 I38; 1403 Note 39 I38; 1404 Note 39 I38.
+- These are undefined zero/zero ratios only. No amount or total is affected; they are excluded from statement-impact exceptions under the owner-confirmed rule.
+
+### 14.6 Budget review conclusion and next action
+
+- Note 36/37 actual revenue, current expenses and profit/loss figures reconcile to the primary statements for all three years.
+- Note 39 actual resources and uses reconcile exactly for all three years.
+- The 1404 performance story is not a simple across-the-board overspend: cost of services is materially over budget while distribution/administrative expenses are materially under budget. The note's own narrative identifies traditional cost allocation as a source of artificial variance.
+- The original-approved-budget columns in 1403/1404 have #REF! gaps; the 1404 Note 39 original-budget column additionally mixes Rial-scale and million-Rial-scale values. These do not invalidate the primary statements or the actual/revised-budget tie-outs, but they do prevent full reliance on those original-budget comparisons.
+- Next action: obtain accounting/budget-owner disposition for BUDGET-1403/1404-N36-37-APPROVED-01 and BUDGET-1404-N39-UNIT-01. Do not edit official workbooks in this task.

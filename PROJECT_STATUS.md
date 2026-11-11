@@ -148,3 +148,15 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Reported closing equity is -38,949,540, exactly 43,241,509 higher; that is the same correction displayed in the opening section.
 - The reported closing amount is reproduced only when the pre-adjustment opening balance (-37,309,721) is used. The correction is shown in the opening section but not carried into closing.
 - This establishes an internal rollforward inconsistency. Accounting owner must decide the proper comparative presentation; official workbook remains unchanged.
+
+
+## 2026-11-11 — Budget Notes 36–39 reconciliation
+
+- Reconciled Notes 36/37 actual revenue, current expenses and profit/loss to the primary statements for 1402, 1403 and 1404.
+- Reconciled Note 39 actual resources to actual uses for all three years: 47,443,159; 61,677,400; and 71,738,067 million Rials respectively.
+- 1404 budget performance: revenue 13.98% below revised budget; current expenses 13.46% above; service cost 84.1% above; distribution/administrative/general expenses 53.9% below. Note 38 attributes artificial deviations partly to traditional, non-activity-based allocation.
+- New issue BUDGET-1403/1404-N36-37-APPROVED-01: #REF! in original-approved-budget cells (1403 G120/G123; 1404 G127/G130). Revised-budget and actual columns reconcile; original-budget comparison is incomplete.
+- New issue BUDGET-1404-N39-UNIT-01: original-budget column E22:E32 contains Rial-scale values while the table states million Rials and F/G columns are in million Rials; E35 is already in million-Rial scale; E9/E16 are #REF!. Actual/revised resources and uses still tie.
+- Zero/zero percentage cells #DIV/0! in 1402 Note 38 I38 and 1403/1404 Note 39 I38 are excluded: amount and denominator are both zero, with no effect on totals.
+- No canonical source workbook/PDF, ledger row, Mapping row, database, application code or financial value changed.
+- Accounting/budget owner disposition is required for the two original-budget disclosure issues. These are separate from primary-statement arithmetic and do not block continued review.

@@ -188,3 +188,14 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - The 1403 equity rollforward is internally inconsistent by exactly 43,241,509 million Rials: using its restated opening balance implies closing equity -82,191,049, while the reported closing is -38,949,540.
 - The reported closing amount is reproduced from the pre-adjustment opening balance, proving the displayed opening correction is not carried through.
 - Accounting owner must decide whether the opening adjustment is repeated or the comparative closing should be restated. No official workbook change is authorized.
+
+
+## 2026-11-11 — Budget Notes 36–39 reconciliation
+
+- Notes 36/37 actuals for 1402–1404 tie to primary statement revenue, expense and profit/loss values.
+- Note 39 actual resources equal actual uses in all years: 47,443,159 / 61,677,400 / 71,738,067 million Rials.
+- 1404 revenue is 13.98% below revised budget and current expenses are 13.46% above. Cost of services is 84.1% above revised budget while distribution/administrative/general expenses are 53.9% below; Note 38 identifies traditional allocation as a source of artificial variance.
+- BUDGET-1403/1404-N36-37-APPROVED-01: original-budget cells #REF! in 1403/1404; actual and revised columns remain reconcilable.
+- BUDGET-1404-N39-UNIT-01: 1404 Note 39 original-budget column E mixes Rial-scale and million-Rial values and has #REF! in E9/E16; actual/revised resource-use totals still tie.
+- Zero/zero ratio #DIV/0! cells are excluded because no amount or total is affected.
+- No canonical workbook/PDF or financial value modified. Accounting/budget-owner disposition required for original-budget disclosure anomalies.

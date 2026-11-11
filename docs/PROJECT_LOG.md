@@ -423,3 +423,16 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - The reported closing balance is reproduced exactly when the pre-adjustment opening balance -37,309,721 is used instead. The adjustment is therefore shown in the opening rollforward but not carried through the closing row.
 - This proves an internal equity-rollforward inconsistency; it does not prove which presentation the accounting owner should adopt. Do not modify the official workbook. FS-1403-EQ-01 remains REQUIRES_ACCOUNTING_OWNER_DISPOSITION.
 - No canonical source or financial value changed.
+
+
+## 2026-11-11 — Budget Notes 36–39 reconciliation
+
+- Actor: ChatGPT / Operational Coordinator; read-only budget-note review.
+- Extracted budget performance and resources/uses tables from official 1402, 1403 and 1404 statement workbooks.
+- Notes 36/37 actual revenue, current expenses and profit/loss reconcile to primary statement values for each year.
+- Note 39 actual resources equal actual uses in each year: 1402 47,443,159; 1403 61,677,400; 1404 71,738,067 million Rials.
+- 1404 revised-budget performance: revenue shortfall 38,042,622; current-expense overrun 36,628,947. Service cost overrun 112,342,201 is partly offset by distribution/administrative underspend 73,331,214. Note 38 itself describes distortion from traditional rather than activity-based budgeting.
+- New BUDGET-1403/1404-N36-37-APPROVED-01: original-approved-budget cells G120/G123 (1403) and G127/G130 (1404) are #REF!, while revised-budget and actual columns are populated.
+- New BUDGET-1404-N39-UNIT-01: 1404 Note 39 original-budget column mixes Rial-scale values and million-Rial values; E22=7,771,200,000,000 vs F22=7,771,200; E32=97,000,000,000,000 vs F32=97,000,000; E35=12,500,000 is already million-Rial scale. E9/E16 are #REF!. Revised/actual totals remain valid and equal.
+- Zero/zero percentage cells are excluded as non-impacting ratios; no amount is affected.
+- No canonical financial data or code changed. Accounting/budget owner disposition required before correcting the official disclosure.
