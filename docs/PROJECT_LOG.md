@@ -364,3 +364,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Acceptance: inventory / dependency graph only; no PR merged, closed, retargeted or deleted.
 - Remaining risks: V1 scope and supersession status of each branch chain not decided; commit/file overlap matrix not yet built.
 - Next action: classify each PR chain and create commit/file overlap matrix before selecting integration candidate.
+
+
+## 2026-11-11 — Open PR changed-file overlap matrix
+
+- Task / phase: Phase 0 — repository-wide changed-file inventory.
+- Artifact: `docs/OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md`.
+- Method: fetched changed filenames for all 55 open PRs via the GitHub connector's paginated PR-file listing.
+- Results: 427 changed-file entries; 221 unique paths; 64 shared paths; 1,048 PR-pair/path overlaps.
+- Most frequently shared paths: `docs/PROJECT_LOG.md` (45 PRs), `docs/handoff/LATEST_HANDOFF.md` (41), `PROJECT_STATUS.md` (31); implementation overlaps include the Windows five-statement files, `backend/src/aram_backend/main.py`, and `backend/pyproject.toml`.
+- Interpretation: path overlap only; stacked PRs must be compared against immediate base to determine semantic conflict or intentional continuation.
+- Acceptance: inventory only; no code, source data, branch or PR state modified.
+- Remaining risk: V1 scope and commit-level/semantic overlap review are open.
