@@ -445,3 +445,21 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Combined: 110 rows; 86 zero-balance and 24 non-zero; net exposure 196,907,918,801 Rials. Closing and statement-balance columns agree for these unmapped subsets.
 - Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population. Inspection of all 24 non-zero source rows shows their source-ledger Note IDs in column A consistently route six current-class combinations to Note 13 and the two capital-class combinations to Note 10; see report section 15.2/15.3.
 - Open item MAP-8161-01 created. No mapping workbook or ledger rows changed; no netting or exclusion approved. Accounting/budget owner disposition required before correcting the official disclosure.
+
+
+### 2026-11-11 — Account 8161 seven-rule Mapping proposal
+
+- Actor: ChatGPT / operational coordinator.
+- Task / phase: Phase 1 — account 8161 exception; prepare a controlled Mapping proposal.
+- Base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `docs/financial-statement-reconciliation-1402-1404-20261110`.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90).
+- Artifact: `docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md`.
+- Commit: `a135a91fc4be3b7ebd482dd20c3a66e14266b2a2`.
+- Direct workstation revalidation: mapping_1404.xlsx has 66 account-8161 rules; all seven candidate keys returned zero existing matches under the current wildcard convention.
+- Source hashes revalidated: source_1403 `747FAE7B8DE9866DFBB45CE3A983584A8AC832DEF59F2C65874302F0F87CBB22`; source_1404 `5B4790DCE6E9EA169D61C68751BC6FD5DC390012BC14473B0298BA5AAC30D044`; mapping_1404 `8B3F94389E61B76775E00B8BEC8B9E241F7CCE5097505C61199574855ADAE574`.
+- Source evidence: 24 non-zero rows across seven keys, all source note IDs consistent with Note 10 / 13; 1403 exposure 144,125,670,091 Rials; 1404 exposure 52,782,248,710 Rials; combined 196,907,918,801 Rials.
+- Tests: read-only workbook parsing and key comparison on Aram Windows host; no application tests run.
+- Protected boundary: no source ledger, official Mapping workbook, official financial statement workbook, PDF, database or application code modified.
+- Acceptance: proposal only; not approved / not applied. Accounting-owner approval, derived-copy test, exact count reconciliation and independent review pending.
+- Next action: create a separate derived Mapping candidate, apply only after approval, rerun matching and verify all 24 rows and 86 zero-balance rows remain traceable.
