@@ -591,3 +591,13 @@ A direct side-by-side inspection of the official 1402 and 1403 equity statements
 The 1403 Note 23 section is also duplicated: sheet 29 contains Note 23 corrections/reclassifications (including Note 23-1-1 actuarial adjustment disclosure); sheet 30 separately prints Note 23 non-cash transactions. The equity statement's generic Note 23 reference is ambiguous and should be made specific to the relevant subnote after owner approval.
 
 See [FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md](FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md) for cell-level evidence, exact workbook hashes, recommended disposition and acceptance checklist. Official financial workbooks remain unchanged.
+
+
+### 15.8 Auditor-report visual extraction status — 2026-11-11
+
+- `auditor_1402.pdf`: 48 pages. The reader rendered the first five pages as page images; the text layer is empty. The visible opinion page uses fair-presentation wording and contains a separate emphasis-of-matter section concerning the consequences of legal claims. No modified-opinion wording was visible in the inspected opening pages.
+- `auditor_1404.pdf`: 47 pages. The reader rendered the first five pages as page images; the text layer is empty. The visible opinion page uses fair-presentation wording and contains a separate emphasis-of-matter section concerning the consequences of legal claims. No modified-opinion wording was visible in the inspected opening pages.
+- `auditor_1403.pdf`: the local reader failed with `Cannot read properties of undefined (reading 'toLowerCase')`; no page content was returned.
+- Windows OCR reports only the English recognizer is installed; Persian OCR is not available through the local Windows OCR API. No unsupported translation or opinion inference has been made.
+
+This is an opening-pages visual review only, not a full-page report review. Complete auditor opinion / all-matters classification remains NOT_VERIFIED, especially for 1403. No PDF was modified.
