@@ -44,18 +44,19 @@
 | Inventory six local Windows worktrees | DONE_EVIDENCED | Six worktrees, branch names, HEAD SHAs and dirty states recorded |
 | Preserve dirty / untracked files | DONE_EVIDENCED | 62 files copied to local snapshot; 62/62 SHA-256 comparisons passed |
 | Classify duplicate and conflicting paths | DONE_EVIDENCED | 10 overlapping paths; 3 identical-content groups and 7 content-conflict groups documented |
+| Complete file-level disposition for all snapshot entries | DONE_EVIDENCED | 62/62 current source files exist and still match snapshot SHA-256; every entry has a disposition and rationale in [file-level register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md) |
 | Resolve all substantive conflicts | PARTIAL | Reviewer-preservation, dependency and Alembic metadata conflicts identified; no integration merge performed |
 | Reconcile status, log and handoff to live remote state | PARTIAL | Status / handoff records have historical inconsistencies; current PR metadata re-fetched, but durable docs still need full reconciliation |
 | Select and validate one integration candidate | NOT_STARTED | Requires reviewed file ownership and exact-base integration plan |
 
 **Remaining to close Phase 0**
-1. Complete per-file disposition for all 62 snapshot entries.
+1. Independently review the 62 file dispositions and confirm the proposed retain / hold / exclude decisions.
 2. Resolve substantive conflicts with tests and explicit architecture decisions.
 3. Select one integration branch based on the accepted baseline.
 4. Reconcile all control documents and exact PR / CI heads.
 5. Obtain independent review and record the accepted baseline transition.
 
-**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
+**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), [62-entry file-level disposition register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
 
 ## 3. Phase 1 — Financial exception closure
 
@@ -269,3 +270,14 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - No phase accepted as a whole.
 - Production / release decision: NO-GO.
 - Next review trigger: after Phase 0 ownership matrix completion and accounting-owner disposition of MAP-8161-01 / FS-1403-EQ-01.
+
+
+### 2026-11-11 — File-level snapshot and source revalidation
+
+- Re-read the local manifest and recalculated SHA-256 for all 62 current source files against the snapshot manifest.
+- Result: 62/62 snapshot copies verified; 62/62 current source files exist and remain byte-identical to the snapshot; zero changed and zero missing source files.
+- Created a disposition and rationale for every manifest entry.
+- Counts: 10 generated artifacts excluded for regeneration; 3 pyproject dependency conflicts; 3 Mapping workflow conflicts; 3 Mapping regression-test entries; 2 Alembic env conflicts; 1 initial migration baseline review; 5 identity-gated files; 15 candidate tests/tools; 7 implementation candidates; 11 evidence/control docs; 1 CI workflow; 1 backend README.
+- Added [ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md).
+- This is a file-level proposal, not authorization to merge, copy, delete, reset or clean any worktree. Independent review and conflict resolution remain open.
+- Phase 0 estimate remains 65%; no percentage increase is claimed from inventory alone.
