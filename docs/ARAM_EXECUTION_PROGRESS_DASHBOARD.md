@@ -66,7 +66,8 @@
 |---|---|---|
 | FY1402–FY1404 arithmetic / cross-statement checks | PARTIAL | 69 read-only checks reported PASS; not a transaction-level GL reconciliation or signed finance acceptance |
 | Account 8161 unmapped-row analysis | PARTIAL | 110 rows identified: 86 zero-balance and 24 non-zero; 7 missing Mapping keys identified |
-| Verify all 24 non-zero rows and seven keys | PARTIAL | Direct workstation revalidation found 66 existing account-8161 rules and zero matches for all seven candidate keys; source note IDs support Notes 10/13; proposal documented, but dry-run / owner approval still required |
+| Verify all 24 non-zero rows and seven keys | PARTIAL | Direct workstation revalidation found 66 existing account-8161 rules and zero matches for all seven candidate keys; source note IDs support Notes 10/13; proposal and in-memory dry-run completed; accounting approval remains open |
+| Simulate seven-rule Mapping outcome | DONE_EVIDENCED | In-memory simulation reproduced baseline (61 / 49 unmatched); proposed result: 75 new matches, 24 non-zero, 35 remaining unmatched all zero-balance, zero ambiguity; exposure ties exactly |
 | FY1403 equity rollforward difference | BLOCKED_ON_OWNER | Reported difference IRR 43,241,509 million Rial; accounting owner must decide treatment |
 | Note / sub-note reference reconciliation | PARTIAL | Issues identified; owner-approved final references not recorded |
 | Budget source errors and unit consistency | BLOCKED_ON_OWNER | #REF! and mixed Rial / million-Rial presentation require budget-owner source decision |
@@ -75,9 +76,10 @@
 
 **Remaining to close Phase 1**
 - Obtain accounting-owner disposition of the seven-key proposal in [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md).
-- Run a controlled dry-run / derived-copy validation after approval; prove exactly-one mapping for every candidate key and reconcile the 24 non-zero rows and 196,907,918,801 Rial exposure.
+- Obtain accounting-owner disposition and independent review of the proposal and dry-run evidence.
+- Only after approval, create a persistent derived Mapping copy; rerun exact workbook formulas / matcher and verify counts and source hashes.
 - Preserve all 86 zero-balance rows and verify unmatched / ambiguous / deterministic counts.
-- Obtain accounting-owner approval before changing official mappings.
+- Never change the official Mapping workbook without the recorded approval and independent review.
 - Resolve equity, note references, budget units and #REF! source cells with named owners.
 - Inspect every auditor report page; record opinion, emphasis and other-matter paragraphs.
 - Re-run year-separated reconciliations from hashed source inputs and obtain signed finance acceptance.
@@ -292,3 +294,14 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - No official workbook, ledger or Mapping data was changed. The proposal is not approved or applied.
 - Phase 1 estimate remains 25%; proposal preparation and source verification do not close the exception or replace accounting-owner approval.
 - Next gate: dry-run / derived-copy validation after approval, followed by exact count and exposure reconciliation.
+
+
+### 2026-11-11 — Account 8161 in-memory dry-run completed
+
+- Simulated the seven proposed rules against all 17,075 account-8161 rows (1403 and 1404) using the current matching dimensions and wildcard behavior.
+- Baseline reproduced: 1403 61 unmatched; 1404 49 unmatched; no ambiguous matches.
+- Simulated result: 75 new unique mappings (24 non-zero and 51 zero-balance), 35 remaining unmatched rows (all zero-balance), and zero ambiguous matches.
+- Exposure ties exactly: 1403 +144,125,670,091 Rials; 1404 +52,782,248,710 Rials; combined +196,907,918,801 Rials.
+- Simulation was in memory only; no derived workbook was saved and no official data changed.
+- Phase 1 remains 25%; this is technical proposal evidence, not accounting approval or closure.
+- Next gate: accounting-owner disposition and independent review before any persistent derived Mapping candidate.
