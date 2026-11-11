@@ -60,7 +60,8 @@
 | 20 | مالیات پرداختنی | 28 |
 | 21 | سود سهام پرداختنی / پیش‌دریافت‌ها | 29 |
 | 22 | نقد حاصل از عملیات | 29 |
-| 23 | اصلاح اشتباهات و تجدید طبقه‌بندی / معاملات غیرنقدی | 29, 30 |
+| 23 (section A; subnotes 23-1, 23-2, 23-3) | اصلاح اشتباهات و تجدید طبقه‌بندی | 29 |
+| 23 (duplicate section B) | معاملات غیرنقدی | 30 |
 | 24 | مدیریت سرمایه و ریسک‌های مالی | 30–32 |
 | 25 | وضعیت ارزی | 32 |
 | 26 | معاملات با اشخاص وابسته | 33, 34 |
@@ -99,4 +100,5 @@
 4. Note 39 is absent in 1402 and present in 1403/1404.
 5. Physical sheets 30–35 are not logical Notes 30–35. Their contents are year-dependent and include Notes 24–30.
 6. In 1403/1404, the Statement of Financial Position still carries several older note references (17–22) that do not match the later note-page headings. Preserve both references; do not auto-correct source files.
+7. In 1403, the printed top-level Note 23 number is duplicated: section A (corrections/reclassifications, with subnotes 23-1 to 23-3) is on physical sheet 29, while section B (non-cash transactions) is on physical sheet 30. A generic reference to Note 23 is ambiguous; preserve the exact subnote / section identity.
 7. The ingestion key must be (fiscal_year, logical_note_number, physical_sheet, subnote) plus the originating statement cell/reference. Never use the physical sheet name as the logical note number.
