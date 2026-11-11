@@ -601,3 +601,12 @@ See [FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md](FS_1403_EQUIT
 - Windows OCR reports only the English recognizer is installed; Persian OCR is not available through the local Windows OCR API. No unsupported translation or opinion inference has been made.
 
 This is an opening-pages visual review only, not a full-page report review. Complete auditor opinion / all-matters classification remains NOT_VERIFIED, especially for 1403. No PDF was modified.
+
+
+### 15.9 Budget #REF! and Note 39 unit validation — 2026-11-11
+
+Direct read-only inspection confirmed all six identified #REF! cells are stored Excel error values (`data_type = e`) in both formula-mode and data-only reads; they are not intact formulas that can be refreshed. The affected cells are 1403 sheet 36-37 G120/G123; 1404 sheet 36-37 G127/G130; and 1404 sheet 39 E9/E16. Rebuilding these values requires an authoritative original-approved-budget workbook or signed calculation schedule.
+
+The 1404 Note 39 original-budget column E has a confirmed unit-scale inconsistency in rows E22:E32: every non-zero value is exactly 1,000,000 times the corresponding revised-budget F value, while the printed table unit is million Rials. The 1403 Note 39 comparator has E22:E32 and F22:F32 in the same million-Rial scale. E35 is 12,500,000 in both years and is not part of the 1,000,000 scale anomaly; retain it separately pending source verification. A mechanical conversion scenario for E22:E32 would make original-budget uses 97,012,500 million Rials, but this is not an approved correction and must not be applied without the original budget source.
+
+See [BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md](BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md) for cell-level values, ratios, hashes and acceptance steps. No source workbook was modified.
