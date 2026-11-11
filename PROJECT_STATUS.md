@@ -169,3 +169,11 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Zero/zero percentage cells #DIV/0! in 1402 Note 38 I38 and 1403/1404 Note 39 I38 are excluded: amount and denominator are both zero, with no effect on totals.
 - No canonical source workbook/PDF, ledger row, Mapping row, database, application code or financial value changed.
 - Accounting/budget owner disposition is required for the two original-budget disclosure issues. These are separate from primary-statement arithmetic and do not block continued review.
+
+
+## 2026-11-11 — Account 8161 seven-rule proposal
+
+- Revalidated source_1403.xlsx, source_1404.xlsx and mapping_1404.xlsx on the Aram workstation; SHA-256 values match the recorded source baseline.
+- Confirmed 66 existing account-8161 Mapping rows; the seven proposed keys have zero existing matches under the workbook's account/T1/current-capital/T4/type wildcard matching convention.
+- Added [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md) with proposed note 10 / 13 routing, key-level exposure, helper-key formulas and acceptance tests.
+- All source workbooks remain unchanged. The proposal is not approved or applied; MAP-8161-01 remains open pending accounting-owner approval, derived-copy test and independent review.
