@@ -87,3 +87,85 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - [Master recovery prompt](docs/handoff/MASTER_RECOVERY_PROMPT.md)
 - [Latest handoff snapshot](docs/handoff/LATEST_HANDOFF.md)
 - [Saveable ChatGPT bootstrap prompt](docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt)
+
+
+## 2026-11-11 — Execution progress dashboard established
+
+- Added [Aram Execution Progress Dashboard](docs/ARAM_EXECUTION_PROGRESS_DASHBOARD.md) on control branch `docs/aram-master-control-plan-20261111`.
+- The dashboard decomposes all eight roadmap phases into work items, evidence states, blockers, exit criteria and ordered next actions.
+- Initial estimates: Phase 0 65%; Phase 1 25%; Phase 2 30%; Phase 3 25%; Phase 4 10%; Phase 5 30%; Phase 6 10%; Phase 7 5%; unweighted portfolio indicator 25%.
+- Percentages are explicitly engineering estimates, not acceptance, production-readiness, or release claims.
+- No phase is accepted as a whole. Production / release remains NO-GO.
+- The master control plan now designates the dashboard as the single operational progress register; the master plan remains the governing policy and acceptance document.
+- Dashboard update rules require evidence URL / SHA, reason for every percentage change, remaining acceptance criteria, and append-only progress history.
+
+
+### 2026-11-11 — Phase 0 file-level disposition
+
+- Added `docs/ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md` with a disposition and rationale for all 62 snapshot entries.
+- Revalidated all 62 current source files against the snapshot manifest: 62 match, zero changed, zero missing.
+- No source worktree was modified, merged, reset, cleaned or deleted.
+- Phase 0 remains 65%; independent review and conflict resolution remain open.
+
+
+### 2026-11-11 — Account 8161 in-memory dry-run
+
+- Seven-rule proposal simulated across all 17,075 account-8161 rows.
+- 75 new unique matches (24 non-zero / 51 zero-balance); 35 remaining unmatched rows, all zero-balance; no ambiguity.
+- New mapped exposure ties to 196,907,918,801 Rials.
+- No workbook saved; official Mapping and ledger files unchanged.
+- Phase 1 remains 25%; owner approval and independent review are outstanding.
+
+
+### 2026-11-11 — Phase 1 evidence refinement
+
+- Account 8161: seven-rule proposal simulated; 75 new matches, 24 non-zero rows, 35 remaining unmatched all zero-balance, no ambiguity. Awaiting accounting-owner approval.
+- FS-1403-EQ-01: same 43,241,509 million Rial adjustment already appears in the 1402 equity statement; 1403 comparative opening appears to repeat it. Likely correction is duplicate opening-row presentation; approved journal/TB confirmation required.
+- 1403 Note 23 duplicated across corrections/reclassifications on sheet 29 and non-cash transactions on sheet 30. Catalog and matrix updated.
+- Auditor 1402/1404 first five pages visually reviewed; full report review remains open. 1403 extraction failed.
+- No official source workbook or PDF changed.
+
+
+### 2026-11-11 — Budget source integrity findings
+
+- 1404 Note39 E22:E32 are exactly 1,000,000x revised-budget F values; printed unit is million Rials. 1403 comparator is in million-Rial scale.
+- E35 is 12,500,000 in both years and is not part of the unit-scale anomaly.
+- Six #REF! cells are stored Excel error values, not intact formulas.
+- Approved original-budget source is absent; no correction applied.
+- Evidence: [budget validation memo](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md).
+
+
+## 2026-11-11 — Open PR backlog discovered
+
+- Live GitHub API inventory: 55 open PRs, all Draft.
+- 13 PRs directly target `source-data-cleanup`; 42 are stacked on another PR head. All 42 stacked base refs matched a parent PR head.
+- Added [open PR inventory](docs/OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md) and [dependency graph](docs/OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md).
+- Phase 0 estimate revised 65% -> 55% because the integration backlog was materially understated; overall unweighted estimate revised 25% -> 24%. Other phase estimates unchanged.
+- No PR merged, closed, retargeted or deleted. No code or canonical financial data changed.
+
+
+## 2026-11-11 — PR file overlap matrix
+
+- Retrieved changed filenames for all 55 open PRs.
+- 427 changed-file entries; 221 unique paths; 64 shared paths; 1,048 PR-pair/path overlaps.
+- Top shared paths: PROJECT_LOG.md (45 PRs), LATEST_HANDOFF.md (41), PROJECT_STATUS.md (31), plus Windows five-statement implementation, backend main.py and pyproject.toml.
+- Added [open PR file overlap matrix](docs/OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md).
+- These are path overlaps, not proven semantic conflicts; immediate-base patch review is still required.
+- No code, source data, PR or branch state changed.
+
+
+## 2026-11-11 — V1 PR-family disposition proposal
+
+- Grouped the 55 open Draft PRs into 13 parent-rooted families.
+- Added [V1 scope disposition proposal](docs/OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md) with keep / hold / no-go / likely-superseded / owner-decision-required recommendations.
+- No PR state changed. This proposal is not an approval to merge or close any branch.
+- Phase 0 remains 55%; owner decisions and semantic patch review remain outstanding.
+
+
+## 2026-11-11 — Fiscal-year safety review
+
+- Reviewed PR #32 (110 tests) and child PR #35 (132 tests), exact-head GitHub Actions successful.
+- No GitHub review submissions on either PR.
+- PR #35 closes same-flush and clean-reference ORM gaps; raw/bulk SQL and concurrent writes remain outside the guarantee.
+- No DB-level constraints/triggers or provider-level race proof. Production fiscal-year integrity remains NO-GO.
+- Added [PR32/35 safety review](docs/PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md).

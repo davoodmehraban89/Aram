@@ -278,3 +278,123 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+## 2026-11-11 — Eight-phase execution dashboard established
+
+- Actor: ChatGPT / operational coordinator.
+- Task: create durable evidence-based progress dashboard for Phases 0–7.
+- Base branch: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `docs/aram-master-control-plan-20261111`.
+- PR: Draft [#91](https://github.com/davoodmehraban89/Aram/pull/91).
+- Dashboard file: `docs/ARAM_EXECUTION_PROGRESS_DASHBOARD.md`.
+- Dashboard creation commit: `8891c614001eb5090363bf6f77be530f0edfa1f8`.
+- Related control files: `docs/ARAM_MASTER_CONTROL_PLAN.md`, `PROJECT_STATUS.md`, `docs/PROJECT_LOG.md`, `docs/handoff/LATEST_HANDOFF.md`.
+- Initial estimates: P0 65%, P1 25%, P2 30%, P3 25%, P4 10%, P5 30%, P6 10%, P7 5%; simple unweighted mean 25%.
+- Method: task-level evidence states, explicit phase exit criteria, blockers, dependency path and ordered next actions. Estimates are not acceptance or production-readiness claims.
+- Tests / CI: documentation-only changes; no application test claim made for this dashboard commit. Exact-head CI status must be checked if the workflow is triggered.
+- Artifacts / release: none.
+- Acceptance: documentation candidate only; PR #91 remains Draft / open; no merge.
+- Reviewer: independent review pending.
+- Remaining risks: dashboard estimates are initial baselines; accounting, security, operational and phase acceptance evidence remains incomplete.
+- Next action: review dashboard arithmetic / evidence against current remote state, update the PR description, and maintain dashboard after every material phase event.
+
+
+## 2026-11-11 — File-level worktree disposition completed
+
+- Actor: ChatGPT / operational coordinator.
+- Task / phase: Phase 0 — file-level ownership and disposition.
+- Base branch: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `docs/aram-master-control-plan-20261111`.
+- PR: Draft [#91](https://github.com/davoodmehraban89/Aram/pull/91).
+- Artifact: `docs/ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md`.
+- Local evidence: `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935\FILE_LEVEL_DISPOSITION_20261111.csv`.
+- Exact result: 62/62 snapshot hashes match; 62/62 current source files exist and match the manifest; zero changed and zero missing.
+- Disposition counts: generated artifacts exclude/rebuild 10; runtime dependency conflicts 3; Mapping workflow conflicts 3; Mapping regression test entries 3; Alembic env conflicts 2; initial migration review 1; identity-gated files 5; candidate tests/tools 15; implementation candidates 7; evidence/control docs 11; CI workflow 1; backend README 1.
+- Tests / CI: SHA-256 source-to-manifest verification completed on the Aram Windows host. No application tests were run; this is a documentation / inventory task.
+- Acceptance: disposition register prepared; independent review pending. No integration, merge, copy, reset, clean or deletion performed.
+- Reviewer: independent review pending.
+- Remaining risks: classifications are proposed; architecture and conflict decisions remain open.
+- Phase estimate: unchanged at 65%; no completion credit claimed solely for inventory.
+- Next action: independently review dispositions, then resolve reviewer-preservation, dependency and migration conflicts.
+
+
+## 2026-11-11 — Account 8161 in-memory dry-run
+
+- Actor: ChatGPT / operational coordinator.
+- Task: simulate seven proposed account-8161 Mapping rules.
+- Working branch: `docs/aram-master-control-plan-20261111`; Draft PR #91.
+- Evidence artifact: [MAP-8161 proposal and simulation](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md).
+- Scope: 17,075 account-8161 rows across 1403 and 1404; current 66 rules plus seven in-memory candidates.
+- Baseline reproduced: 61 unmatched (1403), 49 unmatched (1404), no ambiguity.
+- Simulated: 75 new matches (24 non-zero, 51 zero-balance), 35 remaining unmatched (all zero-balance), no ambiguity; new exposure 196,907,918,801 Rials.
+- Protected boundary: in-memory only; no persistent workbook or official source changed.
+- Acceptance: technical evidence only; accounting-owner approval and independent review pending.
+
+
+## 2026-11-11 — Phase 1 equity and audit evidence refinement
+
+- Task: compare official 1402/1403 equity statements and refine auditor PDF review status.
+- Evidence: Draft PR #90, `docs/FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md`, updated note catalog and note-to-sheet matrix.
+- Finding: 43,241,509 million Rial adjustment is the same 33,467,967 + 9,773,542 already reflected in the 1402 equity statement. The 1403 comparative opening appears to repeat it; likely duplicate row rather than a closing equity error. Owner approval pending.
+- Finding: 1403 workbook duplicates top-level Note 23 (corrections/reclassifications on sheet29; non-cash transactions on sheet30).
+- Audit PDFs: 1402 48 pages and 1404 47 pages; first five pages of each visually inspected. Visible fair-presentation wording and separate litigation emphasis sections. 1403 reader extraction failed; full report review not complete.
+- Protected boundary: read-only inspection; no official source workbook/PDF modified.
+- Phase 1 percentage remains 25%; more precise evidence is not equivalent to approved closure.
+
+
+## 2026-11-11 — Budget source integrity findings
+
+- Task: validate budget Note39 unit anomaly and #REF! cell lineage.
+- Artifact: `docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md` on Draft PR #90.
+- 1404 E22:E32 are exactly 1,000,000 times F22:F32; 1403 comparator values are in million-Rial scale.
+- E35 = 12,500,000 in both years; not part of the scale anomaly.
+- Six #REF! cells are stored error values (type e), not formulas.
+- Approved original-budget source not found in inspected project data; no repair or source edit performed.
+- Phase 1 remains 25%; owner source / decision pending.
+
+
+## 2026-11-11 — Live open PR dependency inventory
+
+- Task / phase: Phase 0 — repository-wide PR backlog and dependency control.
+- Source: live GitHub API, `state=open`, `per_page=100`; all-state PR metadata used to match parent heads.
+- Artifacts: `docs/OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md` and `docs/OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md`.
+- Results: 55 open PRs; 55 Draft; 13 directly target accepted baseline; 42 are stacked; all 42 child base branches match a parent PR head; zero unmatched bases.
+- Phase 0 estimate revised from 65% to 55% because the initial denominator omitted the 55-PR backlog. Overall estimate revised from 25% to 24% (190/8 = 23.75%). Other phases unchanged.
+- Acceptance: inventory / dependency graph only; no PR merged, closed, retargeted or deleted.
+- Remaining risks: V1 scope and supersession status of each branch chain not decided; commit/file overlap matrix not yet built.
+- Next action: classify each PR chain and create commit/file overlap matrix before selecting integration candidate.
+
+
+## 2026-11-11 — Open PR changed-file overlap matrix
+
+- Task / phase: Phase 0 — repository-wide changed-file inventory.
+- Artifact: `docs/OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md`.
+- Method: fetched changed filenames for all 55 open PRs via the GitHub connector's paginated PR-file listing.
+- Results: 427 changed-file entries; 221 unique paths; 64 shared paths; 1,048 PR-pair/path overlaps.
+- Most frequently shared paths: `docs/PROJECT_LOG.md` (45 PRs), `docs/handoff/LATEST_HANDOFF.md` (41), `PROJECT_STATUS.md` (31); implementation overlaps include the Windows five-statement files, `backend/src/aram_backend/main.py`, and `backend/pyproject.toml`.
+- Interpretation: path overlap only; stacked PRs must be compared against immediate base to determine semantic conflict or intentional continuation.
+- Acceptance: inventory only; no code, source data, branch or PR state modified.
+- Remaining risk: V1 scope and commit-level/semantic overlap review are open.
+
+
+## 2026-11-11 — V1 scope disposition proposal
+
+- Task: classify the 55 open Draft PRs into parent-rooted workstream families.
+- Artifact: `docs/OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md`.
+- Families: 13; largest are Gate 3 Mapping (#26 family, 17 PRs), read-only Mapping / five-statement / Windows (#60 family, 22 PRs), fiscal-year safety (#32 family, 3 PRs), and Gate 3 / security NO-GO (#82 family, 4 PRs).
+- Recommendations: keep candidates, hold dependency chains, preserve explicit NO-GO family, identify likely superseded docs and require owner decisions for governance / architecture.
+- Acceptance: proposal only. No PR merged, closed, retargeted or deleted.
+- Next action: obtain owner / reviewer decisions and then perform semantic commit/file review before integration.
+
+
+## 2026-11-11 — PR #32 / #35 fiscal-year safety review
+
+- Task / phase: Phase 2 / cross-cutting financial integrity — inspect fiscal-year ownership dependency family.
+- Artifacts: [PR32/35 safety review](docs/PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md); Draft PR #91.
+- PR #32 head `28d1c57882ec20fc17c2c133bbe62ff56e12973f`: exact-head CI success, 110 tests.
+- PR #35 child head `e09aa43d22eb56eca4ceb6c41519abe1c6f571f8`: exact-head CI success, 132 tests.
+- Reviews: zero submitted reviews on both PRs.
+- PR #35 closes same-flush approval/company mutation and clean-reference parent move gaps.
+- Residuals: ORM-only; raw/bulk SQL and concurrent transactions bypass / race outside guarantee; no DB-level constraints or provider-level race tests.
+- Acceptance: retain as P0 candidate; not production-ready. No PR state changed.

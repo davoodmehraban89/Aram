@@ -108,3 +108,84 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+
+## 2026-11-11 — Eight-phase progress dashboard handoff
+
+- Operational progress register: `docs/ARAM_EXECUTION_PROGRESS_DASHBOARD.md`.
+- Governing policy and phase acceptance rules: `docs/ARAM_MASTER_CONTROL_PLAN.md`.
+- Dashboard was added on control branch `docs/aram-master-control-plan-20261111`, commit `8891c614001eb5090363bf6f77be530f0edfa1f8`.
+- Draft PR #91 remains open; this is not merged into accepted baseline.
+- Initial estimates: Phase 0 65%, Phase 1 25%, Phase 2 30%, Phase 3 25%, Phase 4 10%, Phase 5 30%, Phase 6 10%, Phase 7 5%; unweighted mean 25%.
+- Percentages are estimates from available evidence. No phase is fully accepted; production / release remains NO-GO.
+- Dashboard records work-item evidence states, remaining work, blockers, exit criteria and immediate priorities. Any future percentage change must cite the exact evidence URL / SHA and preserve progress history.
+- Next action: independent review of dashboard and control-plan updates on PR #91; then keep the dashboard current as financial, mapping, security and operational gates progress.
+
+
+## 2026-11-11 — File-level worktree disposition
+
+- Detailed register: `docs/ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md`.
+- All 62 current source files still exist and match the snapshot manifest SHA-256; no post-snapshot source changes detected.
+- All 62 entries have a proposed disposition and rationale.
+- This does not authorize integration. Keep original worktrees and snapshot untouched.
+- Phase 0 remains 65%; next task is independent disposition review and resolution of the Mapping / dependency / migration conflicts.
+
+
+## 2026-11-11 — Account 8161 dry-run update
+
+- The seven-rule proposal now has an in-memory simulation across 17,075 account-8161 rows.
+- It predicts 75 new unique matches (24 non-zero, 51 zero-balance), 35 remaining unmatched rows all zero-balance, and no ambiguity.
+- Simulated exposure ties exactly to 196,907,918,801 Rials.
+- No workbook was saved; official Mapping and ledgers remain unchanged.
+- Accounting-owner approval and independent review remain required before persistent changes.
+
+
+## 2026-11-11 — Latest Phase 1 handoff
+
+- Account 8161: read the seven-rule proposal and in-memory simulation in Draft PR #90; no official Mapping workbook changed.
+- 1403 equity: likely duplicated prior-period adjustment; read `FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md` and obtain owner confirmation of original journals / approved trial balances.
+- 1403 Note 23 is duplicated across sheet29 and sheet30; note catalog and matrix distinguish both sections.
+- 1402/1404 auditor opening pages reviewed; full report review incomplete; 1403 PDF extraction failed.
+- No source financial workbook/PDF modified.
+
+
+## 2026-11-11 — Budget source integrity handoff
+
+- Read `docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md`.
+- Do not repair #REF! cells or convert E22:E32 without the approved original budget source.
+- E22:E32 in 1404 are exactly 1,000,000x corresponding revised-budget F values; E35 is not part of the anomaly.
+- All source financial workbooks remain unchanged.
+
+
+## 2026-11-11 — Open PR backlog handoff
+
+- 55 open PRs exist; all are Draft.
+- 13 target `source-data-cleanup` directly; 42 are stacked on another PR head. See `docs/OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md` and `docs/OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md`.
+- Do not merge children before reviewing parents. Do not mass-close or retarget branches.
+- Phase 0 estimate is now 55% (revised from 65% due expanded scope); overall unweighted estimate is 24%. Other phase estimates unchanged.
+- Next Phase 0 task: V1 scope classification and commit/file overlap matrix for the 55 PRs.
+
+
+## 2026-11-11 — Open PR file overlap handoff
+
+- Full changed-file inventory: `docs/OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md`.
+- 55 open PRs; 427 changed-file entries; 221 unique paths; 64 shared paths; 1,048 PR-pair/path overlaps.
+- Control docs are heavily shared across draft PRs; compare each stacked PR against its immediate base before merging or cherry-picking.
+- Phase 0 remains 55%; V1 scope classification and semantic/commit-level review remain the next gates.
+
+
+## 2026-11-11 — V1 PR-family disposition handoff
+
+- Review `docs/OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md` before any PR state change.
+- 55 open Draft PRs are grouped into 13 dependency families.
+- The #26 Gate3 Mapping chain and #60 five-statement / Windows chain must be treated as whole dependency families; #82/#88/#89/#92 remain NO-GO.
+- No PR was merged or closed. Owner / independent reviewer disposition is pending.
+
+
+## 2026-11-11 — Fiscal-year safety handoff
+
+- Read `docs/PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md` before any merge.
+- PR #35 is the child candidate that adds same-flush and clean-reference protections to PR #32.
+- Exact-head CI: 110 / 132 tests passed; no GitHub reviews submitted.
+- ORM-only boundary remains: raw/bulk SQL and concurrency are not protected; DB-level constraints/triggers and provider race tests remain.
+- Keep the family P0 / NO-GO for production until residual gates and independent reviews pass.
