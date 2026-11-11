@@ -386,3 +386,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recommendations: keep candidates, hold dependency chains, preserve explicit NO-GO family, identify likely superseded docs and require owner decisions for governance / architecture.
 - Acceptance: proposal only. No PR merged, closed, retargeted or deleted.
 - Next action: obtain owner / reviewer decisions and then perform semantic commit/file review before integration.
+
+
+## 2026-11-11 — PR #32 / #35 fiscal-year safety review
+
+- Task / phase: Phase 2 / cross-cutting financial integrity — inspect fiscal-year ownership dependency family.
+- Artifacts: [PR32/35 safety review](docs/PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md); Draft PR #91.
+- PR #32 head `28d1c57882ec20fc17c2c133bbe62ff56e12973f`: exact-head CI success, 110 tests.
+- PR #35 child head `e09aa43d22eb56eca4ceb6c41519abe1c6f571f8`: exact-head CI success, 132 tests.
+- Reviews: zero submitted reviews on both PRs.
+- PR #35 closes same-flush approval/company mutation and clean-reference parent move gaps.
+- Residuals: ORM-only; raw/bulk SQL and concurrent transactions bypass / race outside guarantee; no DB-level constraints or provider-level race tests.
+- Acceptance: retain as P0 candidate; not production-ready. No PR state changed.
