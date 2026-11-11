@@ -11,7 +11,7 @@
 - 3 additional cross-statement cash checks passed: each year's cash-flow closing balance equals the cash balance in the corresponding Statement of Financial Position.
 - The restated 1403 comparative figures presented in the 1404 statements reconcile to Note 22.
 - Note-page amount tie-outs now cover the primary Income Statement and Statement of Financial Position lines for all three years (1402–1404), with narrative-only disclosures and year-specific note-reference drift explicitly identified.
-- One equity rollforward presentation inconsistency remains in the 1403 workbook: the opening balance appears to repeat a 43,241,509 million Rial prior-period correction already reflected in the 1402 closing balance, while the 1402 closing row does not carry that repeated adjustment through.
+- The 1403 equity rollforward's 43,241,509 million Rial opening adjustment is now traced to the same two prior-period actuarial corrections already reflected in the 1402 statements (33,467,967 + 9,773,542). The 1403 comparative rollforward appears to repeat them; accounting-owner confirmation remains required. The 1403 workbook also duplicates top-level Note 23 numbering across corrections (sheet 29) and non-cash transactions (sheet 30).
 - The 1404 exchange-rate effect of 12,556 million Rials mathematically reconciles the cash-flow closing balance and is explicitly discussed in Note 9-3, which cites NIGC letter No. 1830 dated 1405/01/16. The prior claim that no note cross-reference existed is withdrawn; a separate rate-calculation schedule was not independently reproduced.
 - A one-million-Rial difference exists between 1403 current and 1404 comparative operating and investing cash-flow lines; the differences offset and do not affect net cash movement or closing cash.
 
@@ -130,7 +130,7 @@ Reperformance of the 1402 movement inside the 1403 equity statement makes the in
 - The reported closing balance is instead reproduced by using the pre-adjustment opening balance: -37,309,721 - 15,709,645 + 14,069,826 = -38,949,540.
 - Therefore, the 43,241,509 opening adjustment is displayed in the rollforward but not carried through the 1402 closing row. This is an internal rollforward inconsistency, not a mismatch in the balance-sheet total.
 
-The correct accounting presentation (remove the repeated opening adjustment versus carry it through a restated comparative closing balance) requires the accounting owner’s decision. The reported 1402 closing equity and 1403 balance-sheet equity still tie; this is not evidence that the 1402 or 1403 balance-sheet totals are arithmetically wrong. Keep as REQUIRES_ACCOUNTING_OWNER_DISPOSITION; do not silently repair the official workbook.
+Direct comparison with financial_1402.xlsx materially narrows the likely root cause. The 1402 workbook already records the same 43,241,509 million Rial adjustment as two components: -33,467,967 at the 1401 opening balance and -9,773,542 as a correction to the 1401 loss. Its 1401 closing equity is -37,309,721 and its 1402 closing equity is -38,949,540. The 1403 workbook repeats the same two components in Note 23-1 (9,773,542 + 33,467,967) and appears to apply the full amount again to the 1402/01/01 opening balance, while the reported 1402 closing remains the already-adjusted -38,949,540. The most likely correction is to remove or correct the duplicate comparative opening adjustment, not to restate the closing equity to -82,191,049. This remains a proposed accounting treatment until the owner confirms the original journal entries and approved trial balances. Do not modify the official workbook.
 
 ### FS-1404-CF-01 — Exchange-rate effect support
 
@@ -582,3 +582,12 @@ The seven candidate rules were evaluated in memory against all account-8161 ledg
 No ambiguous matches were produced before or after the simulation. The proposed rules match 75 rows (24 non-zero and 51 zero-balance); 35 remaining unmatched rows all have zero statement balance. Thus all original 86 zero-balance rows remain preserved and traceable: 51 would gain a rule match and 35 would remain unmatched. The 24 non-zero rows and their full signed exposure reconcile exactly.
 
 This simulation supports the technical correctness of the proposed rule set under the current matcher. It does not constitute accounting-owner approval, independent review, or permission to edit the official Mapping workbook. MAP-8161-01 remains open.
+
+
+### 15.7 Root-cause refinement — FS-1403-EQ-01 and duplicate Note 23
+
+A direct side-by-side inspection of the official 1402 and 1403 equity statements, plus the 1403 Note 23 pages, refined the earlier interpretation. The 43,241,509 million Rial amount is not a new unexplained adjustment: it is exactly the sum of two prior-period corrections already recorded in the 1402 workbook (-33,467,967 at the 1401 opening and -9,773,542 against the 1401 loss). The 1402 workbook carries these through to closing 1401 equity of -37,309,721 and closing 1402 equity of -38,949,540. The 1403 workbook repeats the same total at the opening of its 1402 comparative rollforward, but its reported 1402 closing remains -38,949,540. This strongly indicates a duplicated comparative opening adjustment. Do not restate the closing balance to -82,191,049 based on the displayed row 9 alone.
+
+The 1403 Note 23 section is also duplicated: sheet 29 contains Note 23 corrections/reclassifications (including Note 23-1-1 actuarial adjustment disclosure); sheet 30 separately prints Note 23 non-cash transactions. The equity statement's generic Note 23 reference is ambiguous and should be made specific to the relevant subnote after owner approval.
+
+See [FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md](FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md) for cell-level evidence, exact workbook hashes, recommended disposition and acceptance checklist. Official financial workbooks remain unchanged.
