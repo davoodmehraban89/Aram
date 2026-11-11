@@ -109,3 +109,22 @@ The seven proposed helper keys are:
 - The 196,907,918,801 Rial exposure remains open until the proposed rules are applied in a derived copy, all controls pass, and the responsible accounting owner approves the disposition.
 
 **Decision requested:** approve or reject the seven proposed note-routing rules as a set, with any exceptions explicitly identified. Until that decision is recorded, keep MAP-8161-01 open.
+
+
+## 7. In-memory dry-run simulation (read-only) — 2026-11-11
+
+The seven proposed rules were added only to an in-memory candidate list and evaluated against all account-8161 rows for the respective reporting years. The existing 66 Mapping rules were applied first using the same account/T1/current-capital/T4/type matching convention and blank-dimension wildcard behavior. No derived workbook was saved and no official source was edited.
+
+| Year | Account-8161 rows | Before: unique | Before: unmatched | After: unique | After: unmatched | New rows mapped | New non-zero rows | New net statement balance (Rials) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1403 | 8,209 | 8,148 | 61 | 8,195 | 14 | 47 | 20 | +144,125,670,091 |
+| 1404 | 8,866 | 8,817 | 49 | 8,845 | 21 | 28 | 4 | +52,782,248,710 |
+| **Total** | **17,075** | **16,965** | **110** | **17,040** | **35** | **75** | **24** | **+196,907,918,801** |
+
+- No ambiguous match was produced in either year before or after the proposal simulation.
+- The seven proposed rules map 75 ledger rows in total: 24 non-zero and 51 zero-statement-balance rows.
+- The 35 remaining unmatched rows are all zero-statement-balance rows; they remain in the ledger and are not deleted or suppressed.
+- The original 86 zero-balance rows are preserved: 51 are matched by the proposed rules and 35 remain unmatched. All remain available for drill-down.
+- The simulated new mapping exposure ties exactly to the previously identified 196,907,918,801 Rial exposure, with the same year split.
+
+**Interpretation:** under the tested matching convention, the seven-rule proposal would eliminate all 24 non-zero unmapped rows and reduce the account-8161 unmatched population from 110 to 35, with no new ambiguity. This is strong technical evidence, but not approval to update the official workbook. Accounting-owner approval and independent review remain mandatory.
