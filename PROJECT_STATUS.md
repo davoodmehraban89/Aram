@@ -124,3 +124,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - 1403 Note 23 duplicated across corrections/reclassifications on sheet 29 and non-cash transactions on sheet 30. Catalog and matrix updated.
 - Auditor 1402/1404 first five pages visually reviewed; full report review remains open. 1403 extraction failed.
 - No official source workbook or PDF changed.
+
+
+### 2026-11-11 — Budget source integrity findings
+
+- 1404 Note39 E22:E32 are exactly 1,000,000x revised-budget F values; printed unit is million Rials. 1403 comparator is in million-Rial scale.
+- E35 is 12,500,000 in both years and is not part of the unit-scale anomaly.
+- Six #REF! cells are stored Excel error values, not intact formulas.
+- Approved original-budget source is absent; no correction applied.
+- Evidence: [budget validation memo](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md).
