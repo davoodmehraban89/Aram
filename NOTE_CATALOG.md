@@ -1,55 +1,104 @@
-# FINANCIAL STATEMENT NOTE CATALOG
+# Year-Aware Financial Statement Note Catalog — 1402–1404
 
-## Executive Summary
-This document provides the catalog of Financial Statement Notes across fiscal years **1402**, **1403**, and **1404**, extracted directly from the canonical official statement workbooks (`data/official_statements/financial_1402.xlsx`, `financial_1403.xlsx`, and `financial_1404.xlsx`).
+**Status:** Reconstructed from the actual section headings in the three canonical workbooks. This supersedes the previous generic catalog.
 
----
+## Interpretation rules
 
-## 1. Complete Note Catalog
+- Note numbering is fiscal-year-specific; do not assume a title retains the same logical note number across all years.
+- The logical note number is the number printed in the note section heading for that year's workbook.
+- Physical worksheet names are separate identifiers. A worksheet may contain several logical notes, and one note may span multiple worksheets.
+- Primary-statement cross-references are recorded separately from the note-page heading. In 1403/1404, several balance-sheet references are stale by one after the separate Note 17 capital-in-progress section disappeared. See FS-1403/1404-NOTE-REF-01 in the reconciliation report.
+- The catalog identifies note content and location; it does not claim that every transaction or every note amount has been independently reconciled.
 
-| Note Number | Primary Persian Note Title | Primary Statement Link | 1402 Sheet | 1403 Sheet | 1404 Sheet | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| **Note 5** | درآمدهاي عملياتي | Income Statement | `5` (in Sheet 10) | `5` (in Sheet 10) | `5` (in Sheet 10) | `VERIFIED` |
-| **Note 6** | بهاي تمام شده درآمدهاي عملياتي | Income Statement | `6` | `6` | `6` | `VERIFIED` |
-| **Note 7** | هزينه‌هاي فروش، اداري و عمومي | Income Statement | `7` | `7` | `7` | `VERIFIED` |
-| **Note 8** | ساير درآمدها | Income Statement | `8` | `8` | `8` | `VERIFIED` |
-| **Note 9** | ساير درآمدها و هزینه‌هاي غيرعملياتي | Income Statement | `9` | `9` | `9` | `VERIFIED` |
-| **Note 10** | دارایی‌های ثابت مشهود | Balance Sheet | `10` | `10` | `10` | `VERIFIED` |
-| **Note 11** | دارایی‌های نامشهود | Balance Sheet | `11` | `11` | `11` | `VERIFIED` |
-| **Note 12** | دریافتنی‌های تجاری و سایر دریافتنی‌ها (12-1 / 12-2) | Balance Sheet | `12` | `12` | `12` | `VERIFIED` |
-| **Note 13** | پیش‌پرداخت‌ها | Balance Sheet | `13` | `13` | `13` | `VERIFIED` |
-| **Note 14** | موجودی مواد و کالا | Balance Sheet | `14` | `14` | `14` | `VERIFIED` |
-| **Note 15** | موجودی نقد | Balance Sheet / Cash Flow | `15` | `15` | `15` | `VERIFIED` |
-| **Note 16** | سرمایه | Balance Sheet | `16` | `16` | `16` | `VERIFIED` |
-| **Note 17** | افزایش / کاهش سرمایه در جریان (17-1 / 17-2) | Balance Sheet | `17` | `17` | `17` | `VERIFIED` |
-| **Note 18** | اندوخته قانونی | Balance Sheet | `18` | `18` | `18` | `VERIFIED` |
-| **Note 19** | پرداختنی‌های تجاری و سایر پرداختنی‌ها (19-1 / 19-2) | Balance Sheet | `19` | `19` | `19` | `VERIFIED` |
-| **Note 20** | ذخیره مزایای پایان خدمت و مالیات پرداختنی (20-1 / 20-3) | Balance Sheet / Income Statement | `20` | `20` | `20` | `VERIFIED` |
-| **Note 21** | مالیات پرداختنی / سود سهام پرداختنی | Balance Sheet | `21` | `21` | `21` | `VERIFIED` |
-| **Note 22** | پیش‌دریافت‌ها / نقد حاصل از عملیات / اصلاح اشتباهات | Balance Sheet / Cash Flow / Equity | `22` | `22` | `22` | `VERIFIED` |
-| **Note 23** | نقد حاصل از عملیات / معاملات غیرنقدی | Cash Flow / Equity | `23` | `23` | `23` | `VERIFIED` |
-| **Note 24** | معاملات غیر نقدی | Cash Flow | `24` | `24` | `24` | `VERIFIED` |
-| **Note 25** | مدیریت ریسک مالی / ابزارهای مالی | Financial Disclosures | `25` | `25` | `25` | `VERIFIED` |
-| **Note 26** | ارزش منصفانه دارایی‌ها و بدهی‌های مالی | Financial Disclosures | `26` | `26` | `26` | `VERIFIED` |
-| **Note 27** | معاملات با اشخاص وابسته | Financial Disclosures | `27` | `27` | `27` | `VERIFIED` |
-| **Note 28** | تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | Financial Disclosures | `28` | `28` | `28` | `VERIFIED` |
-| **Note 29** | رویدادهای پس از تاریخ صورت وضعیت مالی | Financial Disclosures | `29` | `29` | `29` | `VERIFIED` |
-| **Notes 30-35** | سایر یادداشت‌های توضیحی تکمیلی و افشا | Financial Disclosures | `30` to `35` | `30` to `35` | `30` to `35` | `VERIFIED` |
-| **Note 36** | گزارش تطبیق عملکرد با بودجه مصوب اصلاحی (درآمدها) | Budget Disclosures | `36` | `36-37` | `36-37` | `STRUCTURAL_SHIFT` |
-| **Note 37** | گزارش تطبیق عملکرد با بودجه مصوب اصلاحی (هزینه‌ها) | Budget Disclosures | `37` | `36-37` | `36-37` | `STRUCTURAL_SHIFT` |
-| **Note 38** | گزارش توجیهی بودجه مصوب و عملکرد | Budget Disclosures | `38` | `38` | `38` | `VERIFIED` |
-| **Note 39** | خلاصه منابع و مصارف | Budget Disclosures | *Absent in 1402* | `39` | `39` | `ADDED_IN_1403` |
+## 1. Common notes 5–16
 
----
+| Logical note | Content | 1402 physical sheet(s) | 1403 physical sheet(s) | 1404 physical sheet(s) |
+|---:|---|---|---|---|
+| 5 | درآمدهای عملیاتی | 10, 11 | 10, 11 | 10, 11 |
+| 6 | بهای تمام‌شده درآمدهای عملیاتی | 12 | 12 | 12 |
+| 7 | هزینه‌های فروش، اداری و عمومی | 13 | 13 | 13 |
+| 8 | سایر درآمدها | 13 | 13 | 13 |
+| 9 | سایر درآمدها و هزینه‌های غیرعملیاتی | 13 | 13 | 13 |
+| 10 | دارایی‌های ثابت مشهود | 14–18 | 14–18 | 14–18 |
+| 11 | دارایی‌های نامشهود | 19 | 19 | 19 |
+| 12 | دریافتنی‌های تجاری و سایر دریافتنی‌ها | 20, 21 | 20, 21 | 20, 21 |
+| 13 | پیش‌پرداخت‌ها | 22 | 22 | 22 |
+| 14 | موجودی مواد و کالا | 22 | 22 | 22 |
+| 15 | موجودی نقد | 23 | 23 | 23 |
+| 16 | سرمایه | 23 | 23 | 23 |
 
-## 2. Structural & Evolution Observations
+## 2. Fiscal year 1402 — year-specific sequence
 
-1. **Note Merger (`Notes 36 & 37`)**:
-   - In **1402**, Note 36 (`36`) and Note 37 (`37`) were maintained as two separate sheets.
-   - In **1403** and **1404**, Notes 36 and 37 were merged into a single multi-note sheet named **`36-37`** (`گزارش تطبیق عملکرد با بودجه مصوب اصلاحی`).
+| Logical note | Content | Physical sheet(s) |
+|---:|---|---|
+| 17 | افزایش سرمایه در جریان | 23 |
+| 18 | اندوخته قانونی | 23 |
+| 19 | پرداختنی‌های تجاری و سایر پرداختنی‌ها | 24–27 |
+| 20 | ذخیره مزایای پایان خدمت و تعهدات آتی کارکنان | 27, 28 |
+| 21 | مالیات پرداختنی / سود سهام پرداختنی | 28, 29 |
+| 22 | پیش‌دریافت‌ها | 29 |
+| 23 | اصلاح اشتباهات و تجدید طبقه‌بندی | 29 |
+| 24 | نقد حاصل از عملیات | 29 |
+| 25 | معاملات غیرنقدی | 30 |
+| 26 | مدیریت سرمایه و ریسک‌های مالی | 30–32 |
+| 27 | وضعیت ارزی | 32 |
+| 28 | معاملات با اشخاص وابسته | 33, 34 |
+| 29 | تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | 35 |
+| 30 | رویدادهای پس از تاریخ پایان دوره گزارشگری | 35 |
+| 36 | تطبیق عملکرد بودجه — درآمدها | 36 |
+| 37 | تطبیق عملکرد بودجه — هزینه‌ها | 37 |
+| 38 | گزارش توجیهی بودجه مصوب و عملکرد | 38 |
+| 39 | خلاصه منابع و مصارف | غایب |
 
-2. **Note Addition (`Note 39`)**:
-   - Note 39 (`39` - `خلاصه منابع و مصارف`) was introduced in fiscal year **1403** and continued in **1404**. It does not exist in the **1402** workbook.
+## 3. Fiscal year 1403 — year-specific sequence
 
-3. **Signature Sheet (`ص امضا`)**:
-   - The signature sheet (`ص امضا`) is present in **1402** and **1403** workbooks, but absent in the **1404** workbook.
+| Logical note | Content | Physical sheet(s) |
+|---:|---|---|
+| 17 | اندوخته قانونی | 23 |
+| 18 | پرداختنی‌های تجاری و سایر پرداختنی‌ها | 24–27 |
+| 19 | ذخیره مزایای پایان خدمت و تعهدات آتی کارکنان | 27 |
+| 20 | مالیات پرداختنی | 28 |
+| 21 | سود سهام پرداختنی / پیش‌دریافت‌ها | 29 |
+| 22 | نقد حاصل از عملیات | 29 |
+| 23 (section A; subnotes 23-1, 23-2, 23-3) | اصلاح اشتباهات و تجدید طبقه‌بندی | 29 |
+| 23 (duplicate section B) | معاملات غیرنقدی | 30 |
+| 24 | مدیریت سرمایه و ریسک‌های مالی | 30–32 |
+| 25 | وضعیت ارزی | 32 |
+| 26 | معاملات با اشخاص وابسته | 33, 34 |
+| 27 | تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | 35 |
+| 28 | رویدادهای پس از تاریخ پایان دوره گزارشگری | 35 |
+| 36–37 | تطبیق عملکرد بودجه — درآمدها و هزینه‌ها | 36-37 |
+| 38 | گزارش توجیهی بودجه مصوب و عملکرد | 38 |
+| 39 | خلاصه منابع و مصارف | 39 |
+
+## 4. Fiscal year 1404 — year-specific sequence
+
+| Logical note | Content | Physical sheet(s) |
+|---:|---|---|
+| 17 | اندوخته قانونی | 23 |
+| 18 | پرداختنی‌های تجاری و سایر پرداختنی‌ها | 24–27 |
+| 19 | ذخیره مزایای پایان خدمت و تعهدات آتی کارکنان | 27 |
+| 20 | مالیات پرداختنی | 28 |
+| 21 | سود سهام پرداختنی / پیش‌دریافت‌ها | 29 |
+| 22 | اصلاح اشتباهات و تجدید طبقه‌بندی | 29 |
+| 23 | نقد حاصل از عملیات | 29, 30 |
+| 24 | معاملات غیرنقدی | 30 |
+| 25 | مدیریت سرمایه و ریسک‌های مالی | 30–32 |
+| 26 | وضعیت ارزی | 32 |
+| 27 | معاملات با اشخاص وابسته | 33, 34 |
+| 28 | تعهدات، بدهی‌های احتمالی و دارایی‌های احتمالی | 35 |
+| 29 | رویدادهای پس از تاریخ پایان دوره گزارشگری | 35 |
+| 36–37 | تطبیق عملکرد بودجه — درآمدها و هزینه‌ها | 36-37 |
+| 38 | گزارش توجیهی بودجه مصوب و عملکرد | 38 |
+| 39 | خلاصه منابع و مصارف | 39 |
+
+## 5. Structural changes and implementation constraints
+
+1. Note 17 is a capital-in-progress note in 1402, but is the legal-reserve note in 1403/1404. The separate 1402 Note 17 section is not present in the later workbooks.
+2. The note sequence after Note 16 is consequently different by fiscal year.
+3. 1403 and 1404 merge budget Notes 36 and 37 into physical sheet 36-37; 1402 keeps separate sheets 36 and 37.
+4. Note 39 is absent in 1402 and present in 1403/1404.
+5. Physical sheets 30–35 are not logical Notes 30–35. Their contents are year-dependent and include Notes 24–30.
+6. In 1403/1404, the Statement of Financial Position still carries several older note references (17–22) that do not match the later note-page headings. Preserve both references; do not auto-correct source files.
+7. In 1403, the printed top-level Note 23 number is duplicated: section A (corrections/reclassifications, with subnotes 23-1 to 23-3) is on physical sheet 29, while section B (non-cash transactions) is on physical sheet 30. A generic reference to Note 23 is ambiguous; preserve the exact subnote / section identity.
+7. The ingestion key must be (fiscal_year, logical_note_number, physical_sheet, subnote) plus the originating statement cell/reference. Never use the physical sheet name as the logical note number.

@@ -278,3 +278,239 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Recovery: close the candidate PR without merge; accepted branch remains at the recorded base
 - Remaining risks: comprehensive Mapping, note/sub-note workflow, real Pilot UI/output, Windows packaging, and user acceptance remain incomplete
 - Next action: publish the focused PR and obtain independent remote review after CI
+
+
+### 2026-11-10 — Read-only financial statement reconciliation (1402–1404)
+
+- Actor: ChatGPT Operational Coordinator; accounting treatment clarified by Project Owner.
+- Task/phase: primary financial statement arithmetic, cross-statement cash, and comparative restatement reconciliation.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR / commit: NOT_CREATED_AT_ENTRY_CREATION; update this entry after publication.
+- Exact changed files intended: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, PROJECT_STATUS.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: read-only openpyxl validation against the canonical workbooks; 66 primary-statement arithmetic checks PASS; 3 cash closing cross-statement checks PASS. No application test suite was changed or claimed.
+- GitHub Actions: NOT_APPLICABLE_YET; docs-only candidate, remote run must be checked after publication.
+- Artifacts/releases: NONE.
+- Protected data: all ten canonical XLSX/PDF files SHA-256 hashed; no source bytes, ledger rows, Mapping rows, financial values, database, or code changed.
+- Acceptance: IN_PROGRESS; independent accounting / technical review pending.
+- Findings: 1404 Note 22 comparative restatements reconcile; 1403 equity opening restatement has a possible duplicated 43,241,509 million Rial correction; 1404 FX effect support and a +1/-1 million Rial comparative cash-flow presentation difference remain documented.
+- Owner rule: auxiliary Excel errors are ignored only when outside official statement/note use and tied to zero-closing or proven offset accounts; original source rows are preserved.
+- Remaining risks: no signed finance sign-off; 1403 equity presentation disposition pending; 1404 FX support pending; auditor PDF opinion text not verified because the 1404 PDF is image-only in extraction.
+- Rollback: revert this documentation-only commit; canonical financial sources remain untouched.
+- Next action: publish a focused Draft PR for independent review, then continue note/ledger reconciliation.
+
+
+### 2026-11-10 — Publication update for financial statement reconciliation
+
+- Actor: ChatGPT Operational Coordinator.
+- Task/phase: publish the read-only 1402–1404 financial statement reconciliation.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90).
+- Initial published commit: 1767b2c91e8f4aaabe7c443befa55cebc36324fa; follow-up control-record commit is pending this entry's publication.
+- Exact PR file list: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, PROJECT_STATUS.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: 66 primary-statement arithmetic checks PASS; 3 closing-cash cross-statement checks PASS; git diff --check PASS.
+- GitHub Actions: NOT_VERIFIED at publication update; verify the remote PR checks before acceptance.
+- Artifacts/releases: NONE.
+- Protected data: no canonical XLSX/PDF, ledger row, Mapping row, database, code, or financial value changed.
+- Acceptance: IN_PROGRESS; Draft PR only, not merged.
+- Remaining risks: 1403 equity opening presentation, 1404 FX supporting schedule, one-million-Rial comparative cash-flow presentation, and auditor PDF opinion text remain as documented in the reconciliation report.
+- Rollback: close PR #90 without merge or revert its documentation-only commits; canonical sources remain unchanged.
+- Next action: independent technical review and accounting-owner disposition of open items, then continue note-level and ledger-level reconciliation.
+
+
+### 2026-11-10 — Final publication evidence for financial reconciliation PR #90
+
+- Actor: ChatGPT Operational Coordinator.
+- Task/phase: verify the published Draft PR and reconcile durable control records.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90), open and unmerged.
+- Latest verified head: 0213f049dd0530f5660e8a57deb574deb61c75f5; prior report commit: 1767b2c91e8f4aaabe7c443befa55cebc36324fa.
+- Exact PR file list remains four documentation files: PROJECT_STATUS.md, docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: 66 statement arithmetic checks PASS; 3 cash closing cross-statement checks PASS; git diff --check PASS.
+- GitHub Actions: zero check-runs were returned for the latest commit; docs-only PR did not trigger a workflow in the observed check-runs endpoint.
+- Artifacts/releases: NONE.
+- Protected data: no canonical financial XLSX/PDF, ledger rows, Mapping rows, database, application code, or financial values changed; source-data diff against the accepted base is empty.
+- Acceptance: IN_PROGRESS; PR remains Draft and unmerged. Independent review and accounting-owner disposition remain pending.
+- Remaining risks: FS-1403-EQ-01, FS-1404-CF-01, FS-1404-CF-02, and auditor PDF opinion text as documented in the report.
+- Rollback: close PR #90 without merge or revert the two documentation commits; canonical source files remain untouched.
+- Next action: independent technical review and accounting-owner disposition, then continue note-level and ledger-level reconciliation.
+
+
+### 2026-11-10 — PR #90 head and check-run verification
+
+- Actor: ChatGPT Operational Coordinator.
+- Task/phase: final remote metadata check for the financial statement reconciliation documentation PR.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90), open and unmerged.
+- Remote head observed immediately before this control-record update: 2d4eba9c1fc0fd0a89c550651b9a1c7ea138b015; live PR metadata is authoritative after this update.
+- Exact changed files: PROJECT_STATUS.md, docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: 66 arithmetic checks PASS; 3 cross-statement cash checks PASS; git diff --check PASS.
+- GitHub Actions: zero check-runs on observed head 2d4eba9c1fc0fd0a89c550651b9a1c7ea138b015; no docs workflow observed.
+- Artifacts/releases: NONE.
+- Protected data: no canonical source bytes, ledger rows, Mapping rows, database, application code, or financial values changed.
+- Acceptance: IN_PROGRESS; independent technical review and accounting-owner disposition remain pending.
+- Remaining risks: FS-1403-EQ-01, FS-1404-CF-01, FS-1404-CF-02, and auditor PDF opinion text remain open as documented.
+- Rollback: close PR #90 without merge or revert the documentation-only commits.
+- Next action: independent review and accounting-owner disposition; then continue note-level and ledger-level reconciliation.
+
+
+### 2026-11-10 — Entity-level control-account pair verification
+
+- Actor: ChatGPT Operational Coordinator; scope interpreted under Project Owner's accounting clarification.
+- Task/phase: verify paired payroll allocation / control accounts in source_1404.xlsx separately for fiscal years 1403 and 1404.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90).
+- Exact changed files: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, PROJECT_STATUS.md, docs/PROJECT_LOG.md, docs/handoff/LATEST_HANDOFF.md.
+- Tests: year-filtered, read-only ledger aggregation; account pairs 8708/8709 and 8718/8719 each net to zero independently in 1403 and 1404; Mapping rules confirm same Note 12-1 sub-note and type O.
+- Dimension result: T1 subgroup mismatches exist for 8708/8709 (4 in 1403, 2 in 1404) and 8718/8719 (6 in 1403, 0 in 1404). Netting is limited to the full reporting entity; no per-T1 elimination is authorized by this evidence.
+- GitHub Actions: NOT_VERIFIED for the subsequent documentation update; check remote head after push.
+- Artifacts/releases: NONE.
+- Protected data: no source workbook, ledger row, Mapping row, financial value, database or code changed.
+- Acceptance: IN_PROGRESS; Draft PR remains unmerged.
+- Remaining risks: the 1403 equity rollforward presentation and 1404 FX support items remain open; account 8161's 110 unmapped rows and 196,907,918,801 Rial unmapped closing exposure are not excluded by these pair findings.
+- Rollback: revert this documentation-only update; canonical source files remain unchanged.
+- Next action: continue note-level / ledger-level reconciliation and obtain independent review of PR #90.
+
+
+### 2026-11-10 — 1404 note-level tie-out and year-aware note-reference audit
+
+- Actor: ChatGPT Operational Coordinator; read-only accounting/documentation reconciliation under Project Owner's instruction to exclude irrelevant auxiliary errors while preserving source rows.
+- Task: extend PR #90 from primary-statement arithmetic and control-pair checks to note-level tie-outs and year-aware physical-sheet mapping.
+- Base branch/SHA: source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Working branch: docs/financial-statement-reconciliation-1402-1404-20261110.
+- PR: Draft #90; open and unmerged.
+- 1404 Income Statement: Notes 5–9 tie exactly to revenue, cost of revenue, SG&A, other income and non-operating result. Note 20-3 ties to income-tax expense.
+- 1404 Statement of Financial Position: Notes 10–15 tie to every asset line; Notes 16–21 tie to capital, reserve, payables, employee benefits, tax and advances received. Total assets 733,743,718; liabilities 917,629,178; equity -183,885,460; liabilities plus equity equal assets (million Rials).
+- 1404 Note 9-3 explicitly describes the 12,556 million Rial FX effect and cites NIGC letter No. 1830 dated 1405/01/16. The former no-note-reference exception is superseded; detailed rate calculation was not independently reperformed.
+- New exception FS-1403/1404-NOTE-REF-01: after the 1402 Note 17 capital-in-progress section disappears, 1403/1404 balance-sheet note references 17–22 are not aligned with the actual printed note-page headings. The amounts reconcile when matched by content; the source workbooks remain unchanged.
+- Rebuilt NOTE_CATALOG.md and NOTE_TO_SHEET_MATRIX.md with year-aware note numbering and physical sheet names. The mapping records multiple notes per sheet and notes spanning multiple sheets.
+- Exact changed files: NOTE_CATALOG.md; NOTE_TO_SHEET_MATRIX.md; PROJECT_STATUS.md; docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md; docs/PROJECT_LOG.md; docs/handoff/LATEST_HANDOFF.md.
+- Tests/evidence: prior 66 primary-statement arithmetic checks PASS; 3 cash-flow-to-balance-sheet closing-cash checks PASS; additional 1404 note tie-outs and asset/liability cross-foot PASS; git diff --check PASS.
+- GitHub Actions: docs-only PR; verify live check-run state after push; no CI result is assumed.
+- Artifacts/releases: NONE.
+- Protected data: no canonical XLSX/PDF, ledger row, Mapping row, database, code or financial value changed.
+- Acceptance: IN_PROGRESS; PR remains Draft and unmerged; independent technical review and accounting-document-owner disposition of FS-1403-EQ-01 / FS-1403/1404-NOTE-REF-01 remain pending.
+- Remaining risks: FS-1403-EQ-01; FS-1403/1404-NOTE-REF-01; FS-1404-CF-02; image-only 1404 auditor PDF; account 8161 unmapped closing exposure remains separate.
+- Rollback: revert the documentation-only commit(s) or close PR #90 without merge; canonical financial sources remain untouched.
+- Next action: publish the reviewed documentation update on the existing Draft PR #90 and route it for independent review; do not merge.
+
+
+## 2026-11-11 — 1402/1403 note-page tie-out extension
+
+- Actor: ChatGPT / Operational Coordinator; read-only accounting source review.
+- Base and PR branch: docs/financial-statement-reconciliation-1402-1404-20261110; Draft PR #90; accepted base source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914.
+- Added direct amount tie-outs for 1402/1403 income-statement and balance-sheet lines to actual printed note-page cells and narrative disclosures.
+- 1402 Income Statement: Notes 5–9 match; 1403 Income Statement: Notes 5–9 and Note 20-3 match.
+- 1402 Statement of Financial Position: Notes 10–22 match the listed asset/liability lines, with narrative-only share capital/capital-in-progress/legal-reserve evidence explicitly identified.
+- 1403 Statement of Financial Position: asset lines match Notes 10–15; liabilities and tax/advances match actual printed Notes 18–21. Stale statement references 17–22 are confirmed as a presentation cross-reference drift after the separate 1402 Note 17 capital-in-progress section disappears.
+- New issue FS-1402/1403-CF-FX-REF-01: 1403 FX cash-flow amount 4,403 is in Note 9-4 while the statement references 9-5; 1402 FX amount 819 is located on the Note 9 page but its printed sub-note identifier remains unconfirmed.
+- Auditor reports: initial pages of 1402/1404 visually show emphasis-of-matter paragraphs; full opinion and full report review remains pending. 1403 PDF did not return page content through the available reader.
+- No canonical source, financial value, ledger row, Mapping row, database, or application code changed.
+- git diff --check passed. All ten canonical source SHA-256 values were recomputed and match the baseline recorded in section 3 of the reconciliation report.
+- Acceptance: PRESENT_BUT_UNVERIFIED; accounting-owner and independent technical review pending. No merge.
+- Next action: publish documentation-only update to PR #90 after local integrity checks; request disposition of the two open accounting-reference issues and full auditor report OCR.
+
+
+## 2026-11-11 — FS-1403-EQ-01 arithmetic re-performance
+
+- Reperformed the 1402 movement embedded in the 1403 Statement of Changes in Equity using the exact displayed values.
+- Restated opening balance -80,551,230 plus 1402 net loss -15,709,645 plus capital-in-progress increase +14,069,826 gives -82,191,049.
+- Reported 1402 closing equity is -38,949,540, a difference of exactly 43,241,509 — the same prior-period correction shown in the opening section.
+- The reported closing balance is reproduced exactly when the pre-adjustment opening balance -37,309,721 is used instead. The adjustment is therefore shown in the opening rollforward but not carried through the closing row.
+- This proves an internal equity-rollforward inconsistency; it does not prove which presentation the accounting owner should adopt. Do not modify the official workbook. FS-1403-EQ-01 remains REQUIRES_ACCOUNTING_OWNER_DISPOSITION.
+- No canonical source or financial value changed.
+
+
+## 2026-11-11 — Budget Notes 36–39 reconciliation
+
+- Actor: ChatGPT / Operational Coordinator; read-only budget-note review.
+- Extracted budget performance and resources/uses tables from official 1402, 1403 and 1404 statement workbooks.
+- Notes 36/37 actual revenue, current expenses and profit/loss reconcile to primary statement values for each year.
+- Note 39 actual resources equal actual uses in each year: 1402 47,443,159; 1403 61,677,400; 1404 71,738,067 million Rials.
+- 1404 revised-budget performance: revenue shortfall 38,042,622; current-expense overrun 36,628,947. Service cost overrun 112,342,201 is partly offset by distribution/administrative underspend 73,331,214. Note 38 itself describes distortion from traditional rather than activity-based budgeting.
+- New BUDGET-1403/1404-N36-37-APPROVED-01: original-approved-budget cells G120/G123 (1403) and G127/G130 (1404) are #REF!, while revised-budget and actual columns are populated.
+- New BUDGET-1404-N39-UNIT-01: 1404 Note 39 original-budget column mixes Rial-scale values and million-Rial values; E22=7,771,200,000,000 vs F22=7,771,200; E32=97,000,000,000,000 vs F32=97,000,000; E35=12,500,000 is already million-Rial scale. E9/E16 are #REF!. Revised/actual totals remain valid and equal.
+- Zero/zero percentage cells are excluded as non-impacting ratios; no amount is affected.
+- No canonical financial data or code changed.
+
+## 2026-11-11 — Account 8161 unmapped exposure refinement
+
+- Reperformed 8161 mapping against source_1403.xlsx, source_1404.xlsx and mapping_1404.xlsx using account/T1/current-capital/T4/type keys and existing wildcard behavior.
+- 1403: 61 unmapped rows; 41 zero-balance, 20 non-zero; net statement-balance exposure 144,125,670,091 Rials.
+- 1404: 49 unmapped rows; 45 zero-balance, 4 non-zero; net statement-balance exposure 52,782,248,710 Rials.
+- Combined: 110 rows; 86 zero-balance and 24 non-zero; net exposure 196,907,918,801 Rials. Closing and statement-balance columns agree for these unmapped subsets.
+- Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population. Inspection of all 24 non-zero source rows shows their source-ledger Note IDs in column A consistently route six current-class combinations to Note 13 and the two capital-class combinations to Note 10; see report section 15.2/15.3.
+- Open item MAP-8161-01 created. No mapping workbook or ledger rows changed; no netting or exclusion approved. Accounting/budget owner disposition required before correcting the official disclosure.
+
+
+### 2026-11-11 — Account 8161 seven-rule Mapping proposal
+
+- Actor: ChatGPT / operational coordinator.
+- Task / phase: Phase 1 — account 8161 exception; prepare a controlled Mapping proposal.
+- Base: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `docs/financial-statement-reconciliation-1402-1404-20261110`.
+- PR: Draft [#90](https://github.com/davoodmehraban89/Aram/pull/90).
+- Artifact: `docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md`.
+- Commit: `a135a91fc4be3b7ebd482dd20c3a66e14266b2a2`.
+- Direct workstation revalidation: mapping_1404.xlsx has 66 account-8161 rules; all seven candidate keys returned zero existing matches under the current wildcard convention.
+- Source hashes revalidated: source_1403 `747FAE7B8DE9866DFBB45CE3A983584A8AC832DEF59F2C65874302F0F87CBB22`; source_1404 `5B4790DCE6E9EA169D61C68751BC6FD5DC390012BC14473B0298BA5AAC30D044`; mapping_1404 `8B3F94389E61B76775E00B8BEC8B9E241F7CCE5097505C61199574855ADAE574`.
+- Source evidence: 24 non-zero rows across seven keys, all source note IDs consistent with Note 10 / 13; 1403 exposure 144,125,670,091 Rials; 1404 exposure 52,782,248,710 Rials; combined 196,907,918,801 Rials.
+- Tests: read-only workbook parsing and key comparison on Aram Windows host; no application tests run.
+- Protected boundary: no source ledger, official Mapping workbook, official financial statement workbook, PDF, database or application code modified.
+- Acceptance: proposal only; not approved / not applied. Accounting-owner approval, derived-copy test, exact count reconciliation and independent review pending.
+- Next action: create a separate derived Mapping candidate, apply only after approval, rerun matching and verify all 24 rows and 86 zero-balance rows remain traceable.
+
+
+### 2026-11-11 — Account 8161 in-memory proposal simulation
+
+- Task / phase: Phase 1 — technical dry-run of seven proposed Mapping rules.
+- Working branch: `docs/financial-statement-reconciliation-1402-1404-20261110`; Draft PR #90.
+- Method: read-only openpyxl load; existing 66 account-8161 Mapping rows plus seven proposed rows held in memory; matcher dimensions account/T1/current-capital/T4/type; blank Mapping dimensions treated as wildcards.
+- Results 1403: 8,209 account-8161 rows; baseline 8,148 unique / 61 unmatched; simulated 8,195 unique / 14 unmatched; 47 new mappings including 20 non-zero rows; +144,125,670,091 Rials.
+- Results 1404: 8,866 account-8161 rows; baseline 8,817 unique / 49 unmatched; simulated 8,845 unique / 21 unmatched; 28 new mappings including 4 non-zero rows; +52,782,248,710 Rials.
+- Combined: 75 new matches; 24 non-zero and 51 zero-balance; 35 remaining unmatched rows, all zero-balance; no ambiguous matches before or after; total non-zero exposure +196,907,918,801 Rials.
+- Tests: dry-run only; no full application suite run.
+- Protected boundary: no workbook was saved; no source ledger, official Mapping, financial statement, PDF, database, application code or deployment changed.
+- Acceptance: technical simulation supports proposal; not an accounting approval. MAP-8161-01 remains open.
+- Next action: obtain accounting-owner disposition, then independent reviewer approval before preparing any persistent derived Mapping copy.
+
+
+### 2026-11-11 — FS-1403-EQ-01 root cause refinement
+
+- Task / phase: Phase 1 — compare official 1402 and 1403 equity statements and Note 23.
+- Artifact: `docs/FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md`.
+- 1402 workbook evidence: -33,467,967 correction at opening 1401; -9,773,542 correction to 1401 loss; closing 1401 equity -37,309,721; closing 1402 equity -38,949,540.
+- 1403 workbook evidence: row 7 opening 1402 -37,309,721; row 8 repeated correction -43,241,509; row 9 restated opening -80,551,230; row 14 closing 1402 remains -38,949,540; row 19 closing 1403 -48,403,932.
+- Note 23-1 on physical sheet 29 splits the same 43,241,509 into 9,773,542 and 33,467,967. Physical sheet 30 separately prints Note 23 for non-cash transactions, creating duplicate top-level Note 23 numbering.
+- Interpretation: strong evidence of a duplicated comparative opening adjustment, not evidence that closing equity should be restated to -82,191,049. Accounting-owner confirmation of journal entries and approved TBs is still required.
+- Source SHA-256: financial_1402.xlsx `DF40940EBA3D286F82DF364BC84E14CD6796AB3E1F8C4FFF658408182282F4EF`; financial_1403.xlsx `AEB279A3A01058B6998B998A2A44CF68B48A1081F477B87E271CEB2984D23ABE`.
+- Tests: read-only workbook cell inspection and arithmetic reperformance; no application tests run.
+- Protected boundary: no source workbook, note, ledger, database or application code modified.
+- Acceptance: technical root cause strongly indicated; accounting-owner disposition and independent review pending.
+
+
+### 2026-11-11 — Auditor PDF opening-page visual review
+
+- Task: inspect the available auditor report PDFs.
+- 1402: 48 pages; first five pages rendered as images; visible fair-presentation opinion wording and separate emphasis-of-matter section on legal claims.
+- 1404: 47 pages; first five pages rendered as images; visible fair-presentation opinion wording and separate emphasis-of-matter section on legal claims.
+- 1403: local PDF reader failed with `Cannot read properties of undefined (reading 'toLowerCase')`; no page content.
+- Windows OCR API exposes only English recognizer; Persian OCR unavailable locally.
+- No complete opinion classification or all-matters review is claimed. No PDF modified.
+- Next action: obtain a Persian-capable OCR route or inspect 1403 via a different reader, then complete all report pages and record opinion / emphasis / other-matter paragraphs.
+
+
+### 2026-11-11 — Budget unit and broken-reference validation
+
+- Artifact: `docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md`; Draft PR #90.
+- Confirmed #REF! cells are stored Excel error values, not intact formulas: 1403 G120/G123, 1404 G127/G130, 1404 Note39 E9/E16.
+- Confirmed 1404 Note39 E22:E32 values are exactly 1,000,000 times F revised-budget values; printed units are million Rials. 1403 comparator is consistently in million Rials.
+- E35 is 12,500,000 in both years and is not part of the 1,000,000 scale anomaly.
+- Original approved budget source file is not present in the inspected data folder. Any conversion is only a scenario, not an approved correction.
+- Tests: read-only openpyxl cell-type / value inspection and ratio checks.
+- Protected boundary: no source workbook modified.
+- Acceptance: technical issue confirmed; budget-owner source and approval pending.
