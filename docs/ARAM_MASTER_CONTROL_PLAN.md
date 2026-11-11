@@ -455,3 +455,8 @@ These are path overlaps, not automatic semantic conflicts. Stacked PRs must be c
 ### 2026-11-11 — V1 scope disposition proposal
 
 The 55 open Draft PRs were grouped into 13 parent-rooted dependency families. A proposed keep / hold / no-go / likely-superseded / owner-decision-required disposition is recorded in [OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md](OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md). This is a proposal only: no PR was merged, closed, retargeted or deleted. Owner and independent reviewer decisions are still required before any branch state changes.
+
+
+### 2026-11-11 — Fiscal-year safety candidate review
+
+PR #32 and child PR #35 were reviewed as one dependency family. Exact-head CI reports 110 and 132 passing tests respectively; neither PR has a submitted GitHub review. PR #35 closes same-flush approval/company mutation and clean-reference parent-move gaps. Both remain ORM-only: raw/bulk SQL and concurrent transaction enforcement are explicitly outside the guarantee. No database-level constraint/trigger or provider-level race proof exists. See [PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md](PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md). Retain as P0 safety candidate; do not mark production-ready or merge before the residual gates and independent reviews.
