@@ -208,3 +208,13 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - BUDGET-1404-N39-UNIT-01: 1404 Note 39 original-budget column E mixes Rial-scale and million-Rial values and has #REF! in E9/E16; actual/revised resource-use totals still tie.
 - Zero/zero ratio #DIV/0! cells are excluded because no amount or total is affected.
 - No canonical workbook/PDF or financial value modified. Accounting/budget-owner disposition required for original-budget disclosure anomalies.
+
+
+## 2026-11-11 — Account 8161 proposal handoff
+
+- Proposal: `docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md`.
+- Mapping workbook contains 66 account-8161 rows; the seven candidate keys have no existing match under the current wildcard matching convention.
+- The seven candidate keys are supported by source note IDs 10 / 13 on all non-zero rows.
+- Current source workbook hashes match the original reconciliation baseline.
+- Do not edit the official Mapping workbook or source ledgers. The proposal is not approved or applied.
+- MAP-8161-01 remains open until accounting-owner approval, derived-copy execution, deterministic / ambiguous / unmatched count checks, 24-row exposure reconciliation, and independent review.
