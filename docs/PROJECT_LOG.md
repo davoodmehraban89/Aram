@@ -376,3 +376,13 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Interpretation: path overlap only; stacked PRs must be compared against immediate base to determine semantic conflict or intentional continuation.
 - Acceptance: inventory only; no code, source data, branch or PR state modified.
 - Remaining risk: V1 scope and commit-level/semantic overlap review are open.
+
+
+## 2026-11-11 — V1 scope disposition proposal
+
+- Task: classify the 55 open Draft PRs into parent-rooted workstream families.
+- Artifact: `docs/OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md`.
+- Families: 13; largest are Gate 3 Mapping (#26 family, 17 PRs), read-only Mapping / five-statement / Windows (#60 family, 22 PRs), fiscal-year safety (#32 family, 3 PRs), and Gate 3 / security NO-GO (#82 family, 4 PRs).
+- Recommendations: keep candidates, hold dependency chains, preserve explicit NO-GO family, identify likely superseded docs and require owner decisions for governance / architecture.
+- Acceptance: proposal only. No PR merged, closed, retargeted or deleted.
+- Next action: obtain owner / reviewer decisions and then perform semantic commit/file review before integration.
