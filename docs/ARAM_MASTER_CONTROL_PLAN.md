@@ -443,3 +443,10 @@ The 1404 Note 39 original-budget column has a verified unit-scale inconsistency:
 A live GitHub inventory found 55 open PRs, all Draft: 13 directly target the accepted `source-data-cleanup` baseline and 42 are stacked on another open PR head. All 42 stacked base branches matched a parent PR head; no unmatched branch bases were found. The complete timestamped inventory is [OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md), and parent-child edges are in [OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md).
 
 This materially expands Phase 0 integration-control scope. The earlier Phase 0 estimate of 65% was based on incomplete PR inventory and is revised to 55%; the indicative unweighted overall estimate changes from 25% to 24%. All other phase estimates remain unchanged. No PR was merged, closed, retargeted or deleted. Before code integration, classify the 55 PRs for V1 scope and build commit/file overlap across their chains.
+
+
+### 2026-11-11 — Open PR changed-file overlap matrix
+
+The changed-file listing was retrieved for all 55 open PRs. It contains 427 changed-file entries across 221 unique repository paths; 64 paths are touched by multiple PRs, producing 1,048 PR-pair/path overlaps. The most frequently shared paths are control documents (`docs/PROJECT_LOG.md`: 45 PRs; `docs/handoff/LATEST_HANDOFF.md`: 41; `PROJECT_STATUS.md`: 31), followed by the Windows five-statement implementation, backend `main.py`, and `pyproject.toml`. See [OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md](OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md).
+
+These are path overlaps, not automatic semantic conflicts. Stacked PRs must be compared to their immediate base to distinguish intentional history from independent modifications. Phase 0 remains 55%; V1 scope classification and commit-level review are still open.
