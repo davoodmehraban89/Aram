@@ -330,3 +330,14 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Simulated: 75 new matches (24 non-zero, 51 zero-balance), 35 remaining unmatched (all zero-balance), no ambiguity; new exposure 196,907,918,801 Rials.
 - Protected boundary: in-memory only; no persistent workbook or official source changed.
 - Acceptance: technical evidence only; accounting-owner approval and independent review pending.
+
+
+## 2026-11-11 — Phase 1 equity and audit evidence refinement
+
+- Task: compare official 1402/1403 equity statements and refine auditor PDF review status.
+- Evidence: Draft PR #90, `docs/FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md`, updated note catalog and note-to-sheet matrix.
+- Finding: 43,241,509 million Rial adjustment is the same 33,467,967 + 9,773,542 already reflected in the 1402 equity statement. The 1403 comparative opening appears to repeat it; likely duplicate row rather than a closing equity error. Owner approval pending.
+- Finding: 1403 workbook duplicates top-level Note 23 (corrections/reclassifications on sheet29; non-cash transactions on sheet30).
+- Audit PDFs: 1402 48 pages and 1404 47 pages; first five pages of each visually inspected. Visible fair-presentation wording and separate litigation emphasis sections. 1403 reader extraction failed; full report review not complete.
+- Protected boundary: read-only inspection; no official source workbook/PDF modified.
+- Phase 1 percentage remains 25%; more precise evidence is not equivalent to approved closure.
