@@ -142,3 +142,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Added [open PR inventory](docs/OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md) and [dependency graph](docs/OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md).
 - Phase 0 estimate revised 65% -> 55% because the integration backlog was materially understated; overall unweighted estimate revised 25% -> 24%. Other phase estimates unchanged.
 - No PR merged, closed, retargeted or deleted. No code or canonical financial data changed.
+
+
+## 2026-11-11 — PR file overlap matrix
+
+- Retrieved changed filenames for all 55 open PRs.
+- 427 changed-file entries; 221 unique paths; 64 shared paths; 1,048 PR-pair/path overlaps.
+- Top shared paths: PROJECT_LOG.md (45 PRs), LATEST_HANDOFF.md (41), PROJECT_STATUS.md (31), plus Windows five-statement implementation, backend main.py and pyproject.toml.
+- Added [open PR file overlap matrix](docs/OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md).
+- These are path overlaps, not proven semantic conflicts; immediate-base patch review is still required.
+- No code, source data, PR or branch state changed.
