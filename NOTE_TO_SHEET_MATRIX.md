@@ -9,6 +9,7 @@
 - Logical note numbers differ across years. In particular, Note 17 is capital-in-progress in 1402 but legal reserve in 1403/1404.
 - Do not infer a logical note number from the physical sheet name.
 - In 1403/1404, several Statement of Financial Position references (17–22) are stale by one relative to note-page headings. See the cross-reference exception below.
+- In 1403 only, top-level Note 23 is duplicated across two physical sheets: corrections/reclassifications on sheet 29 and non-cash transactions on sheet 30. Keep section identity and subnote number separate; do not collapse these into one logical note.
 
 ## 1. Fiscal year 1402
 
@@ -52,7 +53,8 @@
 | 19 | 27 | Employee benefits / future staff obligations |
 | 20 | 28 | Tax payable |
 | 21–22 | 29 | Dividends payable / advances received; cash from operations |
-| 23 | 29, 30 | Corrections/reclassifications and non-cash transactions |
+| 23 (section A; subnotes 23-1 to 23-3) | 29 | Corrections / reclassifications |
+| 23 (duplicate section B) | 30 | Non-cash transactions |
 | 24 | 30–32 | Financial risk management |
 | 25 | 32 | Foreign-currency position |
 | 26 | 33, 34 | Related-party transactions and balances |
@@ -104,3 +106,12 @@ The 1403 and 1404 balance sheets retain references that do not match the printed
 The underlying amounts tie to the note-page content; this is a cross-reference / numbering defect. The 1402 workbook retains the earlier sequence (Note 17 capital-in-progress, Note 18 legal reserve, Note 19 payables, etc.) and does not have this same one-number drift.
 
 **Ingestion requirement:** store fiscal_year, statement_reference, logical_note_number, printed_heading, physical_sheet_name, and subnote_number separately. Preserve the source mismatch for review; do not rewrite canonical XLSX/PDF.
+
+
+## 5. 1403 duplicate Note 23 — explicit exception
+
+The 1403 workbook prints two top-level sections with the same logical note number:
+- Physical sheet 29, row 27: Note 23 — corrections and reclassifications; subnotes 23-1, 23-2 and 23-3.
+- Physical sheet 30, row 5: Note 23 — non-cash transactions.
+
+The 1403 Statement of Changes in Equity refers generically to Note 23 for its prior-period adjustment. The supporting actuarial disclosure is specifically in Note 23-1-1 on physical sheet 29. A generic Note 23 reference is ambiguous because of the duplicate heading. The catalog and application model must retain section identity, subnote and physical sheet separately until the accounting owner approves the final printed reference.
