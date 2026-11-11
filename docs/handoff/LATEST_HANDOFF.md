@@ -246,3 +246,11 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - 1403 PDF extraction failed with a reader parser error; no page content.
 - Local Windows OCR only has English recognizer; Persian OCR remains unavailable.
 - This is not full report review. Do not mark auditor review complete; all report pages and the 1403 PDF remain to be inspected.
+
+
+## 2026-11-11 — Budget source-unit handoff
+
+- Read `docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md`.
+- 1404 Note39 E22:E32 are 1,000,000x the corresponding revised-budget F values; E35 is not part of that anomaly.
+- #REF! cells are stored error values, not intact formulas. The approved original-budget source is required to restore them.
+- Do not modify official financial_1403/1404 workbooks until the budget owner supplies the approved source and confirms the units.
