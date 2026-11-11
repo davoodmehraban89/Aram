@@ -106,3 +106,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Revalidated all 62 current source files against the snapshot manifest: 62 match, zero changed, zero missing.
 - No source worktree was modified, merged, reset, cleaned or deleted.
 - Phase 0 remains 65%; independent review and conflict resolution remain open.
+
+
+### 2026-11-11 — Account 8161 in-memory dry-run
+
+- Seven-rule proposal simulated across all 17,075 account-8161 rows.
+- 75 new unique matches (24 non-zero / 51 zero-balance); 35 remaining unmatched rows, all zero-balance; no ambiguity.
+- New mapped exposure ties to 196,907,918,801 Rials.
+- No workbook saved; official Mapping and ledger files unchanged.
+- Phase 1 remains 25%; owner approval and independent review are outstanding.
