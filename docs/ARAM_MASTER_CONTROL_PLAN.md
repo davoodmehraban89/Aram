@@ -436,3 +436,10 @@ The 1403 workbook also prints two top-level Note 23 headings (corrections/reclas
 ### 2026-11-11 — Budget source integrity findings
 
 The 1404 Note 39 original-budget column has a verified unit-scale inconsistency: E22:E32 are exactly 1,000,000 times corresponding revised-budget F values while the printed unit is million Rials; the 1403 comparator uses million-Rial scale. E35 is 12,500,000 in both years and is not part of that anomaly. The identified #REF! cells are stored Excel error values, not intact formulas. The approved original-budget source is absent from the inspected project data directory. See [budget validation memo](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md). Do not reconstruct or edit source values without the authoritative approved budget.
+
+
+### 2026-11-11 — Live PR backlog and dependency graph
+
+A live GitHub inventory found 55 open PRs, all Draft: 13 directly target the accepted `source-data-cleanup` baseline and 42 are stacked on another open PR head. All 42 stacked base branches matched a parent PR head; no unmatched branch bases were found. The complete timestamped inventory is [OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md), and parent-child edges are in [OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md).
+
+This materially expands Phase 0 integration-control scope. The earlier Phase 0 estimate of 65% was based on incomplete PR inventory and is revised to 55%; the indicative unweighted overall estimate changes from 25% to 24%. All other phase estimates remain unchanged. No PR was merged, closed, retargeted or deleted. Before code integration, classify the 55 PRs for V1 scope and build commit/file overlap across their chains.
