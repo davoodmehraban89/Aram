@@ -357,3 +357,37 @@ No author may describe their own self-review as an independent approval. No test
 **Current decision:** NO-GO for production.  
 **Next executable task:** Phase 0 file-level inventory and preservation of all local dirty worktrees.  
 **Do not:** merge existing Draft PRs, modify canonical financial data, reset/clean local worktrees, or start a duplicate implementation.
+
+
+## 2026-11-11 — Execution update after initial control-plan publication
+
+### Phase 0 preservation evidence
+
+- Six known Aram Windows worktrees were re-inventoried.
+- Local snapshot directory: `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
+- Snapshot contains 62 changed / untracked files, with original worktree path, branch, HEAD, byte length and SHA-256 recorded in `manifest.csv` and `manifest.json`.
+- All 62 copied files passed source-to-snapshot SHA-256 comparison; zero mismatches.
+- Unstaged and staged Git patches plus `git status` text were retained per worktree.
+- This is a same-machine recovery snapshot only. It is not an off-device backup or immutable archive.
+- No original worktree was reset, cleaned, checked out, deleted, or overwritten.
+
+### First isolated code correction
+
+- Finding: G2.1 security audit's malformed-Unicode password verification exception.
+- New worktree: `C:\Users\Davood\Documents\Aram-P9.1-Unicode-Hardening`.
+- Branch: `fix/password-unicode-validation-20261111`.
+- Base: Package 9.1 candidate SHA `18d6aa122d9486116c08d6e66b22675e0ebb1792`.
+- Current PR: [Draft PR #92](https://github.com/davoodmehraban89/Aram/pull/92), latest observed head `191b9c4b02851978d00241daf179bc3972993e27`.
+- The fix rejects malformed UTF-8 input safely during password provisioning and returns a failed verification result rather than leaking `UnicodeEncodeError`; regression coverage includes Argon2id and legacy PBKDF2 paths.
+- Local Windows verification: 15 focused tests PASS; full backend suite PASS (137 tests); Ruff, compileall, pip check, and diff check PASS. The import path was verified to resolve to the new isolated worktree.
+- Latest-head GitHub Actions run [42997224580](https://github.com/davoodmehraban89/Aram/actions/runs/42997224580) was in progress at the time of this update. Do not treat it as PASS until completed on the exact head.
+- PR #92 includes a focused execution report and additive updates to PROJECT_STATUS, PROJECT_LOG and LATEST_HANDOFF.
+- PR #92 is a child candidate of Package 9.1, not a merge into the accepted baseline. Independent security review is still required.
+
+### Updated immediate next actions
+
+1. Complete exact-head CI and independent review for PR #92.
+2. Continue Phase 0 by classifying every snapshotted file as unique, duplicate, generated artifact, or superseded change; do not consolidate yet.
+3. Reconcile the current project status and handoff documents against live PR / branch state.
+4. Obtain accounting-owner dispositions for FS-1403-EQ-01 and MAP-8161-01 before changing official mapping or statement sources.
+5. Keep production / Gate 3 decision NO-GO.
