@@ -491,3 +491,14 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Tests: read-only workbook cell inspection and arithmetic reperformance; no application tests run.
 - Protected boundary: no source workbook, note, ledger, database or application code modified.
 - Acceptance: technical root cause strongly indicated; accounting-owner disposition and independent review pending.
+
+
+### 2026-11-11 — Auditor PDF opening-page visual review
+
+- Task: inspect the available auditor report PDFs.
+- 1402: 48 pages; first five pages rendered as images; visible fair-presentation opinion wording and separate emphasis-of-matter section on legal claims.
+- 1404: 47 pages; first five pages rendered as images; visible fair-presentation opinion wording and separate emphasis-of-matter section on legal claims.
+- 1403: local PDF reader failed with `Cannot read properties of undefined (reading 'toLowerCase')`; no page content.
+- Windows OCR API exposes only English recognizer; Persian OCR unavailable locally.
+- No complete opinion classification or all-matters review is claimed. No PDF modified.
+- Next action: obtain a Persian-capable OCR route or inspect 1403 via a different reader, then complete all report pages and record opinion / emphasis / other-matter paragraphs.
