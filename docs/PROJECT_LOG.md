@@ -298,3 +298,22 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Reviewer: independent review pending.
 - Remaining risks: dashboard estimates are initial baselines; accounting, security, operational and phase acceptance evidence remains incomplete.
 - Next action: review dashboard arithmetic / evidence against current remote state, update the PR description, and maintain dashboard after every material phase event.
+
+
+## 2026-11-11 — File-level worktree disposition completed
+
+- Actor: ChatGPT / operational coordinator.
+- Task / phase: Phase 0 — file-level ownership and disposition.
+- Base branch: `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Working branch: `docs/aram-master-control-plan-20261111`.
+- PR: Draft [#91](https://github.com/davoodmehraban89/Aram/pull/91).
+- Artifact: `docs/ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md`.
+- Local evidence: `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935\FILE_LEVEL_DISPOSITION_20261111.csv`.
+- Exact result: 62/62 snapshot hashes match; 62/62 current source files exist and match the manifest; zero changed and zero missing.
+- Disposition counts: generated artifacts exclude/rebuild 10; runtime dependency conflicts 3; Mapping workflow conflicts 3; Mapping regression test entries 3; Alembic env conflicts 2; initial migration review 1; identity-gated files 5; candidate tests/tools 15; implementation candidates 7; evidence/control docs 11; CI workflow 1; backend README 1.
+- Tests / CI: SHA-256 source-to-manifest verification completed on the Aram Windows host. No application tests were run; this is a documentation / inventory task.
+- Acceptance: disposition register prepared; independent review pending. No integration, merge, copy, reset, clean or deletion performed.
+- Reviewer: independent review pending.
+- Remaining risks: classifications are proposed; architecture and conflict decisions remain open.
+- Phase estimate: unchanged at 65%; no completion credit claimed solely for inventory.
+- Next action: independently review dispositions, then resolve reviewer-preservation, dependency and migration conflicts.
