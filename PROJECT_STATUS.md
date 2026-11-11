@@ -177,3 +177,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Confirmed 66 existing account-8161 Mapping rows; the seven proposed keys have zero existing matches under the workbook's account/T1/current-capital/T4/type wildcard matching convention.
 - Added [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md) with proposed note 10 / 13 routing, key-level exposure, helper-key formulas and acceptance tests.
 - All source workbooks remain unchanged. The proposal is not approved or applied; MAP-8161-01 remains open pending accounting-owner approval, derived-copy test and independent review.
+
+
+## 2026-11-11 — Account 8161 in-memory simulation
+
+- Ran the seven-rule candidate set in memory against all 17,075 account-8161 ledger rows for 1403/1404.
+- Baseline reproduced exactly: 1403 61 unmatched; 1404 49 unmatched; zero ambiguous matches.
+- Simulated result: 75 rows newly mapped (24 non-zero and 51 zero-balance); unmatched population reduced from 110 to 35, all 35 remaining rows zero-balance; no ambiguous matches.
+- Simulated net statement-balance exposure: 196,907,918,801 Rials, split 1403 144,125,670,091 and 1404 52,782,248,710; exact tie to the source reconciliation.
+- Simulation was in-memory only. No derived Mapping workbook was saved and no official source file was modified.
+- MAP-8161-01 remains open pending accounting-owner approval and independent review.
