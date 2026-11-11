@@ -463,3 +463,17 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Protected boundary: no source ledger, official Mapping workbook, official financial statement workbook, PDF, database or application code modified.
 - Acceptance: proposal only; not approved / not applied. Accounting-owner approval, derived-copy test, exact count reconciliation and independent review pending.
 - Next action: create a separate derived Mapping candidate, apply only after approval, rerun matching and verify all 24 rows and 86 zero-balance rows remain traceable.
+
+
+### 2026-11-11 — Account 8161 in-memory proposal simulation
+
+- Task / phase: Phase 1 — technical dry-run of seven proposed Mapping rules.
+- Working branch: `docs/financial-statement-reconciliation-1402-1404-20261110`; Draft PR #90.
+- Method: read-only openpyxl load; existing 66 account-8161 Mapping rows plus seven proposed rows held in memory; matcher dimensions account/T1/current-capital/T4/type; blank Mapping dimensions treated as wildcards.
+- Results 1403: 8,209 account-8161 rows; baseline 8,148 unique / 61 unmatched; simulated 8,195 unique / 14 unmatched; 47 new mappings including 20 non-zero rows; +144,125,670,091 Rials.
+- Results 1404: 8,866 account-8161 rows; baseline 8,817 unique / 49 unmatched; simulated 8,845 unique / 21 unmatched; 28 new mappings including 4 non-zero rows; +52,782,248,710 Rials.
+- Combined: 75 new matches; 24 non-zero and 51 zero-balance; 35 remaining unmatched rows, all zero-balance; no ambiguous matches before or after; total non-zero exposure +196,907,918,801 Rials.
+- Tests: dry-run only; no full application suite run.
+- Protected boundary: no workbook was saved; no source ledger, official Mapping, financial statement, PDF, database, application code or deployment changed.
+- Acceptance: technical simulation supports proposal; not an accounting approval. MAP-8161-01 remains open.
+- Next action: obtain accounting-owner disposition, then independent reviewer approval before preparing any persistent derived Mapping copy.
