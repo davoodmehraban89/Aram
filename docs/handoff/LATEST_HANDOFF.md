@@ -237,3 +237,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Do not restate closing equity to -82,191,049 based on the row-9 display alone.
 - 1403 has duplicate top-level Note 23 headings on physical sheets 29 and 30; use the specific subnote (23-1-1 for the actuarial disclosure) after owner approval.
 - Accounting-owner confirmation of journal entries and approved trial balances is required before any source edit.
+
+
+## 2026-11-11 — Auditor report extraction handoff
+
+- 1402 auditor PDF has 48 pages; first five pages visually rendered. Visible opinion wording is fair-presentation wording and a separate emphasis-of-matter section discusses legal claims.
+- 1404 auditor PDF has 47 pages; first five pages visually rendered. Visible opinion wording is fair-presentation wording and a separate emphasis-of-matter section discusses legal claims.
+- 1403 PDF extraction failed with a reader parser error; no page content.
+- Local Windows OCR only has English recognizer; Persian OCR remains unavailable.
+- This is not full report review. Do not mark auditor review complete; all report pages and the 1403 PDF remain to be inspected.
