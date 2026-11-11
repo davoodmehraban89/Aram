@@ -133,3 +133,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Six #REF! cells are stored Excel error values, not intact formulas.
 - Approved original-budget source is absent; no correction applied.
 - Evidence: [budget validation memo](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md).
+
+
+## 2026-11-11 — Open PR backlog discovered
+
+- Live GitHub API inventory: 55 open PRs, all Draft.
+- 13 PRs directly target `source-data-cleanup`; 42 are stacked on another PR head. All 42 stacked base refs matched a parent PR head.
+- Added [open PR inventory](docs/OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md) and [dependency graph](docs/OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md).
+- Phase 0 estimate revised 65% -> 55% because the integration backlog was materially understated; overall unweighted estimate revised 25% -> 24%. Other phase estimates unchanged.
+- No PR merged, closed, retargeted or deleted. No code or canonical financial data changed.
