@@ -101,6 +101,7 @@
 | Work item | State | Evidence / exit condition |
 |---|---|---|
 | Mapping workflow implementation foundation | PARTIAL | Candidate implementations exist in isolated worktrees / PRs |
+| Fiscal-year ownership and note isolation | PARTIAL / HOLD | PR #32/#35 exact-head CI passes (110 / 132 tests); ORM-only protection. Raw SQL, bulk DML and concurrent-write enforcement are excluded; no independent reviews. See [safety review](PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md) |
 | Deterministic key and dimension semantics | PARTIAL | Account / company / year / dimensions need final contract and tests |
 | Unmatched and ambiguous queues | PARTIAL | Candidate design / code exists; end-to-end acceptance absent |
 | Reviewer / approver evidence preservation | PARTIAL | G1/G2.1 variants preserve reviewer; Gate3-Implementation variant overwrites reviewer; conflict documented |
@@ -359,3 +360,13 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - Added [OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md](OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md) with a recommended keep / hold / no-go / likely-superseded / owner-decision-required disposition for each family.
 - No PR was merged, closed, retargeted or deleted. This is a proposal only; owner and independent reviewer decisions remain open.
 - Phase 0 remains 55%; the remaining work is disposition approval, semantic patch review, conflict resolution and selection of an exact-baseline integration candidate.
+
+
+### 2026-11-11 — PR #32 / #35 fiscal-year safety review
+
+- Reviewed exact candidate lineage: PR #32 head 28d1c578 and PR #35 child head e09aa43d.
+- Exact-head CI: PR #32 110 passed; PR #35 132 passed. No submitted GitHub reviews on either PR.
+- PR #35 closes same-flush approval/company mutation and clean-reference parent-move gaps left by PR #32.
+- Residual boundary: ORM `before_flush` does not protect raw/bulk SQL or concurrent transactions; no database-level constraints/triggers or provider-level race tests are included.
+- Added [PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md](PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md).
+- Phase 2 remains 30%; treat the family as P0 safety candidate, not production-ready.
