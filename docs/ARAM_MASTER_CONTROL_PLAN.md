@@ -412,3 +412,10 @@ The eight-phase execution roadmap is tracked in the dedicated [Aram Execution Pr
 The dashboard is the single operational task-and-progress register. This master plan remains the governing scope, sequencing, safety and acceptance policy. Percentages are engineering estimates, not acceptance claims. Every change must identify the previous and new percentage, evidence URL / SHA, reason, and remaining exit criteria. No phase can be marked ACCEPTED without all exit criteria and authorized owner / independent reviewer evidence.
 
 The dashboard must be updated after each material PR, exact-head test result, accounting disposition, security review, operational drill or phase-gate decision. Missing evidence is `NOT_VERIFIED`, never presumed successful. Production / release remains NO-GO.
+
+
+### 2026-11-11 — File-level worktree disposition evidence
+
+The 62-entry local snapshot manifest has now been revalidated against the live source worktrees: all 62 source files exist and all 62 current SHA-256 values match the snapshot manifest. No source file changed since the preservation snapshot. Every entry has a proposed disposition and rationale in [ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md).
+
+The disposition register is a review proposal only. It does not authorize copying, merging, deleting, resetting or cleaning any worktree. Substantive Mapping, dependency and Alembic conflicts remain unresolved. Phase 0 remains estimated at 65%; inventory evidence alone does not justify increasing the phase percentage.
