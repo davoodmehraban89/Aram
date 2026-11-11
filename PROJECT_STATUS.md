@@ -187,3 +187,14 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Simulated net statement-balance exposure: 196,907,918,801 Rials, split 1403 144,125,670,091 and 1404 52,782,248,710; exact tie to the source reconciliation.
 - Simulation was in-memory only. No derived Mapping workbook was saved and no official source file was modified.
 - MAP-8161-01 remains open pending accounting-owner approval and independent review.
+
+
+## 2026-11-11 — FS-1403-EQ-01 root cause refined
+
+- Compared the 1402 and 1403 official equity statements directly.
+- Confirmed the 43,241,509 million Rial adjustment is the same 33,467,967 + 9,773,542 already recorded in the 1402 workbook's 1401 opening / 1401 loss restatement.
+- The 1403 comparative equity statement appears to repeat that adjustment at 1402 opening while retaining the already-adjusted 1402 closing of -38,949,540.
+- Most likely treatment is correction of a duplicated comparative opening row, not restatement of closing equity to -82,191,049. Owner must confirm journal entries and approved trial balances before any source edit.
+- Found duplicate top-level Note 23 headings in 1403: corrections/reclassifications on sheet 29 and non-cash transactions on sheet 30. The equity statement's generic Note 23 reference is ambiguous; the actuarial detail is Note 23-1-1.
+- Added [FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md](docs/FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md).
+- Source workbooks were read-only; SHA-256 hashes were recorded; no source file was modified.
