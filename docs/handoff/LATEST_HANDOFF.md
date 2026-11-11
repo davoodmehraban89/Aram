@@ -120,3 +120,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Percentages are estimates from available evidence. No phase is fully accepted; production / release remains NO-GO.
 - Dashboard records work-item evidence states, remaining work, blockers, exit criteria and immediate priorities. Any future percentage change must cite the exact evidence URL / SHA and preserve progress history.
 - Next action: independent review of dashboard and control-plan updates on PR #91; then keep the dashboard current as financial, mapping, security and operational gates progress.
+
+
+## 2026-11-11 — File-level worktree disposition
+
+- Detailed register: `docs/ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md`.
+- All 62 current source files still exist and match the snapshot manifest SHA-256; no post-snapshot source changes detected.
+- All 62 entries have a proposed disposition and rationale.
+- This does not authorize integration. Keep original worktrees and snapshot untouched.
+- Phase 0 remains 65%; next task is independent disposition review and resolution of the Mapping / dependency / migration conflicts.
