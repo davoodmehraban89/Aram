@@ -554,3 +554,16 @@ This is direct source-ledger evidence for the intended note ID, not an inference
 ### 15.4 Acceptance boundary
 
 This refinement does not establish that account 8161 is a zero-net control account, does not identify an offsetting counterpart, and does not authorize exclusion from the financial statements. The non-zero balances remain an open mapping/classification exposure until disposition.
+
+
+### 15.5 Direct workstation revalidation and seven-rule proposal — 2026-11-11
+
+A read-only validation was performed directly against the three source workbooks on the Aram Windows workstation. The current SHA-256 values match the source integrity baseline in section 3; no workbook was modified.
+
+- The Mapping sheet contains 66 rows for account 8161.
+- All seven candidate keys were tested against account, T1, current/capital, T4 and type using the existing blank-dimension wildcard convention. No existing row matched any of the seven keys.
+- The 24 non-zero rows continue to route to source note IDs 10 or 13 exactly as recorded in section 15.3.
+- The 1403 source workbook and the 1404 source workbook both contain the 1403 population; the 1403 key-level results are consistent. The year-specific totals remain 1403: 20 non-zero rows / 144,125,670,091 Rials; 1404: 4 non-zero rows / 52,782,248,710 Rials.
+- The proposed seven rows, observed helper-key construction, key-level row counts, source note IDs, source hashes, and acceptance checks are recorded in [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md).
+
+This improves the evidence and proposal quality but does not close MAP-8161-01. The proposal is not approved or applied; the official Mapping workbook and all source ledgers remain unchanged. Accounting-owner approval, independent review, a derived-copy rerun and exact count/exposure reconciliation are still required.
