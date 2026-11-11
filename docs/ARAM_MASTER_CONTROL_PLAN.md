@@ -401,3 +401,14 @@ No author may describe their own self-review as an independent approval. No test
 - Gate3-Implementation's approval transition overwrites the reviewer field with the approver; this is not acceptable without an explicit control-model decision. G1/G2.1 preserve reviewer evidence.
 - Generated `egg-info` files are not source-of-truth and must be regenerated after the dependency contract is finalized.
 - No consolidation or source-file copying has been performed.
+
+
+## 11. Operational execution progress dashboard
+
+The eight-phase execution roadmap is tracked in the dedicated [Aram Execution Progress Dashboard](docs/ARAM_EXECUTION_PROGRESS_DASHBOARD.md).
+
+**Initial evidence-based estimate (2026-11-11):** Phase 0 65%; Phase 1 25%; Phase 2 30%; Phase 3 25%; Phase 4 10%; Phase 5 30%; Phase 6 10%; Phase 7 5%. Indicative unweighted mean: 25%.
+
+The dashboard is the single operational task-and-progress register. This master plan remains the governing scope, sequencing, safety and acceptance policy. Percentages are engineering estimates, not acceptance claims. Every change must identify the previous and new percentage, evidence URL / SHA, reason, and remaining exit criteria. No phase can be marked ACCEPTED without all exit criteria and authorized owner / independent reviewer evidence.
+
+The dashboard must be updated after each material PR, exact-head test result, accounting disposition, security review, operational drill or phase-gate decision. Missing evidence is `NOT_VERIFIED`, never presumed successful. Production / release remains NO-GO.
