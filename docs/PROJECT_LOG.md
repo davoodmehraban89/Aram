@@ -352,3 +352,15 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Six #REF! cells are stored error values (type e), not formulas.
 - Approved original-budget source not found in inspected project data; no repair or source edit performed.
 - Phase 1 remains 25%; owner source / decision pending.
+
+
+## 2026-11-11 — Live open PR dependency inventory
+
+- Task / phase: Phase 0 — repository-wide PR backlog and dependency control.
+- Source: live GitHub API, `state=open`, `per_page=100`; all-state PR metadata used to match parent heads.
+- Artifacts: `docs/OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md` and `docs/OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md`.
+- Results: 55 open PRs; 55 Draft; 13 directly target accepted baseline; 42 are stacked; all 42 child base branches match a parent PR head; zero unmatched bases.
+- Phase 0 estimate revised from 65% to 55% because the initial denominator omitted the 55-PR backlog. Overall estimate revised from 25% to 24% (190/8 = 23.75%). Other phases unchanged.
+- Acceptance: inventory / dependency graph only; no PR merged, closed, retargeted or deleted.
+- Remaining risks: V1 scope and supersession status of each branch chain not decided; commit/file overlap matrix not yet built.
+- Next action: classify each PR chain and create commit/file overlap matrix before selecting integration candidate.
