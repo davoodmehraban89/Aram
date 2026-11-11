@@ -567,3 +567,18 @@ A read-only validation was performed directly against the three source workbooks
 - The proposed seven rows, observed helper-key construction, key-level row counts, source note IDs, source hashes, and acceptance checks are recorded in [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md).
 
 This improves the evidence and proposal quality but does not close MAP-8161-01. The proposal is not approved or applied; the official Mapping workbook and all source ledgers remain unchanged. Accounting-owner approval, independent review, a derived-copy rerun and exact count/exposure reconciliation are still required.
+
+
+### 15.6 In-memory dry-run of the seven-rule proposal
+
+The seven candidate rules were evaluated in memory against all account-8161 ledger rows for 1403 and 1404 using the current Mapping match dimensions and wildcard behavior. The 66 existing Mapping rows were retained as the baseline; the seven candidates were appended only to an in-memory list. No workbook was saved or modified.
+
+| Year | Account-8161 rows | Before unique | Before unmatched | After unique | After unmatched | New rows mapped | New non-zero rows | New net statement balance (Rials) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1403 | 8,209 | 8,148 | 61 | 8,195 | 14 | 47 | 20 | +144,125,670,091 |
+| 1404 | 8,866 | 8,817 | 49 | 8,845 | 21 | 28 | 4 | +52,782,248,710 |
+| **Total** | **17,075** | **16,965** | **110** | **17,040** | **35** | **75** | **24** | **+196,907,918,801** |
+
+No ambiguous matches were produced before or after the simulation. The proposed rules match 75 rows (24 non-zero and 51 zero-balance); 35 remaining unmatched rows all have zero statement balance. Thus all original 86 zero-balance rows remain preserved and traceable: 51 would gain a rule match and 35 would remain unmatched. The 24 non-zero rows and their full signed exposure reconcile exactly.
+
+This simulation supports the technical correctness of the proposed rule set under the current matcher. It does not constitute accounting-owner approval, independent review, or permission to edit the official Mapping workbook. MAP-8161-01 remains open.
