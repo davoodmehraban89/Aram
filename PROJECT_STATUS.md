@@ -115,3 +115,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - New mapped exposure ties to 196,907,918,801 Rials.
 - No workbook saved; official Mapping and ledger files unchanged.
 - Phase 1 remains 25%; owner approval and independent review are outstanding.
+
+
+### 2026-11-11 — Phase 1 evidence refinement
+
+- Account 8161: seven-rule proposal simulated; 75 new matches, 24 non-zero rows, 35 remaining unmatched all zero-balance, no ambiguity. Awaiting accounting-owner approval.
+- FS-1403-EQ-01: same 43,241,509 million Rial adjustment already appears in the 1402 equity statement; 1403 comparative opening appears to repeat it. Likely correction is duplicate opening-row presentation; approved journal/TB confirmation required.
+- 1403 Note 23 duplicated across corrections/reclassifications on sheet 29 and non-cash transactions on sheet 30. Catalog and matrix updated.
+- Auditor 1402/1404 first five pages visually reviewed; full report review remains open. 1403 extraction failed.
+- No official source workbook or PDF changed.
