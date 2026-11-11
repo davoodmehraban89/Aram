@@ -180,3 +180,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - 55 open Draft PRs are grouped into 13 dependency families.
 - The #26 Gate3 Mapping chain and #60 five-statement / Windows chain must be treated as whole dependency families; #82/#88/#89/#92 remain NO-GO.
 - No PR was merged or closed. Owner / independent reviewer disposition is pending.
+
+
+## 2026-11-11 — Fiscal-year safety handoff
+
+- Read `docs/PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md` before any merge.
+- PR #35 is the child candidate that adds same-flush and clean-reference protections to PR #32.
+- Exact-head CI: 110 / 132 tests passed; no GitHub reviews submitted.
+- ORM-only boundary remains: raw/bulk SQL and concurrency are not protected; DB-level constraints/triggers and provider race tests remain.
+- Keep the family P0 / NO-GO for production until residual gates and independent reviews pass.
