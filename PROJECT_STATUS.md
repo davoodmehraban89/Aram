@@ -198,3 +198,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Found duplicate top-level Note 23 headings in 1403: corrections/reclassifications on sheet 29 and non-cash transactions on sheet 30. The equity statement's generic Note 23 reference is ambiguous; the actuarial detail is Note 23-1-1.
 - Added [FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md](docs/FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md).
 - Source workbooks were read-only; SHA-256 hashes were recorded; no source file was modified.
+
+
+## 2026-11-11 — Auditor PDF opening-page review
+
+- 1402 auditor report: 48 pages; first five pages visually rendered. Visible opinion wording is fair-presentation wording; a separate emphasis-of-matter section concerns legal claims.
+- 1404 auditor report: 47 pages; first five pages visually rendered. Visible opinion wording is fair-presentation wording; a separate emphasis-of-matter section concerns legal claims.
+- 1403 auditor PDF reader failed with a parser error; no page content returned.
+- Windows OCR recognizer available locally is English only, so full Persian OCR was not performed.
+- This is not a full report opinion / all-matters review; all three full reports remain open for complete review. No PDF changed.
