@@ -8,8 +8,11 @@ GitHub remote state is authoritative. Before editing:
 
 1. Fetch the remote.
 2. Read `PROJECT_STATUS.md`, `docs/ACCEPTANCE_POLICY.md`, and `docs/PROJECT_LOG.md`.
-3. Verify the requested base branch and full base SHA.
-4. If the actual SHA or repository state differs from the task, stop without changes and report the mismatch.
+3. Read the mandatory [Aram Master Project Control Plan](docs/ARAM_MASTER_CONTROL_PLAN.md) and latest handoff.
+4. Verify the requested base branch and full base SHA.
+5. If the actual SHA or repository state differs from the task, stop without changes and report the mismatch.
+
+The master control plan is the operational control register for phase ordering, worktree preservation, known exceptions, acceptance gates, and handoff. Live GitHub state and exact SHAs remain authoritative for whether any branch, PR, CI run, artifact, tag, or release actually exists. If records disagree, document and reconcile the discrepancy; never silently choose one.
 
 Never treat a local file, task summary, or agent report as proof that a branch, PR, CI run, artifact, tag, or release exists.
 
@@ -22,6 +25,7 @@ Never treat a local file, task summary, or agent report as proof that a branch, 
 - Do not modify canonical XLSX/PDF, `data/`, databases, or financial source values unless the task is an approved data-change task with hashes and recovery steps.
 - Do not commit ZIP, EXE, build output, secrets, credentials, caches, or local databases unless explicitly required by an approved artifact task.
 - Do not invent financial values, mapping rules, tests, CI outcomes, URLs, or acceptance status.
+- Preserve dirty local worktrees; no reset, clean, destructive checkout, force push, or worktree deletion without verified recovery and explicit authorization.
 
 ## Verification
 
@@ -44,7 +48,8 @@ Every meaningful PR must:
 - use `.github/pull_request_template.md`;
 - update `docs/handoff/LATEST_HANDOFF.md` after every meaningful completed or rejected step so a successor can resume without chat history;
 - keep `docs/handoff/MASTER_RECOVERY_PROMPT.md` stable unless the governance process itself changes;
-- keep `docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt` as the saveable entry point for a successor chat.
+- keep `docs/handoff/CHATGPT_BOOTSTRAP_PROMPT.txt` as the saveable entry point for a successor chat;
+- update `docs/ARAM_MASTER_CONTROL_PLAN.md` when phase status, blockers, evidence, or next action changes.
 
 An agent's written success report is not acceptance evidence.
 
