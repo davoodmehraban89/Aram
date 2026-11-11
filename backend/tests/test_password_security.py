@@ -50,6 +50,20 @@ def test_password_unicode_and_boundary():
     assert verify_password("x" * 1025, hash_password(PASSWORD)).valid is False
 
 
+def test_malformed_unicode_is_rejected_without_raising_during_verification():
+    malformed = "valid-prefix-\ud800"
+    encoded = hash_password(PASSWORD)
+    assert not verify_password(malformed, encoded).valid
+
+    salt = secrets.token_bytes(32)
+    digest = hashlib.pbkdf2_hmac("sha256", PASSWORD.encode("utf-8"), salt, 600_000)
+    legacy = encode_legacy_credential(salt, digest)
+    assert not verify_password(malformed, legacy).valid
+
+    with pytest.raises(ValueError, match="invalid password"):
+        hash_password(malformed)
+
+
 def test_reject_bad_legacy_material():
     with pytest.raises(ValueError):
         encode_legacy_credential(b"x", b"y")

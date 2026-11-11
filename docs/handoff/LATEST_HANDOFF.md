@@ -108,3 +108,16 @@
 ## Single next action
 
 Publish this requested two-document reconciliation on PR #21 and route the resulting documentation-only head back to the independent reviewer. The reviewer must confirm that only `PROJECT_STATUS.md` and `docs/handoff/LATEST_HANDOFF.md` changed after the CI-verified stabilized head `b3dc8b3a18934ffe63f615e4f650248be21a5f9c`, verify the final workflow result, then Ready/Squash Merge. Do not begin Gate 3 Mapping until V1-01 is accepted.
+
+
+## 2026-11-11 — Current handoff: control baseline and security correction
+
+- Accepted baseline remains `source-data-cleanup@7dc864fd032f0c4ae4d650d89304a01286a6d914`.
+- Master control plan: Draft PR #91, branch `docs/aram-master-control-plan-20261111`, head `ba3573b6518e24b57dd125ea370a3f9d968825f6`. It adds `docs/ARAM_MASTER_CONTROL_PLAN.md` and updates `AGENTS.md` to make that plan mandatory. No CI check-run was present at the inspected head; independent review required.
+- Six local worktrees were inventoried and 62 changed/untracked files were copied to `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`; all 62 SHA-256 comparisons passed. This is local-only recovery evidence, not off-device backup. Do not reset, clean or delete any original worktree.
+- Security correction: Draft PR #92, branch `fix/password-unicode-validation-20261111`, head initially `8ea415d236a4e98258d17455bace81b1a10433ba`, based on Package 9.1 candidate branch. Code fix and regression test are documented in `docs/PASSWORD_UNICODE_HARDENING_20261111.md`.
+- Local verification: 15 focused tests and full 137-test backend suite passed; Ruff, compileall, pip check and git diff --check passed. Confirmed Python imported password_security.py from the new isolated worktree, not the shared editable install path.
+- Re-fetch PR #92 current head and GitHub Actions after the documentation follow-up commit; require CI success on exact final SHA and independent security review.
+- Do not merge PR #91 or #92, do not merge PRs #82/#88/#89, and do not change canonical financial data.
+- Next action: complete exact-head CI and review for PR #92; then continue Phase 0 file-level change ownership matrix using the hash-verified snapshot. After Phase 0, proceed to finance-owner dispositions and mapping correction only with approved accounting decisions.
+- Production / Gate 3 decision remains NO-GO.

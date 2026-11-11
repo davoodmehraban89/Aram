@@ -24,10 +24,18 @@ class PasswordVerification:
     upgraded_hash: str | None = None
 
 
-def _validate_password(password: str) -> bytes:
+def _encode_password(password: str) -> bytes:
+    """Encode a password strictly; reject lone surrogates as invalid input."""
     if not isinstance(password, str):
         raise TypeError("invalid password")
-    raw = password.encode("utf-8")
+    try:
+        return password.encode("utf-8")
+    except UnicodeEncodeError as exc:
+        raise ValueError("invalid password") from exc
+
+
+def _validate_password(password: str) -> bytes:
+    raw = _encode_password(password)
     if not 14 <= len(password) <= 1024 or len(raw) > _MAX_PASSWORD_BYTES:
         raise ValueError("invalid password")
     return raw
@@ -41,7 +49,11 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, encoded: str) -> PasswordVerification:
     if not isinstance(password, str) or not isinstance(encoded, str):
         return PasswordVerification(False)
-    if len(password) > 1024 or len(password.encode("utf-8")) > _MAX_PASSWORD_BYTES:
+    try:
+        raw = _encode_password(password)
+    except (TypeError, ValueError):
+        return PasswordVerification(False)
+    if len(password) > 1024 or len(raw) > _MAX_PASSWORD_BYTES:
         return PasswordVerification(False)
     if encoded.startswith("$argon2id$"):
         try:
@@ -58,7 +70,7 @@ def verify_password(password: str, encoded: str) -> PasswordVerification:
         expected = bytes.fromhex(parts[3])
         if len(salt) != 32 or len(expected) != 32:
             return PasswordVerification(False)
-        candidate = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, _LEGACY_ITERATIONS)
+        candidate = hashlib.pbkdf2_hmac("sha256", raw, salt, _LEGACY_ITERATIONS)
         if not hmac.compare_digest(candidate, expected):
             return PasswordVerification(False)
         return PasswordVerification(True, hash_password(password))
@@ -70,4 +82,4 @@ def encode_legacy_credential(salt: bytes, digest: bytes) -> str:
     """Serialize existing credential hashes without ever exposing the password."""
     if not isinstance(salt, bytes) or len(salt) != 32 or not isinstance(digest, bytes) or len(digest) != 32:
         raise ValueError("invalid legacy credential")
-    return f"pbkdf2_sha256${_LEGACY_ITERATIONS}${salt.hex()}${digest.hex()}"
+    return "pbkdf2_sha256$" + str(_LEGACY_ITERATIONS) + "$" + salt.hex() + "$" + digest.hex()

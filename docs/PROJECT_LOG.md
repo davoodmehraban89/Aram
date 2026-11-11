@@ -374,3 +374,16 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 
 
 - Detailed seven-stage matrix and three sequential (non-independent) review findings recorded in `docs/GATE3_PACKAGE8_EXECUTION_REPORT_20261103.md`; 110/110 collected tests confirmed.
+
+
+## 2026-11-11 — Malformed Unicode password validation correction
+
+- Finding source: G2.1 deep security audit reproduced an unhandled UnicodeEncodeError for passwords containing an unpaired UTF-16 surrogate.
+- Isolated branch: `fix/password-unicode-validation-20261111`, based on `feat/gate3-package9-1-security-20261103@18d6aa122d9486116c08d6e66b22675e0ebb1792`.
+- Commit: `8ea415d236a4e98258d17455bace81b1a10433ba`; Draft PR #92.
+- Changed only `backend/src/aram_backend/password_security.py` and `backend/tests/test_password_security.py` in the code commit; a follow-up execution report was added at `docs/PASSWORD_UNICODE_HARDENING_20261111.md`.
+- Strict UTF-8 encoding now fails closed. Verification returns invalid rather than leaking UnicodeEncodeError; PBKDF2 uses the already validated byte sequence.
+- Verification on Aram Windows host: 15 focused tests PASS; full backend suite PASS (137 tests, exit code 0); Ruff PASS; compileall PASS; pip check PASS; git diff --check PASS. The imported module path was verified to point to the new isolated worktree.
+- Existing Starlette/httpx TestClient deprecation warning remains.
+- Only synthetic credentials used. No canonical financial data, operational database, production credential, merge, release or deployment touched.
+- Independent security review and exact-head GitHub Actions verification remain pending. This narrow fix does not close multi-user identity, persistent throttling/session, tenant-membership, audit, recovery or Gate 3 acceptance blockers.
