@@ -218,3 +218,13 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Current source workbook hashes match the original reconciliation baseline.
 - Do not edit the official Mapping workbook or source ledgers. The proposal is not approved or applied.
 - MAP-8161-01 remains open until accounting-owner approval, derived-copy execution, deterministic / ambiguous / unmatched count checks, 24-row exposure reconciliation, and independent review.
+
+
+## 2026-11-11 — Account 8161 dry-run result
+
+- In-memory simulation of the seven-rule proposal reproduced the baseline 61 unmatched rows in 1403 and 49 in 1404.
+- Simulated 75 new matches: 24 non-zero and 51 zero-balance rows. Remaining unmatched: 35, all zero-balance. No ambiguous matches.
+- Simulated non-zero exposure ties exactly to 196,907,918,801 Rials.
+- No derived workbook was saved; official Mapping and ledgers remain unchanged.
+- Read [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](../MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md) before continuing.
+- MAP-8161-01 is technically validated under the current matching convention but awaits accounting-owner approval and independent review.
