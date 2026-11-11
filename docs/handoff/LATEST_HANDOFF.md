@@ -187,7 +187,7 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - 1403: 61 unmapped rows; 41 zero-balance, 20 non-zero; exposure 144,125,670,091 Rials.
 - 1404: 49 unmapped rows; 45 zero-balance, 4 non-zero; exposure 52,782,248,710 Rials.
 - Combined 110 rows: 86 zero-balance, 24 non-zero; net exposure 196,907,918,801 Rials.
-- Seven distinct non-zero Mapping keys are absent; exact combinations are in report section 15.3.
+- Seven distinct non-zero Mapping keys are absent; all 24 non-zero source rows carry consistent Note 10/13 IDs in source-ledger column A. Exact combinations and note IDs are in report section 15.3.
 - MAP-8161-01: confirm those keys and rerun mapping counts. Do not exclude 8161 or modify Mapping/source ledgers before approval.
 - No canonical source changed.
 

@@ -443,5 +443,5 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - 1403: 61 unmapped rows; 41 zero-balance, 20 non-zero; net statement-balance exposure 144,125,670,091 Rials.
 - 1404: 49 unmapped rows; 45 zero-balance, 4 non-zero; net statement-balance exposure 52,782,248,710 Rials.
 - Combined: 110 rows; 86 zero-balance and 24 non-zero; net exposure 196,907,918,801 Rials. Closing and statement-balance columns agree for these unmapped subsets.
-- Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population; details are in reconciliation report section 15.2/15.3.
+- Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population. Inspection of all 24 non-zero source rows shows their source-ledger Note IDs in column A consistently route six current-class combinations to Note 13 and the two capital-class combinations to Note 10; see report section 15.2/15.3.
 - Open item MAP-8161-01 created. No mapping workbook or ledger rows changed; no netting or exclusion approved. Accounting/budget owner disposition required before correcting the official disclosure.

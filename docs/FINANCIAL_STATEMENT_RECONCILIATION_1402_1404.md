@@ -533,21 +533,23 @@ The source columns are AA (CLOSING) and AC (مانده صورت مالی) for 14
 
 These nine year/key combinations represent seven distinct candidate mapping keys. The recurring 117865 and 118701 combinations appear in both years.
 
-### 15.3 Mapping disposition
+### 15.3 Mapping disposition — source note references corroborate the missing rules
 
-Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population:
+All 24 non-zero unmatched rows were inspected individually. Their source-ledger column A (یادداشت کل) already contains a consistent note reference for each of the seven missing mapping keys:
 
-- 8161 / T1 117001 / current / T4 4512 / O
-- 8161 / T1 117373 / capital / T4 4512 / O
-- 8161 / T1 117401 / current / T4 4512 / O
-- 8161 / T1 117488 / current / T4 4502 / O
-- 8161 / T1 117865 / current / T4 4512 / O
-- 8161 / T1 118701 / current / T4 4512 / O
-- 8161 / T1 117088 / capital / T4 4512 / O
+| T1 code | Current / capital | T4 code | Source-ledger note ID | Note title in source ledger |
+|---|---|---:|---:|---|
+| 117001 | Current | 4512 | 13 | پیمانکاران جاری |
+| 117373 | Capital | 4512 | 10 | پیش پرداخت های سرمایه ای |
+| 117401 | Current | 4512 | 13 | پیمانکاران جاری |
+| 117488 | Current | 4502 | 13 | پیمانکاران جاری |
+| 117865 | Current | 4512 | 13 | پیمانکاران جاری |
+| 118701 | Current | 4512 | 13 | پیمانکاران جاری |
+| 117088 | Capital | 4512 | 10 | پیش پرداخت های سرمایه ای |
 
-Do not add or alter Mapping rows until the accounting/budget owner confirms the intended note classification and the source system's T1/T4 semantics. No ledger, mapping workbook, statement, or financial value was changed.
+This is direct source-ledger evidence for the intended note ID, not an inference from the T4 account description alone. It supports adding seven corresponding rules to the derived Mapping logic, subject to a final control check that the Mapping workbook's key construction and rule precedence reproduce these source note IDs. The official mapping workbook remains unchanged.
 
-**Open item MAP-8161-01:** confirm the seven non-zero mapping keys (or document an approved alternative), then rerun deterministic/ambiguous/unmapped counts and verify the 196,907,918,801 Rial statement-balance exposure is assigned to the appropriate note pages. Preserve the 86 zero-balance rows for drill-down traceability.
+**Open item MAP-8161-01:** add the seven rules in a controlled, versioned Mapping update using the source-ledger note IDs above; rerun deterministic/ambiguous/unmapped counts; verify all 24 non-zero rows map to Notes 10 or 13 as shown; and confirm the 196,907,918,801 Rial statement-balance exposure is fully assigned. Preserve the 86 zero-balance rows for drill-down traceability.
 
 ### 15.4 Acceptance boundary
 

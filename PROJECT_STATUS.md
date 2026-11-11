@@ -145,7 +145,7 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - 1403: 61 unmapped rows; 41 zero-balance, 20 non-zero; net statement-balance exposure 144,125,670,091 Rials.
 - 1404: 49 unmapped rows; 45 zero-balance, 4 non-zero; net statement-balance exposure 52,782,248,710 Rials.
 - Combined: 110 rows; 86 zero-balance and 24 non-zero; net exposure 196,907,918,801 Rials.
-- Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population; see report section 15.3.
+- Seven distinct non-zero mapping keys are absent from the current 8161 Mapping population. All 24 non-zero source rows carry consistent Note 10/13 IDs in source-ledger column A; see report section 15.3.
 - Open item MAP-8161-01: confirm the seven non-zero mapping keys, then rerun all mapping counts. Do not exclude 8161 or infer a netting counterpart.
 - No source ledger, mapping workbook, statement or financial value changed.
 - Next action: accounting-owner disposition of FS-1403-EQ-01 and FS-1402/1403-CF-FX-REF-01, then complete OCR review of auditor reports.
