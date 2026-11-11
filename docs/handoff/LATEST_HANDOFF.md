@@ -228,3 +228,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - No derived workbook was saved; official Mapping and ledgers remain unchanged.
 - Read [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](../MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md) before continuing.
 - MAP-8161-01 is technically validated under the current matching convention but awaits accounting-owner approval and independent review.
+
+
+## 2026-11-11 — FS-1403-EQ-01 root cause refinement
+
+- Read [FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md](../FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md).
+- The 43,241,509 million Rial correction is the same two-part prior-period adjustment already carried through the 1402 statements; the 1403 comparative opening appears to repeat it.
+- Do not restate closing equity to -82,191,049 based on the row-9 display alone.
+- 1403 has duplicate top-level Note 23 headings on physical sheets 29 and 30; use the specific subnote (23-1-1 for the actuarial disclosure) after owner approval.
+- Accounting-owner confirmation of journal entries and approved trial balances is required before any source edit.
