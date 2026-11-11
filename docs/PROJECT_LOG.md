@@ -317,3 +317,16 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Remaining risks: classifications are proposed; architecture and conflict decisions remain open.
 - Phase estimate: unchanged at 65%; no completion credit claimed solely for inventory.
 - Next action: independently review dispositions, then resolve reviewer-preservation, dependency and migration conflicts.
+
+
+## 2026-11-11 — Account 8161 in-memory dry-run
+
+- Actor: ChatGPT / operational coordinator.
+- Task: simulate seven proposed account-8161 Mapping rules.
+- Working branch: `docs/aram-master-control-plan-20261111`; Draft PR #91.
+- Evidence artifact: [MAP-8161 proposal and simulation](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md).
+- Scope: 17,075 account-8161 rows across 1403 and 1404; current 66 rules plus seven in-memory candidates.
+- Baseline reproduced: 61 unmatched (1403), 49 unmatched (1404), no ambiguity.
+- Simulated: 75 new matches (24 non-zero, 51 zero-balance), 35 remaining unmatched (all zero-balance), no ambiguity; new exposure 196,907,918,801 Rials.
+- Protected boundary: in-memory only; no persistent workbook or official source changed.
+- Acceptance: technical evidence only; accounting-owner approval and independent review pending.
