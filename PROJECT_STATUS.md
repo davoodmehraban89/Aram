@@ -207,3 +207,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - 1403 auditor PDF reader failed with a parser error; no page content returned.
 - Windows OCR recognizer available locally is English only, so full Persian OCR was not performed.
 - This is not a full report opinion / all-matters review; all three full reports remain open for complete review. No PDF changed.
+
+
+## 2026-11-11 — Budget unit and #REF! root-cause evidence
+
+- Confirmed 1403 G120/G123, 1404 G127/G130 and 1404 Note39 E9/E16 are stored Excel error cells (`data_type=e`), not recoverable formulas.
+- Confirmed 1404 Note39 E22:E32 are exactly 1,000,000 times the corresponding F revised-budget values; printed unit is million Rials. 1403 comparator E22:E32/F22:F32 are in the same scale.
+- E35 is 12,500,000 in both 1403 and 1404 and is not part of the E22:E32 scale anomaly; do not divide it.
+- The approved original budget source is absent from the inspected data directory; no safe reconstruction or correction is authorized.
+- Added [budget validation memo](docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md). Official workbooks unchanged.
