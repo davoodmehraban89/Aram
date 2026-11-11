@@ -140,3 +140,11 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Evidence: docs/FINANCIAL_STATEMENT_RECONCILIATION_1402_1404.md, section 13; NOTE_TO_STATEMENT_MATRIX.md; NOTE_CATALOG.md.
 - PR #90 remains Draft/open/unmerged; independent review pending. Do not merge.
 - Next action: accounting-owner disposition of FS-1403-EQ-01 and FS-1402/1403-CF-FX-REF-01, then complete OCR review of auditor reports.
+
+
+## 2026-11-11 — FS-1403-EQ-01 rollforward reperformance
+
+- The 1403 equity statement's displayed restated opening balance (-80,551,230), 1402 net loss (-15,709,645), and capital-in-progress increase (+14,069,826) imply a 1402 closing balance of -82,191,049.
+- Reported closing equity is -38,949,540, exactly 43,241,509 higher; that is the same correction displayed in the opening section.
+- The reported closing amount is reproduced only when the pre-adjustment opening balance (-37,309,721) is used. The correction is shown in the opening section but not carried into closing.
+- This establishes an internal rollforward inconsistency. Accounting owner must decide the proper comparative presentation; official workbook remains unchanged.

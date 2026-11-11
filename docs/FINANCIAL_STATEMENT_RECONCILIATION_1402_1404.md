@@ -123,7 +123,14 @@ In financial_1403.xlsx, sheet حقوق مالكانه:
 - However, row 14 closing equity is -38,949,540, which reconciles to row 7 plus the 1402 net loss and capital-in-progress movement, without carrying the row-8 correction.
 - The 1402 workbook's equity statement already includes the 43,241,509 prior-period employee-retirement-obligation correction in its 1401 restated balances. The 1403 Note 23 table also identifies the 43,241,509 as a 1402 comparative/prior-period correction (9,773,542 + 33,467,967).
 
-Assessment: likely duplicated / inconsistently rolled-forward opening restatement presentation in the 1403 equity statement. The reported 1402 closing equity and 1403 balance-sheet equity still tie; this is not evidence that the 1402 or 1403 balance-sheet totals are arithmetically wrong. Keep as REQUIRES_ACCOUNTING_OWNER_DISPOSITION; do not silently repair the official workbook.
+Reperformance of the 1402 movement inside the 1403 equity statement makes the inconsistency explicit:
+
+- If the displayed restated opening balance of -80,551,230 is used, then adding 1402 net loss of -15,709,645 and capital-in-progress increase of +14,069,826 produces an expected closing balance of -82,191,049.
+- The reported closing balance is -38,949,540, a difference of exactly 43,241,509.
+- The reported closing balance is instead reproduced by using the pre-adjustment opening balance: -37,309,721 - 15,709,645 + 14,069,826 = -38,949,540.
+- Therefore, the 43,241,509 opening adjustment is displayed in the rollforward but not carried through the 1402 closing row. This is an internal rollforward inconsistency, not a mismatch in the balance-sheet total.
+
+The correct accounting presentation (remove the repeated opening adjustment versus carry it through a restated comparative closing balance) requires the accounting owner’s decision. The reported 1402 closing equity and 1403 balance-sheet equity still tie; this is not evidence that the 1402 or 1403 balance-sheet totals are arithmetically wrong. Keep as REQUIRES_ACCOUNTING_OWNER_DISPOSITION; do not silently repair the official workbook.
 
 ### FS-1404-CF-01 — Exchange-rate effect support
 

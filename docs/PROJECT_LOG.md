@@ -413,3 +413,13 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - git diff --check passed. All ten canonical source SHA-256 values were recomputed and match the baseline recorded in section 3 of the reconciliation report.
 - Acceptance: PRESENT_BUT_UNVERIFIED; accounting-owner and independent technical review pending. No merge.
 - Next action: publish documentation-only update to PR #90 after local integrity checks; request disposition of the two open accounting-reference issues and full auditor report OCR.
+
+
+## 2026-11-11 — FS-1403-EQ-01 arithmetic re-performance
+
+- Reperformed the 1402 movement embedded in the 1403 Statement of Changes in Equity using the exact displayed values.
+- Restated opening balance -80,551,230 plus 1402 net loss -15,709,645 plus capital-in-progress increase +14,069,826 gives -82,191,049.
+- Reported 1402 closing equity is -38,949,540, a difference of exactly 43,241,509 — the same prior-period correction shown in the opening section.
+- The reported closing balance is reproduced exactly when the pre-adjustment opening balance -37,309,721 is used instead. The adjustment is therefore shown in the opening rollforward but not carried through the closing row.
+- This proves an internal equity-rollforward inconsistency; it does not prove which presentation the accounting owner should adopt. Do not modify the official workbook. FS-1403-EQ-01 remains REQUIRES_ACCOUNTING_OWNER_DISPOSITION.
+- No canonical source or financial value changed.

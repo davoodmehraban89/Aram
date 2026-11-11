@@ -181,3 +181,10 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - FS-1403-EQ-01 remains open. No source XLSX/PDF, ledger row, Mapping row, database, code or financial value changed.
 - Status: PRESENT_BUT_UNVERIFIED. PR #90 remains Draft/open/unmerged; no merge.
 - Next action: accounting-owner disposition of FS-1403-EQ-01 and FS-1402/1403-CF-FX-REF-01, plus complete auditor report OCR/review.
+
+
+## 2026-11-11 — FS-1403-EQ-01 arithmetic evidence
+
+- The 1403 equity rollforward is internally inconsistent by exactly 43,241,509 million Rials: using its restated opening balance implies closing equity -82,191,049, while the reported closing is -38,949,540.
+- The reported closing amount is reproduced from the pre-adjustment opening balance, proving the displayed opening correction is not carried through.
+- Accounting owner must decide whether the opening adjustment is repeated or the comparative closing should be restated. No official workbook change is authorized.
