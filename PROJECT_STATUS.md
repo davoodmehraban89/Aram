@@ -152,3 +152,11 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Added [open PR file overlap matrix](docs/OPEN_PULL_REQUEST_FILE_OVERLAP_MATRIX_20261111.md).
 - These are path overlaps, not proven semantic conflicts; immediate-base patch review is still required.
 - No code, source data, PR or branch state changed.
+
+
+## 2026-11-11 — V1 PR-family disposition proposal
+
+- Grouped the 55 open Draft PRs into 13 parent-rooted families.
+- Added [V1 scope disposition proposal](docs/OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md) with keep / hold / no-go / likely-superseded / owner-decision-required recommendations.
+- No PR state changed. This proposal is not an approval to merge or close any branch.
+- Phase 0 remains 55%; owner decisions and semantic patch review remain outstanding.
