@@ -138,3 +138,12 @@ Publish this requested two-document reconciliation on PR #21 and route the resul
 - Simulated exposure ties exactly to 196,907,918,801 Rials.
 - No workbook was saved; official Mapping and ledgers remain unchanged.
 - Accounting-owner approval and independent review remain required before persistent changes.
+
+
+## 2026-11-11 — Latest Phase 1 handoff
+
+- Account 8161: read the seven-rule proposal and in-memory simulation in Draft PR #90; no official Mapping workbook changed.
+- 1403 equity: likely duplicated prior-period adjustment; read `FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md` and obtain owner confirmation of original journals / approved trial balances.
+- 1403 Note 23 is duplicated across sheet29 and sheet30; note catalog and matrix distinguish both sections.
+- 1402/1404 auditor opening pages reviewed; full report review incomplete; 1403 PDF extraction failed.
+- No source financial workbook/PDF modified.
