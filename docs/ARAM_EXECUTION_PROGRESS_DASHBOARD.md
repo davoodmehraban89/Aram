@@ -13,7 +13,7 @@
 
 | Phase | Name | Estimate | Status | Gate |
 |---|---|---:|---|---|
-| 0 | Freeze, inventory and control baseline | **65%** | IN_PROGRESS | P0 |
+| 0 | Freeze, inventory and control baseline | **55%** | IN_PROGRESS / PR_BACKLOG_REVIEW | P0 |
 | 1 | Financial exception closure | **25%** | BLOCKED_ON_OWNER | P0 |
 | 2 | Mapping workflow completion | **30%** | IN_PROGRESS / INTEGRATION_BLOCKED | P0 |
 | 3 | Identity, authorization and segregation of duties | **25%** | IN_PROGRESS / SECURITY_NO_GO | P0 |
@@ -22,7 +22,7 @@
 | 6 | User interface and workflow integration | **10%** | NOT_ACCEPTED | P1 |
 | 7 | Windows packaging, installation and release | **5%** | NOT_STARTED_FOR_ACCEPTANCE | P1 |
 
-**Indicative overall progress: 25%.** This is the simple arithmetic mean of the eight phase estimates (200 percentage points / 8). It is a coarse portfolio indicator, not a release-readiness score. Critical P0 gates remain open, so the product is not 25% ready for production.
+**Indicative overall progress: 24%.** This is the simple arithmetic mean of the eight phase estimates (190 percentage points / 8 = 23.75%, rounded to 24%). It is a coarse portfolio indicator, not a release-readiness score. Critical P0 gates remain open, so the product is not 25% ready for production.
 
 ### Status vocabulary
 
@@ -36,7 +36,7 @@
 
 ## 2. Phase 0 — Freeze, inventory and establish control baseline
 
-**Estimate: 65% · Status: IN_PROGRESS · Priority: P0**
+**Estimate: 55% · Status: IN_PROGRESS / PR_BACKLOG_REVIEW · Priority: P0**
 
 | Work item | State | Evidence / exit condition |
 |---|---|---|
@@ -45,18 +45,23 @@
 | Preserve dirty / untracked files | DONE_EVIDENCED | 62 files copied to local snapshot; 62/62 SHA-256 comparisons passed |
 | Classify duplicate and conflicting paths | DONE_EVIDENCED | 10 overlapping paths; 3 identical-content groups and 7 content-conflict groups documented |
 | Complete file-level disposition for all snapshot entries | DONE_EVIDENCED | 62/62 current source files exist and still match snapshot SHA-256; every entry has a disposition and rationale in [file-level register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md) |
+| Inventory all open GitHub PRs | DONE_EVIDENCED | 55 open PRs; all 55 Draft; 13 target accepted baseline directly and 42 are stacked; [inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md) |
+| Build parent-child branch dependency graph | DONE_EVIDENCED | All 42 stacked PR bases match another PR head in the live inventory; [dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md) |
 | Resolve all substantive conflicts | PARTIAL | Reviewer-preservation, dependency and Alembic metadata conflicts identified; no integration merge performed |
 | Reconcile status, log and handoff to live remote state | PARTIAL | Status / handoff records have historical inconsistencies; current PR metadata re-fetched, but durable docs still need full reconciliation |
-| Select and validate one integration candidate | NOT_STARTED | Requires reviewed file ownership and exact-base integration plan |
+| Decide V1 scope / disposition for 55 open PRs | NOT_STARTED | Classify retain, consolidate, rebase, supersede or close-with-record; no mass close |
+| Build commit/file overlap matrix across PR chains | NOT_STARTED | Required to prevent duplicate or missing changes across 42 stacked PRs |
+| Select and validate one integration candidate | NOT_STARTED | Requires reviewed file ownership, PR DAG review and exact-base integration plan |
 
 **Remaining to close Phase 0**
 1. Independently review the 62 file dispositions and confirm the proposed retain / hold / exclude decisions.
-2. Resolve substantive conflicts with tests and explicit architecture decisions.
-3. Select one integration branch based on the accepted baseline.
-4. Reconcile all control documents and exact PR / CI heads.
-5. Obtain independent review and record the accepted baseline transition.
+2. Decide V1 scope and disposition for all 55 open Draft PRs; preserve the 42-PR dependency chain and avoid mass merge/close.
+3. Build commit/file overlap matrix and resolve substantive conflicts with tests and explicit architecture decisions.
+4. Select one integration branch based on the accepted baseline.
+5. Reconcile all control documents and exact PR / CI heads.
+6. Obtain independent review and record the accepted baseline transition.
 
-**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), [62-entry file-level disposition register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
+**Key evidence:** [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), [worktree ownership matrix](ARAM_WORKTREE_CHANGE_OWNERSHIP_20261111.md), [62-entry file-level disposition register](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md), [55-PR inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md), [branch dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md), local snapshot `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`.
 
 ## 3. Phase 1 — Financial exception closure
 
@@ -322,3 +327,13 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - The original approved budget source is not present in the inspected project data directory. No source correction is authorized.
 - Added [budget unit and error-cell memo](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md).
 - Phase 1 remains 25%; source evidence is improved but budget-owner approval / source recovery remains open.
+
+
+### 2026-11-11 — PR backlog discovery and Phase 0 estimate revision
+
+- Live GitHub inventory found 55 open PRs, all Draft: 13 directly target `source-data-cleanup` and 42 are stacked on another open PR's head branch.
+- Built [open PR inventory](OPEN_PULL_REQUEST_DEPENDENCY_INVENTORY_20261111.md) and [parent-child dependency graph](OPEN_PULL_REQUEST_DEPENDENCY_GRAPH_20261111.md). All 42 stacked bases matched another PR head; none were unmatched.
+- This materially expands the Phase 0 integration-control scope beyond the six local worktrees and 62-file snapshot. The earlier 65% estimate was based on an incomplete PR inventory.
+- Revised Phase 0 estimate from 65% to 55%, with reason: newly discovered 55-PR backlog and 42-edge dependency chain require V1 scope, supersession and commit/file-overlap review.
+- Other phase estimates unchanged. Indicative overall estimate revised from 25% to 24% (190/8 = 23.75%, rounded).
+- No PR merged, closed, retargeted or deleted. No source code or financial data changed.
