@@ -137,3 +137,13 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - PR #82 remains Draft / NO-GO; no independent reviews. New local changes have not yet been committed or run in remote CI.
 - Remaining mandatory blockers: trusted IdP/provisioning, independent immutable audit anchor, protected recoverable key custody and scheduled backup retention, authorized finance reconciliation, witnessed staging RPO/RTO drill, independent reviewer approval.
 - No canonical financial data changed; no commit, push, merge or release performed. See `docs/PROJECT_LOG.md` for execution detail.
+
+
+## 2026-11-11 — Current control update (additive; historical entries above are retained)
+
+- Mandatory project control plan candidate: [Draft PR #91](https://github.com/davoodmehraban89/Aram/pull/91), with the current phase roadmap, branch/worktree inventory, financial exceptions, security/DR blockers, acceptance criteria and safety rules. It is not merged yet.
+- Local preservation: all six known Aram worktrees were inventoried. A local snapshot was created at `%LOCALAPPDATA%\Aram\ControlBaseline\20261111-0935`; 62 changed/untracked files were copied and SHA-256 verified with zero mismatches. This is a same-machine recovery snapshot, not an off-device backup.
+- Security defect correction: [Draft PR #92](https://github.com/davoodmehraban89/Aram/pull/92), commit `8ea415d236a4e98258d17455bace81b1a10433ba`, fixes malformed-Unicode password handling in Argon2id / legacy PBKDF2 verification and adds regression tests.
+- Local Windows verification for PR #92: 15 focused password-security tests passed; full backend suite passed with exit code 0 (137 tests); Ruff, compileall, pip check and git diff --check passed. Import origin was explicitly verified against the isolated worktree.
+- PR #92 is based on the Package 9.1 candidate branch, not the accepted baseline. It remains Draft and requires exact-head CI and independent security review.
+- Production decision remains NO-GO. No merge, release, deployment, production credential, operational database or canonical financial source was changed.
