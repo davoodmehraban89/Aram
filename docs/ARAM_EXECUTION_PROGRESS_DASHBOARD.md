@@ -66,7 +66,7 @@
 |---|---|---|
 | FY1402–FY1404 arithmetic / cross-statement checks | PARTIAL | 69 read-only checks reported PASS; not a transaction-level GL reconciliation or signed finance acceptance |
 | Account 8161 unmapped-row analysis | PARTIAL | 110 rows identified: 86 zero-balance and 24 non-zero; 7 missing Mapping keys identified |
-| Verify all 24 non-zero rows and seven keys | PARTIAL | Ledger note-column evidence points to Notes 10 and 13; exact key-by-key approved disposition and rerun still required |
+| Verify all 24 non-zero rows and seven keys | PARTIAL | Direct workstation revalidation found 66 existing account-8161 rules and zero matches for all seven candidate keys; source note IDs support Notes 10/13; proposal documented, but dry-run / owner approval still required |
 | FY1403 equity rollforward difference | BLOCKED_ON_OWNER | Reported difference IRR 43,241,509 million Rial; accounting owner must decide treatment |
 | Note / sub-note reference reconciliation | PARTIAL | Issues identified; owner-approved final references not recorded |
 | Budget source errors and unit consistency | BLOCKED_ON_OWNER | #REF! and mixed Rial / million-Rial presentation require budget-owner source decision |
@@ -74,8 +74,9 @@
 | Signed finance disposition and source hash recheck | NOT_STARTED | Mandatory exit evidence absent |
 
 **Remaining to close Phase 1**
-- Produce a seven-key proposed Mapping schedule with source ledger evidence and proposed note reference.
-- Reconcile each of the 24 non-zero rows individually, preserving source rows and signs.
+- Obtain accounting-owner disposition of the seven-key proposal in [MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md](https://github.com/davoodmehraban89/Aram/blob/docs/financial-statement-reconciliation-1402-1404-20261110/docs/MAP_8161_SEVEN_RULES_PROPOSAL_20261111.md).
+- Run a controlled dry-run / derived-copy validation after approval; prove exactly-one mapping for every candidate key and reconcile the 24 non-zero rows and 196,907,918,801 Rial exposure.
+- Preserve all 86 zero-balance rows and verify unmatched / ambiguous / deterministic counts.
 - Obtain accounting-owner approval before changing official mappings.
 - Resolve equity, note references, budget units and #REF! source cells with named owners.
 - Inspect every auditor report page; record opinion, emphasis and other-matter paragraphs.
@@ -281,3 +282,13 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - Added [ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md](ARAM_WORKTREE_FILE_LEVEL_DISPOSITION_20261111.md).
 - This is a file-level proposal, not authorization to merge, copy, delete, reset or clean any worktree. Independent review and conflict resolution remain open.
 - Phase 0 estimate remains 65%; no percentage increase is claimed from inventory alone.
+
+
+### 2026-11-11 — Account 8161 proposal and direct source revalidation
+
+- Added a seven-rule Mapping proposal based on direct ledger note IDs and the observed Mapping helper-key construction.
+- Revalidated the three source workbook hashes on the Aram Windows host; they match the reconciliation baseline.
+- Confirmed 66 existing account-8161 Mapping rows; all seven candidate keys have zero existing matches under the documented wildcard matching convention.
+- No official workbook, ledger or Mapping data was changed. The proposal is not approved or applied.
+- Phase 1 estimate remains 25%; proposal preparation and source verification do not close the exception or replace accounting-owner approval.
+- Next gate: dry-run / derived-copy validation after approval, followed by exact count and exposure reconciliation.
