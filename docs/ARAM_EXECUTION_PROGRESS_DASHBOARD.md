@@ -68,10 +68,10 @@
 | Account 8161 unmapped-row analysis | PARTIAL | 110 rows identified: 86 zero-balance and 24 non-zero; 7 missing Mapping keys identified |
 | Verify all 24 non-zero rows and seven keys | PARTIAL | Direct workstation revalidation found 66 existing account-8161 rules and zero matches for all seven candidate keys; source note IDs support Notes 10/13; proposal and in-memory dry-run completed; accounting approval remains open |
 | Simulate seven-rule Mapping outcome | DONE_EVIDENCED | In-memory simulation reproduced baseline (61 / 49 unmatched); proposed result: 75 new matches, 24 non-zero, 35 remaining unmatched all zero-balance, zero ambiguity; exposure ties exactly |
-| FY1403 equity rollforward difference | BLOCKED_ON_OWNER | Reported difference IRR 43,241,509 million Rial; accounting owner must decide treatment |
+| FY1403 equity rollforward difference | PARTIAL / BLOCKED_ON_OWNER | Root cause strongly indicates the 43,241,509 million Rial prior-period adjustment is duplicated in the 1403 comparative opening; 1402 statement already carries the same two components. Owner must confirm original journals / approved TBs before correction |
 | Note / sub-note reference reconciliation | PARTIAL | Issues identified; owner-approved final references not recorded |
 | Budget source errors and unit consistency | BLOCKED_ON_OWNER | #REF! and mixed Rial / million-Rial presentation require budget-owner source decision |
-| Auditor PDF full-page inspection | NOT_VERIFIED | OCR / visual inspection of all pages and exact opinion wording not completed |
+| Auditor PDF review | PARTIAL | First five pages of 1402 (48p) and 1404 (47p) visually inspected; fair-presentation wording and separate litigation emphasis sections visible. 1403 extraction failed; full-page / all-matters review remains NOT_VERIFIED |
 | Signed finance disposition and source hash recheck | NOT_STARTED | Mandatory exit evidence absent |
 
 **Remaining to close Phase 1**
@@ -305,3 +305,11 @@ Parallel work is allowed only when it does not modify shared files, canonical da
 - Simulation was in memory only; no derived workbook was saved and no official data changed.
 - Phase 1 remains 25%; this is technical proposal evidence, not accounting approval or closure.
 - Next gate: accounting-owner disposition and independent review before any persistent derived Mapping candidate.
+
+
+### 2026-11-11 — Equity root cause and auditor opening pages
+
+- FS-1403-EQ-01 was refined by comparing the 1402 and 1403 official equity statements: 43,241,509 million Rials is the same 33,467,967 + 9,773,542 already included in the 1402 statements. The 1403 comparative rollforward appears to repeat it at opening; likely correction is remove/correct duplicate row, not restate closing equity. Owner confirmation remains required.
+- 1403 workbook prints two Note 23 headings: corrections/reclassifications (sheet 29, including 23-1-1) and non-cash transactions (sheet 30). The note catalog and matrix now distinguish these sections.
+- Auditor 1402 (48 pages) and 1404 (47 pages): first five pages visually reviewed; visible fair-presentation opinion wording and separate litigation emphasis sections. 1403 PDF extraction failed; full review remains incomplete.
+- No official financial workbook or PDF was changed. Phase 1 remains 25%; findings are more precise but not formally accepted.
