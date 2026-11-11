@@ -341,3 +341,14 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Audit PDFs: 1402 48 pages and 1404 47 pages; first five pages of each visually inspected. Visible fair-presentation wording and separate litigation emphasis sections. 1403 reader extraction failed; full report review not complete.
 - Protected boundary: read-only inspection; no official source workbook/PDF modified.
 - Phase 1 percentage remains 25%; more precise evidence is not equivalent to approved closure.
+
+
+## 2026-11-11 — Budget source integrity findings
+
+- Task: validate budget Note39 unit anomaly and #REF! cell lineage.
+- Artifact: `docs/BUDGET_1404_NOTE39_UNIT_AND_REF_ERRORS_20261111.md` on Draft PR #90.
+- 1404 E22:E32 are exactly 1,000,000 times F22:F32; 1403 comparator values are in million-Rial scale.
+- E35 = 12,500,000 in both years; not part of the scale anomaly.
+- Six #REF! cells are stored error values (type e), not formulas.
+- Approved original-budget source not found in inspected project data; no repair or source edit performed.
+- Phase 1 remains 25%; owner source / decision pending.
