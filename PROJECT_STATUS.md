@@ -160,3 +160,12 @@ The accepted branch does not include PR #7 desktop/release work, PR #16 alternat
 - Added [V1 scope disposition proposal](docs/OPEN_PR_V1_SCOPE_DISPOSITION_PROPOSAL_20261111.md) with keep / hold / no-go / likely-superseded / owner-decision-required recommendations.
 - No PR state changed. This proposal is not an approval to merge or close any branch.
 - Phase 0 remains 55%; owner decisions and semantic patch review remain outstanding.
+
+
+## 2026-11-11 — Fiscal-year safety review
+
+- Reviewed PR #32 (110 tests) and child PR #35 (132 tests), exact-head GitHub Actions successful.
+- No GitHub review submissions on either PR.
+- PR #35 closes same-flush and clean-reference ORM gaps; raw/bulk SQL and concurrent writes remain outside the guarantee.
+- No DB-level constraints/triggers or provider-level race proof. Production fiscal-year integrity remains NO-GO.
+- Added [PR32/35 safety review](docs/PR32_PR35_FISCAL_YEAR_SAFETY_REVIEW_20261111.md).
