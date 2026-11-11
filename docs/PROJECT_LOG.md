@@ -477,3 +477,17 @@ Each new entry must record: UTC timestamp, actor, task/phase, base branch and SH
 - Protected boundary: no workbook was saved; no source ledger, official Mapping, financial statement, PDF, database, application code or deployment changed.
 - Acceptance: technical simulation supports proposal; not an accounting approval. MAP-8161-01 remains open.
 - Next action: obtain accounting-owner disposition, then independent reviewer approval before preparing any persistent derived Mapping copy.
+
+
+### 2026-11-11 — FS-1403-EQ-01 root cause refinement
+
+- Task / phase: Phase 1 — compare official 1402 and 1403 equity statements and Note 23.
+- Artifact: `docs/FS_1403_EQUITY_DUPLICATE_PRIOR_PERIOD_ADJUSTMENT_20261111.md`.
+- 1402 workbook evidence: -33,467,967 correction at opening 1401; -9,773,542 correction to 1401 loss; closing 1401 equity -37,309,721; closing 1402 equity -38,949,540.
+- 1403 workbook evidence: row 7 opening 1402 -37,309,721; row 8 repeated correction -43,241,509; row 9 restated opening -80,551,230; row 14 closing 1402 remains -38,949,540; row 19 closing 1403 -48,403,932.
+- Note 23-1 on physical sheet 29 splits the same 43,241,509 into 9,773,542 and 33,467,967. Physical sheet 30 separately prints Note 23 for non-cash transactions, creating duplicate top-level Note 23 numbering.
+- Interpretation: strong evidence of a duplicated comparative opening adjustment, not evidence that closing equity should be restated to -82,191,049. Accounting-owner confirmation of journal entries and approved TBs is still required.
+- Source SHA-256: financial_1402.xlsx `DF40940EBA3D286F82DF364BC84E14CD6796AB3E1F8C4FFF658408182282F4EF`; financial_1403.xlsx `AEB279A3A01058B6998B998A2A44CF68B48A1081F477B87E271CEB2984D23ABE`.
+- Tests: read-only workbook cell inspection and arithmetic reperformance; no application tests run.
+- Protected boundary: no source workbook, note, ledger, database or application code modified.
+- Acceptance: technical root cause strongly indicated; accounting-owner disposition and independent review pending.
